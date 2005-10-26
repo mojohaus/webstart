@@ -1,0 +1,13 @@
+ ------
+ Maven Webstart Plugin
+ ------
+ Jerome Lacoste
+ ------
+ 26 Oct 2005
+ ------
+
+Maven Webstart Plugin
+
+ A plugin to prepare webstart applications.
+
+ Note: this is a very early release. The documentation is currently hosted {{{http://docs.codehaus.org/display/MOJO/Webstart+Plugin} on confluence}}.

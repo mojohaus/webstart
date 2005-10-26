@@ -55,7 +55,7 @@ public class SignConfigTest
         signConfig.setDnameCn( "www.example.com" );
         signConfig.setDnameOu( "None" );
         signConfig.setDnameL( "Seattle" );
-        signConfig.setDnameSt( "Washington" );
+        signConfig.setDnamest( "Washington" );
         signConfig.setDnameO( "ExampleOrg" );
         signConfig.setDnameC( "US" );
         assertEquals( "CN=www.example.com, OU=None, L=Seattle, ST=Washington, O=ExampleOrg, C=US",  signConfig.getDname() );

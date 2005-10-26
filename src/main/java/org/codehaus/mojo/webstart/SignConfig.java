@@ -76,7 +76,7 @@ public class SignConfig {
 
     /**
      */
-    private String dnameSt;
+    private String dnamest;
 
     /**
      */
@@ -143,8 +143,8 @@ public class SignConfig {
         this.dnameL = dnameL;
     }
 
-    public void setDnameSt( String dnameSt ) {
-        this.dnameSt = dnameSt;
+    public void setDnamest( String dnamest ) {
+        this.dnamest = dnamest;
     }
 
     public void setDnameO( String dnameO ) {
@@ -211,8 +211,8 @@ public class SignConfig {
         return dnameL;
     }
 
-    public String getDnameSt() {
-        return dnameSt;
+    public String getDnamest() {
+        return dnamest;
     }
 
     public String getDnameO() {
@@ -237,7 +237,7 @@ public class SignConfig {
         appendToDnameBuffer( dnameCn, buffer, "CN" );
         appendToDnameBuffer( dnameOu, buffer, "OU" );
         appendToDnameBuffer( dnameL, buffer, "L" );
-        appendToDnameBuffer( dnameSt, buffer, "ST" );
+        appendToDnameBuffer( dnamest, buffer, "ST" );
         appendToDnameBuffer( dnameO, buffer, "O" );
         appendToDnameBuffer( dnameC, buffer, "C" );
 
