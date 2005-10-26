@@ -14,7 +14,7 @@
    <item name="Mojo" href="http://mojo.codehaus.org"/>
    <item name="Maven" href="http://maven.apache.org/maven2"/>
   </links>
-  <menu name="Maven Keytool Quickstart">
+  <menu name="Maven Webstart Quickstart">
     <item name="Introduction" href="introduction.html"/>
   </menu>
   ${reports}
