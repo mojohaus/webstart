@@ -3,11 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.codehaus.mojo</groupId>
-  <artifactId>webstart-maven-plugin-parent</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>pack200-jdk14</artifactId>
+  <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>Maven Webstart Plugin Parent</name>
-
+  <name>Pack 200 support for SDK 1.4</name>
   <developers>
     <developer>
       <name>Jerome Lacoste</name>
@@ -21,17 +20,6 @@
     </developer>
   </developers>
 
-  <modules>
-    <module>plugin</module>
-    <module>pack200-jdk14</module>
-    <module>pack200-jdk15</module>
-  </modules>
+  <dependencies/>
 
-  <repositories>
-    <repository>
-      <id>embedded</id>
-      <name>plugin-embedded-repo</name>
-      <url>file://${basedir}/tmp/m2repos</url> <!-- doesn't work without the prefix on linux with m2 2.0rc. -->
-    </repository>
-  </repositories>
 </project>

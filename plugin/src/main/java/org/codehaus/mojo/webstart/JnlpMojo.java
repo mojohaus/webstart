@@ -39,10 +39,13 @@ import org.apache.maven.project.DefaultMavenProjectHelper;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.settings.Settings;
+
 import org.codehaus.mojo.keytool.GenkeyMojo;
 import org.codehaus.mojo.webstart.generator.Generator;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.util.FileUtils;
+
+import org.apache.commons.lang.SystemUtils;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -166,7 +169,7 @@ public class JnlpMojo
     private boolean verifyjar;
 
     /**
-     * Xxx
+     * Enables pack200. Requires SDK 5.0.
      *
      * @parameter default-value="false"
      */
@@ -798,6 +801,13 @@ public class JnlpMojo
         getLog().debug( "verifyjar " + this.verifyjar );
         getLog().debug( "verbose " + this.verbose );
 
+        if ( SystemUtils.JAVA_VERSION_FLOAT < 1.5f)
+        {
+            if ( pack200 )
+            {
+                throw new MojoExecutionException( "SDK 5.0 minimum when using pack200." );
+            }
+        }
         // FIXME
         /*
         if ( !"pom".equals( getProject().getPackaging() ) ) {
