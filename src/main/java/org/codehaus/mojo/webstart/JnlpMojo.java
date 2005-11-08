@@ -16,8 +16,6 @@ package org.codehaus.mojo.webstart;
  * limitations under the License.
  */
 
-import com.sun.tools.apache.ant.pack200.Pack200Task;
-import com.sun.tools.apache.ant.pack200.Unpack200Task;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -41,7 +39,6 @@ import org.apache.maven.project.DefaultMavenProjectHelper;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.settings.Settings;
-import org.apache.tools.ant.Project;
 import org.codehaus.mojo.keytool.GenkeyMojo;
 import org.codehaus.mojo.webstart.generator.Generator;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
@@ -467,17 +464,17 @@ public class JnlpMojo
                 {
                     // http://java.sun.com/j2se/1.5.0/docs/guide/deployment/deployment-guide/pack200.html
                     // we need to pack then unpack the files before signing them
-                    packJars( applicationDirectory );
-                    unpackJars( applicationDirectory );
+                    Pack200.packJars( applicationDirectory, jarFileFilter, this.gzip );
+                    Pack200.unpackJars( applicationDirectory, pack200FileFilter );
                     // specs says that one should do it twice when there are unsigned jars??
-                    // unpackJars(applicationDirectory);
+                    // Pack200.unpackJars( applicationDirectory, pack200FileFilter );
                 }
                 signJars( applicationDirectory );
             }
             if ( pack200 )
             {
                 getLog().debug( "packing jars" );
-                packJars( applicationDirectory );
+                Pack200.packJars( applicationDirectory, jarFileFilter, this.gzip );
             }
 
             //
@@ -752,59 +749,6 @@ public class JnlpMojo
         }
         getLog().debug( "icon " + icon.getHref() + " found at " + iconFile.getAbsolutePath() );
         return iconFile;
-    }
-
-    private void packJars( File directory )
-    {
-        getLog().debug( "packJars for " + directory );
-        Pack200Task packTask;
-        File[] jarFiles = directory.listFiles( jarFileFilter );
-        for ( int i = 0; i < jarFiles.length; i++ )
-        {
-            getLog().debug( "packJars: " + jarFiles[i] );
-
-            final String extension = this.gzip ? ".pack.gz" : ".pack";
-
-            File pack200Jar = new File( jarFiles[i].getParentFile(), jarFiles[i].getName() + extension );
-
-            if ( pack200Jar.exists() )
-            {
-                pack200Jar.delete();
-            }
-
-            packTask = new Pack200Task();
-            packTask.setProject( new Project() );
-            packTask.setDestfile( pack200Jar );
-            packTask.setSrc( jarFiles[i] );
-            packTask.setGZIPOutput( this.gzip );
-            packTask.execute();
-            pack200Jar.setLastModified( jarFiles[i].lastModified() );
-        }
-    }
-
-    private void unpackJars( File directory )
-    {
-        getLog().debug( "unpackJars for " + directory );
-        Unpack200Task unpackTask;
-        File[] packFiles = directory.listFiles( pack200FileFilter );
-        for ( int i = 0; i < packFiles.length; i++ )
-        {
-            final String packedJarPath = packFiles[i].getAbsolutePath();
-            int extensionLength = packedJarPath.endsWith( ".jar.pack.gz" ) ? 8 : 5;
-            String jarFileName = packedJarPath.substring( 0, packedJarPath.length() - extensionLength );
-            File jarFile = new File( jarFileName );
-
-            if ( jarFile.exists() )
-            {
-                jarFile.delete();
-            }
-            unpackTask = new Unpack200Task();
-            unpackTask.setProject( new Project() );
-            unpackTask.setDest( jarFile );
-            unpackTask.setSrc( packFiles[i] );
-            unpackTask.execute();
-            jarFile.setLastModified( packFiles[i].lastModified() );
-        }
     }
 
     private void signJars( File directory )
