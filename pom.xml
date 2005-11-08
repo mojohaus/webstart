@@ -81,7 +81,7 @@
     <dependency>
       <groupId>org.codehaus.mojo</groupId>
       <artifactId>keytool-maven-plugin</artifactId>
-      <version>0.2</version>
+      <version>0.3</version>
     </dependency>
     <dependency>
       <groupId>velocity</groupId>
@@ -92,6 +92,11 @@
       <groupId>com.sun.tools.apache.ant</groupId>
       <artifactId>pack200</artifactId>
       <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.6.5</version>
     </dependency>
     <dependency>
       <groupId>com.sun.java.jnlp</groupId>
