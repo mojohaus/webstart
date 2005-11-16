@@ -49,6 +49,7 @@ import org.apache.commons.lang.SystemUtils;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
@@ -59,6 +60,9 @@ import java.util.List;
 
 /**
  * Packages a jnlp application.
+ *
+ * The plugin tries to not re-sign/re-pack if the dependent jar hasn't changed.
+ * As a consequence, if one modifies the pom jnlp config or a keystore, one should clean before rebuilding.
  *
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id: $
@@ -246,6 +250,33 @@ public class JnlpMojo
      */
     private PluginManager pluginManager;
 
+    private class CompositeFileFilter implements FileFilter {
+        private List fileFilters = new ArrayList();
+
+        CompositeFileFilter( FileFilter filter1, FileFilter filter2 ) {
+            fileFilters.add( filter1 );
+            fileFilters.add( filter2 );
+        }
+ 
+        public boolean accept( File pathname )
+        {
+            for ( int i = 0; i < fileFilters.size(); i++ ) {
+                if ( ! ((FileFilter) fileFilters.get(i)).accept( pathname ) ) 
+                    return false; 
+            }
+            return true;
+        }
+
+    }
+
+    private FileFilter modifiedFileFilter = new FileFilter()
+    {
+        public boolean accept( File pathname )
+        {
+            return pathname.lastModified() > getStartTime();
+        }
+    };
+
     private FileFilter jarFileFilter = new FileFilter()
     {
         public boolean accept( File pathname )
@@ -263,15 +294,41 @@ public class JnlpMojo
         }
     };
 
+    // the jars to sign and pack are selected if they are newer than the plugin start.
+    // as the plugin copies the new versions locally before signing/packing them
+    // we just need to see if the plugin copied a new version
+    // We achieve that by only filtering files modified after the plugin was started
+    // FIXME we may want to also resign/repack the jars if other files (the pom, the keystore config) have changed
+    // today one needs to clean...
+    private FileFilter updatedJarFileFilter = new CompositeFileFilter( jarFileFilter, modifiedFileFilter );
+
+    private FileFilter updatedPack200FileFilter = new CompositeFileFilter( pack200FileFilter, modifiedFileFilter );
+
+    // FIXME ill-chosen name. Now that optimization takes place, some artifacts are in the list even though they aren't copied
     private List copiedArtifacts;
 
     private Artifact artifactWithMainClass;
+
+    // initialized by execute
+    private long startTime;
+
+    private long getStartTime() {
+        if ( startTime == 0 ) {
+             throw new IllegalStateException( "startTime not initialized" );
+        }
+        return startTime;
+    }
 
     public void execute()
         throws MojoExecutionException
     {
 
         checkInput();
+
+        startTime = System.currentTimeMillis();
+
+        // We keep track of the list of copied artifacts for debug purposes (we can compare it to the list of signed/packed jars)
+        List debugModifiedArtifacts = new ArrayList();
 
         File workDirectory = getWorkDirectory();
         getLog().debug( "using work directory " + workDirectory );
@@ -303,7 +360,7 @@ public class JnlpMojo
                         JnlpConfig.Icon icon = information.getIcons()[j];
                         File iconFile = getIconFile( icon );
                         icon.setFileName( iconFile.getName() );
-                        FileUtils.copyFileToDirectory( iconFile, iconFolder );
+                        copyFileToDirectoryIfNecessary( iconFile, iconFolder );
                     }
                 }
             }
@@ -363,7 +420,14 @@ public class JnlpMojo
                             // FIXME when signed, we should update the manifest.
                             // see http://www.mail-archive.com/turbine-maven-dev@jakarta.apache.org/msg08081.html
                             // and maven1: maven-plugins/jnlp/src/main/org/apache/maven/jnlp/UpdateManifest.java
-                            FileUtils.copyFileToDirectory( artifact.getFile(), applicationDirectory );
+                            boolean copied = copyFileToDirectoryIfNecessary( artifact.getFile(), applicationDirectory );
+
+                            if ( copied ) {
+
+                                debugModifiedArtifacts.add( artifact.getFile() );
+
+                            }
+
                             copiedArtifacts.add( artifact );
 
                             // JarArchiver.grabFilesAndDirs()
@@ -451,6 +515,13 @@ public class JnlpMojo
             //
             // pack200 and jar signing
             //
+            if ( ( pack200 || sign != null )
+                 && getLog().isDebugEnabled() )
+            {
+                logCollection( "Some dependencies may be skipped. Here's the list of the artifacts that should be signed/packed: ",
+                                debugModifiedArtifacts );
+            }
+ 
             if ( sign != null )
             {
 
@@ -467,17 +538,17 @@ public class JnlpMojo
                 {
                     // http://java.sun.com/j2se/1.5.0/docs/guide/deployment/deployment-guide/pack200.html
                     // we need to pack then unpack the files before signing them
-                    Pack200.packJars( applicationDirectory, jarFileFilter, this.gzip );
-                    Pack200.unpackJars( applicationDirectory, pack200FileFilter );
+                    Pack200.packJars( applicationDirectory, updatedJarFileFilter, this.gzip );
+                    Pack200.unpackJars( applicationDirectory, updatedPack200FileFilter );
                     // specs says that one should do it twice when there are unsigned jars??
-                    // Pack200.unpackJars( applicationDirectory, pack200FileFilter );
+                    // Pack200.unpackJars( applicationDirectory, updatedPack200FileFilter );
                 }
                 signJars( applicationDirectory );
             }
             if ( pack200 )
             {
                 getLog().debug( "packing jars" );
-                Pack200.packJars( applicationDirectory, jarFileFilter, this.gzip );
+                Pack200.packJars( applicationDirectory, updatedJarFileFilter, this.gzip );
             }
 
             //
@@ -730,6 +801,29 @@ public class JnlpMojo
         return b;
     }
 
+    /**
+     * Copy only if the target doesn't exists or is outdated compared to the source.
+     * @return whether or not the file was copied.
+     */
+    public boolean copyFileToDirectoryIfNecessary( File sourceFile, File targetDirectory ) throws IOException {
+
+        File targetFile = new File( targetDirectory, sourceFile.getName() );
+
+        boolean shouldCopy = ! targetFile.exists() 
+             || targetFile.lastModified() < sourceFile.lastModified();
+
+        if ( shouldCopy ) {
+
+            FileUtils.copyFileToDirectory( sourceFile, targetDirectory );
+
+        } else {
+
+            getLog().debug( "Source file hasn't changed. Do not overwrite " + targetFile + " with " + sourceFile + ".");
+
+        }
+        return shouldCopy;
+    }
+
     private File getIconFile( JnlpConfig.Icon icon )
         throws MojoExecutionException
     {
@@ -760,7 +854,10 @@ public class JnlpMojo
 
         getLog().debug( "signJars in " + directory );
 
-        File[] jarFiles = directory.listFiles( jarFileFilter );
+        File[] jarFiles = directory.listFiles( updatedJarFileFilter );
+
+        if ( jarFiles.length == 0 )
+            return;
 
         JarSignMojo signJar = new JarSignMojo();
         signJar.setAlias( sign.getAlias() );
