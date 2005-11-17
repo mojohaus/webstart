@@ -115,7 +115,7 @@
     <j2se version="${j2se.version}"
 #if($j2se.href)
      href="$j2se.jhref"
-#else
+#elseif($j2se.autodownload)
      href="http://java.sun.com/products/autodl/j2se"
 #end
 #if($j2se.javaVmArgs)

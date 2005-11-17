@@ -292,13 +292,27 @@ public class JnlpConfig
     public static class J2SE
         implements Resources
     {
+        private boolean autodownload;
+
         private String version;
+
+        private String href;
 
         private String initialHeapSize;
 
         private String maxHeapSize;
 
         private String javaVMArgs;
+
+        public boolean getAutodownload()
+        {
+            return autodownload;
+        }
+
+        public void setAutodownload( boolean autodownload )
+        {
+            this.autodownload= autodownload;
+        }
 
         public String getVersion()
         {
@@ -308,6 +322,16 @@ public class JnlpConfig
         public void setVersion( String version )
         {
             this.version = version;
+        }
+
+        public String getHref()
+        {
+            return href;
+        }
+
+        public void setHref( String href )
+        {
+            this.href = href;
         }
 
         public String getInitialHeapSize()

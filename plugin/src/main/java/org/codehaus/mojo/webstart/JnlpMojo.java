@@ -273,7 +273,10 @@ public class JnlpMojo
     {
         public boolean accept( File pathname )
         {
-            return pathname.lastModified() > getStartTime();
+            boolean modified = pathname.lastModified() > getStartTime();
+            getLog().debug( "File: " + pathname.getName() + " modified: " + modified );
+            getLog().debug( "lastModified: " + pathname.lastModified() + " plugin start time " + getStartTime() );
+            return modified;
         }
     };
 
@@ -325,7 +328,10 @@ public class JnlpMojo
 
         checkInput();
 
-        startTime = System.currentTimeMillis();
+        // interesting: copied files lastModified time stamp will be rounded.
+        // We have to be sure that the startTime is before that time...
+        // rounding to the second - 1 millis should be sufficient..
+        startTime = System.currentTimeMillis() - 1000; 
 
         // We keep track of the list of copied artifacts for debug purposes (we can compare it to the list of signed/packed jars)
         List debugModifiedArtifacts = new ArrayList();
@@ -342,6 +348,7 @@ public class JnlpMojo
 
         try
         {
+
             File applicationDirectory = workDirectory;
             File iconFolder = new File( applicationDirectory, "images" );
             iconFolder.mkdirs();
@@ -424,7 +431,8 @@ public class JnlpMojo
 
                             if ( copied ) {
 
-                                debugModifiedArtifacts.add( artifact.getFile() );
+                                String name = artifact.getFile().getName();
+                                debugModifiedArtifacts.add( name.substring( 0, name.lastIndexOf( '.' ) ) );
 
                             }
 
@@ -543,7 +551,13 @@ public class JnlpMojo
                     // specs says that one should do it twice when there are unsigned jars??
                     // Pack200.unpackJars( applicationDirectory, updatedPack200FileFilter );
                 }
-                signJars( applicationDirectory );
+
+                int signedJars = signJars( applicationDirectory, updatedJarFileFilter );
+                if ( signedJars != debugModifiedArtifacts.size() ) {
+                    throw new IllegalStateException( 
+                           "the number of signed artifacts differ from the number of modified artifacts. Implementation error" 
+                       );
+                }
             }
             if ( pack200 )
             {
@@ -588,8 +602,14 @@ public class JnlpMojo
             projectHelper.attachArtifact( project, "zip", toFile );
 
         }
+        catch ( MojoExecutionException e )
+        {
+            throw e;
+        }
         catch ( Exception e )
         {
+            throw new MojoExecutionException( "Failure to run the plugin: ", e);
+            /*
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter( sw, true );
             e.printStackTrace( pw );
@@ -597,98 +617,10 @@ public class JnlpMojo
             sw.flush();
 
             getLog().debug( "An error occurred during the task: " + sw.toString() );
-        }
-    }
-
-    /**
-     * Return the version of the specified plugin dependency.
-     * <p/>
-     * The plugin version is found at runtime, its description resolved and its artifacts are searched to find the
-     * specified dependency.
-     *
-     * @param pluginDependencyGroupId
-     * @param pluginDependencyArtifactId
-     * @return
-     * @throws ArtifactResolutionException
-     * @throws PluginVersionResolutionException
-     *
-     * @throws ArtifactNotFoundException
-     * @throws InvalidVersionSpecificationException
-     *
-     * @throws InvalidPluginException
-     * @throws PluginManagerException
-     * @throws PluginNotFoundException
-     * @throws PluginVersionNotFoundException
-     * @throws MojoExecutionException
-     */
-    // I believe this hack could be useful. Let me store it somewhere.
-    /*
-    private String findThisPluginDependencyVersion( String pluginDependencyGroupId, String pluginDependencyArtifactId )
-        throws ArtifactResolutionException, PluginVersionResolutionException, ArtifactNotFoundException,
-        InvalidVersionSpecificationException, InvalidPluginException, PluginManagerException, PluginNotFoundException,
-        PluginVersionNotFoundException, MojoExecutionException
-    {
-        // see DescribeMojo for a way to reduce the number of exceptiosn...
-
-        Plugin thisPlugin = findThisPlugin();
-        return findPluginDependencyVersion( thisPlugin, pluginDependencyGroupId, pluginDependencyArtifactId );
-    }
-    */
-    /*
-    private Plugin findThisPlugin()
-        throws MojoExecutionException
-    {
-        // first we identify this plugin. Is this correct?
-        final Artifact pluginArtifact = (Artifact) getProject().getPluginArtifacts().iterator().next();
-        String thisPluginGroupId = pluginArtifact.getGroupId();
-        String thisPluginArtifactId = pluginArtifact.getArtifactId();
-
-        for ( Iterator it2 = getProject().getBuildPlugins().iterator(); it2.hasNext(); )
-        {
-            final org.apache.maven.model.Plugin plugin = ( (org.apache.maven.model.Plugin) it2.next() );
-            // getLog().debug( "project build plugin: " + plugin.getGroupId()
-            //        + ":" + plugin.getArtifactId() + ":" + plugin.getVersion());
-
-            if ( plugin.getGroupId().equals( thisPluginGroupId ) &&
-                plugin.getArtifactId().equals( thisPluginArtifactId ) )
-            {
-                getLog().debug( "found thisPluginVersion : " + plugin.getVersion() );
-                return plugin;
-            }
+            */
         }
 
-        throw new MojoExecutionException( "couldn't identify this plugin version for " + thisPluginGroupId + ":" + thisPluginArtifactId );
     }
-
-    private String findPluginDependencyVersion( final Plugin plugin, String pluginDependencyGroupId,
-                                                String pluginDependencyArtifactId )
-        throws ArtifactResolutionException, PluginVersionResolutionException, ArtifactNotFoundException,
-        InvalidVersionSpecificationException, InvalidPluginException, PluginManagerException, PluginNotFoundException,
-        PluginVersionNotFoundException, MojoExecutionException
-    {
-
-        // logCollection( "plugin dependencies: ", plugin.getDependencies() );
-
-        // now that we've found the plugin
-        PluginDescriptor descriptor = pluginManager.verifyPlugin( plugin, getProject(), settings, localRepository );
-
-        final Iterator iterator = descriptor.getArtifacts().iterator();
-        String pluginDependencyVersion;
-        while ( iterator.hasNext() )
-        {
-            Artifact artifact = (Artifact) iterator.next();
-            if ( pluginDependencyGroupId.equals( artifact.getGroupId() ) &&
-                pluginDependencyArtifactId.equals( artifact.getArtifactId() ) )
-            {
-                pluginDependencyVersion = artifact.getVersion();
-                getLog().debug( "found jnlpServlet version : " + pluginDependencyVersion );
-                return pluginDependencyVersion;
-            }
-        }
-        throw new MojoExecutionException( "couldn't identify the jnlpServlet dependency version for plugin " +
-                                          plugin.getGroupId() + ":" + plugin.getArtifactId() + ":" + plugin.getVersion() );
-    }
-    */
 
     private Artifact resolveJarArtifact( String groupId, String artifactId, String version )
         throws MojoExecutionException
@@ -848,16 +780,17 @@ public class JnlpMojo
         return iconFile;
     }
 
-    private void signJars( File directory )
+    /** return the number of signed jars **/
+    private int signJars( File directory, FileFilter fileFilter )
         throws MojoExecutionException
     {
 
-        getLog().debug( "signJars in " + directory );
+        File[] jarFiles = directory.listFiles( fileFilter );
 
-        File[] jarFiles = directory.listFiles( updatedJarFileFilter );
+        getLog().debug( "signJars in " + directory + " found " + jarFiles.length + " jar(s) to sign" );
 
         if ( jarFiles.length == 0 )
-            return;
+            return 0;
 
         JarSignMojo signJar = new JarSignMojo();
         signJar.setAlias( sign.getAlias() );
@@ -880,6 +813,8 @@ public class JnlpMojo
             signJar.execute();
             jarFiles[i].setLastModified( lastModified );
         }
+
+        return jarFiles.length;
     }
 
     private void checkInput()
@@ -904,7 +839,14 @@ public class JnlpMojo
             {
                 throw new MojoExecutionException( "SDK 5.0 minimum when using pack200." );
             }
+            if ( this.jnlp.getCodebase() == null )
+            {
+                throw new MojoExecutionException( "You didn't specify a codebase. $$codebase can only be used with the jnlp-servlet, which requires SDK 5.0." );
+            }
         }
+
+        // FIXME check that for each J2SE only one of href and autodownload are defined.
+
         // FIXME
         /*
         if ( !"pom".equals( getProject().getPackaging() ) ) {
