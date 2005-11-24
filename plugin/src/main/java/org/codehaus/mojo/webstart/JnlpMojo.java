@@ -571,7 +571,7 @@ public class JnlpMojo
             //
             // generate the JNLP deployment file
             String fileName =
-               ( jnlp != null && jnlp.getOutputFile() != null && jnlp.getOutputFile().length() != 0 )
+               ( jnlp.getOutputFile() != null && jnlp.getOutputFile().length() != 0 )
                 ? jnlp.getOutputFile()
                 : "launch.jnlp";
             File jnlpOutputFile = new File( applicationDirectory, fileName );
@@ -838,7 +838,13 @@ public class JnlpMojo
         getLog().debug( "verifyjar " + this.verifyjar );
         getLog().debug( "verbose " + this.verbose );
 
-        // FIXME fill up information.vendor if it's empty.
+        for ( int i = 0; i < jnlp.getInformations().length; i++ )
+        {
+            JnlpConfig.Information information = jnlp.getInformations()[i];
+            if ( information.getVendor() == null && project.getOrganization() != null ) {
+                information.setVendor( project.getOrganization().getName() );
+            }
+        }
 
         if ( SystemUtils.JAVA_VERSION_FLOAT < 1.5f)
         {

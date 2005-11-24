@@ -22,7 +22,9 @@
 #foreach( $information in $config.jnlp.informations )
   <information>
     <title>${information.title}</title>
+#if( $information.vendor )
     <vendor>${information.vendor}</vendor>
+#end
 #if( $information.homepage )
     <homepage href="${information.homepage}"/>
 #end
