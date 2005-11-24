@@ -32,6 +32,7 @@
            </dependencies>
 
            <jnlp>
+             <outputFile>test.jnlp</outputFile>
              <informations>
                <information>
                 <!--os></os>

@@ -15,7 +15,7 @@
 #else
     codebase="$$codebase"
 #end
-    href="launch.jnlp">
+    href="$outputFile.name">
 ##
 ## JNLP/INFORMATION
 ##

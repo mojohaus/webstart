@@ -366,6 +366,8 @@ public class JnlpConfig
 
     }
 
+    private String outputFile;
+
     private String spec;
 
     private String version;
@@ -384,6 +386,11 @@ public class JnlpConfig
 
     private String security;
 
+
+    public void setOutputFile( String outputFile )
+    {
+        this.outputFile = outputFile;
+    }
 
     public void setSpec( String spec )
     {
@@ -428,6 +435,11 @@ public class JnlpConfig
     public void setSecurity( String security )
     {
         this.security = security;
+    }
+
+    public String getOutputFile()
+    {
+        return outputFile;
     }
 
     public String getSpec()

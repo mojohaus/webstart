@@ -82,6 +82,7 @@ public class Generator
     {
         VelocityContext context = new VelocityContext();
         context.put( "config", config );
+        context.put( "outputFile", outputFile );
         FileWriter writer = new FileWriter( outputFile );
         try
         {

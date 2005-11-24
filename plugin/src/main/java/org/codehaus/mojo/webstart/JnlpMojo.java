@@ -569,7 +569,11 @@ public class JnlpMojo
             // template generation
             //
             // generate the JNLP deployment file
-            File jnlpOutputFile = new File( applicationDirectory, "launch.jnlp" );
+            String fileName =
+               ( jnlp != null && jnlp.getOutputFile() != null && jnlp.getOutputFile().length() != 0 )
+                ? jnlp.getOutputFile()
+                : "launch.jnlp";
+            File jnlpOutputFile = new File( applicationDirectory, fileName );
             Generator jnlpGenerator = new Generator( this, jnlpOutputFile,
                                                      "org/codehaus/mojo/webstart/template/jnlp.vm" );
             try
@@ -832,6 +836,8 @@ public class JnlpMojo
         getLog().debug( "usejnlpservlet " + this.usejnlpservlet );
         getLog().debug( "verifyjar " + this.verifyjar );
         getLog().debug( "verbose " + this.verbose );
+
+        // FIXME fill up information.vendor if it's empty.
 
         if ( SystemUtils.JAVA_VERSION_FLOAT < 1.5f)
         {
