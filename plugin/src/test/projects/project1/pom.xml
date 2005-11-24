@@ -7,7 +7,11 @@
   <groupId>org.apache.maven.plugins</groupId>
   <version>1.0</version>
   <packaging>pom</packaging>
-  <name>Test Case for MOJO-82</name>
+  <name>Test Case for MOJO-7</name>
+
+  <organization>
+    <name>CoffeeBreaks</name>
+  </organization>
 
   <build>
     <plugins>
