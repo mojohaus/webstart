@@ -146,7 +146,7 @@
 ##
 ## JNLP/RESOURCES/JAR
 ##
-#foreach($artifact in $config.copiedArtifacts)
+#foreach($artifact in $config.packagedJnlpArtifacts)
 #if($config.isArtifactWithMainClass($artifact))
     <jar href="${artifact.file.name}" main="true"/>
 #else

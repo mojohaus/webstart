@@ -307,8 +307,8 @@ public class JnlpMojo
 
     private FileFilter updatedPack200FileFilter = new CompositeFileFilter( pack200FileFilter, modifiedFileFilter );
 
-    // FIXME ill-chosen name. Now that optimization takes place, some artifacts are in the list even though they aren't copied
-    private List copiedArtifacts;
+    /** the artifacts packaged in the webstart app. **/
+    private List packagedJnlpArtifacts;
 
     private Artifact artifactWithMainClass;
 
@@ -390,7 +390,7 @@ public class JnlpMojo
 
             artifactWithMainClass = null;
 
-            copiedArtifacts = new ArrayList();
+            packagedJnlpArtifacts = new ArrayList();
             Collection artifacts = getProject().getArtifacts();
             for ( Iterator it = dependencies.iterator(); it.hasNext(); )
             {
@@ -427,6 +427,7 @@ public class JnlpMojo
                             // FIXME when signed, we should update the manifest.
                             // see http://www.mail-archive.com/turbine-maven-dev@jakarta.apache.org/msg08081.html
                             // and maven1: maven-plugins/jnlp/src/main/org/apache/maven/jnlp/UpdateManifest.java
+                            // or shouldn't we?  See MOJO-7 comment end of October.
                             boolean copied = copyFileToDirectoryIfNecessary( artifact.getFile(), applicationDirectory );
 
                             if ( copied ) {
@@ -436,7 +437,7 @@ public class JnlpMojo
 
                             }
 
-                            copiedArtifacts.add( artifact );
+                            packagedJnlpArtifacts.add( artifact );
 
                             // JarArchiver.grabFilesAndDirs()
                             ClassLoader cl = new java.net.URLClassLoader( new URL[]{artifact.getFile().toURL()} );
@@ -885,9 +886,9 @@ public class JnlpMojo
         return jnlp;
     }
 
-    public List getCopiedArtifacts()
+    public List getPackagedJnlpArtifacts()
     {
-        return copiedArtifacts;
+        return packagedJnlpArtifacts;
     }
 
     /*
