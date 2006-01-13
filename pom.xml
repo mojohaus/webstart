@@ -20,6 +20,12 @@
       </roles>
     </developer>
   </developers>
+  <contributors>
+    <contributor>
+      <name>David Boden</name>
+      <email>david.boden@lehman.com<email>
+    </contributor>
+  </contributors>
 
   <modules>
     <module>pack200-anttasks</module>

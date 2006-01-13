@@ -28,8 +28,8 @@
       <scope>test</scope>
     </dependency-->
     <dependency>
-      <groupId>com.sun.tools.apache.ant</groupId>
-      <artifactId>pack200</artifactId>
+      <groupId>org.codehaus.mojo.webstart-maven-plugin</groupId>
+      <artifactId>pack200-anttasks</artifactId>
       <version>1.0</version>
     </dependency>
     <dependency>
