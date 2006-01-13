@@ -22,16 +22,10 @@
   </developers>
 
   <modules>
+    <module>pack200-anttasks</module>
+    <module>jnlp-servlet</module>
     <module>plugin</module>
     <module>pack200-jdk14</module>
     <module>pack200-jdk15</module>
   </modules>
-
-  <repositories>
-    <repository>
-      <id>embedded</id>
-      <name>plugin-embedded-repo</name>
-      <url>file://${basedir}/tmp/m2repos</url> <!-- doesn't work without the prefix on linux with m2 2.0rc. -->
-    </repository>
-  </repositories>
 </project>

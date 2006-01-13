@@ -1,0 +1,35 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.codehaus.mojo.webstart-maven-plugin</groupId>
+  <artifactId>pack200-anttasks</artifactId>
+  <name>Pack200</name>
+  <version>1.0</version>
+  <packaging>jar</packaging>
+  <description>Ant tasks for pack200 operations</description>
+  <url>http://java-pack200-ant-task.dev.java.net/</url>
+  <licenses>
+    <license>
+      <name>Sun Public License (SPL)</name>
+      <url>http://www.netbeans.org/about/legal/spl.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <!--scm>
+    <connection>scm:cvs:pserver:guest@cvs.dev.java.net:/cvs:java-pack200-ant-task</connection>
+    <url>https://java-pack200-ant-task.dev.java.net/source/browse/java-pack200-ant-task/</url>
+  </scm-->
+  <organization>
+    <name>Sun Microsystems</name>
+    <url>http://java.net</url>
+  </organization>
+
+  <dependencies>
+    <dependency>
+      <groupId>ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>[1.5,)</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+
+</project>
