@@ -18,22 +18,22 @@
     <url>http://java.net</url>
   </organization>
   <build>
-    <sourceDirectory>/home/jerome/Dev/OSS/m2/mojo-ssh/mojo-sandbox/webstart-maven-plugin/pack200-anttasks/src/main/java</sourceDirectory>
+    <sourceDirectory>E:\mojo\mojo\mojo-sandbox\webstart-maven-plugin\pack200-anttasks\src\main\java</sourceDirectory>
     <scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
-    <testSourceDirectory>/home/jerome/Dev/OSS/m2/mojo-ssh/mojo-sandbox/webstart-maven-plugin/pack200-anttasks/src/test/java</testSourceDirectory>
-    <outputDirectory>/home/jerome/Dev/OSS/m2/mojo-ssh/mojo-sandbox/webstart-maven-plugin/pack200-anttasks/target/classes</outputDirectory>
-    <testOutputDirectory>/home/jerome/Dev/OSS/m2/mojo-ssh/mojo-sandbox/webstart-maven-plugin/pack200-anttasks/target/test-classes</testOutputDirectory>
+    <testSourceDirectory>E:\mojo\mojo\mojo-sandbox\webstart-maven-plugin\pack200-anttasks\src\test\java</testSourceDirectory>
+    <outputDirectory>E:\mojo\mojo\mojo-sandbox\webstart-maven-plugin\pack200-anttasks\target\classes</outputDirectory>
+    <testOutputDirectory>E:\mojo\mojo\mojo-sandbox\webstart-maven-plugin\pack200-anttasks\target\test-classes</testOutputDirectory>
     <resources>
       <resource>
-        <directory>/home/jerome/Dev/OSS/m2/mojo-ssh/mojo-sandbox/webstart-maven-plugin/pack200-anttasks/src/main/resources</directory>
+        <directory>E:\mojo\mojo\mojo-sandbox\webstart-maven-plugin\pack200-anttasks\src\main\resources</directory>
       </resource>
     </resources>
     <testResources>
       <testResource>
-        <directory>/home/jerome/Dev/OSS/m2/mojo-ssh/mojo-sandbox/webstart-maven-plugin/pack200-anttasks/src/test/resources</directory>
+        <directory>E:\mojo\mojo\mojo-sandbox\webstart-maven-plugin\pack200-anttasks\src\test\resources</directory>
       </testResource>
     </testResources>
-    <directory>/home/jerome/Dev/OSS/m2/mojo-ssh/mojo-sandbox/webstart-maven-plugin/pack200-anttasks/target</directory>
+    <directory>E:\mojo\mojo\mojo-sandbox\webstart-maven-plugin\pack200-anttasks\target</directory>
     <finalName>pack200-anttasks-1.0</finalName>
     <plugins>
       <plugin>
@@ -42,11 +42,11 @@
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.0</version>
+        <version>2.0.1-SNAPSHOT</version>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.1.2</version>
+        <version>2.0</version>
       </plugin>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
@@ -54,7 +54,11 @@
       </plugin>
       <plugin>
         <artifactId>maven-install-plugin</artifactId>
-        <version>2.1</version>
+        <version>2.0</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.0</version>
       </plugin>
     </plugins>
   </build>
