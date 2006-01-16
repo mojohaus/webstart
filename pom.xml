@@ -36,6 +36,31 @@
     <module>jnlp-servlet</module>
     <module>plugin</module>
     <module>pack200-jdk14</module>
-    <module>pack200-jdk15</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>jdk15</id>
+      <activation>
+        <jdk>1.5</jdk>
+      </activation>
+
+      <modules>
+        <module>pack200-jdk15</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>jdk16</id>
+      <activation>
+        <jdk>1.6</jdk>
+      </activation>
+
+      <modules>
+        <module>pack200-jdk15</module>
+      </modules>
+    </profile>
+
+  </profiles>
+
 </project>

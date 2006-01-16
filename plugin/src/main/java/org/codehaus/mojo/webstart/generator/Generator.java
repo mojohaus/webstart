@@ -62,7 +62,9 @@ public class Generator
         }
         catch ( Exception e )
         {
-            throw new IllegalArgumentException( "Could not initialise Velocity", e );
+            IllegalArgumentException iae = new IllegalArgumentException( "Could not initialise Velocity" );
+            iae.initCause( e );
+            throw iae;
         }
         //set the template
         try
@@ -71,8 +73,10 @@ public class Generator
         }
         catch ( Exception e )
         {
-            throw new IllegalArgumentException(
-                "Could not load the template file 'org/unintelligible/antjnlp/template/jnlp.vm'", e );
+            IllegalArgumentException iae = new IllegalArgumentException(
+                  "Could not load the template file 'org/codehaus/mojo/webstart/template/jnlp.vm'" );
+            iae.initCause( e );
+            throw iae;
         }
 
     }

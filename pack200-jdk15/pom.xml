@@ -39,11 +39,4 @@
     </dependency>
   </dependencies>
 
-  <repositories>
-    <repository>
-      <id>embedded</id>
-      <name>plugin-embedded-repo</name>
-      <url>file://${basedir}/tmp/m2repos</url> <!-- doesn't work without the prefix on linux with m2 2.0rc. -->
-    </repository>
-  </repositories>
 </project>
