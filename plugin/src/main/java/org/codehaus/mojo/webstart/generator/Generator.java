@@ -20,12 +20,13 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.log.NullLogSystem;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.apache.maven.artifact.Artifact;
 import org.codehaus.mojo.webstart.JnlpMojo;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Properties;
+import java.util.List;
 
 /**
  * Generates a JNLP deployment descriptor
@@ -43,7 +44,7 @@ public class Generator
 
     private File outputFile;
 
-    public Generator( JnlpMojo task, File outputFile, String templateName )
+    public Generator( JnlpMojo task, File outputFile, String inputFileTemplatePath )
     {
         this.config = task;
 
@@ -51,9 +52,9 @@ public class Generator
         //initialise the resource loader to use the class loader
         Properties props = new Properties();
         props.setProperty( VelocityEngine.RUNTIME_LOG_LOGSYSTEM, "org.apache.velocity.runtime.log.NullLogSystem" );
-        props.setProperty( VelocityEngine.RESOURCE_LOADER, "classpath" );
-        props.setProperty( "classpath." + VelocityEngine.RESOURCE_LOADER + ".class",
-                           ClasspathResourceLoader.class.getName() );
+        // props.setProperty( VelocityEngine.RESOURCE_LOADER, "classpath" );
+        // props.setProperty( "classpath." + VelocityEngine.RESOURCE_LOADER + ".class",
+        //                    ClasspathResourceLoader.class.getName() );
         try
         {
             //initialise the Velocity engine
@@ -69,23 +70,48 @@ public class Generator
         //set the template
         try
         {
-            this.template = engine.getTemplate( templateName );
+            this.template = engine.getTemplate( inputFileTemplatePath );
         }
         catch ( Exception e )
         {
             IllegalArgumentException iae = new IllegalArgumentException(
-                  "Could not load the template file 'org/codehaus/mojo/webstart/template/jnlp.vm'" );
+                  "Could not load the template file from '" + inputFileTemplatePath + "'" );
             iae.initCause( e );
             throw iae;
         }
-
     }
 
     public void generate()
         throws Exception
     {
         VelocityContext context = new VelocityContext();
-        context.put( "config", config );
+
+        List artifacts = config.getPackagedJnlpArtifacts();
+        if ( artifacts.size() != 0 ) {
+            StringBuffer buffer = new StringBuffer( 100 * artifacts.size() );
+            buffer.append("\n");
+            for (int i = 0; i < artifacts.size(); i++) {
+                Artifact artifact = (Artifact) artifacts.get( i );
+                buffer.append( "<jar href=\"" ).append( artifact.toString() ).append( "\"" );
+                if ( config.isArtifactWithMainClass( artifact )) {
+                    buffer.append( " main=\"true\"" );
+                }
+                buffer.append( "/>\n" );
+            }
+            context.put( "dependencies", buffer.toString() );
+        } else {
+            context.put( "dependencies", "" );
+        }
+
+        if ( config.getJnlp().getCodebase() != null ) {
+            context.put( "codebase", config.getJnlp().getCodebase() );
+        }
+        /*
+        if ( config.getVendor() != null ) {
+            context.put( "vendor", config.getVendor() );
+        }
+        */
+	
         context.put( "outputFile", outputFile );
         FileWriter writer = new FileWriter( outputFile );
         try

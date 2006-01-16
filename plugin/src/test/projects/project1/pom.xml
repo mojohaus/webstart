@@ -26,107 +26,13 @@
            </execution>
         </executions>
         <configuration>
-           <!--outputDirectory></outputDirectory--> <!-- not required?? -->
-
-           <!-- "GLOBAL" -->
-           <!-- dependencies to sign and distribute (runtime-sub-dependencies get signed too). -->
-           <!-- does that imply transitivity? -->
-           <dependencies>
-             <dependency>commons-logging:commons-logging</dependency>
-             <dependency>commons-cli:commons-cli</dependency>
-           </dependencies>
 
            <jnlp>
+             <!--outputFile>src/jnlp/template.vm</outputFile--> <!-- default file name-->
              <outputFile>test.jnlp</outputFile>
-             <informations>
-               <information>
-                <!--os></os>
-                 <arch></arch>
-                 <platform></platform>
-                 <locale></locale-->
-
-                 <title>Title</title>
-                 <!--vendor>Vendor</vendor--> <!-- taken from pom.organization.name -->
-                 <onelineDescription>OneLineDescription</onelineDescription>
-                 <shortDescription>
-                   Short Description.
-                   Multi-line.
-                 </shortDescription>
-                 <tooltipDescription>Tooltip Description</tooltipDescription>
-                 <homepage>http://www.domain.com</homepage>
-                 <icons>
-                   <icon>
-                     <href>icon.gif</href>
-                     <!--kind></kind> -->
-                     <height>26</height>
-                     <width>35</width>
-                     <!--depth></depth>
-                     <size></size-->
-                     <!-- version ?? -->
-                   </icon>
-                   <icon>
-                     <href>icon.jpg</href>
-                     <kind>splash</kind>
-                     <!--depth></depth>
-                     <size></size-->
-                     <!-- version ?? -->
-                   </icon>
-                 </icons>
-                 <offlineAllowed>true</offlineAllowed>
-                 <!-- missing: shortcuts. can be somewhat complex -->
-                 <!--relatedContent></relatedContent-->
-               </information>
-
-               <information>
-                <!--os></os>
-                 <arch></arch>
-                 <platform></platform>
-                 <locale>fr</locale-->
-                 <title>French</title>
-                 <vendor>Pauses Cafees</vendor>
-                 <onelineDescription>DescriptionEnUneLigne</onelineDescription>
-                 <shortDescription>
-                   Description courte.
-                   Multi-ligne.
-                 </shortDescription>
-                 <tooltipDescription>Description pour Tooltip</tooltipDescription>
-                 <homepage>http://www.domaine.com</homepage>
-                 <offlineAllowed>false</offlineAllowed>
-               </information>
-             </informations>
-
-             <!-- JNLP SECURITY -->
-             <security>all</security>
-
-               <!-- JNLP RESOURCES -->
-             <resources>
-               <j2ses>
-                 <j2se>
-                   <version>1.4+</version>
-                   <initialHeapSize>32m</initialHeapSize>
-                   <maxHeapSize>128m</maxHeapSize>
-                   <javaVMArgs>-Xmixed</javaVMArgs>
-                 </j2se>
-               </j2ses>
-                 <!-- jars taken from dependencies. Attributes href, version and main automatically added.
-                      download: perhaps from a property on the dependency?
-                      (how to propagate that to transitive ones?). size, part automatically added. -->
-
-                 <!-- nativelibs and extensions identified from dependencies properties -->
-                 <!-- what about properties?? -->
-             </resources>
-
+             <codebase>http://www.domaine.com/webstart/</codebase> <!-- or use $$codebase -->
              <mainClass>org.apache.commons.cli.BasicParser</mainClass>
-             <arguments>
-                 <argument>1</argument>
-                 <argument>2</argument>
-             </arguments>
-             <!-- what about applet management ? -->
-
-             <!-- JNLP OTHER -->
-             <!--installerDescMainClass>...</installerDescMainClass-->
            </jnlp>
-
 
            <!-- SIGNING -->
            <!-- defining this will automatically sign the jar and its dependencies -->
@@ -179,12 +85,6 @@
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
       <version>2.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-project</artifactId>
-      <version>2.0.1-SNAPSHOT</version>
-      <scope>compile</scope>
     </dependency>
   </dependencies>
 </project>

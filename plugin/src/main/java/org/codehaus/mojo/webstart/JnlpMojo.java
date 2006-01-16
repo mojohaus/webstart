@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -102,13 +103,6 @@ public class JnlpMojo
      * @readonly
      */
     private MavenProject project;
-
-    /**
-     * JNLP dependencies.
-     *
-     * @parameter
-     */
-    private List dependencies;
 
     /**
      * Xxx
@@ -308,7 +302,9 @@ public class JnlpMojo
     private FileFilter updatedPack200FileFilter = new CompositeFileFilter( pack200FileFilter, modifiedFileFilter );
 
     /** the artifacts packaged in the webstart app. **/
-    private List packagedJnlpArtifacts;
+    private List packagedJnlpArtifacts = new ArrayList();
+
+    private List modifiedJnlpArtifacts = new ArrayList();
 
     private Artifact artifactWithMainClass;
 
@@ -333,9 +329,6 @@ public class JnlpMojo
         // rounding to the second - 1 millis should be sufficient..
         startTime = System.currentTimeMillis() - 1000; 
 
-        // We keep track of the list of copied artifacts for debug purposes (we can compare it to the list of signed/packed jars)
-        List debugModifiedArtifacts = new ArrayList();
-
         File workDirectory = getWorkDirectory();
         getLog().debug( "using work directory " + workDirectory );
         //
@@ -348,144 +341,16 @@ public class JnlpMojo
 
         try
         {
-
-            File applicationDirectory = workDirectory;
-            File iconFolder = new File( applicationDirectory, "images" );
-            iconFolder.mkdirs();
-
-            //
-            //copy icons, jars etc.. to the relevant folders
-            //
-            for ( int i = 0; i < jnlp.getInformations().length; i++ )
-            {
-                JnlpConfig.Information information = jnlp.getInformations()[i];
-                if ( information.getIcons() != null )
-                {
-                    for ( int j = 0; j < information.getIcons().length; j++ )
-                    {
-                        //icons
-                        JnlpConfig.Icon icon = information.getIcons()[j];
-                        File iconFile = getIconFile( icon );
-                        icon.setFileName( iconFile.getName() );
-                        copyFileToDirectoryIfNecessary( iconFile, iconFolder );
-                    }
-                }
-            }
-
-            /*
-            // jnlp servlet -> WEB-INF/lib folder
-            if ( this.usejnlpservlet ) {
-                // we need to retrieve the version of the jnlpServlet.
-                String jnlpServletGroupId = "com.sun.java.jnlp";
-                String jnlpServletArtifactId = "jnlp-servlet";
-                String jnlpServletVersion = findThisPluginDependencyVersion( jnlpServletGroupId, jnlpServletArtifactId );
-
-                // getLog().debug( "****************************************************************************" );
-                Artifact jnlpServletArtifact = resolveJarArtifact( jnlpServletGroupId, jnlpServletArtifactId, jnlpServletVersion );
-                getLog().debug( "jnlpServletArtifact : " + jnlpServletArtifact.getFile() );
-
-                copyFileToDirectory( jnlpServletArtifact.getFile(), webinflibFolder );
-            }
-            */
-
             artifactWithMainClass = null;
 
-            packagedJnlpArtifacts = new ArrayList();
-            Collection artifacts = getProject().getArtifacts();
-            for ( Iterator it = dependencies.iterator(); it.hasNext(); )
-            {
-                String dependency = (String) it.next();
-                getLog().debug( "handling dependency " + dependency );
+            processDependencies();
 
-                boolean found = false;
-                // identify artifact
-                //jars -> application folder
-                // similar to what war plugin does
-                // FIXME we must make our list based on the specified dependencies
-                for ( Iterator it2 = artifacts.iterator(); it2.hasNext() && !found; )
-                {
-                    Artifact artifact = (Artifact) it2.next();
-
-                    // should we use depedencyset and filters like in assembly plugin?
-                    if ( !matches( artifact, dependency ) )
-                    {
-                        continue;
-                    }
-                    found = true;
-
-                    // copied from war plugin... then modified
-                    // BEGIN COPY
-                    // TODO: utilise appropriate methods from project builder
-                    // TODO: scope handler
-                    // Include runtime and compile time libraries
-                    if ( !Artifact.SCOPE_PROVIDED.equals( artifact.getScope() ) &&
-                        !Artifact.SCOPE_TEST.equals( artifact.getScope() ) )
-                    {
-                        String type = artifact.getType();
-                        if ( "jar".equals( type ) )
-                        {
-                            // FIXME when signed, we should update the manifest.
-                            // see http://www.mail-archive.com/turbine-maven-dev@jakarta.apache.org/msg08081.html
-                            // and maven1: maven-plugins/jnlp/src/main/org/apache/maven/jnlp/UpdateManifest.java
-                            // or shouldn't we?  See MOJO-7 comment end of October.
-                            boolean copied = copyFileToDirectoryIfNecessary( artifact.getFile(), applicationDirectory );
-
-                            if ( copied ) {
-
-                                String name = artifact.getFile().getName();
-                                debugModifiedArtifacts.add( name.substring( 0, name.lastIndexOf( '.' ) ) );
-
-                            }
-
-                            packagedJnlpArtifacts.add( artifact );
-
-                            // JarArchiver.grabFilesAndDirs()
-                            ClassLoader cl = new java.net.URLClassLoader( new URL[]{artifact.getFile().toURL()} );
-                            try
-                            {
-                                Class.forName( jnlp.getMainClass(), false, cl );
-                                if ( artifactWithMainClass == null )
-                                {
-                                    artifactWithMainClass = artifact;
-                                    getLog().debug(
-                                        "Found main jar. Artifact " + artifactWithMainClass +
-                                        " contains the main class: " +
-                                        jnlp.getMainClass() );
-                                }
-                                else
-                                {
-                                    getLog().warn(
-                                        "artifact " + artifact + " also contains the main class: " +
-                                        jnlp.getMainClass() +
-                                        ". IGNORED." );
-                                }
-                            }
-                            catch ( ClassNotFoundException e )
-                            {
-                                getLog().debug(
-                                    "artifact " + artifact + " doesn't contain the main class: " + jnlp.getMainClass() );
-                            }
-                        }
-                        else
-                        // FIXME how do we deal with native libs?
-                        // we should probably identify them and package inside jars that we timestamp like the native lib
-                        // to avoid repackaging every time. What are the types of the native libs?
-                        {
-                            getLog().debug(
-                                "Skipping artifact of type " + type + " for " + applicationDirectory.getName() );
-                        }
-                        // END COPY
-                    }
-                }
-                if ( !found )
-                {
-                    throw new MojoExecutionException( "didn't find dependency " + dependency + " in dependency list." );
-                }
-            }
             if ( artifactWithMainClass == null )
             {
                 throw new MojoExecutionException( "didn't find artifact with main class: " + jnlp.getMainClass() + ". Did you specify it? " );
             }
+
+            // FIXME copy resources from src/jnlp/resources
 
             // native libsi
             // FIXME
@@ -528,7 +393,7 @@ public class JnlpMojo
                  && getLog().isDebugEnabled() )
             {
                 logCollection( "Some dependencies may be skipped. Here's the list of the artifacts that should be signed/packed: ",
-                                debugModifiedArtifacts );
+                                modifiedJnlpArtifacts );
             }
  
             if ( sign != null )
@@ -547,14 +412,14 @@ public class JnlpMojo
                 {
                     // http://java.sun.com/j2se/1.5.0/docs/guide/deployment/deployment-guide/pack200.html
                     // we need to pack then unpack the files before signing them
-                    Pack200.packJars( applicationDirectory, updatedJarFileFilter, this.gzip );
-                    Pack200.unpackJars( applicationDirectory, updatedPack200FileFilter );
+                    Pack200.packJars( workDirectory, updatedJarFileFilter, this.gzip );
+                    Pack200.unpackJars( workDirectory, updatedPack200FileFilter );
                     // specs says that one should do it twice when there are unsigned jars??
                     // Pack200.unpackJars( applicationDirectory, updatedPack200FileFilter );
                 }
 
-                int signedJars = signJars( applicationDirectory, updatedJarFileFilter );
-                if ( signedJars != debugModifiedArtifacts.size() ) {
+                int signedJars = signJars( workDirectory, updatedJarFileFilter );
+                if ( signedJars != modifiedJnlpArtifacts.size() ) {
                     throw new IllegalStateException( 
                            "the number of signed artifacts differ from the number of modified artifacts. Implementation error" 
                        );
@@ -563,31 +428,12 @@ public class JnlpMojo
             if ( pack200 )
             {
                 getLog().debug( "packing jars" );
-                Pack200.packJars( applicationDirectory, updatedJarFileFilter, this.gzip );
+                Pack200.packJars( workDirectory, updatedJarFileFilter, this.gzip );
             }
 
-            //
-            // template generation
-            //
-            // generate the JNLP deployment file
-            String fileName =
-               ( jnlp.getOutputFile() != null && jnlp.getOutputFile().length() != 0 )
-                ? jnlp.getOutputFile()
-                : "launch.jnlp";
-            File jnlpOutputFile = new File( applicationDirectory, fileName );
-            Generator jnlpGenerator = new Generator( this, jnlpOutputFile,
-                                                     "org/codehaus/mojo/webstart/template/jnlp.vm" );
-            try
-            {
-                jnlpGenerator.generate();
-            }
-            catch ( Exception e )
-            {
-                getLog().debug( e.toString() );
-                throw new MojoExecutionException( "Could not generate the JNLP deployment descriptor", e );
-            }
+            generateJnlpFile(workDirectory);
 
-            // package the zip. Note this is very simple. Look at the JarMojo which does more things.
+          // package the zip. Note this is very simple. Look at the JarMojo which does more things.
             // we should perhaps package as a war when inside a project with war packaging ?
             File toFile = new File( project.getBuild().getDirectory(), project.getBuild().getFinalName() + ".zip" );
             if ( toFile.exists() )
@@ -600,10 +446,7 @@ public class JnlpMojo
             getLog().debug( "about to call createArchive" );
             zipArchiver.createArchive();
 
-            // project.attachArtifact( "pom", null, toFile );
-
-            getLog().debug( "**** attach new way **** " + projectHelper.getClass().getName() );
-            // depends on MNG-1251
+            // maven 2 version 2.0.1 method
             projectHelper.attachArtifact( project, "zip", toFile );
 
         }
@@ -627,35 +470,122 @@ public class JnlpMojo
 
     }
 
-    private Artifact resolveJarArtifact( String groupId, String artifactId, String version )
-        throws MojoExecutionException
-    {
-        return resolveArtifact( groupId, artifactId, version, "jar" );
+    /**
+     * Iterate through all the top level and transitive dependencies declared in the project and
+     * collect all the runtime scope dependencies for inclusion in the .zip and signing.
+     * @throws IOException
+     */
+    private void processDependencies() throws IOException {
+
+        processDependency(getProject().getArtifact());
+
+        Collection artifacts = getProject().getArtifacts();
+
+        for ( Iterator it = artifacts.iterator(); it.hasNext(); )
+        {
+            Artifact artifact = (Artifact) it.next();
+            processDependency(artifact);
+        }
     }
 
-    private Artifact resolveArtifact( String groupId, String artifactId, String version, final String type )
-        throws MojoExecutionException
-    {
-        Artifact artifact = artifactFactory.createArtifact( groupId, artifactId, version, null, type );
+    private void processDependency(Artifact artifact) throws IOException {
+        // TODO: scope handler
+        // Include runtime and compile time libraries
+        if ( !Artifact.SCOPE_PROVIDED.equals( artifact.getScope() ) &&
+            !Artifact.SCOPE_TEST.equals( artifact.getScope() ) )
+        {
+            String type = artifact.getType();
+            if ( "jar".equals( type ) )
+            {
+                // FIXME when signed, we should update the manifest.
+                // see http://www.mail-archive.com/turbine-maven-dev@jakarta.apache.org/msg08081.html
+                // and maven1: maven-plugins/jnlp/src/main/org/apache/maven/jnlp/UpdateManifest.java
+                // or shouldn't we?  See MOJO-7 comment end of October.
+                boolean copied = copyFileToDirectoryIfNecessary( artifact.getFile(), getWorkDirectory() );
 
+                if ( copied ) {
+
+                    String name = artifact.getFile().getName();
+                    this.modifiedJnlpArtifacts.add( name.substring( 0, name.lastIndexOf( '.' ) ) );
+
+                }
+
+                packagedJnlpArtifacts.add( artifact );
+
+                if ( artifactContainsClass( artifact, jnlp.getMainClass() ) ) {
+                    if ( artifactWithMainClass == null )
+                    {
+                        artifactWithMainClass = artifact;
+                        getLog().debug(
+                            "Found main jar. Artifact " + artifactWithMainClass +
+                            " contains the main class: " +
+                                jnlp.getMainClass() );
+                    }
+                    else
+                    {
+                        getLog().warn(
+                            "artifact " + artifact + " also contains the main class: " +
+                                jnlp.getMainClass() +
+                            ". IGNORED." );
+                    }
+                }
+            }
+            else
+            // FIXME how do we deal with native libs?
+            // we should probably identify them and package inside jars that we timestamp like the native lib
+            // to avoid repackaging every time. What are the types of the native libs?
+            {
+                getLog().debug(
+                    "Skipping artifact of type " + type + " for " + getWorkDirectory().getName() );
+            }
+            // END COPY
+        }
+    }
+
+    private boolean artifactContainsClass(Artifact artifact, final String mainClass) throws MalformedURLException {
+        boolean containsClass = false;
+
+        // JarArchiver.grabFilesAndDirs()
+        ClassLoader cl = new java.net.URLClassLoader( new URL[]{artifact.getFile().toURL()} );
         try
         {
-            artifactResolver.resolve( artifact, getProject().getRemoteArtifactRepositories(), localRepository );
+            Class.forName( mainClass, false, cl );
+            containsClass = true;
         }
-        catch ( ArtifactNotFoundException e )
+        catch ( ClassNotFoundException e )
         {
-            // ignore, the jar has not been found
-            if ( getLog().isDebugEnabled() )
-            {
-                getLog().debug( "Cannot resolve source artifact", e );
-            }
+            getLog().debug(
+                "artifact " + artifact + " doesn't contain the main class: " + mainClass );
         }
-        catch ( ArtifactResolutionException e )
-        {
-            throw new MojoExecutionException( "Error getting source artifact", e );
-        }
+        return containsClass;
+    }
 
-        return artifact;
+    void generateJnlpFile(File outputDirectory) throws MojoExecutionException {
+        if ( jnlp.getOutputFile() == null || jnlp.getOutputFile().length() == 0 ) {
+            getLog().debug( "Jnlp output file name not specified. Using default output file name: launch.jnlp." );
+            jnlp.setOutputFile( "launch.jnlp" );
+        }
+        File jnlpOutputFile = new File(outputDirectory, jnlp.getOutputFile() );
+        if ( jnlp.getInputTemplate() == null || jnlp.getInputTemplate().length() == 0 ) {
+            getLog().debug( "Jnlp template file name not specified. Using default output file name: src/jnlp/template.vm." );
+            jnlp.setOutputFile( "src/jnlp/template.vm" );
+        }
+        String templateFileName = jnlp.getOutputFile();
+        /*
+        File jnlpInputFileTemplate = new File(outputDirectory, templateFileName);
+        if (!jnlpInputFileTemplate.exists()) {
+            getLog().warn( "couldn't find template for velocity generation at " + templateFileName );
+            // throw ?
+        }
+        */
+
+        Generator jnlpGenerator = new Generator(this, jnlpOutputFile, templateFileName);
+        try {
+            jnlpGenerator.generate();
+        } catch (Exception e) {
+            getLog().debug(e.toString());
+            throw new MojoExecutionException("Could not generate the JNLP deployment descriptor", e);
+        }
     }
 
     private void logCollection( final String prefix, final Collection collection )
@@ -730,14 +660,6 @@ public class JnlpMojo
         return workDirectory;
     }
 
-    private boolean matches( Artifact artifact, String dependency )
-    {
-        final String stringRepresentation = ArtifactUtils.versionlessKey( artifact );
-        final boolean b = dependency.equals( stringRepresentation );
-        getLog().debug( "checking match of <" + dependency + "> with <" + stringRepresentation + ">: " + b );
-        return b;
-    }
-
     /**
      * Copy only if the target doesn't exists or is outdated compared to the source.
      * @return whether or not the file was copied.
@@ -759,30 +681,6 @@ public class JnlpMojo
 
         }
         return shouldCopy;
-    }
-
-    private File getIconFile( JnlpConfig.Icon icon )
-        throws MojoExecutionException
-    {
-        // FIXME we could have a different priority search order. IN particular the src/jnlp/icons could be first.
-        File iconFile = new File( icon.getHref() );
-        if ( !iconFile.exists() )
-        {
-            getLog().debug( "icon " + icon.getHref() + " not found at " + iconFile.getAbsolutePath() );
-            iconFile = new File( basedir, icon.getHref() );
-            if ( !iconFile.exists() )
-            {
-                getLog().debug( "icon " + icon.getHref() + " not found at " + iconFile.getAbsolutePath() );
-                iconFile = new File( basedir + "/src/jnlp/icons", icon.getHref() );
-                if ( !iconFile.exists() )
-                {
-                    getLog().debug( "icon " + icon.getHref() + " not found at " + iconFile.getAbsolutePath() );
-                    throw new MojoExecutionException( "icon: " + icon.getHref() + " doesn't exist." );
-                }
-            }
-        }
-        getLog().debug( "icon " + icon.getHref() + " found at " + iconFile.getAbsolutePath() );
-        return iconFile;
     }
 
     /** return the number of signed jars **/
@@ -829,7 +727,6 @@ public class JnlpMojo
         getLog().debug( "a fact " + this.artifactFactory );
         getLog().debug( "a resol " + this.artifactResolver );
         getLog().debug( "basedir " + this.basedir );
-        getLog().debug( "depend " + this.dependencies );
         getLog().debug( "gzip " + this.gzip );
         getLog().debug( "pack200 " + this.pack200 );
         getLog().debug( "project " + this.getProject() );
@@ -838,27 +735,13 @@ public class JnlpMojo
         getLog().debug( "verifyjar " + this.verifyjar );
         getLog().debug( "verbose " + this.verbose );
 
-        for ( int i = 0; i < jnlp.getInformations().length; i++ )
-        {
-            JnlpConfig.Information information = jnlp.getInformations()[i];
-            if ( information.getVendor() == null && project.getOrganization() != null ) {
-                information.setVendor( project.getOrganization().getName() );
-            }
-        }
-
         if ( SystemUtils.JAVA_VERSION_FLOAT < 1.5f)
         {
             if ( pack200 )
             {
                 throw new MojoExecutionException( "SDK 5.0 minimum when using pack200." );
             }
-            if ( this.jnlp.getCodebase() == null )
-            {
-                throw new MojoExecutionException( "You didn't specify a codebase. $$codebase can only be used with the jnlp-servlet, which requires SDK 5.0." );
-            }
         }
-
-        // FIXME check that for each J2SE only one of href and autodownload are defined.
 
         // FIXME
         /*
