@@ -3,4 +3,7 @@ jnlp-servlet taken out from Sun's mustang.
 I wasn't sure of the version numbering.
 I wanted to keep a reference on the build number used by Sun in the version number. Is it an issue?
 
+Note: I just moved the compile code into src/main/resources as a quick hack. Of course I should move the code into src/main/... instead.
+
+
 Jerome Lacoste (jerome@coffeebreaks.org)
