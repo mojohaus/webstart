@@ -626,24 +626,19 @@ public class JnlpMojo
         return containsClass;
     }
 
-    void generateJnlpFile(File outputDirectory) throws MojoExecutionException {
+    void generateJnlpFile(File outputDirectory) throws MojoExecutionException
+    {
         if ( jnlp.getOutputFile() == null || jnlp.getOutputFile().length() == 0 ) {
             getLog().debug( "Jnlp output file name not specified. Using default output file name: launch.jnlp." );
             jnlp.setOutputFile( "launch.jnlp" );
         }
         File jnlpOutputFile = new File(outputDirectory, jnlp.getOutputFile() );
+
         if ( jnlp.getInputTemplate() == null || jnlp.getInputTemplate().length() == 0 ) {
             getLog().debug( "Jnlp template file name not specified. Using default output file name: src/jnlp/template.vm." );
-            jnlp.setOutputFile( "src/jnlp/template.vm" );
+            jnlp.setInputTemplate( "src/jnlp/template.vm" );
         }
-        String templateFileName = jnlp.getOutputFile();
-        /*
-        File jnlpInputFileTemplate = new File(outputDirectory, templateFileName);
-        if (!jnlpInputFileTemplate.exists()) {
-            getLog().warn( "couldn't find template for velocity generation at " + templateFileName );
-            // throw ?
-        }
-        */
+        String templateFileName = jnlp.getInputTemplate();
 
         Generator jnlpGenerator = new Generator(this, jnlpOutputFile, templateFileName);
         try {
