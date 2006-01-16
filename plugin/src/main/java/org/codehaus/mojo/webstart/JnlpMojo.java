@@ -44,6 +44,7 @@ import org.codehaus.mojo.keytool.GenkeyMojo;
 import org.codehaus.mojo.webstart.generator.Generator;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.DirectoryScanner;
 
 import org.apache.commons.lang.SystemUtils;
 
@@ -341,16 +342,17 @@ public class JnlpMojo
 
         try
         {
+            copyResources(workDirectory);
+
             artifactWithMainClass = null;
 
             processDependencies();
 
             if ( artifactWithMainClass == null )
             {
-                throw new MojoExecutionException( "didn't find artifact with main class: " + jnlp.getMainClass() + ". Did you specify it? " );
+                throw new MojoExecutionException( "didn't find artifact with main class: "
+                        + jnlp.getMainClass() + ". Did you specify it? " );
             }
-
-            // FIXME copy resources from src/jnlp/resources
 
             // native libsi
             // FIXME
@@ -469,6 +471,70 @@ public class JnlpMojo
         }
 
     }
+
+    private void copyResources(File workDirectory) throws IOException {
+        File resourcesDir = new File( "src/jnlp/resources" );
+        if ( ! resourcesDir.exists() ) {
+            getLog().debug( "No resources found in " + resourcesDir.getAbsolutePath());
+        } else {
+            if ( ! resourcesDir.isDirectory() ) {
+                getLog().debug( "Not a directory: " + resourcesDir.getAbsolutePath());
+            }
+            else {
+                getLog().debug( "Copying resources from " + resourcesDir.getAbsolutePath());
+
+                // hopefully available from FileUtils 1.0.5-SNAPSHOT
+                // FileUtils.copyDirectoryStructure( resourcesDir , workDirectory );
+
+                // this may needs to be parametrized somehow
+                String excludes = concat( DirectoryScanner.DEFAULTEXCLUDES, ", " );
+                copyDirectoryStructure( resourcesDir , workDirectory, "**", excludes );
+            }
+        }
+    }
+
+    private static String concat( String[] array, String delim) {
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < array.length; i++) {
+            if ( i > 0 ) {
+                buffer.append( delim );
+            }
+            String s = array[i];
+            buffer.append( s ).append( delim );
+        }
+        return buffer.toString();
+    }
+
+    private void copyDirectoryStructure( File sourceDirectory, File destinationDirectory,
+                                               String includes, String excludes )
+          throws IOException
+      {
+          if ( ! sourceDirectory.exists() )
+          {
+              return;
+          }
+
+          List files = FileUtils.getFiles( sourceDirectory, includes, excludes );
+
+          for ( Iterator i = files.iterator(); i.hasNext(); )
+          {
+              File file = (File) i.next();
+
+              getLog().debug( "Copying " + file + " to " + destinationDirectory );
+
+              String path = file.getAbsolutePath().substring( sourceDirectory.getAbsolutePath().length() + 1 );
+
+              File destDir = new File( destinationDirectory, path );
+
+              getLog().debug( "Copying " + file + " to " + destDir );
+
+              if ( file.isDirectory() ) {
+                  destDir.mkdirs();
+              } else {
+                  FileUtils.copyFileToDirectory( file, destDir.getParentFile() );
+              }
+          }
+      }
 
     /**
      * Iterate through all the top level and transitive dependencies declared in the project and
