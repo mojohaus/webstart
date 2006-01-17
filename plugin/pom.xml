@@ -23,13 +23,15 @@
         <role>Java Developer</role>
       </roles>
     </developer>
-    <contributors>
-      <contributor>
-        <name>David Boden</name>
-        <email>dave@daveboden.com</email>
-      </contributor>
-    </contributors>
   </developers>
+
+  <contributors>
+    <contributor>
+      <name>David Boden</name>
+      <email>dave@daveboden.com</email>
+    </contributor>
+  </contributors>
+
 
   <dependencies>
     <dependency>
