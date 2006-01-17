@@ -11,6 +11,8 @@
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>Maven Webstart Plugin Parent</name>
+  <inceptionYear>2005</inceptionYear>
+  <url>http://mojo.codehaus.org/webstart-maven-plugin</url>
 
   <developers>
     <developer>
