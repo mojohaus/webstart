@@ -42,7 +42,6 @@
            <jnlp>
              <!--outputFile>src/jnlp/template.vm</outputFile--> <!-- default file name-->
              <outputFile>test.jnlp</outputFile>
-             <codebase>http://www.domaine.com/webstart/</codebase> <!-- or use $$codebase -->
              <mainClass>org.apache.commons.cli.BasicParser</mainClass>
            </jnlp>
 

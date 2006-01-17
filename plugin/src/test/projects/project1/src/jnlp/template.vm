@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
     spec="1.0+"
-    codebase="$codebase"
+    codebase="http://www.domaine.com/webstart/"
     href="test.jnlp">
   <information>
     <title>Title</title>
