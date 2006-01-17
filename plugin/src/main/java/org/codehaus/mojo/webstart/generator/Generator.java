@@ -98,22 +98,7 @@ public class Generator
     {
         VelocityContext context = new VelocityContext();
 
-        List artifacts = config.getPackagedJnlpArtifacts();
-        if ( artifacts.size() != 0 ) {
-            StringBuffer buffer = new StringBuffer( 100 * artifacts.size() );
-            buffer.append("\n");
-            for (int i = 0; i < artifacts.size(); i++) {
-                Artifact artifact = (Artifact) artifacts.get( i );
-                buffer.append( "<jar href=\"" ).append( artifact.getFile().getName() ).append( "\"" );
-                if ( config.isArtifactWithMainClass( artifact )) {
-                    buffer.append( " main=\"true\"" );
-                }
-                buffer.append( "/>\n" );
-            }
-            context.put( "dependencies", buffer.toString() );
-        } else {
-            context.put( "dependencies", "" );
-        }
+        context.put( "dependencies", getDependenciesText( config ) );
 
         if ( config.getJnlp().getCodebase() != null ) {
             context.put( "codebase", config.getJnlp().getCodebase() );
@@ -141,6 +126,25 @@ public class Generator
         {
             writer.close();
         }
+    }
+
+    static String getDependenciesText( JnlpMojo config ) {
+        String dependenciesText = "";
+        List artifacts = config.getPackagedJnlpArtifacts();
+        if ( artifacts.size() != 0 ) {
+            StringBuffer buffer = new StringBuffer( 100 * artifacts.size() );
+            buffer.append("\n");
+            for (int i = 0; i < artifacts.size(); i++) {
+                Artifact artifact = (Artifact) artifacts.get( i );
+                buffer.append( "<jar href=\"" ).append( artifact.getFile().getName() ).append( "\"" );
+                if ( config.isArtifactWithMainClass( artifact )) {
+                    buffer.append( " main=\"true\"" );
+                }
+                buffer.append( "/>\n" );
+            }
+            dependenciesText = buffer.toString();
+        }
+        return dependenciesText;
     }
 
 }

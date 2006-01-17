@@ -27,6 +27,18 @@
         </executions>
         <configuration>
 
+            <dependencies>
+              <!--
+              <includes>
+                <include>commons-logging:commons-logging</include>
+                <include>commons-cli:commons-cli</include>
+              </includes>
+              -->
+              <excludes>
+                <exclude>commons-lang:commons-lang</exclude>
+              </excludes>
+            </dependencies>
+
            <jnlp>
              <!--outputFile>src/jnlp/template.vm</outputFile--> <!-- default file name-->
              <outputFile>test.jnlp</outputFile>

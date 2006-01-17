@@ -23,6 +23,10 @@ import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
+import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
+import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
+import org.apache.maven.artifact.resolver.filter.ExcludesArtifactFilter;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.AbstractMojo;
@@ -111,6 +115,35 @@ public class JnlpMojo
      * @parameter
      */
     private JnlpConfig jnlp;
+
+    /**
+     * Xxx
+     *
+     * @parameter
+     */
+    private Dependencies dependencies;
+
+    public static class Dependencies
+    {
+        private List includes;
+        private List excludes;
+
+        public List getIncludes() {
+            return includes;
+        }
+
+        public void setIncludes(List includes) {
+            this.includes = includes;
+        }
+
+        public List getExcludes() {
+            return excludes;
+        }
+
+        public void setExcludes(List excludes) {
+            this.excludes = excludes;
+        }
+    }
 
     /**
      * Xxx
@@ -545,12 +578,30 @@ public class JnlpMojo
 
         processDependency(getProject().getArtifact());
 
+        AndArtifactFilter filter = new AndArtifactFilter();
+        // filter.add( new ScopeArtifactFilter( dependencySet.getScope() ) );
+
+        if ( dependencies != null
+                && dependencies.getIncludes() != null
+                && !dependencies.getIncludes().isEmpty() )
+        {
+            filter.add( new IncludesArtifactFilter( dependencies.getIncludes() ) );
+        }
+        if ( dependencies != null
+                && dependencies.getExcludes() != null
+                && !dependencies.getExcludes().isEmpty() )
+        {
+            filter.add( new ExcludesArtifactFilter( dependencies.getExcludes() ) );
+        }
+
         Collection artifacts = getProject().getArtifacts();
 
         for ( Iterator it = artifacts.iterator(); it.hasNext(); )
         {
             Artifact artifact = (Artifact) it.next();
-            processDependency(artifact);
+            if ( filter.include( artifact ) ) {
+                processDependency(artifact);
+            }
         }
     }
 
