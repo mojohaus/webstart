@@ -640,7 +640,7 @@ public class JnlpMojo
         }
         String templateFileName = jnlp.getInputTemplate();
 
-        Generator jnlpGenerator = new Generator(this, jnlpOutputFile, templateFileName);
+        Generator jnlpGenerator = new Generator(this, getProject().getBasedir(), jnlpOutputFile, templateFileName );
         try {
             jnlpGenerator.generate();
         } catch (Exception e) {

@@ -44,17 +44,29 @@ public class Generator
 
     private File outputFile;
 
-    public Generator( JnlpMojo task, File outputFile, String inputFileTemplatePath )
+    /**
+     *
+     * @param task
+     * @param currentDir used to find the template in conjunction to inputFileTemplatePath
+     * @param outputFile
+     * @param inputFileTemplatePath relative to currentDir
+     */
+    public Generator( JnlpMojo task, File currentDir, File outputFile, String inputFileTemplatePath )
     {
         this.config = task;
 
         this.outputFile = outputFile;
         //initialise the resource loader to use the class loader
         Properties props = new Properties();
+
         props.setProperty( VelocityEngine.RUNTIME_LOG_LOGSYSTEM, "org.apache.velocity.runtime.log.NullLogSystem" );
+        props.setProperty( "file.resource.loader.path", currentDir.getAbsolutePath() );
+
+        // System.out.println("OUHHHHH " + currentDir.getAbsolutePath());
+
         // props.setProperty( VelocityEngine.RESOURCE_LOADER, "classpath" );
         // props.setProperty( "classpath." + VelocityEngine.RESOURCE_LOADER + ".class",
-        //                    ClasspathResourceLoader.class.getName() );
+        //                   ClasspathResourceLoader.class.getName() );
         try
         {
             //initialise the Velocity engine
