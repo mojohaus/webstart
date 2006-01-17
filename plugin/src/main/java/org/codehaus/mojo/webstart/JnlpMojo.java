@@ -191,7 +191,7 @@ public class JnlpMojo
      *
      * @parameter default-value="false"
      */
-    private boolean usejnlpservlet;
+    // private boolean usejnlpservlet;
 
     /**
      * Xxx
@@ -843,7 +843,7 @@ public class JnlpMojo
         getLog().debug( "pack200 " + this.pack200 );
         getLog().debug( "project " + this.getProject() );
         getLog().debug( "zipArchiver " + this.zipArchiver );
-        getLog().debug( "usejnlpservlet " + this.usejnlpservlet );
+        // getLog().debug( "usejnlpservlet " + this.usejnlpservlet );
         getLog().debug( "verifyjar " + this.verifyjar );
         getLog().debug( "verbose " + this.verbose );
 

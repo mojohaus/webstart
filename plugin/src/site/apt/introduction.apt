@@ -10,4 +10,366 @@ Maven Webstart Plugin
 
  A plugin to prepare webstart applications.
 
- Note: this is a very early release. The documentation is currently hosted {{{http://docs.codehaus.org/display/MOJO/Webstart+Plugin} on confluence}}.
+ Note: this is a very early release.
+
+ More information can be found {{{http://docs.codehaus.org/display/MOJO/Webstart+Plugin} on confluence}}.
+
+
+
+Features:
+
+   * jnlp file generation where information is inserted into a user
+     defined {{{http://jakarta.apache.org/velocity/} Velocity template}}
+
+   * transitive dependencies
+     * possibilities to include/exclude dependencies
+
+   * key generation (thanks to the keystore-maven-plugin)
+
+   * jar signing and signing verification
+
+   * pack200
+
+
+
+Planned & missing features
+
+   * pluggable API for jar signer
+
+   * more support for standalone webstart apps (e.g. download.html/index.html)
+
+   * one step war+webstart generation (one project, webstart plugin used in pre-package phase)
+
+   * handling of native libraries
+
+   * ability to launch the application
+
+   * building multiple jnlp using one project?? (not sure as this is not a very)
+
+   * more war integration (jnlp, web.xml)
+
+ The plugin can be used to prepare standalone webstart applications or webstart app bundled in war files.
+
+
+
+Input/Output
+
+  Here are the list of files/directories you might want to be familiar with before starting to use the plugin.
+
+-------------------------------
+  pom.xml                    (configures the webstart plugin)
+  src/jnlp/template.vm       (template for the jnlp file to be generated.)
+  src/jnlp/resources/        (location where all resources are taken. All contents are copied into the work directory)
+
+  target/jnlp/               (work directory)
+  target/jnlp/launch.jnlp    (generated jnlp file. Name is configurable, this is the default)
+  target/${artifactId}-${version}.zip (zipped version of the work directory that will be installed in your local repository)
+-------------------------------
+
+
+Recommended work directory layout
+
+-------------------------------
+launch.jnlp (may require variable expansion)
+application.jar
+lib.jar (lib)
+version.xml
+images/icon.gif
+-------------------------------
+
+
+
+Functionning
+
+  When invoked the JnlpMojo will:
+
+  * create the work directory
+
+  * copy the resources
+
+  * copy the dependencies if they have been updated
+
+  * create a signing key if necessary
+
+  * sign and pack200 the freshly copied jars
+
+  * generate the jnlp file
+
+
+
+Plugin configuration
+
+  Here's a full example of a pom used to generate a webstart application.
+
+-------------------------------
+<!-- Test war project which signs a dependency and it's runtime dependencies. -->
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>jar-mng-1130-1</artifactId>
+  <groupId>org.apache.maven.plugins</groupId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+  <name>Test Case for MNG-1130</name>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>webstart-maven-plugin</artifactId>
+        <executions>
+           <execution>
+              <goals>
+                 <goal>jnlp</goal>
+              </goals>
+           </execution>
+        </executions>
+        <configuration>
+           <!--outputDirectory></outputDirectory--> <!-- not required?? -->
+
+           <!-- transitive dependencies filter -->
+           <dependencies>
+             <includes>
+                <include>commons-logging:commons-logging</include>
+                <include>commons-cli:commons-cli</include>
+             <includes>
+             <!-- excludes>
+                <exclude></exclude>
+             <excludes-->
+           </dependencies>
+
+           <!-- JNLP generation -->
+           <jnlp>
+             <!--inputTemplate>src/jnlp/template.vm</inputTemplate-->
+             <outputFile>app.jnlp</outputFile> <!-- defaults to launch.jnlp -->
+
+             <!-- used to automatically identify the jar containing the dependency. (note: slightly broken today) -->
+             <!-- this is going to change -->
+             <mainClass>org.apache.commons.cli.BasicParser</mainClass>
+           </jnlp>
+
+
+           <!-- SIGNING -->
+           <!-- defining this will automatically sign the jar and its dependencies, if necessary -->
+           <sign>
+             <keystore></keystore>
+             <keypass></keypass>  <!-- we need to override passwords easily from the command line. ${keypass} -->
+             <storepass></storepass> <!-- ${storepass} -->
+             <storetype></storetype>
+             <alias></alias>
+             <validity></validity>
+
+             <dname.cn></dname.cn>
+             <dname.ou></dname.ou>
+             <dname.o></dname.o>
+             <dname.l></dname.l>
+             <dname.st></dname.st>
+             <dname.c></dname.c>
+
+             <verify>true</verify>
+           </sign>
+
+           <!-- KEYSTORE MANGEMENT. do we want that? -->
+           <keystore>
+             <delete>true</delete> <!-- delete the keystore -->
+             <gen>true</gen>       <!-- optional shortcut to generate the store. -->
+           </keystore>
+
+           <!-- BUILDING PROCESS -->
+           <!--usejnlpservlet>true</usejnlpservlet--> <!-- not yet supported -->
+
+           <!-- should we have some more configurations here? E.g. compression level (aka packing effort) -->
+           <!-- not yet implemented -->
+           <pack200>true</pack200>
+           <gzip>true</gzip> <!-- default force when pack200 false, true when pack200 selected ?? -->
+
+           <!-- misc -->
+           <!-- if there are multiple apps, do we need to mark one as default? (app/ redirects to app/default.jnlp in jnlp servlet ??)-->
+           <!-- -->
+
+           <!--install>false</install--> <!-- not yet supported -->
+           <verbose>true</verbose>
+
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+      <version>1.0</version>
+    </dependency>
+  </dependencies>
+</project>
+-------------------------------
+
+
+
+Use Cases
+
+* single webstart app, no webapp (static web site)
+
+  Use the plugin as described above. It will generate and install a zip in your local repository.
+
+* single and multiple webstart app, bundle inside a 'pom project', without jnlp-servlet support
+
+  One way of doing it
+
+    * place each of your webstart app in a particular project
+
+    * use webstart plugin as shown above to generate and install the zip in the local repository
+
+    * generate your webapp using a project with war packaging
+
+    * use a project to combine the war + n zip files
+
+  E.g.
+
+-------------------------------
+jnlp-project1/pom.xml - pom packaging. Uses webstart plugin to package the generated files into a zip
+jnlp-project2/pom.xml - pom packaging. Uses webstart plugin to package the generated files into another zip
+webapp/pom.xml        - war packaging. Creates a war file.
+webapp-bundle/pom.xml - pom packaging. Uses user defined assembly to combines the jnlp-project* resulting zip and the war into its own war.
+-------------------------------
+
+  In webapp-bundle:
+
+-------------------------------
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>yourproject</groupId>
+    <artifactId>project-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>full-webapp</artifactId>
+  <packaging>pom</packaging>
+  <name>Project Full WebApp</name>
+  <description>Webapp + Webstart Clients</description>
+  <dependencies>
+
+    <dependency>
+      <groupId>yourproject</groupId>
+      <artifactId>webapp</artifactId>
+      <version>${version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>yourproject</groupId>
+      <artifactId>clients-webstart-1</artifactId>
+      <version>${version}</version>
+      <type>zip</type>
+    </dependency>
+
+    <dependency>
+      <groupId>yourproject</groupId>
+      <artifactId>clients-webstart-2</artifactId>
+      <version>${version}</version>
+      <type>zip</type>
+    </dependency>
+
+    <dependency> <!-- required to support MNG-1274 -->
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-archiver</artifactId>
+      <version>1.0-alpha-4-SNAPSHOT</version>
+    </dependency>
+
+    <!--dependency> NOT YET SUPPORTED
+      <groupId>com.sun.java.jnlp</groupId>
+      <artifactId>jnlp-servlet</artifactId>
+      <version>1.0-6.0-b56</version>
+    </dependency-->
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.1-SNAPSHOT</version>
+        <executions>
+           <execution>
+             <phase>verify</phase> <!-- FIXME should be package, but inifinte loop see MNG-1311 -->
+             <goals><goal>assembly</goal></goals>
+           </execution>
+        </executions>
+        <configuration>
+          <descriptor>src/assemble/main.xml</descriptor>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+-------------------------------
+
+  and
+
+-------------------------------
+<assembly>
+  <id>main</id>
+  <formats>
+    <format>war</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>yourproject:webapp</include>
+      </includes>
+      <unpack>true</unpack>
+      <scope>runtime</scope>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>ws1</outputDirectory>
+      <includes>
+        <include>yourproject:clients-webstart-1</include>
+      </includes>
+      <unpack>true</unpack>
+      <scope>runtime</scope>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>ws1</outputDirectory>
+      <includes>
+        <include>yourproject:clients-webstart-2</include>
+      </includes>
+      <unpack>true</unpack>
+      <scope>runtime</scope>
+    </dependencySet>
+    <!--dependencySet> NOT YET IN IBIBLIO
+      <outputDirectory>WEB-INF/lib</outputDirectory>
+      <includes>
+        <include>com.sun.java.jnlp:jnlp-servlet</include>
+      </includes>
+      <scope>runtime</scope>
+    </dependencySet-->
+  </dependencySets>
+</assembly>
+-------------------------------
+
+
+* single and multiple webstart app, bundle inside a 'war project', without jnlp-servlet support
+
+  One way of doing it:
+
+    * place each of your webstart app in a particular project
+
+    * use webstart plugin as shown above to generate and install the zip in the local repository
+
+    * generate your webapp using a project with war packaging, but be sure to unzip the webstart applications zip in the webstart working directory.
+      I've not implemented this. I don't think it is possible to use the assembly plugin without specifying any format. So not sure how the layout preparation would work
+
+  E.g.
+
+-------------------------------
+jnlp-project1/pom.xml - pom packaging. Uses webstart plugin to package the generated files into a zip
+jnlp-project2/pom.xml - pom packaging. Uses webstart plugin to package the generated files into another zip
+webapp/pom.xml        - war packaging. Creates a war file after unzipping the zips in the correct place.
+-------------------------------
