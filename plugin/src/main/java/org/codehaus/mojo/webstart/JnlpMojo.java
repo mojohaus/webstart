@@ -17,29 +17,16 @@ package org.codehaus.mojo.webstart;
  */
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
-import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ExcludesArtifactFilter;
-import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
-import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.InvalidPluginException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.PluginManager;
-import org.apache.maven.plugin.PluginManagerException;
-import org.apache.maven.plugin.PluginNotFoundException;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.jar.JarSignMojo;
-import org.apache.maven.plugin.version.PluginVersionNotFoundException;
-import org.apache.maven.plugin.version.PluginVersionResolutionException;
-import org.apache.maven.project.DefaultMavenProjectHelper;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.settings.Settings;
@@ -55,8 +42,6 @@ import org.apache.commons.lang.SystemUtils;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -664,20 +649,34 @@ public class JnlpMojo
 
         // JarArchiver.grabFilesAndDirs()
         ClassLoader cl = new java.net.URLClassLoader( new URL[]{artifact.getFile().toURL()} );
+        Class c = null;
         try
         {
-            Class.forName( mainClass, false, cl );
+            c = Class.forName( mainClass, false, cl );
         }
         catch ( ClassNotFoundException e )
         {
             getLog().debug(
                 "artifact " + artifact + " doesn't contain the main class: " + mainClass );
             containsClass = false;
-        } catch (Throwable t) {
-            getLog().warn(
+        } catch ( Throwable t ) {
+            getLog().info(
                 "artifact " + artifact + " seems to contain the main class: " + mainClass
-                    + " but probably doesn't contain all dependencies " + t.getMessage());
+                 + " but the jar doesn't seem to contain all dependencies " + t.getMessage());
         }
+
+        if ( c != null ) {
+            try {
+                c.getMethod( "main" , new Class[] { String[].class } );
+            } catch ( NoSuchMethodException e ) {
+                getLog().warn(
+                    "the specified main class (" + mainClass
+                    + ") doesn't seem to contain a main method..." + e.getMessage() );
+            } catch ( Throwable t ) {
+                getLog().error( "Couldn't check if the main class has a main method. ", t );
+            }
+        }
+
         return containsClass;
     }
 
