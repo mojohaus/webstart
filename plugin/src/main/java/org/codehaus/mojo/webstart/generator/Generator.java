@@ -100,9 +100,12 @@ public class Generator
 
         context.put( "dependencies", getDependenciesText( config ) );
 
+        // I don't think we really need this anymore. Let's reenable it when really required.
+        /*
         if ( config.getJnlp().getCodebase() != null ) {
             context.put( "codebase", config.getJnlp().getCodebase() );
         }
+        */
         /*
         if ( config.getVendor() != null ) {
             context.put( "vendor", config.getVendor() );

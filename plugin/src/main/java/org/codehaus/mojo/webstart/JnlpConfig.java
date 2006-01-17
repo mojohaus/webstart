@@ -33,7 +33,7 @@ public class JnlpConfig
 
     private String version;
 
-    private String codebase;
+    // private String codebase;
 
     private String href;
 
@@ -59,10 +59,11 @@ public class JnlpConfig
         this.version = version;
     }
 
+    /*
     public void setCodebase( String codebase )
     {
         this.codebase = codebase;
-    }
+    }*/
 
     public void setHref( String href )
     {
@@ -94,10 +95,12 @@ public class JnlpConfig
         return version;
     }
 
+    /*
     public String getCodebase()
     {
         return codebase;
     }
+    */
 
     public String getHref()
     {
