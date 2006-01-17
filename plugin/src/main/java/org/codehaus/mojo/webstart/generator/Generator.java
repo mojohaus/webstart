@@ -104,7 +104,7 @@ public class Generator
             buffer.append("\n");
             for (int i = 0; i < artifacts.size(); i++) {
                 Artifact artifact = (Artifact) artifacts.get( i );
-                buffer.append( "<jar href=\"" ).append( artifact.toString() ).append( "\"" );
+                buffer.append( "<jar href=\"" ).append( artifact.getFile().getName() ).append( "\"" );
                 if ( config.isArtifactWithMainClass( artifact )) {
                     buffer.append( " main=\"true\"" );
                 }
