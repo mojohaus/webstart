@@ -44,9 +44,13 @@ Planned & missing features
 
    * ability to launch the application
 
-   * building multiple jnlp using one project?? (not sure as this is not a very)
+   * building multiple jnlp app in one zip using one m2 project?? (not sure as this is not a very maven way of doing things)
+
+        * would require merging version.xml
 
    * more war integration (jnlp, web.xml)
+
+   * what about deploying multiple versions of the same app? Is that ever wanted, e.g. for upgrades?
 
  The plugin can be used to prepare standalone webstart applications or webstart app bundled in war files.
 
@@ -69,6 +73,8 @@ Input/Output
 
 Recommended work directory layout
 
+  Mostly taken from {{{http://java.sun.com/j2se/1.5.0/docs/guide/javaws/developersguide/downloadservletguide.html} JnlpDownloadServlet guide}}.
+
 -------------------------------
 launch.jnlp (may require variable expansion)
 application.jar
@@ -83,18 +89,38 @@ Functionning
 
   When invoked the JnlpMojo will:
 
-  * create the work directory
+  * the webstart plugin works with a project of type pom. It does the following work:
 
-  * copy the resources
+  ** creates the work directory
 
-  * copy the dependencies if they have been updated
+  ** copy the resources
 
-  * create a signing key if necessary
+  ** copy the jars marked as dependencies into the working directory (if necessary)
 
-  * sign and pack200 the freshly copied jars
+  ** sign the jars using an existing (or on-the-fly created) keystore file
 
-  * generate the jnlp file
+  ** if required, use pack200 algorythm to create packed and packed gzipped versions of the jars
 
+  ** generates a jnlp file
+
+  * in the future, it may also generate other files: version.xml, index.html,...
+
+  * the plugin creates a zip out of the resulting files (if we are inside a war packaging, we could do the things automatically)
+
+  * if one needs to package several webstart projects together into a bigger webapp, one should create a particular assembly project. Adding the jnlp-servlet should be done there.
+
+
+JNLP file generation
+
+    Thanks to velocity we parse the template without affecting things that are intended to work with the jnlp-servlet (e.g. $$codebase).
+    The following values are parsed:
+
+-------------------------------
+$dependencies
+$outputFile      from user input if specified, default otherwise
+-------------------------------
+
+  Note: that the template generation doesn't know if a placeholder was not replaced. So if you put a $codebase in your template, but forget to add one in your plugin configuration in the pom.xml, there won't (currently) be a failure.
 
 
 Plugin configuration
