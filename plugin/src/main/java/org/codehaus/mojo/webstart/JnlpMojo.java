@@ -660,19 +660,23 @@ public class JnlpMojo
     }
 
     private boolean artifactContainsClass(Artifact artifact, final String mainClass) throws MalformedURLException {
-        boolean containsClass = false;
+        boolean containsClass = true;
 
         // JarArchiver.grabFilesAndDirs()
         ClassLoader cl = new java.net.URLClassLoader( new URL[]{artifact.getFile().toURL()} );
         try
         {
             Class.forName( mainClass, false, cl );
-            containsClass = true;
         }
         catch ( ClassNotFoundException e )
         {
             getLog().debug(
                 "artifact " + artifact + " doesn't contain the main class: " + mainClass );
+            containsClass = false;
+        } catch (Throwable t) {
+            getLog().warn(
+                "artifact " + artifact + " seems to contain the main class: " + mainClass
+                    + " but probably doesn't contain all dependencies " + t.getMessage());
         }
         return containsClass;
     }
