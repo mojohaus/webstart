@@ -8,9 +8,29 @@
 
 Maven Webstart Plugin
 
- A plugin to prepare webstart applications.
+ A plugin to prepare webstart applications. The current plugin has a single goal {{{jnlp-mojo.html} webstart:jnlp}}
+ whose responsibility is to create a zip file which contains:
+ 
+   * A jnlp file to be fetched and understood by Sun's webstart client.
 
- Note: this is a very early release.
+   * A digitally signed version of the jar artifact produced by the project
+     that has the webstart plugin activated.
+
+   * Digitally signed jar files for each of the transitive dependencies that are part
+     of the runtime classpath. The runtime classpath is calculated by Maven using the
+     dependencies that you have declared within the project.
+     
+   * Optionally Pack200 gzip versions of all the jar files. These become useful
+     if the user chooses to host the webstart application on a servlet container
+     and chooses to use the JnlpDownloadServlet.
+     
+   * Icon image files used by the user's webstart client to represent your webstart application.
+     
+ Common use cases detailing what you might do with the zip file are detailed in
+ this document. However, it's important to understand that the goal's responsibility
+ ends at the creation of the zip file.
+
+ Note: this is a very early but working release. It requires maven 2 (version 2.0.1 and further) to work correctly.
 
  More information can be found {{{http://docs.codehaus.org/display/MOJO/Webstart+Plugin} on confluence}}.
 
@@ -22,13 +42,15 @@ Features:
      defined {{{http://jakarta.apache.org/velocity/} Velocity template}}
 
    * transitive dependencies
-     * possibilities to include/exclude dependencies
+   
+      * possibilities to include/exclude dependencies
 
-   * key generation (thanks to the keystore-maven-plugin)
+   * key generation (thanks to the {{{http://mojo.codehaus.org/keytool-maven-plugin/} keytool-maven-plugin}})
 
    * jar signing and signing verification
 
-   * pack200
+   * pack200 support for compressed versions of the jar files resulting in
+     faster network downloads of your webstart application.
 
 
 
@@ -38,22 +60,23 @@ Planned & missing features
 
    * more support for standalone webstart apps (e.g. download.html/index.html)
 
-   * one step war+webstart generation (one project, webstart plugin used in pre-package phase)
-
    * handling of native libraries
 
    * ability to launch the application
 
    * building multiple jnlp app in one zip using one m2 project?? (not sure as this is not a very maven way of doing things)
 
-        * would require merging version.xml
-
-   * more war integration (jnlp, web.xml)
+      * would require merging version.xml
 
    * what about deploying multiple versions of the same app? Is that ever wanted, e.g. for upgrades?
 
- The plugin can be used to prepare standalone webstart applications or webstart app bundled in war files.
+   * ?? add a new goal to help deal with web applications
 
+      * one step war+webstart generation (one project, webstart plugin used in pre-package phase)
+
+      * more war integration (jnlp, web.xml)
+
+ The plugin can be used to prepare standalone webstart applications or webstart app bundled in war files.
 
 
 Input/Output
@@ -99,7 +122,7 @@ Functionning
 
   ** sign the jars using an existing (or on-the-fly created) keystore file
 
-  ** if required, use pack200 algorythm to create packed and packed gzipped versions of the jars
+  ** if required, use pack200 algorithm to create packed and packed gzipped versions of the jars
 
   ** generates a jnlp file
 
@@ -243,7 +266,71 @@ Use Cases
 
 * single and multiple webstart app, bundle inside a 'pom project', without jnlp-servlet support
 
-  One way of doing it
+** One way of doing it
+
+
+   * Place your webstart application in a project. This project uses the webstart
+     plugin to generate the zip file containing the webstart bundle. The bundle is
+     installed in the local repository.
+
+   * The webapp is maintained in a separate project, the artifact that this project
+     produces is a war file.
+
+   * Use the Codehaus dependency plugin in your webapp project to unpack the webstart
+     bundle into the webapp folder. The webstart application will then be bundled
+     and deployed onto your webserver as part of the webapp.
+      
+   * You can deploy multiple webstart applications into the same webapp by using
+     multiple executions of the dependency plugin.
+
+  E.g.
+
+-------------------------------
+jnlp-project1/pom.xml - pom packaging. Uses webstart plugin to package the generated files into a zip
+jnlp-project2/pom.xml - pom packaging. Uses webstart plugin to package the generated files into another zip
+webapp-bundle/pom.xml - war packaging. Unpack zips and bundle war.
+-------------------------------
+
+ Placing this plugin configuration inside the pom.xml that generates your webapp's war
+ file will result in your webstart application being placed in the /webstart directory
+ of your web application.
+
+-------------------------------
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>dependency-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <!-- 
+                            Copy the webstart bundle in as a resource
+                            before packaging starts.
+                        -->
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <artifactItems>
+                        <artifactItem>
+                            <groupId>your webstart artifact's groupId</groupId>
+                            <artifactId>your webstart artifact's artifactId</artifactId>
+                            <version>your webstart artifact's version (possibly SNAPSHOT)</version>
+                            <type>zip</type>                            
+                        </artifactItem>
+                    </artifactItems>
+                    <outputDirectory>${project.build.directory}/${project.build.finalName}/webstart</outputDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+-------------------------------
+
+
+** Another way way of doing it
 
     * place each of your webstart app in a particular project
 
@@ -305,12 +392,6 @@ webapp-bundle/pom.xml - pom packaging. Uses user defined assembly to combines th
       <artifactId>plexus-archiver</artifactId>
       <version>1.0-alpha-4-SNAPSHOT</version>
     </dependency>
-
-    <!--dependency> NOT YET SUPPORTED
-      <groupId>com.sun.java.jnlp</groupId>
-      <artifactId>jnlp-servlet</artifactId>
-      <version>1.0-6.0-b56</version>
-    </dependency-->
 
   </dependencies>
 
@@ -383,7 +464,7 @@ webapp-bundle/pom.xml - pom packaging. Uses user defined assembly to combines th
 
 * single and multiple webstart app, bundle inside a 'war project', without jnlp-servlet support
 
-  One way of doing it:
+** One way of doing it:
 
     * place each of your webstart app in a particular project
 
@@ -398,4 +479,66 @@ webapp-bundle/pom.xml - pom packaging. Uses user defined assembly to combines th
 jnlp-project1/pom.xml - pom packaging. Uses webstart plugin to package the generated files into a zip
 jnlp-project2/pom.xml - pom packaging. Uses webstart plugin to package the generated files into another zip
 webapp/pom.xml        - war packaging. Creates a war file after unzipping the zips in the correct place.
+-------------------------------
+
+* Configuring your webapp to use JnlpDownloadServlet
+
+ The JnlpDownloadServlet jar file is provided with the Java 5.0 distribution in the
+ examples directory.
+ 
+ The JnlpDownloadServlet offers some advantages:
+ 
+   * $$codebase, $$context and $$name tokens in your jnlp file are replaced with values
+     that represent where your jnlp file is hosted. This allows you to deploy your
+     web application anywhere without modification. The relevant paths will be worked
+     out at runtime.
+     
+   * If you have chosen to provide Pack200 format compressed files, JnlpDownloadServlet
+     will decide if the webstart client that the user has chosen can handle the compressed
+     format. If the client is compatable, the JnlpDownloadServlet will route requests for
+     jar files to the appropriate compressed file. This may improve the download time of
+     your application.
+ 
+ To use the JnlpDownloadServlet you must declare a dependency on it in the webapp's
+ pom.xml and you must make modifications to your webapp's web.xml file.
+ 
+ Here is an example of a web.xml with the JnlpDownladServlet enabled. All requests to
+ files ending in .jnlp are routed through the download servlet. More information and
+ examples are availabe in the JnlpDownloadServlet's documentation.
+ 
+-------------------------------
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+    <servlet>
+        <servlet-name>JnlpDownloadServlet</servlet-name>
+        <servlet-class>jnlp.sample.servlet.JnlpDownloadServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>JnlpDownloadServlet</servlet-name>
+        <url-pattern>*.jnlp</url-pattern>
+    </servlet-mapping>
+</web-app>
+-------------------------------
+ 
+ Note: This dependency is to be placed in the webapp's pom.xml. This has nothing
+ to do with the webstart project's pom.xml.
+ 
+ Unfortunately, the JnlpDownloadServlet's jar file is not yet available in the
+ public ibiblio.org/maven2 repository. Until the licensing issues are worked out,
+ you'll need to keep a copy of the jar file in your own remote repository or
+ install the package in your local repository.
+ 
+-------------------------------
+<!-- 
+    Sun's JnlpDownladServlet takes the template jnlp file and inserts
+    relevant values for $$codebase and other parameters
+-->
+<dependency>
+    <groupId>com.sun.java.jnlp</groupId>
+    <artifactId>jnlp-servlet</artifactId>
+    <version>5.0</version>
+    <scope>runtime</scope>
+</dependency>
 -------------------------------
