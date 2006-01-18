@@ -140,10 +140,13 @@ JNLP file generation
 
 -------------------------------
 $dependencies
-$outputFile      from user input if specified, default otherwise
+$mainClass
+$outputFile      from user input if specified, default otherwise (one can use $$name when using the JnlpDownloadServlet)
 -------------------------------
 
-  Note: that the template generation doesn't know if a placeholder was not replaced. So if you put a $codebase in your template, but forget to add one in your plugin configuration in the pom.xml, there won't (currently) be a failure.
+  Note: that the template generation doesn't know if a placeholder was not replaced. So if you put a $outputFile in
+  your velocity template, but forget to specify the <outputFile> element in your plugin configuration in the pom.xml,
+  there won't (currently) be a failure.
 
 
 Plugin configuration

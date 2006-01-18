@@ -112,7 +112,8 @@ public class Generator
         }
         */
 	
-        context.put( "outputFile", outputFile );
+        context.put( "outputFile", outputFile.getName() );
+        context.put( "mainClass", config.getJnlp().getMainClass() );
         FileWriter writer = new FileWriter( outputFile );
         try
         {

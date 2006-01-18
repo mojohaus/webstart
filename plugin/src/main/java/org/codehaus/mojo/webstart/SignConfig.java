@@ -16,11 +16,8 @@ package org.codehaus.mojo.webstart;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * FIXME document
+ * Bean that represents the JarSigner configuration
  *
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$

@@ -2,7 +2,7 @@
 <jnlp
     spec="1.0+"
     codebase="http://www.domaine.com/webstart/"
-    href="test.jnlp">
+    href="$outputFile">
   <information>
     <title>Title</title>
     <homepage href="http://www.domain.com"/>
@@ -37,7 +37,7 @@
      />
      $dependencies
   </resources>
-  <application-desc main-class="org.apache.commons.cli.BasicParser">
+  <application-desc main-class="$mainClass">
     <argument>1</argument>
     <argument>2</argument>
   </application-desc>
