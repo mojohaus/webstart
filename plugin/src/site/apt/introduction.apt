@@ -545,3 +545,26 @@ webapp/pom.xml        - war packaging. Creates a war file after unzipping the zi
     <scope>runtime</scope>
 </dependency>
 -------------------------------
+
+* Pack200 signing explained
+
+ If you choose to produce Pack200 files as part of your build, there is an additional
+ processing overhead. This section explains what's going on.
+
+ Pack200 doesn't just compress your jar files, it actually modifies the class files,
+ stripping out everything but the bare essentials. Because of these modifications,
+ any digital signature that is applied before the packing takes place will be invalidated.
+
+ Before a digital signature is applied Pack200 must be allowed to carry out its aggressive class
+ file modifications. This is achieved by packing and unpacking the jar file with the Pack200 utility.
+ The result is a jar with modified class files ready to be signed.
+
+ The goal then signs this preprepared jar and verifies the signature.
+
+ The Pack200 packing process is applied again to produce the final downloadable Pack200 file.
+
+ As an optional step, to make sure that everything has gone well, it is recommended that the final Pack200 file
+ is unpacked one final time and the signature verified on the resulting jar file. This just makes sure that
+ the final packing process hasn't made any further modifications to the file that have invalidated the digital
+ signature. This is an unlikely event and this extra optional check is not yet implemented as part of the
+ plugin.
