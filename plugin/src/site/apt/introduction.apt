@@ -179,6 +179,7 @@ Plugin configuration
 
            <!-- transitive dependencies filter -->
            <dependencies>
+             <!-- Note that only groupId and artifactId must be specified here. because of a limitation of the Include/ExcludesArtifactFilter -->
              <includes>
                 <include>commons-logging:commons-logging</include>
                 <include>commons-cli:commons-cli</include>
