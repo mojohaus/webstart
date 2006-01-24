@@ -59,7 +59,7 @@ public class Generator
         //initialise the resource loader to use the class loader
         Properties props = new Properties();
 
-        props.setProperty( VelocityEngine.RUNTIME_LOG_LOGSYSTEM, "org.apache.velocity.runtime.log.NullLogSystem" );
+        props.setProperty( VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.NullLogSystem" );
         props.setProperty( "file.resource.loader.path", currentDir.getAbsolutePath() );
 
         // System.out.println("OUHHHHH " + currentDir.getAbsolutePath());
