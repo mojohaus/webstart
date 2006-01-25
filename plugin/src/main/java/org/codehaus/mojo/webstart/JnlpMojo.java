@@ -666,14 +666,26 @@ public class JnlpMojo
         }
 
         if ( c != null ) {
+            getLog().debug(
+                "Checking if the loaded class contains a main method." );
+
             try {
                 c.getMethod( "main" , new Class[] { String[].class } );
             } catch ( NoSuchMethodException e ) {
                 getLog().warn(
-                    "the specified main class (" + mainClass
-                    + ") doesn't seem to contain a main method..." + e.getMessage() );
+                    "The specified main class (" + mainClass
+                    + ") doesn't seem to contain a main method... Please check your configuration." + e.getMessage() );
+            } catch ( NoClassDefFoundError e ) {
+                // undocumented in SDK 5.0. is this due to the ClassLoader lazy loading the Method thus making this a case tackled by the JVM Spec (Ref 5.3.5)!
+                // Reported as Incident 633981 to Sun just in case ...
+                getLog().warn(
+                    "Something failed while checking if the main class contains the main() method. "
+                    + "This is probably due to the limited classpath we have provided to the class loader. "
+                    + "The specified main class (" + mainClass + ") found in the jar is *assumed* to contain a main method... " + e.getMessage() );
             } catch ( Throwable t ) {
-                getLog().error( "Couldn't check if the main class has a main method. ", t );
+                getLog().error(
+                    "Unknown error: Couldn't check if the main class has a main method. "
+                    + "The specified main class (" + mainClass + ") found in the jar is *assumed* to contain a main method...", t );
             }
         }
 
