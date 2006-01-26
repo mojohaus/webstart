@@ -599,15 +599,27 @@ public class JnlpMojo
             String type = artifact.getType();
             if ( "jar".equals( type ) )
             {
+
                 // FIXME when signed, we should update the manifest.
                 // see http://www.mail-archive.com/turbine-maven-dev@jakarta.apache.org/msg08081.html
                 // and maven1: maven-plugins/jnlp/src/main/org/apache/maven/jnlp/UpdateManifest.java
                 // or shouldn't we?  See MOJO-7 comment end of October.
-                boolean copied = copyFileToDirectoryIfNecessary( artifact.getFile(), getWorkDirectory() );
+                final File toCopy = artifact.getFile();
+
+                if ( toCopy == null )
+                {
+                    getLog().error( "artifact with no file: " + artifact );
+                    getLog().error( "artifact download url: " + artifact.getDownloadUrl() );
+                    getLog().error( "artifact repository: " + artifact.getRepository() );
+                    getLog().error( "artifact repository: " + artifact.getVersion() );
+                    throw new IllegalStateException( "artifact " + artifact + " has no matching file, why? Check the logs..." );
+                }
+
+                boolean copied = copyFileToDirectoryIfNecessary( toCopy, getWorkDirectory() );
 
                 if ( copied ) {
 
-                    String name = artifact.getFile().getName();
+                    String name = toCopy.getName();
                     this.modifiedJnlpArtifacts.add( name.substring( 0, name.lastIndexOf( '.' ) ) );
 
                 }
@@ -788,10 +800,20 @@ public class JnlpMojo
     }
 
     /**
-     * Copy only if the target doesn't exists or is outdated compared to the source.
-     * @return whether or not the file was copied.
+     * Conditionaly copy the file into the target directory.
+     * The operation is not performed when the target file exists is up to date.
+     * The target file name is taken from the <code>sourceFile</code> name.
+     *
+     * @return <code>true</code> when the file was copied, <code>false</code> otherwise.
+     * @throws NullPointerException is sourceFile is <code>null</code> or
+     *         <code>sourceFile.getName()</code> is <code>null</code>
+     * @throws IOException if the copy operation is tempted but failed.
      */
-    public boolean copyFileToDirectoryIfNecessary( File sourceFile, File targetDirectory ) throws IOException {
+    private boolean copyFileToDirectoryIfNecessary( File sourceFile, File targetDirectory ) throws IOException {
+
+        if ( sourceFile == null ) {
+            throw new NullPointerException( "sourceFile is null" );
+        }
 
         File targetFile = new File( targetDirectory, sourceFile.getName() );
 
