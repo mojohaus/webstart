@@ -56,7 +56,7 @@ import java.util.List;
  * As a consequence, if one modifies the pom jnlp config or a keystore, one should clean before rebuilding.
  *
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
- * @version $Id: $
+ * @version $Id$
  * @goal jnlp
  * @phase package
  * @requiresDependencyResolution runtime
