@@ -30,8 +30,21 @@ Maven Webstart Plugin - Introduction
  this document. However, it's important to understand that the goal's responsibility
  ends at the creation of the zip file.
 
- Note: this is a very early but working release. It requires maven 2 (version 2.0.1 and further) to work correctly.
 
+Features & build stability
+
+ This is a very early but working release. It requires maven 2 (version 2.0.1 and further) to work correctly.
+
+ Note (31/Jan/06): as of today, it is possible to use the plugin as built from the trunk without problem.
+ A stable snapshot will be deployed on the codehaus snapshots repository.
+
+ Once this is done, to accomodate with new forthcoming features and make the plugin more standard, it will be modified in a slightly incompatible and unstable way in the forthcoming days.
+ We expect the uncompatible changes to affect very slighlty your pom and build structure. Nothing very hard to fix but still. Something you may want to plan for.
+
+ In the meantime the plugin build operation will become a little bit harder for a short period of time, because we will depend on unreleased versions of other plugins (in particular the maven-jar-plugin).
+ So if you need a stable version of the plugin pick it from the snapshots repository.
+
+ After that we expect stable snapshots to be regularly delivered.
 
 
 Features:
@@ -51,10 +64,14 @@ Features:
      faster network downloads of your webstart application.
 
 
+Upcoming changes
 
-Planned & missing features
+   * {{{http://jira.codehaus.org/browse/MOJO-266} change default location for resources and template}}. Will probably make the plugin slighly incompatible with older version. It's OK as there's no a single official snapshot release yet.
 
-   * dealing with already signed jars
+   * {{{http://jira.codehaus.org/browse/MOJO-263} dealing with already signed jars}}
+
+
+Reported missing features
 
    * pluggable API for jar signer
 
@@ -77,7 +94,6 @@ Planned & missing features
       * more war integration (jnlp, web.xml)
 
  The plugin can be used to prepare standalone webstart applications or webstart app bundled in war files.
-
 
 
 Links
