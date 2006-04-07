@@ -884,6 +884,12 @@ public class JnlpMojo
         getLog().debug( "verifyjar " + this.verifyjar );
         getLog().debug( "verbose " + this.verbose );
 
+
+        if ( jnlp == null)
+        {
+            throw new MojoExecutionException( "<jnlp> configuration element missing." );
+        }
+
         if ( SystemUtils.JAVA_VERSION_FLOAT < 1.5f)
         {
             if ( pack200 )
