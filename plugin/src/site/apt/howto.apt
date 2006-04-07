@@ -107,6 +107,7 @@ Plugin configuration
 
            <!-- JNLP generation -->
            <jnlp>
+             <!--resources>${project.basedir}/src/main/jnlp</resources--> <!-- default value -->
              <!--inputTemplate>src/jnlp/template.vm</inputTemplate-->
              <outputFile>app.jnlp</outputFile> <!-- defaults to launch.jnlp -->
 

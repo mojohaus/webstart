@@ -16,6 +16,8 @@ package org.codehaus.mojo.webstart;
  * limitations under the License.
  */
 
+import java.io.File;
+
 /**
  * Bean to host part of the JnlpMojo configuration.
  *
@@ -38,6 +40,11 @@ public class JnlpConfig
     private String href;
 
     private String mainClass;
+
+    /**
+     * The path containing any resources which will be added to the webstart artifact
+     */
+    private File resources;
 
     public void setInputTemplate( String inputTemplate )
     {
@@ -80,6 +87,10 @@ public class JnlpConfig
         return inputTemplate;
     }
 
+    public void setResources( File resources ) {
+        this.resources = resources;
+    }
+
     public String getOutputFile()
     {
         return outputFile;
@@ -93,6 +104,10 @@ public class JnlpConfig
     public String getVersion()
     {
         return version;
+    }
+
+    public File getResources() {
+        return resources;
     }
 
     /*

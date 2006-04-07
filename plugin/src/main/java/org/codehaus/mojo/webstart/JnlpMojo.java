@@ -360,7 +360,12 @@ public class JnlpMojo
 
         try
         {
-            copyResources(workDirectory);
+            File resourcesDir = getJnlp().getResources();
+            if ( resourcesDir == null )
+            {
+                resourcesDir = new File( project.getBasedir(), "src/main/jnlp" );
+            }
+            copyResources( resourcesDir, workDirectory );
 
             artifactWithMainClass = null;
 
@@ -490,10 +495,9 @@ public class JnlpMojo
 
     }
 
-    private void copyResources(File workDirectory) throws IOException {
-        File resourcesDir = new File( "src/jnlp/resources" );
+    private void copyResources( File resourcesDir, File workDirectory ) throws IOException {
         if ( ! resourcesDir.exists() ) {
-            getLog().debug( "No resources found in " + resourcesDir.getAbsolutePath());
+            getLog().info( "No resources found in " + resourcesDir.getAbsolutePath());
         } else {
             if ( ! resourcesDir.isDirectory() ) {
                 getLog().debug( "Not a directory: " + resourcesDir.getAbsolutePath());
@@ -924,7 +928,6 @@ public class JnlpMojo
         this.verbose = verbose;
     }
 
-
     public JnlpConfig getJnlp()
     {
         return jnlp;
@@ -958,4 +961,6 @@ public class JnlpMojo
         }
         return "1.0+";
     }
+    
 }
+

@@ -40,6 +40,7 @@
             </dependencies>
 
            <jnlp>
+             <resources>${project.basedir}/src/jnlp/resources</resources>
              <!--outputFile>src/jnlp/template.vm</outputFile--> <!-- default file name-->
              <outputFile>test.jnlp</outputFile>
              <mainClass>org.apache.commons.cli.BasicParser</mainClass>
