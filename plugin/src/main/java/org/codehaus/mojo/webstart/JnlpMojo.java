@@ -863,8 +863,8 @@ public class JnlpMojo
         for ( int i = 0; i < jarFiles.length; i++ )
         {
             signJar.setJarPath( jarFiles[i] );
-            // we don't change the jar name
-            // signJar.setSignedJar( xx );
+            // for some reason, it appears that the signed jar field is not null ?
+            signJar.setSignedJar( null );
             long lastModified = jarFiles[i].lastModified();
             signJar.execute();
             jarFiles[i].setLastModified( lastModified );
