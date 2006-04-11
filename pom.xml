@@ -23,6 +23,13 @@
     </license>
   </licenses>
 
+  <!-- work-around a maven issue MOJO-361 -->
+  <scm>
+    <url>https://svn.codehaus.org/mojo/trunk/mojo/mojo-sandbox/webstart-maven-plugin</url>
+    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/mojo-sandbox/webstart-maven-plugin</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/mojo-sandbox/webstart-maven-plugin</developerConnection>
+  </scm>
+
   <developers>
     <developer>
       <name>Jerome Lacoste</name>
@@ -74,4 +81,15 @@
 
   </profiles>
 
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.0-beta-4-SNAPSHOT</version>
+         <configuration>
+            <checkoutDirectoryName>webstart-maven-plugin</checkoutDirectoryName>
+          </configuration>
+        </plugin>
+    </plugins>
+  </reporting>
 </project>
