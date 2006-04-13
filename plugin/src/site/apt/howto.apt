@@ -8,6 +8,31 @@
 
 Maven Webstart Plugin - How-to
 
+Important notice
+
+  The plugin produces its own artifact. As maven recommends, you should use create a single artifact per module. Trying to do otherwise is not supported in this plugin. In fact, today it doesn't work.
+
+  If you try to do something like:
+
+------------------------------
+mvn install webstart:jnlp
+------------------------------
+
+  You will probably have a build failure. Example:
+
+------------------------------- 
+[INFO] ------------------------------------------------------------------------
+[ERROR] BUILD ERROR
+[INFO] ------------------------------------------------------------------------
+[INFO] Failure to run the plugin:
+Embedded error: artifact <yourgroupid>:<yourartifactid>:<yourpackaging>:<yourversion> has no matching file, why? Check the logs...
+-------------------------------
+
+  We may fix that in the future, but today it's not in our plan. If you feel otherwise, please vote on 
+  {{{http://jira.codehaus.org/browse/MOJO-369} MOJO-369}}.
+
+  The workaround is to use a multi-project setup.
+
 
 Input/Output
 
