@@ -107,6 +107,18 @@
     </dependency>
   </dependencies>
 
+  <!-- only needed because missing from the root pom.xml and we want the latest jar plugin -->
+  <repositories>
+    <repository>
+      <id>apache.snapshots</id>
+      <name>Apache Maven Central Development Repository</name>
+      <url>http://svn.apache.org/maven-snapshot-repository</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
+
   <profiles>
     <profile>
       <id>jdk16</id>
