@@ -47,12 +47,21 @@
       <name>David Boden</name>
       <email>dave@daveboden.com</email>
     </contributor>
+    <contributor>
+      <!--<id>ge0ffrey</id>-->
+      <name>Geoffrey De Smet</name>
+      <email>ge0ffrey.spam_AT_gmail.com</email>
+      <roles>
+        <role>Java developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </contributor>
   </contributors>
 
   <modules>
+    <module>plugin</module> <!-- TODO: better name ??-->
     <module>pack200-anttasks</module>
     <module>jnlp-servlet</module>
-    <module>plugin</module>
     <module>pack200-jdk14</module>
   </modules>
 

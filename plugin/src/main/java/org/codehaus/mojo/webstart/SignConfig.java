@@ -22,7 +22,8 @@ package org.codehaus.mojo.webstart;
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
  */
-public class SignConfig {
+public class SignConfig
+{
     /**
      */
     private String keystore;
@@ -92,143 +93,178 @@ public class SignConfig {
      */
     private boolean verify;
 
-    public void setKeystore( String keystore ) {
+    public void setKeystore( String keystore )
+    {
         this.keystore = keystore;
     }
 
-    public void setKeyalg( String keyalg ) {
+    public void setKeyalg( String keyalg )
+    {
         this.keyalg = keyalg;
     }
 
-    public void setKeysize( String keysize ) {
+    public void setKeysize( String keysize )
+    {
         this.keysize = keysize;
     }
 
-    public void setSigalg( String sigalg ) {
+    public void setSigalg( String sigalg )
+    {
         this.sigalg = sigalg;
     }
 
-    public void setSigfile( String sigfile ) {
+    public void setSigfile( String sigfile )
+    {
         this.sigfile = sigfile;
     }
 
-    public void setStoretype( String storetype ) {
+    public void setStoretype( String storetype )
+    {
         this.storetype = storetype;
     }
 
-    public void setStorepass( String storepass ) {
+    public void setStorepass( String storepass )
+    {
         this.storepass = storepass;
     }
 
-    public void setKeypass( String keypass ) {
+    public void setKeypass( String keypass )
+    {
         this.keypass = keypass;
     }
 
-    public void setValidity( String validity ) {
+    public void setValidity( String validity )
+    {
         this.validity = validity;
     }
 
-    public void setDnameCn( String dnameCn ) {
+    public void setDnameCn( String dnameCn )
+    {
         this.dnameCn = dnameCn;
     }
 
-    public void setDnameOu( String dnameOu ) {
+    public void setDnameOu( String dnameOu )
+    {
         this.dnameOu = dnameOu;
     }
 
-    public void setDnameL( String dnameL ) {
+    public void setDnameL( String dnameL )
+    {
         this.dnameL = dnameL;
     }
 
-    public void setDnameSt( String dnameSt ) {
+    public void setDnameSt( String dnameSt )
+    {
         this.dnameSt = dnameSt;
     }
 
-    public void setDnameO( String dnameO ) {
+    public void setDnameO( String dnameO )
+    {
         this.dnameO = dnameO;
     }
 
-    public void setDnameC( String dnameC ) {
+    public void setDnameC( String dnameC )
+    {
         this.dnameC = dnameC;
     }
 
-    public void setAlias( String alias ) {
+    public void setAlias( String alias )
+    {
         this.alias = alias;
     }
 
-    public void setVerify( boolean verify ) {
+    public void setVerify( boolean verify )
+    {
         this.verify = verify;
     }
 
-    public String getKeystore() {
+    public String getKeystore()
+    {
         return keystore;
     }
 
-    public String getKeyalg() {
+    public String getKeyalg()
+    {
         return keyalg;
     }
 
-    public String getKeysize() {
+    public String getKeysize()
+    {
         return keysize;
     }
 
-    public String getSigalg() {
+    public String getSigalg()
+    {
         return sigalg;
     }
 
-    public String getSigfile() {
+    public String getSigfile()
+    {
         return sigfile;
     }
 
-    public String getStoretype() {
+    public String getStoretype()
+    {
         return storetype;
     }
 
-    public String getStorepass() {
+    public String getStorepass()
+    {
         return storepass;
     }
 
-    public String getKeypass() {
+    public String getKeypass()
+    {
         return keypass;
     }
 
-    public String getValidity() {
+    public String getValidity()
+    {
         return validity;
     }
 
-    public String getDnameCn() {
+    public String getDnameCn()
+    {
         return dnameCn;
     }
 
-    public String getDnameOu() {
+    public String getDnameOu()
+    {
         return dnameOu;
     }
 
-    public String getDnameL() {
+    public String getDnameL()
+    {
         return dnameL;
     }
 
-    public String getDnameSt() {
+    public String getDnameSt()
+    {
         return dnameSt;
     }
 
-    public String getDnameO() {
+    public String getDnameO()
+    {
         return dnameO;
     }
 
-    public String getDnameC() {
+    public String getDnameC()
+    {
         return dnameC;
     }
 
-    public String getAlias() {
+    public String getAlias()
+    {
         return alias;
     }
 
-    public boolean getVerify() {
+    public boolean getVerify()
+    {
         return verify;
     }
 
-    public String getDname() {
+    public String getDname()
+    {
         StringBuffer buffer = new StringBuffer( 128 );
 
         appendToDnameBuffer( dnameCn, buffer, "CN" );
@@ -241,14 +277,16 @@ public class SignConfig {
         return buffer.toString();
     }
 
-    private void appendToDnameBuffer( final String property, StringBuffer buffer, final String prefix ) {
-        if ( property != null ) {
-            if ( buffer.length() > 0)
+    private void appendToDnameBuffer( final String property, StringBuffer buffer, final String prefix )
+    {
+        if ( property != null )
+        {
+            if ( buffer.length() > 0 )
             {
-                buffer.append(", ");
+                buffer.append( ", " );
             }
-            buffer.append(prefix).append("=");
-            buffer.append(property);
+            buffer.append( prefix ).append( "=" );
+            buffer.append( property );
         }
     }
 }

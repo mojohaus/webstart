@@ -45,13 +45,12 @@ public class Generator
     private File outputFile;
 
     /**
-     *
      * @param task
-     * @param currentDir used to find the template in conjunction to inputFileTemplatePath
+     * @param resourceLoaderPath  used to find the template in conjunction to inputFileTemplatePath
      * @param outputFile
-     * @param inputFileTemplatePath relative to currentDir
+     * @param inputFileTemplatePath relative to resourceLoaderPath
      */
-    public Generator( JnlpMojo task, File currentDir, File outputFile, String inputFileTemplatePath )
+    public Generator( JnlpMojo task, File resourceLoaderPath, File outputFile, String inputFileTemplatePath )
     {
         this.config = task;
 
@@ -59,10 +58,11 @@ public class Generator
         //initialise the resource loader to use the class loader
         Properties props = new Properties();
 
-        props.setProperty( VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.NullLogSystem" );
-        props.setProperty( "file.resource.loader.path", currentDir.getAbsolutePath() );
+        props.setProperty( VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS,
+                           "org.apache.velocity.runtime.log.NullLogSystem" );
+        props.setProperty( "file.resource.loader.path", resourceLoaderPath.getAbsolutePath() );
 
-        // System.out.println("OUHHHHH " + currentDir.getAbsolutePath());
+        // System.out.println("OUHHHHH " + resourceLoaderPath.getAbsolutePath());
 
         // props.setProperty( VelocityEngine.RESOURCE_LOADER, "classpath" );
         // props.setProperty( "classpath." + VelocityEngine.RESOURCE_LOADER + ".class",
@@ -80,14 +80,18 @@ public class Generator
             throw iae;
         }
         //set the template
+        if ( ! engine.templateExists( inputFileTemplatePath ) )
+        {
+            System.out.println( "Template not found!! ");
+        }
         try
         {
             this.template = engine.getTemplate( inputFileTemplatePath );
         }
         catch ( Exception e )
         {
-            IllegalArgumentException iae = new IllegalArgumentException(
-                  "Could not load the template file from '" + inputFileTemplatePath + "'" );
+            IllegalArgumentException iae =
+                new IllegalArgumentException( "Could not load the template file from '" + inputFileTemplatePath + "'" );
             iae.initCause( e );
             throw iae;
         }
@@ -111,7 +115,7 @@ public class Generator
             context.put( "vendor", config.getVendor() );
         }
         */
-	
+
         context.put( "outputFile", outputFile.getName() );
         context.put( "mainClass", config.getJnlp().getMainClass() );
         FileWriter writer = new FileWriter( outputFile );
@@ -132,16 +136,20 @@ public class Generator
         }
     }
 
-    static String getDependenciesText( JnlpMojo config ) {
+    static String getDependenciesText( JnlpMojo config )
+    {
         String dependenciesText = "";
         List artifacts = config.getPackagedJnlpArtifacts();
-        if ( artifacts.size() != 0 ) {
+        if ( artifacts.size() != 0 )
+        {
             StringBuffer buffer = new StringBuffer( 100 * artifacts.size() );
-            buffer.append("\n");
-            for (int i = 0; i < artifacts.size(); i++) {
+            buffer.append( "\n" );
+            for ( int i = 0; i < artifacts.size(); i++ )
+            {
                 Artifact artifact = (Artifact) artifacts.get( i );
                 buffer.append( "<jar href=\"" ).append( artifact.getFile().getName() ).append( "\"" );
-                if ( config.isArtifactWithMainClass( artifact )) {
+                if ( config.isArtifactWithMainClass( artifact ) )
+                {
                     buffer.append( " main=\"true\"" );
                 }
                 buffer.append( "/>\n" );

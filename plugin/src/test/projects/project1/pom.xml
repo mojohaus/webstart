@@ -19,62 +19,53 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>webstart-maven-plugin</artifactId>
         <executions>
-           <execution>
-              <goals>
-                 <goal>jnlp</goal>
-              </goals>
-           </execution>
+          <execution>
+            <goals>
+              <goal>jnlp</goal>
+            </goals>
+          </execution>
         </executions>
         <configuration>
 
-            <dependencies>
-              <!--
-              <includes>
-                <include>commons-logging:commons-logging</include>
-                <include>commons-cli:commons-cli</include>
-              </includes>
-              -->
-              <excludes>
-                <exclude>commons-lang:commons-lang</exclude>
-              </excludes>
-            </dependencies>
+          <dependencies>
+            <excludes>
+              <exclude>commons-lang:commons-lang</exclude>
+            </excludes>
+          </dependencies>
 
-           <jnlp>
-             <resources>${project.basedir}/src/jnlp/resources</resources>
-             <!--outputFile>src/jnlp/template.vm</outputFile--> <!-- default file name-->
-             <outputFile>test.jnlp</outputFile>
-             <mainClass>org.apache.commons.cli.BasicParser</mainClass>
-           </jnlp>
+          <jnlp>
+            <!-- we play with the resource path and template relative path to test MOJO-391 -->
+            <inputTemplateResourcePath>${project.basedir}/src/</inputTemplateResourcePath>
+            <inputTemplate>jnlp/template.vm</inputTemplate>
+            <resources>${project.basedir}/src/jnlp/resources</resources>
+            <outputFile>test.jnlp</outputFile>
+            <mainClass>org.apache.commons.cli.BasicParser</mainClass>
+          </jnlp>
 
-           <!-- SIGNING -->
-           <!-- defining this will automatically sign the jar and its dependencies -->
-           <sign>
-             <keystore>/tmp/keystore</keystore>
-             <keypass>m2m2m2</keypass>
-             <storepass>m2m2m2</storepass>
-             <!--sigfile>m2m2m2</sigfile-->
-             <alias>alias</alias>
-             <validity>180</validity>
+          <!-- SIGNING -->
+          <!-- defining this will automatically sign the jar and its dependencies -->
+          <sign>
+            <keystore>/tmp/keystore</keystore>
+            <keypass>m2m2m2</keypass>
+            <storepass>m2m2m2</storepass>
+            <!--sigfile>m2m2m2</sigfile-->
+            <alias>alias</alias>
+            <validity>180</validity>
 
-             <dnameCn>www.example.com</dnameCn>
-             <dnameOu>None</dnameOu>
-             <dnameO>ExampleOrg</dnameO>
-             <dnameL>Seattle</dnameL>
-             <dnameSt>Washington</dnameSt>
-             <dnameC>US</dnameC>
+            <dnameCn>www.example.com</dnameCn>
+            <dnameOu>None</dnameOu>
+            <dnameO>ExampleOrg</dnameO>
+            <dnameL>Seattle</dnameL>
+            <dnameSt>Washington</dnameSt>
+            <dnameC>US</dnameC>
 
-             <verify>true</verify>
-           </sign>
+            <verify>true</verify>
+          </sign>
 
-           <keystore>
-             <delete>true</delete>
-             <gen>true</gen>
-           </keystore>
-
-           <!--usejnlpservlet>false</usejnlpservlet-->>
-
-           <!--pack200>true</pack200>
-           <gzip>true</gzip-->
+          <keystore>
+            <delete>true</delete>
+            <gen>true</gen>
+          </keystore>
 
           <verbose>false</verbose>
         </configuration>

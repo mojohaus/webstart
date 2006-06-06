@@ -51,7 +51,7 @@ import java.util.List;
 
 /**
  * Packages a jnlp application.
- *
+ * <p/>
  * The plugin tries to not re-sign/re-pack if the dependent jar hasn't changed.
  * As a consequence, if one modifies the pom jnlp config or a keystore, one should clean before rebuilding.
  *
@@ -111,21 +111,26 @@ public class JnlpMojo
     public static class Dependencies
     {
         private List includes;
+
         private List excludes;
 
-        public List getIncludes() {
+        public List getIncludes()
+        {
             return includes;
         }
 
-        public void setIncludes(List includes) {
+        public void setIncludes( List includes )
+        {
             this.includes = includes;
         }
 
-        public List getExcludes() {
+        public List getExcludes()
+        {
             return excludes;
         }
 
-        public void setExcludes(List excludes) {
+        public void setExcludes( List excludes )
+        {
             this.excludes = excludes;
         }
     }
@@ -263,19 +268,25 @@ public class JnlpMojo
      */
     private PluginManager pluginManager;
 
-    private class CompositeFileFilter implements FileFilter {
+    private class CompositeFileFilter
+        implements FileFilter
+    {
         private List fileFilters = new ArrayList();
 
-        CompositeFileFilter( FileFilter filter1, FileFilter filter2 ) {
+        CompositeFileFilter( FileFilter filter1, FileFilter filter2 )
+        {
             fileFilters.add( filter1 );
             fileFilters.add( filter2 );
         }
- 
+
         public boolean accept( File pathname )
         {
-            for ( int i = 0; i < fileFilters.size(); i++ ) {
-                if ( ! ((FileFilter) fileFilters.get(i)).accept( pathname ) ) 
-                    return false; 
+            for ( int i = 0; i < fileFilters.size(); i++ )
+            {
+                if ( ! ( (FileFilter) fileFilters.get( i ) ).accept( pathname ) )
+                {
+                    return false;
+                }
             }
             return true;
         }
@@ -320,7 +331,9 @@ public class JnlpMojo
 
     private FileFilter updatedPack200FileFilter = new CompositeFileFilter( pack200FileFilter, modifiedFileFilter );
 
-    /** the artifacts packaged in the webstart app. **/
+    /**
+     * the artifacts packaged in the webstart app. *
+     */
     private List packagedJnlpArtifacts = new ArrayList();
 
     private List modifiedJnlpArtifacts = new ArrayList();
@@ -330,9 +343,11 @@ public class JnlpMojo
     // initialized by execute
     private long startTime;
 
-    private long getStartTime() {
-        if ( startTime == 0 ) {
-             throw new IllegalStateException( "startTime not initialized" );
+    private long getStartTime()
+    {
+        if ( startTime == 0 )
+        {
+            throw new IllegalStateException( "startTime not initialized" );
         }
         return startTime;
     }
@@ -346,7 +361,7 @@ public class JnlpMojo
         // interesting: copied files lastModified time stamp will be rounded.
         // We have to be sure that the startTime is before that time...
         // rounding to the second - 1 millis should be sufficient..
-        startTime = System.currentTimeMillis() - 1000; 
+        startTime = System.currentTimeMillis() - 1000;
 
         File workDirectory = getWorkDirectory();
         getLog().debug( "using work directory " + workDirectory );
@@ -373,8 +388,8 @@ public class JnlpMojo
 
             if ( artifactWithMainClass == null )
             {
-                throw new MojoExecutionException( "didn't find artifact with main class: "
-                        + jnlp.getMainClass() + ". Did you specify it? " );
+                throw new MojoExecutionException(
+                    "didn't find artifact with main class: " + jnlp.getMainClass() + ". Did you specify it? " );
             }
 
             // native libsi
@@ -414,13 +429,13 @@ public class JnlpMojo
             //
             // pack200 and jar signing
             //
-            if ( ( pack200 || sign != null )
-                 && getLog().isDebugEnabled() )
+            if ( ( pack200 || sign != null ) && getLog().isDebugEnabled() )
             {
-                logCollection( "Some dependencies may be skipped. Here's the list of the artifacts that should be signed/packed: ",
-                                modifiedJnlpArtifacts );
+                logCollection(
+                    "Some dependencies may be skipped. Here's the list of the artifacts that should be signed/packed: ",
+                    modifiedJnlpArtifacts );
             }
- 
+
             if ( sign != null )
             {
 
@@ -444,10 +459,10 @@ public class JnlpMojo
                 }
 
                 int signedJars = signJars( workDirectory, updatedJarFileFilter );
-                if ( signedJars != modifiedJnlpArtifacts.size() ) {
-                    throw new IllegalStateException( 
-                           "the number of signed artifacts differ from the number of modified artifacts. Implementation error" 
-                       );
+                if ( signedJars != modifiedJnlpArtifacts.size() )
+                {
+                    throw new IllegalStateException(
+                        "the number of signed artifacts differ from the number of modified artifacts. Implementation error" );
                 }
             }
             if ( pack200 )
@@ -456,9 +471,9 @@ public class JnlpMojo
                 Pack200.packJars( workDirectory, updatedJarFileFilter, this.gzip );
             }
 
-            generateJnlpFile(workDirectory);
+            generateJnlpFile( workDirectory );
 
-          // package the zip. Note this is very simple. Look at the JarMojo which does more things.
+            // package the zip. Note this is very simple. Look at the JarMojo which does more things.
             // we should perhaps package as a war when inside a project with war packaging ?
             File toFile = new File( project.getBuild().getDirectory(), project.getBuild().getFinalName() + ".zip" );
             if ( toFile.exists() )
@@ -481,7 +496,7 @@ public class JnlpMojo
         }
         catch ( Exception e )
         {
-            throw new MojoExecutionException( "Failure to run the plugin: ", e);
+            throw new MojoExecutionException( "Failure to run the plugin: ", e );
             /*
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter( sw, true );
@@ -495,30 +510,40 @@ public class JnlpMojo
 
     }
 
-    private void copyResources( File resourcesDir, File workDirectory ) throws IOException {
-        if ( ! resourcesDir.exists() ) {
-            getLog().info( "No resources found in " + resourcesDir.getAbsolutePath());
-        } else {
-            if ( ! resourcesDir.isDirectory() ) {
-                getLog().debug( "Not a directory: " + resourcesDir.getAbsolutePath());
+    private void copyResources( File resourcesDir, File workDirectory )
+        throws IOException
+    {
+        if ( ! resourcesDir.exists() )
+        {
+            getLog().info( "No resources found in " + resourcesDir.getAbsolutePath() );
+        }
+        else
+        {
+            if ( ! resourcesDir.isDirectory() )
+            {
+                getLog().debug( "Not a directory: " + resourcesDir.getAbsolutePath() );
             }
-            else {
-                getLog().debug( "Copying resources from " + resourcesDir.getAbsolutePath());
+            else
+            {
+                getLog().debug( "Copying resources from " + resourcesDir.getAbsolutePath() );
 
                 // hopefully available from FileUtils 1.0.5-SNAPSHOT
                 // FileUtils.copyDirectoryStructure( resourcesDir , workDirectory );
 
                 // this may needs to be parametrized somehow
                 String excludes = concat( DirectoryScanner.DEFAULTEXCLUDES, ", " );
-                copyDirectoryStructure( resourcesDir , workDirectory, "**", excludes );
+                copyDirectoryStructure( resourcesDir, workDirectory, "**", excludes );
             }
         }
     }
 
-    private static String concat( String[] array, String delim) {
+    private static String concat( String[] array, String delim )
+    {
         StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < array.length; i++) {
-            if ( i > 0 ) {
+        for ( int i = 0; i < array.length; i++ )
+        {
+            if ( i > 0 )
+            {
                 buffer.append( delim );
             }
             String s = array[i];
@@ -527,58 +552,60 @@ public class JnlpMojo
         return buffer.toString();
     }
 
-    private void copyDirectoryStructure( File sourceDirectory, File destinationDirectory,
-                                               String includes, String excludes )
-          throws IOException
-      {
-          if ( ! sourceDirectory.exists() )
-          {
-              return;
-          }
+    private void copyDirectoryStructure( File sourceDirectory, File destinationDirectory, String includes,
+                                         String excludes )
+        throws IOException
+    {
+        if ( ! sourceDirectory.exists() )
+        {
+            return;
+        }
 
-          List files = FileUtils.getFiles( sourceDirectory, includes, excludes );
+        List files = FileUtils.getFiles( sourceDirectory, includes, excludes );
 
-          for ( Iterator i = files.iterator(); i.hasNext(); )
-          {
-              File file = (File) i.next();
+        for ( Iterator i = files.iterator(); i.hasNext(); )
+        {
+            File file = (File) i.next();
 
-              getLog().debug( "Copying " + file + " to " + destinationDirectory );
+            getLog().debug( "Copying " + file + " to " + destinationDirectory );
 
-              String path = file.getAbsolutePath().substring( sourceDirectory.getAbsolutePath().length() + 1 );
+            String path = file.getAbsolutePath().substring( sourceDirectory.getAbsolutePath().length() + 1 );
 
-              File destDir = new File( destinationDirectory, path );
+            File destDir = new File( destinationDirectory, path );
 
-              getLog().debug( "Copying " + file + " to " + destDir );
+            getLog().debug( "Copying " + file + " to " + destDir );
 
-              if ( file.isDirectory() ) {
-                  destDir.mkdirs();
-              } else {
-                  FileUtils.copyFileToDirectory( file, destDir.getParentFile() );
-              }
-          }
-      }
+            if ( file.isDirectory() )
+            {
+                destDir.mkdirs();
+            }
+            else
+            {
+                FileUtils.copyFileToDirectory( file, destDir.getParentFile() );
+            }
+        }
+    }
 
     /**
      * Iterate through all the top level and transitive dependencies declared in the project and
      * collect all the runtime scope dependencies for inclusion in the .zip and signing.
+     *
      * @throws IOException
      */
-    private void processDependencies() throws IOException {
+    private void processDependencies()
+        throws IOException
+    {
 
-        processDependency(getProject().getArtifact());
+        processDependency( getProject().getArtifact() );
 
         AndArtifactFilter filter = new AndArtifactFilter();
         // filter.add( new ScopeArtifactFilter( dependencySet.getScope() ) );
 
-        if ( dependencies != null
-                && dependencies.getIncludes() != null
-                && !dependencies.getIncludes().isEmpty() )
+        if ( dependencies != null && dependencies.getIncludes() != null && !dependencies.getIncludes().isEmpty() )
         {
             filter.add( new IncludesArtifactFilter( dependencies.getIncludes() ) );
         }
-        if ( dependencies != null
-                && dependencies.getExcludes() != null
-                && !dependencies.getExcludes().isEmpty() )
+        if ( dependencies != null && dependencies.getExcludes() != null && !dependencies.getExcludes().isEmpty() )
         {
             filter.add( new ExcludesArtifactFilter( dependencies.getExcludes() ) );
         }
@@ -588,13 +615,16 @@ public class JnlpMojo
         for ( Iterator it = artifacts.iterator(); it.hasNext(); )
         {
             Artifact artifact = (Artifact) it.next();
-            if ( filter.include( artifact ) ) {
-                processDependency(artifact);
+            if ( filter.include( artifact ) )
+            {
+                processDependency( artifact );
             }
         }
     }
 
-    private void processDependency(Artifact artifact) throws IOException {
+    private void processDependency( Artifact artifact )
+        throws IOException
+    {
         // TODO: scope handler
         // Include runtime and compile time libraries
         if ( !Artifact.SCOPE_PROVIDED.equals( artifact.getScope() ) &&
@@ -616,12 +646,14 @@ public class JnlpMojo
                     getLog().error( "artifact download url: " + artifact.getDownloadUrl() );
                     getLog().error( "artifact repository: " + artifact.getRepository() );
                     getLog().error( "artifact repository: " + artifact.getVersion() );
-                    throw new IllegalStateException( "artifact " + artifact + " has no matching file, why? Check the logs..." );
+                    throw new IllegalStateException(
+                        "artifact " + artifact + " has no matching file, why? Check the logs..." );
                 }
 
                 boolean copied = copyFileToDirectoryIfNecessary( toCopy, getWorkDirectory() );
 
-                if ( copied ) {
+                if ( copied )
+                {
 
                     String name = toCopy.getName();
                     this.modifiedJnlpArtifacts.add( name.substring( 0, name.lastIndexOf( '.' ) ) );
@@ -630,21 +662,18 @@ public class JnlpMojo
 
                 packagedJnlpArtifacts.add( artifact );
 
-                if ( artifactContainsClass( artifact, jnlp.getMainClass() ) ) {
+                if ( artifactContainsClass( artifact, jnlp.getMainClass() ) )
+                {
                     if ( artifactWithMainClass == null )
                     {
                         artifactWithMainClass = artifact;
-                        getLog().debug(
-                            "Found main jar. Artifact " + artifactWithMainClass +
-                            " contains the main class: " +
-                                jnlp.getMainClass() );
+                        getLog().debug( "Found main jar. Artifact " + artifactWithMainClass +
+                            " contains the main class: " + jnlp.getMainClass() );
                     }
                     else
                     {
-                        getLog().warn(
-                            "artifact " + artifact + " also contains the main class: " +
-                                jnlp.getMainClass() +
-                            ". IGNORED." );
+                        getLog().warn( "artifact " + artifact + " also contains the main class: " +
+                            jnlp.getMainClass() + ". IGNORED." );
                     }
                 }
             }
@@ -653,14 +682,15 @@ public class JnlpMojo
             // we should probably identify them and package inside jars that we timestamp like the native lib
             // to avoid repackaging every time. What are the types of the native libs?
             {
-                getLog().debug(
-                    "Skipping artifact of type " + type + " for " + getWorkDirectory().getName() );
+                getLog().debug( "Skipping artifact of type " + type + " for " + getWorkDirectory().getName() );
             }
             // END COPY
         }
     }
 
-    private boolean artifactContainsClass(Artifact artifact, final String mainClass) throws MalformedURLException {
+    private boolean artifactContainsClass( Artifact artifact, final String mainClass )
+        throws MalformedURLException
+    {
         boolean containsClass = true;
 
         // JarArchiver.grabFilesAndDirs()
@@ -672,62 +702,82 @@ public class JnlpMojo
         }
         catch ( ClassNotFoundException e )
         {
-            getLog().debug(
-                "artifact " + artifact + " doesn't contain the main class: " + mainClass );
+            getLog().debug( "artifact " + artifact + " doesn't contain the main class: " + mainClass );
             containsClass = false;
-        } catch ( Throwable t ) {
-            getLog().info(
-                "artifact " + artifact + " seems to contain the main class: " + mainClass
-                 + " but the jar doesn't seem to contain all dependencies " + t.getMessage());
+        }
+        catch ( Throwable t )
+        {
+            getLog().info( "artifact " + artifact + " seems to contain the main class: " + mainClass +
+                " but the jar doesn't seem to contain all dependencies " + t.getMessage() );
         }
 
-        if ( c != null ) {
-            getLog().debug(
-                "Checking if the loaded class contains a main method." );
+        if ( c != null )
+        {
+            getLog().debug( "Checking if the loaded class contains a main method." );
 
-            try {
-                c.getMethod( "main" , new Class[] { String[].class } );
-            } catch ( NoSuchMethodException e ) {
-                getLog().warn(
-                    "The specified main class (" + mainClass
-                    + ") doesn't seem to contain a main method... Please check your configuration." + e.getMessage() );
-            } catch ( NoClassDefFoundError e ) {
+            try
+            {
+                c.getMethod( "main", new Class[]{String[].class} );
+            }
+            catch ( NoSuchMethodException e )
+            {
+                getLog().warn( "The specified main class (" + mainClass +
+                    ") doesn't seem to contain a main method... Please check your configuration." + e.getMessage() );
+            }
+            catch ( NoClassDefFoundError e )
+            {
                 // undocumented in SDK 5.0. is this due to the ClassLoader lazy loading the Method thus making this a case tackled by the JVM Spec (Ref 5.3.5)!
                 // Reported as Incident 633981 to Sun just in case ...
-                getLog().warn(
-                    "Something failed while checking if the main class contains the main() method. "
-                    + "This is probably due to the limited classpath we have provided to the class loader. "
-                    + "The specified main class (" + mainClass + ") found in the jar is *assumed* to contain a main method... " + e.getMessage() );
-            } catch ( Throwable t ) {
-                getLog().error(
-                    "Unknown error: Couldn't check if the main class has a main method. "
-                    + "The specified main class (" + mainClass + ") found in the jar is *assumed* to contain a main method...", t );
+                getLog().warn( "Something failed while checking if the main class contains the main() method. " +
+                    "This is probably due to the limited classpath we have provided to the class loader. " +
+                    "The specified main class (" + mainClass +
+                    ") found in the jar is *assumed* to contain a main method... " + e.getMessage() );
+            }
+            catch ( Throwable t )
+            {
+                getLog().error( "Unknown error: Couldn't check if the main class has a main method. " +
+                    "The specified main class (" + mainClass +
+                    ") found in the jar is *assumed* to contain a main method...", t );
             }
         }
 
         return containsClass;
     }
 
-    void generateJnlpFile(File outputDirectory) throws MojoExecutionException
+    void generateJnlpFile( File outputDirectory )
+        throws MojoExecutionException
     {
-        if ( jnlp.getOutputFile() == null || jnlp.getOutputFile().length() == 0 ) {
+        if ( jnlp.getOutputFile() == null || jnlp.getOutputFile().length() == 0 )
+        {
             getLog().debug( "Jnlp output file name not specified. Using default output file name: launch.jnlp." );
             jnlp.setOutputFile( "launch.jnlp" );
         }
-        File jnlpOutputFile = new File(outputDirectory, jnlp.getOutputFile() );
+        File jnlpOutputFile = new File( outputDirectory, jnlp.getOutputFile() );
 
-        if ( jnlp.getInputTemplate() == null || jnlp.getInputTemplate().length() == 0 ) {
-            getLog().debug( "Jnlp template file name not specified. Using default output file name: src/jnlp/template.vm." );
+        if ( jnlp.getInputTemplate() == null || jnlp.getInputTemplate().length() == 0 )
+        {
+            getLog().debug(
+                "Jnlp template file name not specified. Using default output file name: src/jnlp/template.vm." );
             jnlp.setInputTemplate( "src/jnlp/template.vm" );
         }
         String templateFileName = jnlp.getInputTemplate();
 
-        Generator jnlpGenerator = new Generator(this, getProject().getBasedir(), jnlpOutputFile, templateFileName );
-        try {
+        File resourceLoaderPath = getProject().getBasedir();
+
+        if ( jnlp.getInputTemplateResourcePath() != null && jnlp.getInputTemplateResourcePath().length() > 0 )
+        {
+            resourceLoaderPath = new File( jnlp.getInputTemplateResourcePath() );
+        }
+
+        Generator jnlpGenerator = new Generator( this, resourceLoaderPath, jnlpOutputFile, templateFileName );
+        try
+        {
             jnlpGenerator.generate();
-        } catch (Exception e) {
-            getLog().debug(e.toString());
-            throw new MojoExecutionException("Could not generate the JNLP deployment descriptor", e);
+        }
+        catch ( Exception e )
+        {
+            getLog().debug( e .toString() );
+            throw new MojoExecutionException( "Could not generate the JNLP deployment descriptor", e );
         }
     }
 
@@ -810,33 +860,41 @@ public class JnlpMojo
      *
      * @return <code>true</code> when the file was copied, <code>false</code> otherwise.
      * @throws NullPointerException is sourceFile is <code>null</code> or
-     *         <code>sourceFile.getName()</code> is <code>null</code>
-     * @throws IOException if the copy operation is tempted but failed.
+     *                              <code>sourceFile.getName()</code> is <code>null</code>
+     * @throws IOException          if the copy operation is tempted but failed.
      */
-    private boolean copyFileToDirectoryIfNecessary( File sourceFile, File targetDirectory ) throws IOException {
+    private boolean copyFileToDirectoryIfNecessary( File sourceFile, File targetDirectory )
+        throws IOException
+    {
 
-        if ( sourceFile == null ) {
+        if ( sourceFile == null )
+        {
             throw new NullPointerException( "sourceFile is null" );
         }
 
         File targetFile = new File( targetDirectory, sourceFile.getName() );
 
-        boolean shouldCopy = ! targetFile.exists() 
-             || targetFile.lastModified() < sourceFile.lastModified();
+        boolean shouldCopy = ! targetFile.exists() || targetFile.lastModified() < sourceFile.lastModified();
 
-        if ( shouldCopy ) {
+        if ( shouldCopy )
+        {
 
             FileUtils.copyFileToDirectory( sourceFile, targetDirectory );
 
-        } else {
+        }
+        else
+        {
 
-            getLog().debug( "Source file hasn't changed. Do not overwrite " + targetFile + " with " + sourceFile + ".");
+            getLog().debug(
+                "Source file hasn't changed. Do not overwrite " + targetFile + " with " + sourceFile + "." );
 
         }
         return shouldCopy;
     }
 
-    /** return the number of signed jars **/
+    /**
+     * return the number of signed jars *
+     */
     private int signJars( File directory, FileFilter fileFilter )
         throws MojoExecutionException
     {
@@ -846,7 +904,9 @@ public class JnlpMojo
         getLog().debug( "signJars in " + directory + " found " + jarFiles.length + " jar(s) to sign" );
 
         if ( jarFiles.length == 0 )
+        {
             return 0;
+        }
 
         JarSignMojo signJar = new JarSignMojo();
         signJar.setAlias( sign.getAlias() );
@@ -888,13 +948,12 @@ public class JnlpMojo
         getLog().debug( "verifyjar " + this.verifyjar );
         getLog().debug( "verbose " + this.verbose );
 
-
-        if ( jnlp == null)
+        if ( jnlp == null )
         {
             throw new MojoExecutionException( "<jnlp> configuration element missing." );
         }
 
-        if ( SystemUtils.JAVA_VERSION_FLOAT < 1.5f)
+        if ( SystemUtils.JAVA_VERSION_FLOAT < 1.5f )
         {
             if ( pack200 )
             {
@@ -961,6 +1020,6 @@ public class JnlpMojo
         }
         return "1.0+";
     }
-    
+
 }
 

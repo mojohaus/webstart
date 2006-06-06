@@ -27,6 +27,8 @@ import java.io.File;
 public class JnlpConfig
 {
 
+    private String inputTemplateResourcePath;
+
     private String inputTemplate;
 
     private String outputFile;
@@ -45,6 +47,11 @@ public class JnlpConfig
      * The path containing any resources which will be added to the webstart artifact
      */
     private File resources;
+
+    public void setInputTemplateResourcePath( String inputTemplateResourcePath )
+    {
+        this.inputTemplateResourcePath = inputTemplateResourcePath;
+    }
 
     public void setInputTemplate( String inputTemplate )
     {
@@ -82,12 +89,18 @@ public class JnlpConfig
         this.mainClass = mainClass;
     }
 
+    public String getInputTemplateResourcePath()
+    {
+        return inputTemplateResourcePath;
+    }
+
     public String getInputTemplate()
     {
         return inputTemplate;
     }
 
-    public void setResources( File resources ) {
+    public void setResources( File resources )
+    {
         this.resources = resources;
     }
 
@@ -106,7 +119,8 @@ public class JnlpConfig
         return version;
     }
 
-    public File getResources() {
+    public File getResources()
+    {
         return resources;
     }
 

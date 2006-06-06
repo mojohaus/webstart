@@ -132,12 +132,14 @@ Plugin configuration
 
            <!-- JNLP generation -->
            <jnlp>
-             <!--resources>${project.basedir}/src/main/jnlp</resources--> <!-- default value -->
-             <!--inputTemplate>src/jnlp/template.vm</inputTemplate-->
+             <!-- default values -->
+             <!--resources>${project.basedir}/src/main/jnlp</resources-->
+             <!--inputTemplateResourcePath>${project.basedir}</inputTemplateResourcePath-->
+             <!--inputTemplate>src/jnlp/template.vm</inputTemplate--> <!-- relative to inputTemplateResourcePath -->
              <outputFile>app.jnlp</outputFile> <!-- defaults to launch.jnlp -->
 
-             <!-- used to automatically identify the jar containing the dependency. (note: slightly broken today) -->
-             <!-- this is going to change -->
+             <!-- used to automatically identify the jar containing the main class. -->
+             <!-- this is perhaps going to change -->
              <mainClass>org.apache.commons.cli.BasicParser</mainClass>
            </jnlp>
 
@@ -162,7 +164,7 @@ Plugin configuration
              <verify>true</verify>
            </sign>
 
-           <!-- KEYSTORE MANGEMENT. do we want that? -->
+           <!-- KEYSTORE MANGEMENT -->
            <keystore>
              <delete>true</delete> <!-- delete the keystore -->
              <gen>true</gen>       <!-- optional shortcut to generate the store. -->
