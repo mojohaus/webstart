@@ -12,8 +12,6 @@
   <packaging>maven-plugin</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>Maven Webstart Plugin</name>
-  <inceptionYear>2005</inceptionYear>
-  <url>http://mojo.codehaus.org/webstart-maven-plugin</url>
 
   <!-- work-around a maven issue MOJO-361 -->
   <scm>
