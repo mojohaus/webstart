@@ -63,7 +63,7 @@
   <modules>
     <module>plugin</module> <!-- TODO: better name ??-->
     <module>pack200-anttasks</module>
-    <module>jnlp-servlet</module>
+    <!--module>jnlp-servlet</module-->
     <module>pack200-jdk14</module>
   </modules>
 
