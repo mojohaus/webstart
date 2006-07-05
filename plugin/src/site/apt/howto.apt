@@ -154,12 +154,12 @@ Plugin configuration
              <alias></alias>
              <validity></validity>
 
-             <dname.cn></dname.cn>
-             <dname.ou></dname.ou>
-             <dname.o></dname.o>
-             <dname.l></dname.l>
-             <dname.st></dname.st>
-             <dname.c></dname.c>
+             <dnameCn></dnameCn>
+             <dnameOu></dnameOu>
+             <dnameO></dnameO>
+             <dnameL></dnameL>
+             <dnameSt></dnameSt>
+             <dnameC></dnameC>
 
              <verify>true</verify>
            </sign>
