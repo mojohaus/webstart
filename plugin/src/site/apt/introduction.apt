@@ -33,19 +33,9 @@ Maven Webstart Plugin - Introduction
 
 Features & build stability
 
- This is a very early but working release. It requires maven 2 (version 2.0.1 and further) to work correctly.
+  This is a very early but working release. It requires maven 2 (version 2.0.4 and further) to work correctly.
 
- Note (31/Jan/06): as of today, it is possible to use the plugin as built from the trunk without problem.
- A stable snapshot will be deployed on the codehaus snapshots repository.
-
- Once this is done, to accomodate with new forthcoming features and make the plugin more standard, it will be modified in a slightly incompatible and unstable way in the forthcoming days.
- We expect the uncompatible changes to affect very slighlty your pom and build structure. Nothing very hard to fix but still. Something you may want to plan for.
-
- In the meantime the plugin build operation will become a little bit harder for a short period of time, because we will depend on unreleased versions of other plugins (in particular the maven-jar-plugin).
- So if you need a stable version of the plugin pick it from the snapshots repository.
-
- After that we expect stable snapshots to be regularly delivered.
-
+  <<Note>> in order to build from source, you will need several dependencies. The webstart plugin is in fact a multi-module project and some of its dependencies are located under the {{{..}parent directory}} of the plugin itself. Be sure to check out the complete project.
 
 Features:
 
