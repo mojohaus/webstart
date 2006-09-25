@@ -14,6 +14,10 @@
   <name>Maven Webstart Plugin Parent</name>
   <inceptionYear>2005</inceptionYear>
   <url>http://mojo.codehaus.org/webstart-maven-plugin-parent</url>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/MWEBSTART</url>
+  </issueManagement>
 
   <licenses>
     <license>
