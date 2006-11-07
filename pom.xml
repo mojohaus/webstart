@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>webstart-maven-plugin-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.0-alpha-1</version>
+  <version>1.0-alpha-2-SNAPSHOT</version>
   <name>Maven Webstart Plugin Parent</name>
   <inceptionYear>2005</inceptionYear>
   <url>http://mojo.codehaus.org/webstart-maven-plugin-parent</url>
@@ -26,9 +26,9 @@
 
   <!-- work-around a maven issue MOJO-361 -->
   <scm>
-    <url>https://svn.codehaus.org/mojo/tags/webstart-maven-plugin-parent-1.0-alpha-1</url>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/tags/webstart-maven-plugin-parent-1.0-alpha-1</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/tags/webstart-maven-plugin-parent-1.0-alpha-1</developerConnection>
+    <url>https://svn.codehaus.org/mojo/trunk/mojo/mojo-sandbox/webstart-maven-plugin</url>
+    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/mojo-sandbox/webstart-maven-plugin</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/mojo-sandbox/webstart-maven-plugin</developerConnection>
   </scm>
 
   <developers>
