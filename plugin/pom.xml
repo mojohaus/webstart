@@ -1,11 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>webstart-maven-plugin-parent</artifactId>
-    <version>1.0-alpha-1-SNAPSHOT</version>
+    <version>1.0-alpha-1</version>
   </parent>
 
   <artifactId>webstart-maven-plugin</artifactId>
@@ -14,9 +12,9 @@
 
   <!-- work-around a maven issue MOJO-361 -->
   <scm>
-    <url>https://svn.codehaus.org/mojo/trunk/mojo/mojo-sandbox/webstart-maven-plugin/plugin</url>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/mojo-sandbox/webstart-maven-plugin/plugin</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/mojo-sandbox/webstart-maven-plugin/plugin</developerConnection>
+    <url>https://svn.codehaus.org/mojo/tags/webstart-maven-plugin-parent-1.0-alpha-1</url>
+    <connection>scm:svn:https://svn.codehaus.org/mojo/tags/webstart-maven-plugin-parent-1.0-alpha-1</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/tags/webstart-maven-plugin-parent-1.0-alpha-1</developerConnection>
   </scm>
 
   <developers>
