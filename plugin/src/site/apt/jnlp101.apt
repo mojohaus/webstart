@@ -70,8 +70,17 @@ Configuring your webapp to use JnlpDownloadServlet
  Unfortunately, the JnlpDownloadServlet's jar file is not yet available in the
  public ibiblio.org/maven2 repository. Until the licensing issues are worked out,
  you'll need to keep a copy of the jar file in your own remote repository or
- install the package in your local repository.
+ install the package in your local repository. Here's the command for performing
+ the second option:
+
+-------------------------------
+mvn install:install-file -Dfile=%JAVA_HOME%\sample\jnlp\servlet\jnlp-servlet.jar \
+-DgroupId=com.sun.java.jnlp -DartifactId=jnlp-servlet -Dversion=5.0 \
+-Dpackaging=jar -DgeneratePom=true
+-------------------------------
  
+ And the corresponding dependency definition:
+
 -------------------------------
 <!-- 
     Sun's JnlpDownladServlet takes the template jnlp file and inserts
@@ -84,7 +93,6 @@ Configuring your webapp to use JnlpDownloadServlet
     <scope>runtime</scope>
 </dependency>
 -------------------------------
-
 
 * How to detect the codebase from the webstart application using the Jnlp API
 
