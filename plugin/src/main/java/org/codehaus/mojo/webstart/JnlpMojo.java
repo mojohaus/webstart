@@ -33,6 +33,7 @@ import org.apache.maven.settings.Settings;
 
 import org.codehaus.mojo.keytool.GenkeyMojo;
 import org.codehaus.mojo.webstart.generator.Generator;
+import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.DirectoryScanner;
@@ -45,6 +46,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -84,6 +86,14 @@ public class JnlpMojo
      * @required
      */
     private ZipArchiver zipArchiver;
+
+    /**
+     * To look up Archiver/UnArchiver implementations
+     *
+     * @parameter expression="${component.org.codehaus.plexus.archiver.manager.ArchiverManager}"
+     * @required
+     */
+    protected ArchiverManager archiverManager;    
 
     /**
      * Project.
@@ -320,7 +330,7 @@ public class JnlpMojo
                 ( pathname.getName().endsWith( ".jar.pack.gz" ) || pathname.getName().endsWith( ".jar.pack" ) );
         }
     };
-
+    
     // the jars to sign and pack are selected if they are newer than the plugin start.
     // as the plugin copies the new versions locally before signing/packing them
     // we just need to see if the plugin copied a new version
@@ -447,6 +457,9 @@ public class JnlpMojo
                     }
                     genKeyStore();
                 }
+                
+                // not yet enabled
+                // removeExistingSignatures(workDirectory, updatedJarFileFilter);
 
                 if ( pack200 )
                 {
@@ -1019,6 +1032,55 @@ public class JnlpMojo
             return jnlp.getSpec();
         }
         return "1.0+";
+    }
+    
+    private int removeExistingSignatures(File workDirectory, FileFilter updatedJarFileFilter) 
+        throws MojoExecutionException 
+    {   
+        // cleanup tempDir if exists
+        File tempDir = new File( this.workDirectory, "temp_extracted_jars" );
+        removeDirectory(tempDir);
+        
+        // recreate temp dir
+        if ( !tempDir.mkdirs() ) {
+            throw new MojoExecutionException( "Error creating temporary directory: " + tempDir );
+        }        
+        
+        // process jars
+        File[] jarFiles = workDirectory.listFiles( updatedJarFileFilter );
+
+        JarUnsignMojo unsignJar = new JarUnsignMojo();
+//        unsignJar.setBasedir( basedir );
+        unsignJar.setTempDir( tempDir );
+        unsignJar.setVerbose( this.verbose );
+//        unsignJar.setWorkingDir( getWorkDirectory() );
+
+        unsignJar.setArchiverManager( archiverManager );
+
+        for ( int i = 0; i < jarFiles.length; i++ )
+        {
+            unsignJar.setJarPath( jarFiles[i] );
+            // long lastModified = jarFiles[i].lastModified();
+            unsignJar.execute();
+            // jarFiles[i].setLastModified( lastModified );
+        }
+
+        // cleanup tempDir
+        removeDirectory(tempDir);
+
+        return jarFiles.length;        
+    }
+
+    private void removeDirectory( File dir ) throws MojoExecutionException
+    {
+        if ( dir != null )
+        {
+            if ( dir.exists() && dir.isDirectory() )
+            {
+                getLog().info( "Deleting directory " + dir.getAbsolutePath() );
+                Utils.removeDir( dir );
+            }
+        }
     }
 
 }
