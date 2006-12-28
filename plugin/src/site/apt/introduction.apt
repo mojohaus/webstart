@@ -35,6 +35,8 @@ Features & build stability
 
   This is a very early but working release. It requires maven 2 (version 2.0.4 and further) to work correctly.
 
+  <<Changes from 1.0-alpha-1>> The default location for the template and resources have changed. See {{{http://jira.codehaus.org/browse/MWEBSTART-16} MWEBSTART-16}} for discussion.
+
   <<Note>> in order to build from source, you will need several dependencies. The webstart plugin is in fact a multi-module project and some of its dependencies are located under the {{{..}parent directory}} of the plugin itself. Be sure to check out the complete project.
 
 Features:

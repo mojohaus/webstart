@@ -387,7 +387,7 @@ public class JnlpMojo
             File resourcesDir = getJnlp().getResources();
             if ( resourcesDir == null )
             {
-                resourcesDir = new File( project.getBasedir(), "src/main/jnlp" );
+                resourcesDir = new File( project.getBasedir(), "src/main/jnlp/resources" );
             }
             copyResources( resourcesDir, workDirectory );
 
@@ -769,8 +769,8 @@ public class JnlpMojo
         if ( jnlp.getInputTemplate() == null || jnlp.getInputTemplate().length() == 0 )
         {
             getLog().debug(
-                "Jnlp template file name not specified. Using default output file name: src/jnlp/template.vm." );
-            jnlp.setInputTemplate( "src/jnlp/template.vm" );
+                "Jnlp template file name not specified. Using default output file name: src/main/jnlp/template.vm." );
+            jnlp.setInputTemplate( "src/main/jnlp/template.vm" );
         }
         String templateFileName = jnlp.getInputTemplate();
 

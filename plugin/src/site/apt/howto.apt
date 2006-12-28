@@ -40,8 +40,8 @@ Input/Output
 
 -------------------------------
   pom.xml                    (configures the webstart plugin)
-  src/jnlp/template.vm       (template for the jnlp file to be generated.)
-  src/jnlp/resources/        (location where all resources are taken. All contents are copied into the work directory)
+  src/main/jnlp/template.vm  (template for the jnlp file to be generated.)
+  src/main/jnlp/resources/   (location where all resources are taken. All contents are copied into the work directory)
 
   target/jnlp/               (work directory)
   target/jnlp/launch.jnlp    (generated jnlp file. Name is configurable, this is the default)
@@ -138,7 +138,7 @@ Plugin configuration
              <!-- default values -->
              <!--resources>${project.basedir}/src/main/jnlp</resources-->
              <!--inputTemplateResourcePath>${project.basedir}</inputTemplateResourcePath-->
-             <!--inputTemplate>src/jnlp/template.vm</inputTemplate--> <!-- relative to inputTemplateResourcePath -->
+             <!--inputTemplate>src/main/jnlp/template.vm</inputTemplate--> <!-- relative to inputTemplateResourcePath -->
              <outputFile>app.jnlp</outputFile> <!-- defaults to launch.jnlp -->
 
              <!-- used to automatically identify the jar containing the main class. -->
