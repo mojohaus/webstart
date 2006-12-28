@@ -133,7 +133,7 @@ public class JarUnsignMojo
         // create temp dir
         File tempDir = new File( tempDirParent, jarFile.getName() );
         if ( !tempDir.mkdirs() ) {
-            throw new thereMojoExecutionException( "Error creating temporary directory: " + tempDir );
+            throw new MojoExecutionException( "Error creating temporary directory: " + tempDir );
         }
         
         // extract jar into temporary directory
