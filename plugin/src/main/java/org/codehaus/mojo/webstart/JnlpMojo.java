@@ -335,8 +335,7 @@ public class JnlpMojo
     // as the plugin copies the new versions locally before signing/packing them
     // we just need to see if the plugin copied a new version
     // We achieve that by only filtering files modified after the plugin was started
-    // FIXME we may want to also resign/repack the jars if other files (the pom, the keystore config) have changed
-    // today one needs to clean...
+    // Note: if other files (the pom, the keystore config) have changed, one needs to clean
     private FileFilter updatedJarFileFilter = new CompositeFileFilter( jarFileFilter, modifiedFileFilter );
 
     private FileFilter updatedPack200FileFilter = new CompositeFileFilter( pack200FileFilter, modifiedFileFilter );
@@ -926,6 +925,7 @@ public class JnlpMojo
         signJar.setBasedir( basedir );
         signJar.setKeypass( sign.getKeypass() );
         signJar.setKeystore( sign.getKeystore() );
+        signJar.setLog( getLog() );
         signJar.setSigFile( sign.getSigfile() );
         signJar.setStorepass( sign.getStorepass() );
         signJar.setType( sign.getStoretype() );

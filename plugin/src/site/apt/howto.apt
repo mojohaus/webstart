@@ -205,6 +205,10 @@ Plugin configuration
 -------------------------------
 
 
+Notes
+
+* Optimizations: unecessary signing can slow down the build. The plugin tries to reduce the number of operations to perform, so it only resign/repack the JAR files that have changed since the last run. In consequence, if you change your signing key or your POM, it is required for you to clean your project before rebuilding. Otherwise strange results may happen.
+
 
 Use Cases
 
