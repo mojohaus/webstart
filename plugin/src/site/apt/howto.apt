@@ -82,7 +82,10 @@ JNLP file generation
 -------------------------------
 $dependencies
 $mainClass
-$outputFile      from user input if specified, default otherwise (one can use $$name when using the JnlpDownloadServlet)
+$outputFile       from user input if specified, default otherwise (one can use $$name when using the JnlpDownloadServlet)
+$project.version  taken from POM
+$project.name     taken from POM
+$property         all properties taken from the POM/profile or from the Java System properties
 -------------------------------
 
   Note: that the template generation doesn't know if a placeholder was not replaced. So if you put a $outputFile in

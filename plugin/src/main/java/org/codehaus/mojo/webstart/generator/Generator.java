@@ -20,13 +20,16 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.log.NullLogSystem;
+
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.webstart.JnlpMojo;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.util.Properties;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Generates a JNLP deployment descriptor
@@ -100,7 +103,7 @@ public class Generator
     public void generate()
         throws Exception
     {
-        VelocityContext context = new VelocityContext();
+        VelocityContext context = createContext();
 
         context.put( "dependencies", getDependenciesText( config ) );
 
@@ -159,4 +162,30 @@ public class Generator
         return dependenciesText;
     }
 
+    /**
+     * @return Returns a velocity context with system and maven properties added
+     */
+    private VelocityContext createContext() {
+        VelocityContext context = new VelocityContext();
+
+        context.put( "dependencies", getDependenciesText( config ) );
+
+        MavenProject project = config.getProject();
+        
+        addPropertiesToContext( System.getProperties(), context );
+        addPropertiesToContext( project.getProperties(), context );
+     
+        context.put( "project.version", project.getModel().getVersion() );
+        context.put( "project.name", project.getModel().getName() );
+        
+        return context;
+    }
+
+    private static void addPropertiesToContext( Properties properties, VelocityContext context ) {
+        for ( Iterator iter = properties.keySet().iterator(); iter.hasNext(); ) {
+            String nextKey = (String) iter.next();
+            String nextValue = properties.getProperty( nextKey );
+            context.put( nextKey, nextValue );
+        }
+    }
 }
