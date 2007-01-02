@@ -300,10 +300,9 @@ public class JnlpMojo
             }
             return true;
         }
-
     }
 
-    private FileFilter modifiedFileFilter = new FileFilter()
+    class ModifiedFileFilter implements FileFilter
     {
         public boolean accept( File pathname )
         {
@@ -313,6 +312,7 @@ public class JnlpMojo
             return modified;
         }
     };
+    private FileFilter modifiedFileFilter = new ModifiedFileFilter();
 
     private FileFilter jarFileFilter = new FileFilter()
     {
@@ -321,9 +321,11 @@ public class JnlpMojo
             return pathname.isFile() && pathname.getName().endsWith( ".jar" );
         }
     };
+    
+    private FileFilter pack200FileFilter = new Pack200FileFilter();
 
-    private FileFilter pack200FileFilter = new FileFilter()
-    {
+    // anonymous to inner to work-around qdox 1.6.1 bug (MPLUGIN-26)
+    static class Pack200FileFilter implements FileFilter {
         public boolean accept( File pathname )
         {
             return pathname.isFile() &&
@@ -341,7 +343,7 @@ public class JnlpMojo
     private FileFilter updatedPack200FileFilter = new CompositeFileFilter( pack200FileFilter, modifiedFileFilter );
 
     /**
-     * the artifacts packaged in the webstart app. *
+     * the artifacts packaged in the webstart app
      */
     private List packagedJnlpArtifacts = new ArrayList();
 
@@ -401,7 +403,7 @@ public class JnlpMojo
                     "didn't find artifact with main class: " + jnlp.getMainClass() + ". Did you specify it? " );
             }
 
-            // native libsi
+            // native libs
             // FIXME
 
             /*
