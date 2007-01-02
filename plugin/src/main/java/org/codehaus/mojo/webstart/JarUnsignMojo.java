@@ -25,6 +25,7 @@ import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.codehaus.plexus.util.FileUtils;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -61,7 +62,7 @@ public class JarUnsignMojo
     private File tempDirectory;
 
     /**
-     * Path of the jar to sign. When specified, the finalName is ignored.
+     * Path of the jar to unsign. When specified, the finalName is ignored.
      *
      * @parameter alias="jarpath" default-value="${project.build.directory}/${project.build.finalName}.${project.packaging}"
      */
@@ -132,9 +133,13 @@ public class JarUnsignMojo
         
         // create temp dir
         File tempDir = new File( tempDirParent, jarFile.getName() );
+
         if ( !tempDir.mkdirs() ) {
             throw new MojoExecutionException( "Error creating temporary directory: " + tempDir );
         }
+        // FIXME we probably want to be more security conservative here. 
+        // it's very easy to guess where the directory will be and possible 
+        // to access/change its contents before the file is rejared..
         
         // extract jar into temporary directory
         try {
@@ -181,6 +186,12 @@ public class JarUnsignMojo
             throw new MojoExecutionException( "Error packing directory: " + tempDir + "to: " + jarFile, ex );
         } catch ( NoSuchArchiverException ex ) {
             throw new MojoExecutionException( "Error acquiring archiver for extension: jar", ex );
+        }
+
+        try {
+            FileUtils.deleteDirectory( tempDir );
+        } catch ( IOException ex ) {
+            throw new MojoExecutionException( "Error cleaning up temporary directory file: " + tempDir, ex );
         }
     }
     
