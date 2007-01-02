@@ -12,9 +12,9 @@
 
   <!-- work-around a maven issue MOJO-361 -->
   <scm>
-    <url>https://svn.codehaus.org/mojo/trunk/mojo/mojo-sandbox/webstart-maven-plugin/plugin</url>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/mojo-sandbox/webstart-maven-plugin/plugin</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/mojo-sandbox/webstart-maven-plugin/plugin</developerConnection>
+    <url>https://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin/plugin</url>
+    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin/plugin</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin/plugin</developerConnection>
   </scm>
 
   <developers>

@@ -26,9 +26,9 @@
 
   <!-- work-around a maven issue MOJO-361 -->
   <scm>
-    <url>https://svn.codehaus.org/mojo/trunk/mojo/mojo-sandbox/webstart-maven-plugin</url>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/mojo-sandbox/webstart-maven-plugin</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/mojo-sandbox/webstart-maven-plugin</developerConnection>
+    <url>https://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin</url>
+    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin</developerConnection>
   </scm>
 
   <developers>
