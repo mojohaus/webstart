@@ -8,30 +8,33 @@
 
 Maven Webstart Plugin - How-to
 
-Important notice
+Note
 
-  The plugin produces its own artifact. As maven recommends, you should use create a single artifact per module. Trying to do otherwise is not supported in this plugin. In fact, today it doesn't work.
+  The plugin produces its own artifact.
 
-  If you try to do something like:
+* 03/Jan/2007
+
+  The 1.0-alpha-1 version of the plugin required you to create one module just for
+  the bundling of the webstart elements into its own zip file. To get your current
+  project sources jared, signed and packaged into a webstart application, you 
+  should now be able to do something like:
 
 ------------------------------
 mvn install webstart:jnlp
 ------------------------------
 
-  You will probably have a build failure. Example:
+  on the command line or attach the appropriate mojo (e.g. jnlp-inline) to your package 
+  phase and do something like
 
-------------------------------- 
-[INFO] ------------------------------------------------------------------------
-[ERROR] BUILD ERROR
-[INFO] ------------------------------------------------------------------------
-[INFO] Failure to run the plugin:
-Embedded error: artifact <yourgroupid>:<yourartifactid>:<yourpackaging>:<yourversion> has no matching file, why? Check the logs...
--------------------------------
+------------
+mvn install
+------------
 
-  We may fix that in the future, but today it's not in our plan. If you feel otherwise, please vote on 
-  {{{http://jira.codehaus.org/browse/MOJO-369} MOJO-369}}.
+  Any failure should be reported to the {{{http://jira.codehaus.org/browse/MWEBSTART-13} MWEBSTART-13}} issue. The API may change before 1.0-alpha-2 is released.
 
-  The workaround is to use a multi-project setup.
+  The documentation has not been fully updated to reflect this change.
+
+  Multi-project setup (one for the jar, one for the webstart bundle) is still possible.
 
 
 Input/Output
@@ -104,7 +107,7 @@ Plugin configuration
   <artifactId>jar-mng-1130-1</artifactId>
   <groupId>org.apache.maven.plugins</groupId>
   <version>1.0</version>
-  <packaging>pom</packaging>
+  <packaging>pom</packaging>  <!-- pom when you project doesn't contain sources, jar otherwise -->
   <name>Test Case for MNG-1130</name>
   <build>
     <plugins>
@@ -114,7 +117,7 @@ Plugin configuration
         <executions>
            <execution>
               <goals>
-                 <goal>jnlp</goal>
+                 <goal>jnlp</goal> <!-- use jnlp, jnlp-inline or jnlp-single as appropriate -->
               </goals>
            </execution>
         </executions>
@@ -208,9 +211,12 @@ Plugin configuration
 -------------------------------
 
 
-Notes
+Optimizations
 
-* Optimizations: unecessary signing can slow down the build. The plugin tries to reduce the number of operations to perform, so it only resign/repack the JAR files that have changed since the last run. In consequence, if you change your signing key or your POM, it is required for you to clean your project before rebuilding. Otherwise strange results may happen.
+   unecessary signing can slow down the build. The plugin tries to reduce the number of
+   operations to perform, so it only resign/repack the JAR files that have changed since
+   the last run. In consequence, if you change your signing key or your POM, it is required
+   for you to clean your project before rebuilding. Otherwise strange results may happen.
 
 
 Use Cases
@@ -219,7 +225,7 @@ Use Cases
 
   Use the plugin as described above. It will generate and install a zip in your local repository.
 
-* single and multiple webstart app, bundle inside a 'pom project', without jnlp-servlet support
+* single and multiple webstart applications
 
 ** One way of doing it
 
@@ -241,8 +247,8 @@ Use Cases
   E.g.
 
 -------------------------------
-jnlp-project1/pom.xml - pom packaging. Uses webstart plugin to package the generated files into a zip
-jnlp-project2/pom.xml - pom packaging. Uses webstart plugin to package the generated files into another zip
+jnlp-project1/pom.xml - pom or jar packaging. Uses webstart plugin to package the generated files into a zip
+jnlp-project2/pom.xml - pom or jar packaging. Uses webstart plugin to package the generated files into another zip
 webapp-bundle/pom.xml - war packaging. Unpack zips and bundle war.
 -------------------------------
 
@@ -298,8 +304,8 @@ webapp-bundle/pom.xml - war packaging. Unpack zips and bundle war.
   E.g.
 
 -------------------------------
-jnlp-project1/pom.xml - pom packaging. Uses webstart plugin to package the generated files into a zip
-jnlp-project2/pom.xml - pom packaging. Uses webstart plugin to package the generated files into another zip
+jnlp-project1/pom.xml - pom or jar packaging. Uses webstart plugin to package the generated files into a zip
+jnlp-project2/pom.xml - pom or jar packaging. Uses webstart plugin to package the generated files into another zip
 webapp/pom.xml        - war packaging. Creates a war file.
 webapp-bundle/pom.xml - pom packaging. Uses user defined assembly to combines the jnlp-project* resulting zip and the war into its own war.
 -------------------------------
@@ -431,7 +437,7 @@ webapp-bundle/pom.xml - pom packaging. Uses user defined assembly to combines th
   E.g.
 
 -------------------------------
-jnlp-project1/pom.xml - pom packaging. Uses webstart plugin to package the generated files into a zip
-jnlp-project2/pom.xml - pom packaging. Uses webstart plugin to package the generated files into another zip
+jnlp-project1/pom.xml - pom or jar packaging. Uses webstart plugin to package the generated files into a zip
+jnlp-project2/pom.xml - pom or jar packaging. Uses webstart plugin to package the generated files into another zip
 webapp/pom.xml        - war packaging. Creates a war file after unzipping the zips in the correct place.
 -------------------------------

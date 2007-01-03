@@ -23,7 +23,7 @@ import org.apache.velocity.runtime.log.NullLogSystem;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mojo.webstart.JnlpMojo;
+import org.codehaus.mojo.webstart.AbstractJnlpMojo;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -41,7 +41,7 @@ public class Generator
 {
     private VelocityEngine engine = new VelocityEngine();
 
-    private JnlpMojo config;
+    private AbstractJnlpMojo config;
 
     private Template template;
 
@@ -53,7 +53,7 @@ public class Generator
      * @param outputFile
      * @param inputFileTemplatePath relative to resourceLoaderPath
      */
-    public Generator( JnlpMojo task, File resourceLoaderPath, File outputFile, String inputFileTemplatePath )
+    public Generator( AbstractJnlpMojo task, File resourceLoaderPath, File outputFile, String inputFileTemplatePath )
     {
         this.config = task;
 
@@ -139,7 +139,7 @@ public class Generator
         }
     }
 
-    static String getDependenciesText( JnlpMojo config )
+    static String getDependenciesText( AbstractJnlpMojo config )
     {
         String dependenciesText = "";
         List artifacts = config.getPackagedJnlpArtifacts();

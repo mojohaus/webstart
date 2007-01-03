@@ -8,8 +8,10 @@
 
 Maven Webstart Plugin - Introduction
 
- A plugin to prepare webstart applications. The current plugin has a single goal {{{jnlp-mojo.html} webstart:jnlp}}
- whose responsibility is to create a zip file which contains:
+  A plugin to prepare webstart applications. The current plugin has several goals
+  {{{jnlp-mojo.html} webstart:jnlp}}, {{{jnlp-inline-mojo.html} webstart:jnlp-inline}},
+  {{{jnlp-single-mojo.html} webstart:jnlp-single}}. Their responsibilities are to create
+  a zip file which contains:
  
    * A jnlp file to be fetched and understood by Sun's webstart client.
 
@@ -35,7 +37,9 @@ Features & build stability
 
   This is a very early but working release. It requires maven 2 (version 2.0.4 and further) to work correctly.
 
-  <<Changes from 1.0-alpha-1>> The default location for the template and resources have changed. See {{{http://jira.codehaus.org/browse/MWEBSTART-16} MWEBSTART-16}} for discussion.
+  <<Change from 1.0-alpha-1>> the most required feature, {{{http://jira.codehaus.org/browse/MWEBSTART-13} MWEBSTART-13}}, has been partially implemented. It should be possible to use the plugin without using a single module for the webstart bundling. The documentation has not been fully updated to reflect this change. 
+
+  <<Change from 1.0-alpha-1>> The default location for the template and resources have changed. See {{{http://jira.codehaus.org/browse/MWEBSTART-16} MWEBSTART-16}} for discussion.
 
   <<Note>> in order to build from source, you will need several dependencies. The webstart plugin is in fact a multi-module project and some of its dependencies are located under the {{{..}parent directory}} of the plugin itself. Be sure to check out the complete project.
 
@@ -57,8 +61,6 @@ Features:
 
 
 Upcoming changes
-
-   * {{{http://jira.codehaus.org/browse/MOJO-266} change default location for resources and template}}. Will probably make the plugin slighly incompatible with older version. It's OK as there's no a single official snapshot release yet.
 
    * {{{http://jira.codehaus.org/browse/MOJO-263} dealing with already signed jars}}
 
@@ -86,7 +88,6 @@ Reported missing features
       * more war integration (jnlp, web.xml)
 
  The plugin can be used to prepare standalone webstart applications or webstart app bundled in war files.
-
 
 Links
 

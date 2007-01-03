@@ -19,35 +19,32 @@ package org.codehaus.mojo.webstart;
 import org.apache.maven.project.MavenProject;
 
 /**
- * Packages a jnlp application.
+ * Packages a jnlp application without launching a parallel lifecycle build.
  * <p/>
  * The plugin tries to not re-sign/re-pack if the dependent jar hasn't changed.
  * As a consequence, if one modifies the pom jnlp config or a keystore, one should clean before rebuilding.
  *
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
- * @version $Id$
- * @goal jnlp
- * @execute phase="package"
+ * @version $Id: JnlpMojo.java 2897 2007-01-02 12:55:00Z lacostej $
+ * @goal jnlp-inline
  * @aggregator
  * @requiresDependencyResolution runtime
  * @requiresProject
  * @inheritedByDefault true
  */
-public class JnlpMojo
+public class JnlpInlineMojo
     extends AbstractJnlpMojo
 {
     /**
-     * Get the executed project from the forked lifecycle.
-     *
-     * @parameter expression="${executedProject}"
+     * @parameter default-value="${project}"
      * @required
      * @readonly
      */
-    private MavenProject executedProject;
+    private MavenProject project;
 
     public MavenProject getProject()
     {
-        return executedProject;
+        return project;
     }
 }
 
