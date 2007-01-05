@@ -681,7 +681,7 @@ public abstract class AbstractJnlpMojo
             // we should probably identify them and package inside jars that we timestamp like the native lib
             // to avoid repackaging every time. What are the types of the native libs?
             {
-                getLog().debug( "Skipping artifact of type " + type + " for " + getWorkDirectory().getName() );
+                verboseLog( "Skipping artifact of type " + type + " for " + getWorkDirectory().getName() );
             }
             // END COPY
         }
