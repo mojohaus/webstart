@@ -685,6 +685,10 @@ public abstract class AbstractJnlpMojo
             }
             // END COPY
         }
+        else
+        {
+            verboseLog( "Skipping artifact of scope " + artifact.getScope() + " for " + getWorkDirectory().getName() );
+        }
     }
 
     private boolean artifactContainsClass( Artifact artifact, final String mainClass )
@@ -1062,5 +1066,26 @@ public abstract class AbstractJnlpMojo
         }
     }
 
+    // helper methods
+
+    /**
+     * Log as info when verbose or info is enabled, as debug otherwise.
+     */
+    private void verboseLog( String msg )
+    {
+        infoOrDebug( this.verbose || getLog().isInfoEnabled(), msg );
+    }
+
+    private void infoOrDebug( boolean info , String msg )
+    {
+        if ( info )
+        {
+            getLog().info( msg );
+        }
+        else
+        {
+            getLog().debug( msg );
+        }
+    }
 }
 
