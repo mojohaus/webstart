@@ -56,7 +56,7 @@ Functionning
 
   When invoked the JnlpMojo will:
 
-  * the webstart plugin works with a project of type pom. It does the following work:
+  * the webstart plugin works with a project of type pom or jar. It does the following work:
 
   ** creates the work directory
 
@@ -85,11 +85,16 @@ JNLP file generation
 -------------------------------
 $dependencies
 $mainClass
-$outputFile       from user input if specified, default otherwise (one can use $$name when using the JnlpDownloadServlet)
-$project.version  taken from POM
-$project.name     taken from POM
-$property         all properties taken from the POM/profile or from the Java System properties
+$outputFile             from user input if specified, default otherwise (one can use $$name when using the JnlpDownloadServlet)
+$project                maps to the Project Model (i.e. POM) (can be used to retrieve project.Name, project.Version, etc..)
+$property               all properties taken from the POM/profile or from the Java System properties. Note: properties containing dots ('.') might not be passed properly. This is due to the nature of the Velocity parser which treats dots as delimiters.
+## some aliases named after the JNLP file structure
+$informationTitle       alias for $project.Name
+$informationDescription alias for $project.Description
+$informationVendor      alias for $project.Organization.Name
+$informationHomepage    alias for $project.Organization.Url
 -------------------------------
+  See the {{{http://jakarta.apache.org/velocity/docs/user-guide.html#Variables}Jakarta Velocity User Guide}} for more information on how to retrieve fields from the Maven POM.
 
   Note: that the template generation doesn't know if a placeholder was not replaced. So if you put a $outputFile in
   your velocity template, but forget to specify the <outputFile> element in your plugin configuration in the pom.xml,
@@ -124,7 +129,7 @@ Plugin configuration
         <configuration>
            <!--outputDirectory></outputDirectory--> <!-- not required?? -->
 
-           <!-- transitive dependencies filter -->
+           <!-- [optional] transitive dependencies filter - if omitted, all transitive dependencies are included ->
            <dependencies>
              <!-- Note that only groupId and artifactId must be specified here. because of a limitation of the Include/ExcludesArtifactFilter -->
              <includes>

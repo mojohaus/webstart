@@ -4,28 +4,10 @@
     codebase="http://www.domaine.com/webstart/"
     href="$outputFile">
   <information>
-    <title>Title</title>
-    <homepage href="http://www.domain.com"/>
-    <description kind="one-line">OneLineDescription</description>
-    <description kind="short">Short Description.
-                   Multi-line.</description>
-    <description kind="tooltip">Tooltip Description</description>
-    <icon
-      width="35"
-      height="26"
-      href="images/icon.gif"/>
-    <icon
-      kind="splash"
-      href="images/icon.jpg"/>
-  </information>
-  <information>
-    <title>French</title>
-    <vendor>Pauses Cafees</vendor>
-    <homepage href="http://www.domaine.com"/>
-    <description kind="one-line">DescriptionEnUneLigne</description>
-    <description kind="short">Description courte.
-                   Multi-ligne.</description>
-    <description kind="tooltip">Description pour Tooltip</description>
+    <title>$informationTitle</title>
+    <vendor>$informationVendor<vendor/>
+    <homepage>$informationHomepage<homepage/>
+    <description kind="one-line">$informationDescription</description>
   </information>
   <security>
      <all-permissions/>

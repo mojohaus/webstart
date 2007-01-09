@@ -175,9 +175,14 @@ public class Generator
         addPropertiesToContext( System.getProperties(), context );
         addPropertiesToContext( project.getProperties(), context );
      
-        context.put( "project.version", project.getModel().getVersion() );
-        context.put( "project.name", project.getModel().getName() );
-        
+        context.put( "project", project.getModel() );
+
+        // aliases named after the JNLP file structure
+        context.put( "informationTitle", project.getModel().getName() );
+        context.put( "informationDescription", project.getModel().getDescription() );
+        context.put( "informationVendor", project.getModel().getOrganization().getName() );
+        context.put( "informationHomepage", project.getModel().getOrganization().getUrl() );
+
         return context;
     }
 

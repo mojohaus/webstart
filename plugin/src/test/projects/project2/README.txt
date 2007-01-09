@@ -1,1 +1,3 @@
-test for mvn install jnlp webstart:jnlp
+test for mvn install webstart:jnlp
+
+Also test substitution of the template.vm
