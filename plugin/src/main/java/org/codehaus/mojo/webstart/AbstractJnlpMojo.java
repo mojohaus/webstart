@@ -97,7 +97,7 @@ public abstract class AbstractJnlpMojo
     private JnlpConfig jnlp;
 
     /**
-     * Xxx
+     * [optional] transitive dependencies filter - if omitted, the plugin will include all transitive dependencies. Provided and test scope dependencies are always excluded.
      *
      * @parameter
      */
@@ -131,7 +131,7 @@ public abstract class AbstractJnlpMojo
     }
 
     /**
-     * Xxx
+     * The Sign Config
      *
      * @parameter
      */
