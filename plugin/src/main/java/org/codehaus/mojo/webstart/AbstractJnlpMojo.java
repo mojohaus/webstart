@@ -20,6 +20,7 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ExcludesArtifactFilter;
@@ -585,6 +586,68 @@ public abstract class AbstractJnlpMojo
         }
     }
 
+    void checkDependencies()
+        throws MojoExecutionException
+    {
+        if ( dependencies == null )
+            return;
+
+        boolean failed = false;
+
+        Collection artifacts = getProject().getArtifacts();
+
+        if ( dependencies.getIncludes() != null && !dependencies.getIncludes().isEmpty() )
+        {
+            failed = checkDependencies( dependencies.getIncludes(), artifacts ) || failed;
+        }
+        if ( dependencies.getExcludes() != null && !dependencies.getExcludes().isEmpty() )
+        {
+            failed = checkDependencies( dependencies.getExcludes(), artifacts ) || failed;
+        }
+
+        if ( failed )
+        {
+            throw new MojoExecutionException( "At least one specified dependency is incorrect. Review your project configuration." );
+        }
+    }
+
+    private boolean checkDependencies( List patterns, Collection artifacts )
+    {
+        if ( dependencies == null )
+            return false;
+
+        boolean failed = false;
+        for ( Iterator it = patterns.iterator(); it.hasNext(); )
+        {
+            failed = ensurePatternMatchesAtLeastOneArtifact( it.next().toString(), artifacts ) || failed;
+        }
+        return failed;
+    }
+
+    /** @return true if filter matches no artifact, false otherwise **/
+    private boolean ensurePatternMatchesAtLeastOneArtifact( String pattern, Collection artifacts )
+    {
+        List onePatternList = new ArrayList();
+        onePatternList.add( pattern );
+        ArtifactFilter filter = new IncludesArtifactFilter( onePatternList );
+
+        boolean noMatch = true;
+        for ( Iterator it = artifacts.iterator(); it.hasNext(); )
+        {
+            Artifact artifact = (Artifact) it.next();
+            if ( filter.include( artifact ) )
+            {
+                noMatch = false;
+                break;
+            }
+        }
+        if ( noMatch )
+        {
+            getLog().error( "pattern: " + pattern + " doesn't match any artifact." );
+        }
+        return noMatch;
+    }
+
     /**
      * Iterate through all the top level and transitive dependencies declared in the project and
      * collect all the runtime scope dependencies for inclusion in the .zip and signing.
@@ -965,6 +1028,8 @@ public abstract class AbstractJnlpMojo
             }
         }
 
+        checkDependencies();
+
         // FIXME
         /*
         if ( !"pom".equals( getProject().getPackaging() ) ) {
@@ -991,6 +1056,11 @@ public abstract class AbstractJnlpMojo
     public List getPackagedJnlpArtifacts()
     {
         return packagedJnlpArtifacts;
+    }
+
+    Dependencies getDependencies()
+    {
+        return this.dependencies;
     }
 
     /*

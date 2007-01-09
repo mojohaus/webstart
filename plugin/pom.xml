@@ -111,6 +111,13 @@
       <version>2.0</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.maven.shared</groupId>
+      <artifactId>maven-plugin-testing-harness</artifactId>
+      <version>1.0-beta-1</version>
+      <scope>test</scope>
+    </dependency>
+
     <!-- for JarUnsign... -->
     <dependency>
       <groupId>org.apache.maven</groupId>
