@@ -171,7 +171,8 @@ public class Generator
         context.put( "dependencies", getDependenciesText( config ) );
 
         MavenProject project = config.getProject();
-        
+
+        // Note: properties that contain dots will not be properly parsed by Velocity. Should we replace dots with underscores ?        
         addPropertiesToContext( System.getProperties(), context );
         addPropertiesToContext( project.getProperties(), context );
      
