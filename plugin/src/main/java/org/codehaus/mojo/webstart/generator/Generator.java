@@ -181,8 +181,11 @@ public class Generator
         // aliases named after the JNLP file structure
         context.put( "informationTitle", project.getModel().getName() );
         context.put( "informationDescription", project.getModel().getDescription() );
-        context.put( "informationVendor", project.getModel().getOrganization().getName() );
-        context.put( "informationHomepage", project.getModel().getOrganization().getUrl() );
+        if ( project.getModel().getOrganization() != null )
+        {
+            context.put( "informationVendor", project.getModel().getOrganization().getName() );
+            context.put( "informationHomepage", project.getModel().getOrganization().getUrl() );
+        }
 
         return context;
     }
