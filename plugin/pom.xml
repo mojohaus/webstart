@@ -40,6 +40,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>webstart-jarsigner-api</artifactId>
+      <version>${version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-project</artifactId>
       <version>2.0.1</version>
@@ -48,6 +53,17 @@
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
       <version>2.0.1</version>
+    </dependency>
+    <!-- these 2 are required for the changes to MNG-2293 to be taken into account for MWEBSTART-18 -->
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-tools-java</artifactId>
+      <version>2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-plugin-plugin</artifactId>
+      <version>2.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -127,6 +143,17 @@
     </dependency>
 
   </dependencies>
+
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <id>maven2snapshots</id>
+      <name>Maven 2 SNapshots</name>
+      <url>http://people.apache.org/~dennisl/staging-repository/</url>
+    </repository>
+  </repositories>
 
   <profiles>
     <profile>

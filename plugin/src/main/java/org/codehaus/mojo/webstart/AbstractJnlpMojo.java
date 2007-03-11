@@ -26,6 +26,7 @@ import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ExcludesArtifactFilter;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.PluginManager;
 import org.apache.maven.plugin.jar.JarSignMojo;
 import org.apache.maven.project.MavenProject;
@@ -134,43 +135,20 @@ public abstract class AbstractJnlpMojo
     /**
      * The Sign Config
      *
-     * @parameter
+     * @parameter implementation="org.codehaus.mojo.webstart.JarSignMojoConfig"
      */
     private SignConfig sign;
 
-    public static class KeystoreConfig
-    {
-        private boolean delete;
-
-        private boolean gen;
-
-        public boolean isDelete()
-        {
-            return delete;
-        }
-
-        public void setDelete( boolean delete )
-        {
-            this.delete = delete;
-        }
-
-        public boolean isGen()
-        {
-            return gen;
-        }
-
-        public void setGen( boolean gen )
-        {
-            this.gen = gen;
-        }
-    }
-
     /**
-     * Xxx
+     * A placeholder for an obsoleted configuration element.
      *
+     * This dummy parameter is here to force the plugin configuration to fail in case one
+     * didn't properly migrate from 1.0-alpha-1 to 1.0-alpha-2 configuration.
+     *
+     * It will be removed before 1.0.
      * @parameter
-     */
-    private KeystoreConfig keystore;
+     **/
+    private String keystore;
 
     /**
      * Xxx
@@ -435,15 +413,7 @@ public abstract class AbstractJnlpMojo
 
             if ( sign != null )
             {
-
-                if ( keystore != null && keystore.isGen() )
-                {
-                    if ( keystore.isDelete() )
-                    {
-                        deleteKeyStore();
-                    }
-                    genKeyStore();
-                }
+                sign.init(getLog(), getWorkDirectory(), verbose);
                 
                 // not yet enabled
                 // removeExistingSignatures(workDirectory, updatedJarFileFilter);
@@ -596,6 +566,8 @@ public abstract class AbstractJnlpMojo
 
         Collection artifacts = getProject().getArtifacts();
 
+        getLog().debug( "artifacts: " + artifacts.size() );
+
         if ( dependencies.getIncludes() != null && !dependencies.getIncludes().isEmpty() )
         {
             failed = checkDependencies( dependencies.getIncludes(), artifacts ) || failed;
@@ -635,6 +607,9 @@ public abstract class AbstractJnlpMojo
         for ( Iterator it = artifacts.iterator(); it.hasNext(); )
         {
             Artifact artifact = (Artifact) it.next();
+
+            getLog().debug( "checking pattern: " + pattern + " against " + artifact );
+
             if ( filter.include( artifact ) )
             {
                 noMatch = false;
@@ -860,60 +835,6 @@ public abstract class AbstractJnlpMojo
         }
     }
 
-    private void deleteKeyStore()
-    {
-        File keyStore = null;
-        if ( sign.getKeystore() != null )
-        {
-            keyStore = new File( sign.getKeystore() );
-        }
-        else
-        {
-            // FIXME decide if we really want this.
-            // keyStore = new File( System.getProperty( "user.home") + File.separator + ".keystore" );
-        }
-
-        if ( keyStore == null )
-        {
-            return;
-        }
-        if ( keyStore.exists() )
-        {
-            if ( keyStore.delete() )
-            {
-                getLog().debug( "deleted keystore from: " + keyStore.getAbsolutePath() );
-            }
-            else
-            {
-                getLog().warn( "Couldn't delete keystore from: " + keyStore.getAbsolutePath() );
-            }
-        }
-        else
-        {
-            getLog().debug( "Skipping deletion of non existing keystore: " + keyStore.getAbsolutePath() );
-        }
-    }
-
-    private void genKeyStore()
-        throws MojoExecutionException
-    {
-        GenkeyMojo genKeystore = new GenkeyMojo();
-        genKeystore.setAlias( sign.getAlias() );
-        genKeystore.setDname( sign.getDname() );
-        genKeystore.setKeyalg( sign.getKeyalg() );
-        genKeystore.setKeypass( sign.getKeypass() );
-        genKeystore.setKeysize( sign.getKeysize() );
-        genKeystore.setKeystore( sign.getKeystore() );
-        genKeystore.setSigalg( sign.getSigalg() );
-        genKeystore.setStorepass( sign.getStorepass() );
-        genKeystore.setStoretype( sign.getStoretype() );
-        genKeystore.setValidity( sign.getValidity() );
-        genKeystore.setVerbose( this.verbose );
-        genKeystore.setWorkingDir( getWorkDirectory() );
-
-        genKeystore.execute();
-    }
-
     private File getWorkDirectory()
     {
         return workDirectory;
@@ -962,7 +883,7 @@ public abstract class AbstractJnlpMojo
      * return the number of signed jars *
      */
     private int signJars( File directory, FileFilter fileFilter )
-        throws MojoExecutionException
+        throws MojoExecutionException, MojoFailureException
     {
 
         File[] jarFiles = directory.listFiles( fileFilter );
@@ -974,18 +895,7 @@ public abstract class AbstractJnlpMojo
             return 0;
         }
 
-        JarSignMojo signJar = new JarSignMojo();
-        signJar.setAlias( sign.getAlias() );
-        signJar.setBasedir( basedir );
-        signJar.setKeypass( sign.getKeypass() );
-        signJar.setKeystore( sign.getKeystore() );
-        signJar.setLog( getLog() );
-        signJar.setSigFile( sign.getSigfile() );
-        signJar.setStorepass( sign.getStorepass() );
-        signJar.setType( sign.getStoretype() );
-        signJar.setVerbose( this.verbose );
-        signJar.setWorkingDir( getWorkDirectory() );
-        signJar.setVerify( sign.getVerify() );
+        JarSignerMojo signJar = sign.getJarSignerMojo();
 
         for ( int i = 0; i < jarFiles.length; i++ )
         {

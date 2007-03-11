@@ -3,12 +3,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>webstart-test-3</artifactId>
-  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>webstart-test-5</artifactId>
+  <groupId>org.codehaus.mojo</groupId>
   <version>1.0</version>
   <packaging>jar</packaging>
-  <name>Test Case #2 for MWEBSTART-13</name>
-  <description>Check that we can run mvn install and automatically call webstart:jnlp during the package phase</description>
+  <description>Check that execution fails if dependencies contains some invalid deps</description>
 
   <organization>
     <name>CoffeeBreaks</name>
@@ -30,12 +29,6 @@
         </executions>
         <configuration>
 
-          <dependencies>
-            <excludes>
-              <exclude>commons-lang:commons-lang</exclude>
-            </excludes>
-          </dependencies>
-
           <jnlp>
             <!-- we play with the resource path and template relative path to test MOJO-391 -->
             <!--inputTemplateResourcePath>${project.basedir}/src/</inputTemplateResourcePath>
@@ -46,31 +39,21 @@
 
           <!-- SIGNING -->
           <!-- defining this will automatically sign the jar and its dependencies -->
-          <sign>
-            <keystore>/tmp/keystore</keystore>
-            <keypass>m2m2m2</keypass>
-            <storepass>m2m2m2</storepass>
-            <!--sigfile>m2m2m2</sigfile-->
-            <alias>alias</alias>
-            <validity>180</validity>
-
-            <dnameCn>www.example.com</dnameCn>
-            <dnameOu>None</dnameOu>
-            <dnameO>ExampleOrg</dnameO>
-            <dnameL>Seattle</dnameL>
-            <dnameSt>Washington</dnameSt>
-            <dnameC>US</dnameC>
-
-            <verify>true</verify>
-
-            <keystoreConfig>
-              <delete>true</delete>
-              <gen>true</gen>
-            </keystoreConfig>
+          <sign implementation="org.codehaus.mojo.webstart.test.mysigner.MyJarSignMojoConfig">
+            <param>HelloWorld</param>
           </sign>
-
           <verbose>false</verbose>
         </configuration>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.mojo.webstart.test</groupId>
+      <artifactId>my-test-signer</artifactId>
+      <version>1.0</version>
+    </dependency>
+  </dependencies>
+
       </plugin>
     </plugins>
   </build>
@@ -87,4 +70,5 @@
       <version>2.1</version>
     </dependency>
   </dependencies>
+
 </project>

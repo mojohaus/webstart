@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>webstart-test-4</artifactId>
-  <groupId>org.apache.maven.plugins</groupId>
+  <groupId>org.codehaus.mojo</groupId>
   <version>1.0</version>
   <packaging>jar</packaging>
   <name>Test Case #1 for MWEBSTART-26</name>
@@ -67,12 +67,12 @@
             <dnameC>US</dnameC>
 
             <verify>true</verify>
-          </sign>
 
-          <keystore>
-            <delete>true</delete>
-            <gen>true</gen>
-          </keystore>
+            <keystoreConfig>
+              <delete>true</delete>
+              <gen>true</gen>
+            </keystoreConfig>
+          </sign>
 
           <verbose>false</verbose>
         </configuration>

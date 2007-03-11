@@ -50,7 +50,7 @@ public class JarUnsignMojoTest
 {
     private JarUnsignMojo mojo;
     private File tempdir;
-    private SignConfig sign;
+    private JarSignMojoConfig sign;
     private MavenEmbedder embedder;
 
     public void setUp()
@@ -81,7 +81,7 @@ public class JarUnsignMojoTest
 
         keystore.delete();
 
-        sign = new SignConfig();
+        sign = new JarSignMojoConfig();
         sign.setAlias( "test" );
         sign.setKeypass( "123456" );
         sign.setKeystore( keystore.getAbsolutePath() );

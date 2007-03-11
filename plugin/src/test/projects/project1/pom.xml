@@ -60,12 +60,13 @@
             <dnameC>US</dnameC>
 
             <verify>true</verify>
-          </sign>
 
-          <keystore>
-            <delete>true</delete>
-            <gen>true</gen>
-          </keystore>
+            <keystoreConfig>
+              <delete>true</delete>
+              <gen>true</gen>
+            </keystoreConfig>
+
+          </sign>
 
           <verbose>false</verbose>
         </configuration>

@@ -60,6 +60,7 @@
   </contributors>
 
   <modules>
+    <module>webstart-jarsigner-api</module>
     <module>plugin</module> <!-- TODO: better name ??-->
     <module>pack200-anttasks</module>
     <!--module>jnlp-servlet</module-->

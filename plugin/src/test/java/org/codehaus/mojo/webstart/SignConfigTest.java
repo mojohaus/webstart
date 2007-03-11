@@ -51,7 +51,7 @@ public class SignConfigTest
 
     public void testGetDname()
     {
-        SignConfig signConfig = new SignConfig();
+        JarSignMojoConfig signConfig = new JarSignMojoConfig();
         signConfig.setDnameCn( "www.example.com" );
         signConfig.setDnameOu( "None" );
         signConfig.setDnameL( "Seattle" );
@@ -63,7 +63,7 @@ public class SignConfigTest
 
     public void testGetDnameMissing()
     {
-        SignConfig signConfig = new SignConfig();
+        JarSignMojoConfig signConfig = new JarSignMojoConfig();
         signConfig.setDnameCn( "www.example.com" );
         //signConfig.setDnameOu( "None" );
         signConfig.setDnameL( "Seattle" );
