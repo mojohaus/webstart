@@ -47,30 +47,30 @@ mvn install
   Here's an example of change applied to an existing pom for the transition from 1.0-alpha-1 to 1.0-alpha-2:
 
 ---------------
-Index: project1/pom.xml
-===================================================================
---- project1/pom.xml    (revision 3560)
-+++ project1/pom.xml    (working copy)
-@@ -60,13 +60,14 @@
-             <dnameC>US</dnameC>
- 
-             <verify>true</verify>
-+
-+            <keystoreConfig>
-+              <delete>true</delete>
-+              <gen>true</gen>
-+            </keystoreConfig>
-+
-           </sign>
- 
--          <keystore>
--            <delete>true</delete>
--            <gen>true</gen>
--          </keystore>
--
-           <verbose>false</verbose>
-         </configuration>
-       </plugin>
+  Index: project1/pom.xml
+  ===================================================================
+  --- project1/pom.xml    (revision 3560)
+  +++ project1/pom.xml    (working copy)
+  @@ -60,13 +60,14 @@
+               <dnameC>US</dnameC>
+   
+               <verify>true</verify>
+  +
+  +            <keystoreConfig>
+  +              <delete>true</delete>
+  +              <gen>true</gen>
+  +            </keystoreConfig>
+  +
+             </sign>
+   
+  -          <keystore>
+  -            <delete>true</delete>
+  -            <gen>true</gen>
+  -          </keystore>
+  -
+             <verbose>false</verbose>
+           </configuration>
+         </plugin>
 ---------------
 
 
