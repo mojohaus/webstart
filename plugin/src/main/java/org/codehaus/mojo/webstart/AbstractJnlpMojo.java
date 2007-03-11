@@ -904,7 +904,7 @@ public abstract class AbstractJnlpMojo
             signJar.setSignedJar( null );
             long lastModified = jarFiles[i].lastModified();
             signJar.execute();
-            jarFiles[i].setLastModified( lastModified );
+            setLastModified( jarFiles[i], lastModified );
         }
 
         return jarFiles.length;
@@ -946,6 +946,20 @@ public abstract class AbstractJnlpMojo
             throw new MojoExecutionException( "'" + getProject().getPackaging() + "' packaging unsupported. Use 'pom'" );
         }
         */
+    }
+
+    /** this to try to workaround an issue with setting setLastModifier. See MWEBSTART-28. May be removed later on if that doesn't help. */
+    private boolean setLastModified( File file, long timestamp )
+    {
+        boolean result;
+        int nbretries = 3;
+        int sleep = 4000;
+        while ( ! (result = file.setLastModified( timestamp )) && nbretries-- > 0 )
+        {
+            getLog().warn("failure to change last modified timestamp... retrying ...");
+            try { Thread.currentThread().sleep( sleep ); } catch (InterruptedException ignore) {}
+        }
+        return result;
     }
 
     void setWorkDirectory( File workDirectory )
