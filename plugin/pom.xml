@@ -144,17 +144,6 @@
 
   </dependencies>
 
-  <repositories>
-    <repository>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <id>maven2snapshots</id>
-      <name>Maven 2 SNapshots</name>
-      <url>http://people.apache.org/~dennisl/staging-repository/</url>
-    </repository>
-  </repositories>
-
   <profiles>
     <profile>
       <id>jdk16</id>
