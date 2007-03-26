@@ -11,4 +11,10 @@
   <artifactId>webstart-jarsigner-api</artifactId>
   <name>Maven Webstart Pluggable JarSigner API</name>
   <inceptionYear>2007</inceptionYear>
+  <dependencies>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+      </dependency>
+  </dependencies>
 </project>
