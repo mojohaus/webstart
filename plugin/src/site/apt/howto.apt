@@ -227,6 +227,8 @@ Plugin configuration
            <!-- not yet implemented -->
            <pack200>true</pack200>
            <gzip>true</gzip> <!-- default force when pack200 false, true when pack200 selected ?? -->
+           <!-- causes a version attribute to be output in each jar resource element, optional, default is false -->
+           <outputJarVersions>true</outputJarVersions>
 
            <!-- misc -->
            <!-- if there are multiple apps, do we need to mark one as default? (app/ redirects to app/default.jnlp in jnlp servlet ??)-->

@@ -105,11 +105,30 @@ public abstract class AbstractJnlpMojo
      */
     private Dependencies dependencies;
 
+    /**
+     * Represents the configuration element that specifies which of the current 
+     * project's dependencies will be included or excluded from the resources element
+     * in the generated JNLP file.
+     */
     public static class Dependencies
     {
+        
+        private boolean outputJarVersions;
+        
         private List includes;
 
         private List excludes;
+        
+        /**
+         * Returns the value of the flag that determines whether or not 
+         * the version attribute will be output in each jar resource element
+         * in the generated JNLP file.
+         *
+         * @return The default output version flag.
+         */
+        public boolean getOutputJarVersions() {
+            return outputJarVersions;
+        }
 
         public List getIncludes()
         {
@@ -241,6 +260,15 @@ public abstract class AbstractJnlpMojo
      * @component role="org.apache.maven.plugin.PluginManager"
      */
     private PluginManager pluginManager;
+    
+    /**
+     * When set to true, this flag indicates that a version attribute should
+     * be output in each of the jar resource elements in the generated 
+     * JNLP file. 
+     *  
+     * @parameter default-value="false"
+     */
+    private boolean outputJarVersions;
 
     private class CompositeFileFilter
         implements FileFilter
@@ -986,12 +1014,32 @@ public abstract class AbstractJnlpMojo
     {
         return this.dependencies;
     }
-
+    
     /*
     public Artifact getArtifactWithMainClass() {
         return artifactWithMainClass;
     }
     */
+    
+    /**
+     * Returns the flag that indicates whether or not a version attribute 
+     * should be output in each jar resource element in the generated 
+     * JNLP file. The default is false.
+     * @return Returns the value of the {@code outputJarVersions} property.
+     */
+    public boolean isOutputJarVersions() {
+        return this.outputJarVersions;
+    }
+    
+    /**
+     * Sets the flag that indicates whether or not a version attribute
+     * should be output in each jar resource element in the generated 
+     * JNLP file. The default is false.
+     * @param outputJarVersions 
+     */
+    public void setOutputJarVersions(boolean outputJarVersions) {
+        this.outputJarVersions = outputJarVersions;
+    }
 
     public boolean isArtifactWithMainClass( Artifact artifact )
     {

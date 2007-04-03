@@ -87,5 +87,13 @@ public class GeneratorTest
         assertEquals("\n<jar href=\"artifact1-1.0.jar\" main=\"true\"/>"
                    + "\n<jar href=\"artifact2-1.5.jar\"/>\n",
                 Generator.getDependenciesText(mojo));
+
+        mojo.setOutputJarVersions(true);
+        
+        assertEquals("\n<jar href=\"artifact1-1.0.jar\" version=\"1.0\" main=\"true\"/>"
+                     + "\n<jar href=\"artifact2-1.5.jar\" version=\"1.5\"/>\n",
+                     Generator.getDependenciesText(mojo));
+
+        
     }
 }

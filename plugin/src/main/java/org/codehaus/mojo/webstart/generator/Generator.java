@@ -151,6 +151,12 @@ public class Generator
             {
                 Artifact artifact = (Artifact) artifacts.get( i );
                 buffer.append( "<jar href=\"" ).append( artifact.getFile().getName() ).append( "\"" );
+                
+                if (config.isOutputJarVersions()) 
+                {
+                    buffer.append(" version=\"").append(artifact.getVersion()).append("\"");
+                }
+                
                 if ( config.isArtifactWithMainClass( artifact ) )
                 {
                     buffer.append( " main=\"true\"" );
