@@ -16,7 +16,6 @@
   </links>
   <menu name="Maven Webstart Quickstart">
     <item name="Introduction" href="index.html" />
-    <item name="Introduction-orig" href="introduction.html"/>
     <item name="Goals" href="plugin-info.html"/>
     <item name="Usage" href="usage.html"/>
     <item name="JNLP 101" href="jnlp101.html"/>
@@ -25,9 +24,8 @@
   
   <menu name="Examples">
     <item name="Single Webstart App" href="examples/single_webstart_app.html" />
-    <item name="Single And Multiple Apps 1" href="examples/single_and_multiple_apps1.html" />
-    <item name="Single And Multiple Apps 2" href="examples/single_and_multiple_apps2.html" />
-    <item name="WAR Bundle" href="examples/war_bundle1.html" />
+    <item name="WAR Bundle 1" href="examples/war_bundle_1.html" />
+    <item name="WAR Bundle 2" href="examples/war_bundle_2.html" />
   </menu>
   ${reports}
  </body>

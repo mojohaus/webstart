@@ -38,11 +38,9 @@ Maven Webstart Plugin
 
   * {{{examples/single_webstart_app.html}Build a standalone Webstart bundle artifact}}.
 
-  * {{{examples/single_and_multiple_apps1.html}Build a TODO}}
+  * {{{examples/war_bundle_1.html}WAR Bundle #1}}
   
-  * {{{examples/single_and_multiple_apps2.html}Build a TODO}}
-  
-  * {{{examples/war_bundle1.html}Build a TODO}}
+  * {{{examples/war_bundle_2.html}WAR Bundle #2}}
   
 * Plugin Stability
 
