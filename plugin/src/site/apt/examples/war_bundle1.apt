@@ -1,0 +1,28 @@
+ ------
+ Maven Webstart Plugin
+ ------
+ Jerome Lacoste
+ ------
+ 26 Oct 2005
+ ------
+
+ 
+Single and multiple webstart app, bundle inside a 'war project', without jnlp-servlet support
+
+* One way of doing it:
+
+    * place each of your webstart app in a particular project
+
+    * use webstart plugin as shown above to generate and install the zip in the local repository
+
+    * generate your webapp using a project with war packaging, but be sure to unzip the webstart applications zip in the webstart working directory.
+      I've not implemented this. I don't think it is possible to use the assembly plugin without specifying any format. So not sure how the layout preparation would work
+
+  E.g.
+
+-------------------------------
+jnlp-project1/pom.xml - pom or jar packaging. Uses webstart plugin to package the generated files into a zip
+jnlp-project2/pom.xml - pom or jar packaging. Uses webstart plugin to package the generated files into another zip
+webapp/pom.xml        - war packaging. Creates a war file after unzipping the zips in the correct place.
+-------------------------------
+ 

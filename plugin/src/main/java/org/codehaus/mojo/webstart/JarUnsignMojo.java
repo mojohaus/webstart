@@ -56,6 +56,7 @@ public class JarUnsignMojo
     private boolean skip;
 
     /**
+     * The directory location used for temporary storage of files used by this mojo.
      * @parameter expression="${tempdir}" default-value="${basedir}"
      * @required
      */

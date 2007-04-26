@@ -1,0 +1,11 @@
+   ------
+   Introduction
+   ------
+   TBC
+   ------
+   23 April 2007
+   ------
+
+Single webstart application, no webapp (static web site)
+
+  Use the plugin as described on the {{{../usage.html}usage}} page. It will generate and install a zip in your local repository.

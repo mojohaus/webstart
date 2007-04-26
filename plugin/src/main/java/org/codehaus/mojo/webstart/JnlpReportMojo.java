@@ -7,16 +7,16 @@ import java.util.ResourceBundle;
 import java.util.List;
 import java.util.Iterator;
 
-import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
-import org.apache.maven.plugin.MojoExecutionException;
 
 import org.codehaus.doxia.site.renderer.SiteRenderer;
 import org.codehaus.plexus.util.FileUtils;
 
 /**
+ * Creates a JNLP report.
+ * 
  * @author Geoffrey De Smet
  * @description Creates a Jnlp Report
  * @goal report

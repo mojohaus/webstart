@@ -28,12 +28,10 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.PluginManager;
-import org.apache.maven.plugin.jar.JarSignMojo;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.settings.Settings;
 
-import org.codehaus.mojo.keytool.GenkeyMojo;
 import org.codehaus.mojo.webstart.generator.Generator;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
@@ -48,7 +46,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -92,14 +89,15 @@ public abstract class AbstractJnlpMojo
     protected ArchiverManager archiverManager;    
 
     /**
-     * Xxx
+     * The jnlp configuration element.
      *
      * @parameter
      */
     private JnlpConfig jnlp;
 
     /**
-     * [optional] transitive dependencies filter - if omitted, the plugin will include all transitive dependencies. Provided and test scope dependencies are always excluded.
+     * [optional] transitive dependencies filter - if omitted, the plugin will include all transitive dependencies. 
+     * Provided and test scope dependencies are always excluded.
      *
      * @parameter
      */
@@ -177,7 +175,7 @@ public abstract class AbstractJnlpMojo
     // private boolean usejnlpservlet;
 
     /**
-     * Xxx
+     * Indicates whether or not jar files should be verified after signing.
      *
      * @parameter default-value="true"
      */
@@ -191,14 +189,15 @@ public abstract class AbstractJnlpMojo
     private boolean pack200;
 
     /**
-     * Xxx
+     * Indicates whether or not gzip archives will be created for each of the jar 
+     * files included in the webstart bundle.
      *
      * @parameter default-value="false"
      */
     private boolean gzip;
 
     /**
-     * Enable verbose.
+     * Enable verbose output.
      *
      * @parameter expression="${verbose}" default-value="false"
      */
@@ -239,6 +238,7 @@ public abstract class AbstractJnlpMojo
     protected ArtifactRepository localRepository;
 
     /**
+     * The project helper used to attach the artifact produced by this plugin to the project.
      * @parameter expression="${component.org.apache.maven.project.MavenProjectHelper}
      */
     private MavenProjectHelper projectHelper;

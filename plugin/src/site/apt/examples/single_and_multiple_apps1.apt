@@ -1,0 +1,74 @@
+ ------
+ Single and Multiple Webstart Apps 1
+ ------
+ Jerome Lacoste
+ ------
+ 26 Oct 2005
+ ------
+
+
+
+Single and Multiple Webstart Applications
+
+* One way of doing it
+
+
+   * Place your webstart application in a project. This project uses the webstart
+     plugin to generate the zip file containing the webstart bundle. The bundle is
+     installed in the local repository.
+
+   * The webapp is maintained in a separate project, the artifact that this project
+     produces is a war file.
+
+   * Use the Codehaus dependency plugin in your webapp project to unpack the webstart
+     bundle into the webapp folder. The webstart application will then be bundled
+     and deployed onto your webserver as part of the webapp.
+      
+   * You can deploy multiple webstart applications into the same webapp by using
+     multiple executions of the dependency plugin.
+
+  E.g.
+
+-------------------------------
+jnlp-project1/pom.xml - pom or jar packaging. Uses webstart plugin to package the generated files into a zip
+jnlp-project2/pom.xml - pom or jar packaging. Uses webstart plugin to package the generated files into another zip
+webapp-bundle/pom.xml - war packaging. Unpack zips and bundle war.
+-------------------------------
+
+ Placing this plugin configuration inside the pom.xml that generates your webapp's war
+ file will result in your webstart application being placed in the /webstart directory
+ of your web application.
+
+-------------------------------
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>dependency-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <!-- 
+                            Copy the webstart bundle in as a resource
+                            before packaging starts.
+                        -->
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <artifactItems>
+                        <artifactItem>
+                            <groupId>your webstart artifact's groupId</groupId>
+                            <artifactId>your webstart artifact's artifactId</artifactId>
+                            <version>your webstart artifact's version (possibly SNAPSHOT)</version>
+                            <type>zip</type>                            
+                        </artifactItem>
+                    </artifactItems>
+                    <outputDirectory>${project.build.directory}/${project.build.finalName}/webstart</outputDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+-------------------------------
