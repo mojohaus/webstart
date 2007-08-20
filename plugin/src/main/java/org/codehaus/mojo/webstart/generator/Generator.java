@@ -16,20 +16,23 @@ package org.codehaus.mojo.webstart.generator;
  * limitations under the License.
  */
 
+import java.io.File;
+import java.io.FileWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.TimeZone;
+
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.project.MavenProject;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.log.NullLogSystem;
-
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.webstart.AbstractJnlpMojo;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
 
 /**
  * Generates a JNLP deployment descriptor
@@ -192,6 +195,11 @@ public class Generator
             context.put( "informationVendor", project.getModel().getOrganization().getName() );
             context.put( "informationHomepage", project.getModel().getOrganization().getUrl() );
         }
+        
+        // explicit timestamps in local and and UTC time zones
+        Date timestamp = new Date();
+        context.put( "explicitTimestamp", dateToExplicitTimestamp(timestamp) );
+        context.put( "explicitTimestampUTC", dateToExplicitTimestampUTC(timestamp) );
 
         return context;
     }
@@ -202,5 +210,28 @@ public class Generator
             String nextValue = properties.getProperty( nextKey );
             context.put( nextKey, nextValue );
         }
+    }
+    
+    /**
+     * Converts a given date to an explicit timestamp string in local time zone.
+     * 
+     * @param date a timestamp to convert.
+     * @return a string representing a timestamp.
+     */
+    private static String dateToExplicitTimestamp(Date date) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");        
+        return new StringBuffer("TS: ").append(df.format(date)).toString();
+    }
+    
+    /**
+     * Converts a given date to an explicit timestamp string in UTC time zone.
+     * 
+     * @param date a timestamp to convert.
+     * @return a string representing a timestamp.
+     */
+    private static String dateToExplicitTimestampUTC(Date date) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return new StringBuffer("TS: ").append(df.format(date)).append("Z").toString();
     }
 }
