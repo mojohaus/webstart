@@ -1,5 +1,5 @@
  ------
- Single and Multiple Webstart Apps 1
+ Example WAR Bundle 1
  ------
  Jerome Lacoste
  ------
@@ -8,36 +8,49 @@
 
 
 
-Single and Multiple Webstart Applications
+Example WAR Bundle #1
 
-* One way of doing it
+    It is fairly common practice to make JNLP applications available to users 
+    by deploying them in web applications, with possibly many JNLP apps in a 
+    single WAR. This example shows how to include the output of two JNLP 
+    projects in a packaged web application that is defined in a separate project. 
 
+* The Projects
 
-   * Place your webstart application in a project. This project uses the webstart
-     plugin to generate the zip file containing the webstart bundle. The bundle is
-     installed in the local repository.
+    For this example, we require two webstart projects. In practice, the same 
+    procedure can be applied to any number of webstart projects for a given 
+    WAR project. Our sample projects will have the following <groupId:artifactId:version> attributes:
+    
+    * someGroupId:sample-jnlp1:1.0
+    
+    * someGroupId:sample-jnlp2:1.0
+    
+    * someGroupId:sample-webapp:1.0
 
-   * The webapp is maintained in a separate project, the artifact that this project
-     produces is a war file.
+	[]
+    
+    The relationship between these projects is that the webapp project is aware of 
+    the JNLP projects and the JNLP projects have no knowledge of the webapp project. 
+    There is no requirement for these projects to exist under the same parent, they 
+    can all exist in independent project hierarchies.
 
-   * Use the Codehaus dependency plugin in your webapp project to unpack the webstart
-     bundle into the webapp folder. The webstart application will then be bundled
-     and deployed onto your webserver as part of the webapp.
-      
-   * You can deploy multiple webstart applications into the same webapp by using
-     multiple executions of the dependency plugin.
+* The JNLP Projects
 
-  E.g.
+    Because the JNLP projects have no knowledge of the webapp project, they don't need
+    to be treated any differently from a normal standalone JNLP project as described
+    in {{{single_webstart_app.html}Example 1}}. Follow the instructions in that example
+    to create the <sample-jnlp1> and <sample-jnlp2> projects. They can be deployed
+    to any repository that the webapp project will have access to.
+        
+    
+* The WAR project
 
--------------------------------
-jnlp-project1/pom.xml - pom or jar packaging. Uses webstart plugin to package the generated files into a zip
-jnlp-project2/pom.xml - pom or jar packaging. Uses webstart plugin to package the generated files into another zip
-webapp-bundle/pom.xml - war packaging. Unpack zips and bundle war.
--------------------------------
-
- Placing this plugin configuration inside the pom.xml that generates your webapp's war
- file will result in your webstart application being placed in the /webstart directory
- of your web application.
+    Create the <sample-webapp> project as per any standard Maven web application project. 
+    Once created, add the following plugin configuration, which uses the 
+    {{{http://maven.apache.org/plugins/maven-dependency-plugin}Maven Dependency Plugin}} 
+    to retrieve the JNLP bundles and unpack them into the web application project. This 
+    example will result in the JNLP applications being placed in the </webstart> directory
+    of your web application.
 
 -------------------------------
     <build>
@@ -60,9 +73,15 @@ webapp-bundle/pom.xml - war packaging. Unpack zips and bundle war.
                 <configuration>
                     <artifactItems>
                         <artifactItem>
-                            <groupId>your webstart artifact's groupId</groupId>
-                            <artifactId>your webstart artifact's artifactId</artifactId>
-                            <version>your webstart artifact's version (possibly SNAPSHOT)</version>
+                            <groupId>someGroupId</groupId>
+                            <artifactId>sample-jnlp1</artifactId>
+                            <version>1.0</version>
+                            <type>zip</type>                            
+                        </artifactItem>
+                        <artifactItem>
+                            <groupId>someGroupId</groupId>
+                            <artifactId>sample-jnlp2</artifactId>
+                            <version>1.0</version>
                             <type>zip</type>                            
                         </artifactItem>
                     </artifactItems>
