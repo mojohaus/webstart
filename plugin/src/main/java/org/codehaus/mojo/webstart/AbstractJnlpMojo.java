@@ -16,39 +16,26 @@ package org.codehaus.mojo.webstart;
  * limitations under the License.
  */
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
-import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
-import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
-import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
-import org.apache.maven.artifact.resolver.filter.ExcludesArtifactFilter;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.PluginManager;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectHelper;
-import org.apache.maven.settings.Settings;
-
-import org.codehaus.mojo.webstart.generator.Generator;
-import org.codehaus.plexus.archiver.manager.ArchiverManager;
-import org.codehaus.plexus.archiver.zip.ZipArchiver;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.DirectoryScanner;
-
-import org.apache.commons.lang.SystemUtils;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.net.URL;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
+import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+import org.apache.maven.artifact.resolver.filter.ExcludesArtifactFilter;
+import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.PluginManager;
+import org.apache.maven.project.MavenProjectHelper;
+import org.apache.maven.settings.Settings;
+import org.codehaus.mojo.webstart.generator.Generator;
+import org.codehaus.plexus.archiver.manager.ArchiverManager;
+import org.codehaus.plexus.archiver.zip.ZipArchiver;
 
 /**
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
@@ -59,18 +46,8 @@ import java.util.List;
  * @todo initialize the jnlp alias and dname.o from pom.artifactId and pom.organization.name
  */
 public abstract class AbstractJnlpMojo
-    extends AbstractMojo
+    extends AbstractBaseJnlpMojo
 {
-
-    public abstract MavenProject getProject();
-
-    /**
-     * Directory to create the resulting artifacts
-     *
-     * @parameter expression="${project.build.directory}/jnlp"
-     * @required
-     */
-    protected File workDirectory;
 
     /**
      * The Zip archiver.
@@ -150,13 +127,6 @@ public abstract class AbstractJnlpMojo
     }
 
     /**
-     * The Sign Config
-     *
-     * @parameter implementation="org.codehaus.mojo.webstart.JarSignMojoConfig"
-     */
-    private SignConfig sign;
-
-    /**
      * A placeholder for an obsoleted configuration element.
      *
      * This dummy parameter is here to force the plugin configuration to fail in case one
@@ -175,67 +145,11 @@ public abstract class AbstractJnlpMojo
     // private boolean usejnlpservlet;
 
     /**
-     * Indicates whether or not jar files should be verified after signing.
-     *
-     * @parameter default-value="true"
-     */
-    private boolean verifyjar;
-
-    /**
-     * Enables pack200. Requires SDK 5.0.
-     *
-     * @parameter default-value="false"
-     */
-    private boolean pack200;
-
-    /**
-     * Indicates whether or not gzip archives will be created for each of the jar 
-     * files included in the webstart bundle.
-     *
-     * @parameter default-value="false"
-     */
-    private boolean gzip;
-
-    /**
-     * Enable verbose output.
-     *
-     * @parameter expression="${verbose}" default-value="false"
-     */
-    private boolean verbose;
-
-    /**
      * @parameter expression="${basedir}"
      * @required
      * @readonly
      */
     private File basedir;
-
-    /**
-     * Artifact resolver, needed to download source jars for inclusion in classpath.
-     *
-     * @parameter expression="${component.org.apache.maven.artifact.resolver.ArtifactResolver}"
-     * @required
-     * @readonly
-     * @todo waiting for the component tag
-     */
-    private ArtifactResolver artifactResolver;
-
-    /**
-     * Artifact factory, needed to download source jars for inclusion in classpath.
-     *
-     * @parameter expression="${component.org.apache.maven.artifact.factory.ArtifactFactory}"
-     * @required
-     * @readonly
-     * @todo waiting for the component tag
-     */
-    private ArtifactFactory artifactFactory;
-
-    /**
-     * @parameter expression="${localRepository}"
-     * @required
-     * @readonly
-     */
-    protected ArtifactRepository localRepository;
 
     /**
      * The project helper used to attach the artifact produced by this plugin to the project.
@@ -260,7 +174,14 @@ public abstract class AbstractJnlpMojo
      * @component role="org.apache.maven.plugin.PluginManager"
      */
     private PluginManager pluginManager;
-    
+
+    /**
+     * the artifacts packaged in the webstart app
+     */
+    private List packagedJnlpArtifacts = new ArrayList();
+
+    private Artifact artifactWithMainClass;
+
     /**
      * When set to true, this flag indicates that a version attribute should
      * be output in each of the jar resource elements in the generated 
@@ -270,120 +191,22 @@ public abstract class AbstractJnlpMojo
      */
     private boolean outputJarVersions;
 
-    private class CompositeFileFilter
-        implements FileFilter
-    {
-        private List fileFilters = new ArrayList();
-
-        CompositeFileFilter( FileFilter filter1, FileFilter filter2 )
-        {
-            fileFilters.add( filter1 );
-            fileFilters.add( filter2 );
-        }
-
-        public boolean accept( File pathname )
-        {
-            for ( int i = 0; i < fileFilters.size(); i++ )
-            {
-                if ( ! ( (FileFilter) fileFilters.get( i ) ).accept( pathname ) )
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    class ModifiedFileFilter implements FileFilter
-    {
-        public boolean accept( File pathname )
-        {
-            boolean modified = pathname.lastModified() > getStartTime();
-            getLog().debug( "File: " + pathname.getName() + " modified: " + modified );
-            getLog().debug( "lastModified: " + pathname.lastModified() + " plugin start time " + getStartTime() );
-            return modified;
-        }
-    };
-    private FileFilter modifiedFileFilter = new ModifiedFileFilter();
-
-    private FileFilter jarFileFilter = new FileFilter()
-    {
-        public boolean accept( File pathname )
-        {
-            return pathname.isFile() && pathname.getName().endsWith( ".jar" );
-        }
-    };
-    
-    private FileFilter pack200FileFilter = new Pack200FileFilter();
-
-    // anonymous to inner to work-around qdox 1.6.1 bug (MPLUGIN-26)
-    static class Pack200FileFilter implements FileFilter {
-        public boolean accept( File pathname )
-        {
-            return pathname.isFile() &&
-                ( pathname.getName().endsWith( ".jar.pack.gz" ) || pathname.getName().endsWith( ".jar.pack" ) );
-        }
-    };
-    
-    // the jars to sign and pack are selected if they are newer than the plugin start.
-    // as the plugin copies the new versions locally before signing/packing them
-    // we just need to see if the plugin copied a new version
-    // We achieve that by only filtering files modified after the plugin was started
-    // Note: if other files (the pom, the keystore config) have changed, one needs to clean
-    private FileFilter updatedJarFileFilter = new CompositeFileFilter( jarFileFilter, modifiedFileFilter );
-
-    private FileFilter updatedPack200FileFilter = new CompositeFileFilter( pack200FileFilter, modifiedFileFilter );
-
-    /**
-     * the artifacts packaged in the webstart app
-     */
-    private List packagedJnlpArtifacts = new ArrayList();
-
-    private List modifiedJnlpArtifacts = new ArrayList();
-
-    private Artifact artifactWithMainClass;
-
-    // initialized by execute
-    private long startTime;
-
-    private long getStartTime()
-    {
-        if ( startTime == 0 )
-        {
-            throw new IllegalStateException( "startTime not initialized" );
-        }
-        return startTime;
-    }
-
     public void execute()
         throws MojoExecutionException
     {
 
         checkInput();
+        initStartTime();
 
-        // interesting: copied files lastModified time stamp will be rounded.
-        // We have to be sure that the startTime is before that time...
-        // rounding to the second - 1 millis should be sufficient..
-        startTime = System.currentTimeMillis() - 1000;
-
-        File workDirectory = getWorkDirectory();
-        getLog().debug( "using work directory " + workDirectory );
+        getLog().debug( "using work directory " + getWorkDirectory() );
         //
         // prepare layout
         //
-        if ( !workDirectory.exists() && !workDirectory.mkdirs() )
-        {
-            throw new MojoExecutionException( "Failed to create: " + workDirectory.getAbsolutePath() );
-        }
-
+        makeWorkingDirIfNecessary();
+        
         try
         {
-            File resourcesDir = getJnlp().getResources();
-            if ( resourcesDir == null )
-            {
-                resourcesDir = new File( getProject().getBasedir(), "src/main/jnlp/resources" );
-            }
-            copyResources( resourcesDir, workDirectory );
+            copyResources( getResourcesDirectory(), getWorkDirectory() );
 
             artifactWithMainClass = null;
 
@@ -432,44 +255,16 @@ public abstract class AbstractJnlpMojo
             //
             // pack200 and jar signing
             //
-            if ( ( pack200 || sign != null ) && getLog().isDebugEnabled() )
+            if ( ( isPack200() || getSign() != null ) && getLog().isDebugEnabled() )
             {
                 logCollection(
                     "Some dependencies may be skipped. Here's the list of the artifacts that should be signed/packed: ",
-                    modifiedJnlpArtifacts );
+                    getModifiedJnlpArtifacts() );
             }
-
-            if ( sign != null )
-            {
-                sign.init(getLog(), getWorkDirectory(), verbose);
-                
-                // not yet enabled
-                // removeExistingSignatures(workDirectory, updatedJarFileFilter);
-
-                if ( pack200 )
-                {
-                    // http://java.sun.com/j2se/1.5.0/docs/guide/deployment/deployment-guide/pack200.html
-                    // we need to pack then unpack the files before signing them
-                    Pack200.packJars( workDirectory, updatedJarFileFilter, this.gzip );
-                    Pack200.unpackJars( workDirectory, updatedPack200FileFilter );
-                    // specs says that one should do it twice when there are unsigned jars??
-                    // Pack200.unpackJars( applicationDirectory, updatedPack200FileFilter );
-                }
-
-                int signedJars = signJars( workDirectory, updatedJarFileFilter );
-                if ( signedJars != modifiedJnlpArtifacts.size() )
-                {
-                    throw new IllegalStateException(
-                        "the number of signed artifacts differ from the number of modified artifacts. Implementation error" );
-                }
-            }
-            if ( pack200 )
-            {
-                getLog().debug( "packing jars" );
-                Pack200.packJars( workDirectory, updatedJarFileFilter, this.gzip );
-            }
-
-            generateJnlpFile( workDirectory );
+            
+            signJars();
+            packJars();
+            generateJnlpFile( getWorkDirectory() );
 
             // package the zip. Note this is very simple. Look at the JarMojo which does more things.
             // we should perhaps package as a war when inside a project with war packaging ?
@@ -479,7 +274,7 @@ public abstract class AbstractJnlpMojo
                 getLog().debug( "deleting file " + toFile );
                 toFile.delete();
             }
-            zipArchiver.addDirectory( workDirectory );
+            zipArchiver.addDirectory( getWorkDirectory() );
             zipArchiver.setDestFile( toFile );
             getLog().debug( "about to call createArchive" );
             zipArchiver.createArchive();
@@ -508,33 +303,6 @@ public abstract class AbstractJnlpMojo
 
     }
 
-    private void copyResources( File resourcesDir, File workDirectory )
-        throws IOException
-    {
-        if ( ! resourcesDir.exists() )
-        {
-            getLog().info( "No resources found in " + resourcesDir.getAbsolutePath() );
-        }
-        else
-        {
-            if ( ! resourcesDir.isDirectory() )
-            {
-                getLog().debug( "Not a directory: " + resourcesDir.getAbsolutePath() );
-            }
-            else
-            {
-                getLog().debug( "Copying resources from " + resourcesDir.getAbsolutePath() );
-
-                // hopefully available from FileUtils 1.0.5-SNAPSHOT
-                // FileUtils.copyDirectoryStructure( resourcesDir , workDirectory );
-
-                // this may needs to be parametrized somehow
-                String excludes = concat( DirectoryScanner.DEFAULTEXCLUDES, ", " );
-                copyDirectoryStructure( resourcesDir, workDirectory, "**", excludes );
-            }
-        }
-    }
-
     private static String concat( String[] array, String delim )
     {
         StringBuffer buffer = new StringBuffer();
@@ -550,7 +318,7 @@ public abstract class AbstractJnlpMojo
         return buffer.toString();
     }
 
-    private void copyDirectoryStructure( File sourceDirectory, File destinationDirectory, String includes,
+    /*private void copyDirectoryStructure( File sourceDirectory, File destinationDirectory, String includes,
                                          String excludes )
         throws IOException
     {
@@ -582,7 +350,7 @@ public abstract class AbstractJnlpMojo
                 FileUtils.copyFileToDirectory( file, destDir.getParentFile() );
             }
         }
-    }
+    }*/
 
     void checkDependencies()
         throws MojoExecutionException
@@ -721,7 +489,7 @@ public abstract class AbstractJnlpMojo
                 {
 
                     String name = toCopy.getName();
-                    this.modifiedJnlpArtifacts.add( name.substring( 0, name.lastIndexOf( '.' ) ) );
+                    getModifiedJnlpArtifacts().add( name.substring( 0, name.lastIndexOf( '.' ) ) );
 
                 }
 
@@ -755,62 +523,6 @@ public abstract class AbstractJnlpMojo
         {
             verboseLog( "Skipping artifact of scope " + artifact.getScope() + " for " + getWorkDirectory().getName() );
         }
-    }
-
-    private boolean artifactContainsClass( Artifact artifact, final String mainClass )
-        throws MalformedURLException
-    {
-        boolean containsClass = true;
-
-        // JarArchiver.grabFilesAndDirs()
-        ClassLoader cl = new java.net.URLClassLoader( new URL[]{artifact.getFile().toURL()} );
-        Class c = null;
-        try
-        {
-            c = Class.forName( mainClass, false, cl );
-        }
-        catch ( ClassNotFoundException e )
-        {
-            getLog().debug( "artifact " + artifact + " doesn't contain the main class: " + mainClass );
-            containsClass = false;
-        }
-        catch ( Throwable t )
-        {
-            getLog().info( "artifact " + artifact + " seems to contain the main class: " + mainClass +
-                " but the jar doesn't seem to contain all dependencies " + t.getMessage() );
-        }
-
-        if ( c != null )
-        {
-            getLog().debug( "Checking if the loaded class contains a main method." );
-
-            try
-            {
-                c.getMethod( "main", new Class[]{String[].class} );
-            }
-            catch ( NoSuchMethodException e )
-            {
-                getLog().warn( "The specified main class (" + mainClass +
-                    ") doesn't seem to contain a main method... Please check your configuration." + e.getMessage() );
-            }
-            catch ( NoClassDefFoundError e )
-            {
-                // undocumented in SDK 5.0. is this due to the ClassLoader lazy loading the Method thus making this a case tackled by the JVM Spec (Ref 5.3.5)!
-                // Reported as Incident 633981 to Sun just in case ...
-                getLog().warn( "Something failed while checking if the main class contains the main() method. " +
-                    "This is probably due to the limited classpath we have provided to the class loader. " +
-                    "The specified main class (" + mainClass +
-                    ") found in the jar is *assumed* to contain a main method... " + e.getMessage() );
-            }
-            catch ( Throwable t )
-            {
-                getLog().error( "Unknown error: Couldn't check if the main class has a main method. " +
-                    "The specified main class (" + mainClass +
-                    ") found in the jar is *assumed* to contain a main method...", t );
-            }
-        }
-
-        return containsClass;
     }
 
     void generateJnlpFile( File outputDirectory )
@@ -863,109 +575,27 @@ public abstract class AbstractJnlpMojo
         }
     }
 
-    private File getWorkDirectory()
-    {
-        return workDirectory;
-    }
-
-    /**
-     * Conditionaly copy the file into the target directory.
-     * The operation is not performed when the target file exists is up to date.
-     * The target file name is taken from the <code>sourceFile</code> name.
-     *
-     * @return <code>true</code> when the file was copied, <code>false</code> otherwise.
-     * @throws NullPointerException is sourceFile is <code>null</code> or
-     *                              <code>sourceFile.getName()</code> is <code>null</code>
-     * @throws IOException          if the copy operation is tempted but failed.
-     */
-    private boolean copyFileToDirectoryIfNecessary( File sourceFile, File targetDirectory )
-        throws IOException
-    {
-
-        if ( sourceFile == null )
-        {
-            throw new NullPointerException( "sourceFile is null" );
-        }
-
-        File targetFile = new File( targetDirectory, sourceFile.getName() );
-
-        boolean shouldCopy = ! targetFile.exists() || targetFile.lastModified() < sourceFile.lastModified();
-
-        if ( shouldCopy )
-        {
-
-            FileUtils.copyFileToDirectory( sourceFile, targetDirectory );
-
-        }
-        else
-        {
-
-            getLog().debug(
-                "Source file hasn't changed. Do not overwrite " + targetFile + " with " + sourceFile + "." );
-
-        }
-        return shouldCopy;
-    }
-
-    /**
-     * return the number of signed jars *
-     */
-    private int signJars( File directory, FileFilter fileFilter )
-        throws MojoExecutionException, MojoFailureException
-    {
-
-        File[] jarFiles = directory.listFiles( fileFilter );
-
-        getLog().debug( "signJars in " + directory + " found " + jarFiles.length + " jar(s) to sign" );
-
-        if ( jarFiles.length == 0 )
-        {
-            return 0;
-        }
-
-        JarSignerMojo signJar = sign.getJarSignerMojo();
-
-        for ( int i = 0; i < jarFiles.length; i++ )
-        {
-            signJar.setJarPath( jarFiles[i] );
-            // for some reason, it appears that the signed jar field is not null ?
-            signJar.setSignedJar( null );
-            long lastModified = jarFiles[i].lastModified();
-            signJar.execute();
-            setLastModified( jarFiles[i], lastModified );
-        }
-
-        return jarFiles.length;
-    }
-
     private void checkInput()
         throws MojoExecutionException
     {
 
-        getLog().debug( "a fact " + this.artifactFactory );
-        getLog().debug( "a resol " + this.artifactResolver );
+        getLog().debug( "a fact " + getArtifactFactory() );
+        getLog().debug( "a resol " + getArtifactResolver() );
         getLog().debug( "basedir " + this.basedir );
-        getLog().debug( "gzip " + this.gzip );
-        getLog().debug( "pack200 " + this.pack200 );
+        getLog().debug( "gzip " + isGzip() );
+        getLog().debug( "pack200 " + isPack200() );
         getLog().debug( "project " + this.getProject() );
         getLog().debug( "zipArchiver " + this.zipArchiver );
         // getLog().debug( "usejnlpservlet " + this.usejnlpservlet );
-        getLog().debug( "verifyjar " + this.verifyjar );
-        getLog().debug( "verbose " + this.verbose );
+        getLog().debug( "verifyjar " + isVerifyjar() );
+        getLog().debug( "verbose " + isVerbose() );
 
         if ( jnlp == null )
         {
             throw new MojoExecutionException( "<jnlp> configuration element missing." );
         }
 
-        if ( SystemUtils.JAVA_VERSION_FLOAT < 1.5f )
-        {
-            if ( pack200 )
-            {
-                throw new MojoExecutionException( "SDK 5.0 minimum when using pack200." );
-            }
-        }
-
+        checkPack200();		
         checkDependencies();
 
         // FIXME
@@ -974,30 +604,6 @@ public abstract class AbstractJnlpMojo
             throw new MojoExecutionException( "'" + getProject().getPackaging() + "' packaging unsupported. Use 'pom'" );
         }
         */
-    }
-
-    /** this to try to workaround an issue with setting setLastModifier. See MWEBSTART-28. May be removed later on if that doesn't help. */
-    private boolean setLastModified( File file, long timestamp )
-    {
-        boolean result;
-        int nbretries = 3;
-        int sleep = 4000;
-        while ( ! (result = file.setLastModified( timestamp )) && nbretries-- > 0 )
-        {
-            getLog().warn("failure to change last modified timestamp... retrying ...");
-            try { Thread.currentThread().sleep( sleep ); } catch (InterruptedException ignore) {}
-        }
-        return result;
-    }
-
-    void setWorkDirectory( File workDirectory )
-    {
-        this.workDirectory = workDirectory;
-    }
-
-    void setVerbose( boolean verbose )
-    {
-        this.verbose = verbose;
     }
 
     public JnlpConfig getJnlp()
@@ -1022,24 +628,14 @@ public abstract class AbstractJnlpMojo
     */
     
     /**
-     * Returns the flag that indicates whether or not a version attribute 
-     * should be output in each jar resource element in the generated 
-     * JNLP file. The default is false.
-     * @return Returns the value of the {@code outputJarVersions} property.
-     */
-    public boolean isOutputJarVersions() {
-        return this.outputJarVersions;
-    }
-    
-    /**
      * Sets the flag that indicates whether or not a version attribute
      * should be output in each jar resource element in the generated 
      * JNLP file. The default is false.
      * @param outputJarVersions 
      */
-    public void setOutputJarVersions(boolean outputJarVersions) {
-        this.outputJarVersions = outputJarVersions;
-    }
+//    public void setOutputJarVersions(boolean outputJarVersions) {
+//        this.outputJarVersions = outputJarVersions;
+//    }
 
     public boolean isArtifactWithMainClass( Artifact artifact )
     {
@@ -1063,7 +659,7 @@ public abstract class AbstractJnlpMojo
         throws MojoExecutionException 
     {   
         // cleanup tempDir if exists
-        File tempDir = new File( this.workDirectory, "temp_extracted_jars" );
+        File tempDir = new File( getWorkDirectory(), "temp_extracted_jars" );
         removeDirectory(tempDir);
         
         // recreate temp dir
@@ -1077,7 +673,7 @@ public abstract class AbstractJnlpMojo
         JarUnsignMojo unsignJar = new JarUnsignMojo();
 //        unsignJar.setBasedir( basedir );
         unsignJar.setTempDir( tempDir );
-        unsignJar.setVerbose( this.verbose );
+        unsignJar.setVerbose( isVerbose() );
 //        unsignJar.setWorkingDir( getWorkDirectory() );
 
         unsignJar.setArchiverManager( archiverManager );
@@ -1115,7 +711,7 @@ public abstract class AbstractJnlpMojo
      */
     private void verboseLog( String msg )
     {
-        infoOrDebug( this.verbose || getLog().isInfoEnabled(), msg );
+        infoOrDebug( isVerbose() || getLog().isInfoEnabled(), msg );
     }
 
     private void infoOrDebug( boolean info , String msg )
@@ -1129,5 +725,25 @@ public abstract class AbstractJnlpMojo
             getLog().debug( msg );
         }
     }
+
+    /**
+     * Returns the flag that indicates whether or not a version attribute 
+     * should be output in each jar resource element in the generated 
+     * JNLP file. The default is false.
+     * @return Returns the value of the {@code outputJarVersions} property.
+     */
+    public boolean isOutputJarVersions() {
+        return this.outputJarVersions;
+    }
+
+    /**
+     * Set the value of the outputJarVersions field.
+     * @param outputJarVersions 
+     */
+    public void setOutputJarVersions( boolean outputJarVersions )
+    {
+        this.outputJarVersions = outputJarVersions;
+    }
+    
 }
 
