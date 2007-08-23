@@ -57,6 +57,15 @@
       </roles>
       <timezone>+1</timezone>
     </contributor>
+    <contributor>
+      <!--<id>ge0ffrey</id>-->
+      <name>Kevin Stembridge</name>
+      <!--email></email-->
+      <roles>
+        <role>Java developer</role>
+      </roles>
+      <!--timezone>+1</timezone-->
+    </contributor>
   </contributors>
 
   <modules>
