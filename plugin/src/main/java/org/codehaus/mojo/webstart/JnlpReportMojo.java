@@ -11,7 +11,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
 
-import org.codehaus.doxia.site.renderer.SiteRenderer;
+import org.apache.maven.doxia.siterenderer.Renderer;
 import org.codehaus.plexus.util.FileUtils;
 
 /**
@@ -20,6 +20,7 @@ import org.codehaus.plexus.util.FileUtils;
  * @author Geoffrey De Smet
  * @description Creates a Jnlp Report
  * @goal report
+ * @phase site
  */
 public class JnlpReportMojo
     extends AbstractMavenReport
@@ -32,12 +33,12 @@ public class JnlpReportMojo
     private File outputDirectory;
 
     /**
-     * Doxia Site Renderer
+     * <i>Maven Internal</i>: The Doxia Site Renderer.
      *
-     * @parameter expression="${component.org.codehaus.doxia.site.renderer.SiteRenderer}"
+     * @component
      * @required @readonly
      */
-    private SiteRenderer siteRenderer;
+    private Renderer siteRenderer;
 
     /**
      * Maven Project
@@ -156,7 +157,7 @@ public class JnlpReportMojo
         return getBundle( locale ).getString( "report.jnlp-report.description" );
     }
 
-    protected SiteRenderer getSiteRenderer()
+    protected Renderer getSiteRenderer()
     {
         return siteRenderer;
     }
