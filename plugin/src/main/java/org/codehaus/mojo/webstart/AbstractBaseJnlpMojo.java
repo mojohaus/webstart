@@ -549,7 +549,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      
         while ( ! (result = file.setLastModified( timestamp )) && nbretries-- > 0 )
         {
-            getLog().warn("failure to change last modified timestamp... retrying ...");
+            getLog().warn("failure to change last modified timestamp... retrying ... See MWEBSTART-28. (especially if you're on NFS).");
             
             try 
             { 
