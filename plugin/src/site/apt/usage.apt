@@ -82,6 +82,7 @@ Input/Output
   src/main/jnlp/resources/   (location where all resources are taken. All contents are copied into the work directory)
 
   target/jnlp/               (work directory)
+  target/jnlp/*libPath*      (library directory. may be the same as work directory if not configured otherwise.)
   target/jnlp/launch.jnlp    (generated jnlp file. Name is configurable, this is the default)
   target/${artifactId}-${version}.zip (zipped version of the work directory that will be installed in your local repository)
 -------------------------------
@@ -169,6 +170,9 @@ Plugin configuration
         </executions>
         <configuration>
            <!--outputDirectory></outputDirectory--> <!-- not required?? -->
+
+           <!-- The path where the libraries are stored within the jnlp structure. not required. by default the libraries are within the working directory -->
+           <libPath>lib</libPath>
 
            <!-- [optional] transitive dependencies filter - if omitted, all transitive dependencies are included -->
            <dependencies>
