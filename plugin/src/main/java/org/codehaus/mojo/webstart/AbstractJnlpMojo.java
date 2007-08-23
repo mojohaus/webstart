@@ -465,7 +465,7 @@ public abstract class AbstractJnlpMojo
             !Artifact.SCOPE_TEST.equals( artifact.getScope() ) )
         {
             String type = artifact.getType();
-            if ( "jar".equals( type ) )
+            if ( "jar".equals( type ) || "ejb-client".equals( type ) )
             {
 
                 // FIXME when signed, we should update the manifest.
