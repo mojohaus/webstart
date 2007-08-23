@@ -66,18 +66,7 @@ public class JarResource
      */
     public JarResource( Artifact artifact )
     {
-        
-        if ( artifact == null )
-        {
-            throw new IllegalArgumentException("artifact must not be null");
-        }
-        
-        this.artifact = artifact;
-        this.artifactId = artifact.getArtifactId();
-        this.classifier = artifact.getClassifier();
-        this.groupId = artifact.getGroupId();
-        this.version = artifact.getVersion();
-        
+        setArtifact(artifact);
     }
 
     /**
@@ -241,10 +230,22 @@ public class JarResource
     /**
      * Sets the underlying artifact that this instance represents.
      * @param artifact 
+     * @throws IllegalArgumentException if {@code artifact} is null.
      */
     public void setArtifact( Artifact artifact )
     {
+
+        if ( artifact == null )
+        {
+            throw new IllegalArgumentException("artifact must not be null");
+        }
+        
         this.artifact = artifact;
+        this.artifactId = artifact.getArtifactId();
+        this.classifier = artifact.getClassifier();
+        this.groupId = artifact.getGroupId();
+        this.version = artifact.getVersion();
+        
     }
 
     /**
