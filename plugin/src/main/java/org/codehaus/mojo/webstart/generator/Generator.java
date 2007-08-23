@@ -150,10 +150,20 @@ public class Generator
         {
             StringBuffer buffer = new StringBuffer( 100 * artifacts.size() );
             buffer.append( "\n" );
-            for ( int i = 0; i < artifacts.size(); i++ )
-            {
-                Artifact artifact = (Artifact) artifacts.get( i );
-                buffer.append( "<jar href=\"" ).append( artifact.getFile().getName() ).append( "\"" );
+
+			String jarLibPath = null;
+            if (config.getLibPath() != null) {
+                jarLibPath = config.getLibPath();
+                jarLibPath = (jarLibPath != null && jarLibPath.trim().length() != 0) ? jarLibPath.trim() : null;
+            }
+
+            for (int i = 0; i < artifacts.size(); i++) {
+                Artifact artifact = (Artifact)artifacts.get(i);
+                buffer.append("<jar href=\"");
+                if (jarLibPath != null) {
+                    buffer.append(jarLibPath).append("/");
+                }
+                buffer.append( artifact.getFile().getName() ).append( "\"" );
                 
                 if (config.isOutputJarVersions()) 
                 {

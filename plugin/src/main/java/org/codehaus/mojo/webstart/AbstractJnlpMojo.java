@@ -199,6 +199,7 @@ public abstract class AbstractJnlpMojo
         initStartTime();
 
         getLog().debug( "using work directory " + getWorkDirectory() );
+        getLog().debug( "using library directory " + getLibDirectory() );
         //
         // prepare layout
         //
@@ -206,7 +207,7 @@ public abstract class AbstractJnlpMojo
         
         try
         {
-            copyResources( getResourcesDirectory(), getWorkDirectory() );
+            copyResources( getResourcesDirectory(), getLibDirectory() );
 
             artifactWithMainClass = null;
 
@@ -483,7 +484,7 @@ public abstract class AbstractJnlpMojo
                         "artifact " + artifact + " has no matching file, why? Check the logs..." );
                 }
 
-                boolean copied = copyFileToDirectoryIfNecessary( toCopy, getWorkDirectory() );
+                boolean copied = copyFileToDirectoryIfNecessary( toCopy, getLibDirectory() );
 
                 if ( copied )
                 {
@@ -515,13 +516,13 @@ public abstract class AbstractJnlpMojo
             // we should probably identify them and package inside jars that we timestamp like the native lib
             // to avoid repackaging every time. What are the types of the native libs?
             {
-                verboseLog( "Skipping artifact of type " + type + " for " + getWorkDirectory().getName() );
+                verboseLog( "Skipping artifact of type " + type + " for " + getLibDirectory().getName() );
             }
             // END COPY
         }
         else
         {
-            verboseLog( "Skipping artifact of scope " + artifact.getScope() + " for " + getWorkDirectory().getName() );
+            verboseLog( "Skipping artifact of scope " + artifact.getScope() + " for " + getLibDirectory().getName() );
         }
     }
 

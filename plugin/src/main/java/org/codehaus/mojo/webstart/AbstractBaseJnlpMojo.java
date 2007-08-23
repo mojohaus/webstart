@@ -88,7 +88,14 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      * @parameter expression="${project.build.directory}/jnlp"
      * @required
      */
-    private File workDirectory;
+    private File workDirectory;    
+    
+    /**
+     * The path where the libraries are placed within the jnlp structure.
+     * 
+     * @parameter expression=""
+     */
+    protected String libPath;
     
     /**
      * The location of the directory (relative or absolute) containing non-jar resources that
@@ -214,6 +221,12 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         {
             throw new MojoExecutionException( "Failed to create: " + getWorkDirectory().getAbsolutePath() );
         }
+        
+        // check and create the library path
+        if (!getLibDirectory().exists() && !getLibDirectory().mkdirs()) 
+        {
+            throw new MojoExecutionException("Failed to create: " + getLibDirectory().getAbsolutePath());
+        }
 
     }
 
@@ -227,6 +240,29 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     protected File getWorkDirectory()
     {
         return this.workDirectory;
+    }
+    
+    /**
+     * Returns the library directory. If not libPath is configured, the working directory is returned.
+     * @return Returns the value of the libraryDirectory field.
+     */
+    protected File getLibDirectory() {
+        if (getLibPath() != null) {
+            return new File(getWorkDirectory(), getLibPath());
+        }
+        return getWorkDirectory();
+    }
+
+    /**
+     * Returns the library path. This is ths subpath within the working directory, where the libraries are placed. 
+     * If the path is not configured it is <code>null</code>.
+     * @return the library path or <code>null</code> if not configured.
+     */
+    public String getLibPath() {
+        if (libPath == null || libPath.trim().length() == 0){
+            return null;
+        }
+        return libPath;
     }
 
     /**

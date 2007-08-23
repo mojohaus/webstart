@@ -96,4 +96,47 @@ public class GeneratorTest
 
         
     }
+
+    public void testGetDependenciesTextWithLibPath() throws Exception
+    {
+        final Artifact artifact1 =
+                new DefaultArtifact("groupId", "artifactId1", VersionRange.createFromVersion("1.0"),
+                        "scope", "jar", "classifier", null);
+        artifact1.setFile(new File("artifact1-1.0.jar"));
+        final Artifact artifact2 =
+                new DefaultArtifact("groupId", "artifactId2", VersionRange.createFromVersion("1.5"),
+                        null, "jar", "", null);
+        artifact2.setFile(new File("artifact2-1.5.jar"));
+
+        final ArrayList artifacts = new ArrayList();
+
+        JnlpMojo mojo = new JnlpMojo() {
+            public List getPackagedJnlpArtifacts() {
+                return artifacts;
+            }
+            public boolean isArtifactWithMainClass(Artifact artifact) {
+                return artifact == artifact1;
+            }
+			public String getLibPath() {
+                return "lib";
+            }
+        };
+        
+        assertEquals("", Generator.getDependenciesText(mojo));
+
+        artifacts.add(artifact1);
+        artifacts.add(artifact2);
+
+        assertEquals("\n<jar href=\"lib/artifact1-1.0.jar\" main=\"true\"/>"
+                   + "\n<jar href=\"lib/artifact2-1.5.jar\"/>\n",
+                Generator.getDependenciesText(mojo));
+
+        mojo.setOutputJarVersions(true);
+        
+        assertEquals("\n<jar href=\"lib/artifact1-1.0.jar\" version=\"1.0\" main=\"true\"/>"
+                     + "\n<jar href=\"lib/artifact2-1.5.jar\" version=\"1.5\"/>\n",
+                     Generator.getDependenciesText(mojo));
+
+        
+    }
 }
