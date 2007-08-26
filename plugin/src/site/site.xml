@@ -26,6 +26,8 @@
     <item name="Single Webstart App" href="examples/single_webstart_app.html" />
     <item name="WAR Bundle 1" href="examples/war_bundle_1.html" />
     <item name="WAR Bundle 2" href="examples/war_bundle_2.html" />
+    <item name="Simple JNLP Download Servlet" href="examples/simple_jnlp_download_servlet.html" />
+    <item name="Advanced JNLP Download Servlet" href="examples/advanced_jnlp_download_servlet.html" />
   </menu>
   ${reports}
  </body>

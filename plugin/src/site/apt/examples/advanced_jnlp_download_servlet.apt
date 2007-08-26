@@ -8,10 +8,12 @@
 
 Advanced JnlpDownloadServlet Example
 
-    This example shows how to configure the ==jnlp-download-servlet== goal for its more advanced features. 
+    This example shows how to configure the <<jnlp-download-servlet>> goal for its more advanced features. 
     
     * Multiple JNLP applications.
+    
     * Sharing jar resources between applications.
+    
     * Deploying multiple versions of some artifacts.
     
 
