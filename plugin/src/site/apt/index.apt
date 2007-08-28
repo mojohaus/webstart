@@ -49,6 +49,8 @@ Maven Webstart Plugin
   <<Change from 1.0-alpha-1>> the most required feature, {{{http://jira.codehaus.org/browse/MWEBSTART-13} MWEBSTART-13}}, 
   has been partially implemented. It should be possible to use the plugin without using a single module for the webstart 
   bundling. The documentation has not been fully updated to reflect this change. 
+  
+  <<WARNING>>: As a result of this change, one must bind the jnlp mojo to the right phase.
 
   <<Change from 1.0-alpha-1>> The default location for the template and resources have changed. 
   See {{{http://jira.codehaus.org/browse/MWEBSTART-16} MWEBSTART-16}} for discussion.
