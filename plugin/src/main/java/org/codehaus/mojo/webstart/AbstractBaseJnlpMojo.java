@@ -492,7 +492,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
                 // Pack200.unpackJars( applicationDirectory, updatedPack200FileFilter );
             }
 
-            int signedJars = signJars( getWorkDirectory(), updatedJarFileFilter );
+            int signedJars = signJars( getLibDirectory(), updatedJarFileFilter );
             
             if ( signedJars != getModifiedJnlpArtifacts().size() )
             {
