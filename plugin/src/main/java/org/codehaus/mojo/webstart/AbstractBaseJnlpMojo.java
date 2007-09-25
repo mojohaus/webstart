@@ -35,7 +35,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 
 /**
- * The superclass for all JNLP generating MOJOs. 
+ * The superclass for all JNLP generating MOJOs.
  *
  * @author Kevin Stembridge
  * @author $LastChangedBy$
@@ -45,13 +45,13 @@ import org.codehaus.plexus.util.FileUtils;
  */
 public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 {
-    
+
     private static final String DEFAULT_RESOURCES_DIR = "src/main/jnlp/resources";
 
     /**
      * Artifact resolver, needed to download source jars for inclusion in classpath.
      *
-     * @component 
+     * @component
      * @required
      * @readonly
      */
@@ -60,7 +60,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     /**
      * Artifact factory, needed to download source jars for inclusion in classpath.
      *
-     * @component 
+     * @component
      * @required
      * @readonly
      */
@@ -75,7 +75,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
     /**
      * The collection of remote artifact repositories.
-     * 
+     *
      * @parameter expression="${project.remoteArtifactRepositories}"
      * @readonly
      * @required
@@ -88,26 +88,26 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      * @parameter expression="${project.build.directory}/jnlp"
      * @required
      */
-    private File workDirectory;    
-    
+    private File workDirectory;
+
     /**
      * The path where the libraries are placed within the jnlp structure.
-     * 
+     *
      * @parameter expression=""
      */
     protected String libPath;
-    
+
     /**
      * The location of the directory (relative or absolute) containing non-jar resources that
      * are to be included in the JNLP bundle.
-     * 
+     *
      * @parameter
      */
     private File resourcesDirectory;
-    
+
     /**
-     * The location where the JNLP Velocity template files are stored. 
-     * 
+     * The location where the JNLP Velocity template files are stored.
+     *
      * @parameter expression="${project.basedir}/src/main/jnlp"
      * @required
      */
@@ -136,7 +136,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     private boolean verifyjar;
 
     /**
-     * Indicates whether or not gzip archives will be created for each of the jar 
+     * Indicates whether or not gzip archives will be created for each of the jar
      * files included in the webstart bundle.
      *
      * @parameter default-value="false"
@@ -158,7 +158,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     // We achieve that by only filtering files modified after the plugin was started
     // Note: if other files (the pom, the keystore config) have changed, one needs to clean
     private final FileFilter updatedJarFileFilter;// = new CompositeFileFilter( jarFileFilter, modifiedFileFilter );
-    
+
     private final FileFilter updatedPack200FileFilter;
 
     private long startTime;
@@ -168,52 +168,52 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      */
     public AbstractBaseJnlpMojo()
     {
-        
+
         FileFilter jarFileFilter = new FileFilter() {
 
             public boolean accept( File pathname )
             {
                 return pathname.isFile() && pathname.getName().endsWith( ".jar" );
             }
-            
+
         };
-        
+
         FileFilter modifiedFileFilter = new ModifiedFileFilter();
-        
-        this.updatedJarFileFilter = new CompositeFileFilter( jarFileFilter, modifiedFileFilter );
-        this.updatedPack200FileFilter = new CompositeFileFilter( new Pack200FileFilter(), modifiedFileFilter );
-        
+
+        updatedJarFileFilter = new CompositeFileFilter( jarFileFilter, modifiedFileFilter );
+        updatedPack200FileFilter = new CompositeFileFilter( new Pack200FileFilter(), modifiedFileFilter );
+
     }
-    
+
     /**
      * TODO finish comment
      */
-    protected void initStartTime() 
+    protected void initStartTime()
     {
         // interesting: copied files lastModified time stamp will be rounded.
         // We have to be sure that the startTime is before that time...
         // rounding to the second - 1 millis should be sufficient..
-        this.startTime = System.currentTimeMillis() - 1000;
+        startTime = System.currentTimeMillis() - 1000;
     }
-    
+
     /**
      * TODO finish comment
      *
      * @return
      */
-    protected long getStartTime() 
+    protected long getStartTime()
     {
 
-        if ( this.startTime == 0 )
+        if ( startTime == 0 )
         {
             throw new IllegalStateException( "The startTime field has not initialized. "
                                              + "The initStartTime() method must be called first." );
         }
-        
-        return this.startTime;
-        
+
+        return startTime;
+
     }
-    
+
     protected void makeWorkingDirIfNecessary() throws MojoExecutionException
     {
 
@@ -221,9 +221,9 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         {
             throw new MojoExecutionException( "Failed to create: " + getWorkDirectory().getAbsolutePath() );
         }
-        
+
         // check and create the library path
-        if (!getLibDirectory().exists() && !getLibDirectory().mkdirs()) 
+        if (!getLibDirectory().exists() && !getLibDirectory().mkdirs())
         {
             throw new MojoExecutionException("Failed to create: " + getLibDirectory().getAbsolutePath());
         }
@@ -231,7 +231,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     }
 
     public abstract MavenProject getProject();
-    
+
     /**
      * Returns the working directory. This is the directory in which files and resources
      * will be placed in order to be processed prior to packaging.
@@ -239,9 +239,9 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      */
     protected File getWorkDirectory()
     {
-        return this.workDirectory;
+        return workDirectory;
     }
-    
+
     /**
      * Returns the library directory. If not libPath is configured, the working directory is returned.
      * @return Returns the value of the libraryDirectory field.
@@ -254,33 +254,33 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     }
 
     /**
-     * Returns the library path. This is ths subpath within the working directory, where the libraries are placed. 
+     * Returns the library path. This is ths subpath within the working directory, where the libraries are placed.
      * If the path is not configured it is <code>null</code>.
      * @return the library path or <code>null</code> if not configured.
      */
     public String getLibPath() {
-        if (libPath == null || libPath.trim().length() == 0){
+        if (( libPath == null ) || ( libPath.trim().length() == 0 )){
             return null;
         }
         return libPath;
     }
 
     /**
-     * Returns the location of the directory containing 
+     * Returns the location of the directory containing
      * non-jar resources that are to be included in the JNLP bundle.
-     * 
+     *
      * @return Returns the value of the resourcesDirectory field, never null.
      */
     protected File getResourcesDirectory()
     {
-        
-        if ( this.resourcesDirectory == null )
+
+        if ( resourcesDirectory == null )
         {
-            this.resourcesDirectory = new File(getProject().getBasedir(), DEFAULT_RESOURCES_DIR );
+            resourcesDirectory = new File(getProject().getBasedir(), DEFAULT_RESOURCES_DIR );
         }
 
-        return this.resourcesDirectory;
-        
+        return resourcesDirectory;
+
     }
 
     /**
@@ -290,7 +290,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      */
     protected File getTemplateDirectory()
     {
-        return this.templateDirectory;
+        return templateDirectory;
     }
 
     /**
@@ -300,17 +300,17 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      */
     protected ArtifactFactory getArtifactFactory()
     {
-        return this.artifactFactory;
+        return artifactFactory;
     }
 
     /**
-     * Returns the ArtifactResolver that can be used to retrieve artifacts 
+     * Returns the ArtifactResolver that can be used to retrieve artifacts
      * from maven artifact repositories.
      * @return Returns the value of the artifactResolver field.
      */
     protected ArtifactResolver getArtifactResolver()
     {
-        return this.artifactResolver;
+        return artifactResolver;
     }
 
     /**
@@ -319,28 +319,28 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      */
     protected ArtifactRepository getLocalRepository()
     {
-        return this.localRepository;
+        return localRepository;
     }
 
     /**
-     * Returns the collection of remote artifact repositories for the current 
+     * Returns the collection of remote artifact repositories for the current
      * Maven project.
      * @return Returns the value of the remoteRepositories field.
      */
     protected List getRemoteRepositories()
     {
-        return this.remoteRepositories;
+        return remoteRepositories;
     }
 
     /**
      * Returns the flag that indicates whether or not jar resources
      * will be compressed using pack200.
-     * 
+     *
      * @return Returns the value of the pack200 field.
      */
     public boolean isPack200()
     {
-        return this.pack200;
+        return pack200;
     }
 
     /**
@@ -349,17 +349,17 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      */
     protected SignConfig getSign()
     {
-        return this.sign;
+        return sign;
     }
 
     /**
-     * Returns the flag that indicates whether or not a gzip should be 
+     * Returns the flag that indicates whether or not a gzip should be
      * created for each jar resource.
      * @return Returns the value of the gzip field.
      */
     protected boolean isGzip()
     {
-        return this.gzip;
+        return gzip;
     }
 
     /**
@@ -368,7 +368,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      */
     protected boolean isVerbose()
     {
-        return this.verbose;
+        return verbose;
     }
 
     /**
@@ -377,7 +377,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      */
     protected boolean isVerifyjar()
     {
-        return this.verifyjar;
+        return verifyjar;
     }
 
     /**
@@ -387,7 +387,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      */
     protected List getModifiedJnlpArtifacts()
     {
-        return this.modifiedJnlpArtifacts;
+        return modifiedJnlpArtifacts;
     }
 
     /**
@@ -395,15 +395,15 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      *
      * @throws MojoExecutionException
      */
-    protected void checkPack200() throws MojoExecutionException 
+    protected void checkPack200() throws MojoExecutionException
     {
 
-        if ( isPack200() && SystemUtils.JAVA_VERSION_FLOAT < 1.5f )
+        if ( isPack200() && ( SystemUtils.JAVA_VERSION_FLOAT < 1.5f ) )
         {
-            throw new MojoExecutionException( 
+            throw new MojoExecutionException(
                     "Configuration error: Pack200 compression is only available on SDK 5.0 or above." );
         }
-        
+
     }
 
     protected void copyResources( File resourcesDir, File workDirectory ) throws IOException
@@ -421,19 +421,19 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
             else
             {
                 getLog().debug( "Copying resources from " + resourcesDir.getAbsolutePath() );
-    
+
                 // hopefully available from FileUtils 1.0.5-SNAPSHOT
                 FileUtils.copyDirectoryStructure( resourcesDir , workDirectory );
-    
+
                 // this may needs to be parametrized somehow
                 //String excludes = concat( DirectoryScanner.DEFAULTEXCLUDES, ", " );
                 //copyDirectoryStructure( resourcesDir, workDirectory, "**", excludes );
             }
-            
+
         }
-        
+
     }
-    
+
 
     /**
      * Conditionally copy the file into the target directory.
@@ -441,7 +441,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      * The target file name is taken from the <code>sourceFile</code> name.
      *
      * @return <code>true</code> when the file was copied, <code>false</code> otherwise.
-     * @throws IllegalArgumentException if sourceFile is <code>null</code> or 
+     * @throws IllegalArgumentException if sourceFile is <code>null</code> or
      * <code>sourceFile.getName()</code> is <code>null</code>
      * @throws IOException if an error occurs attempting to copy the file.
      */
@@ -455,7 +455,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
         File targetFile = new File( targetDirectory, sourceFile.getName() );
 
-        boolean shouldCopy = ! targetFile.exists() || targetFile.lastModified() < sourceFile.lastModified();
+        boolean shouldCopy = ! targetFile.exists() || ( targetFile.lastModified() < sourceFile.lastModified() );
 
         if ( shouldCopy )
         {
@@ -463,22 +463,22 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         }
         else
         {
-            getLog().debug( "Source file hasn't changed. Do not overwrite " 
+            getLog().debug( "Source file hasn't changed. Do not overwrite "
                             + targetFile + " with " + sourceFile + "." );
 
         }
-        
+
         return shouldCopy;
-        
+
     }
-    
-    protected void signJars() throws MojoExecutionException, MojoFailureException 
+
+    protected void signJars() throws MojoExecutionException, MojoFailureException
     {
 
         if ( getSign() != null )
         {
             getSign().init(getLog(), getWorkDirectory(), isVerbose());
-            
+
             // not yet enabled
             // removeExistingSignatures(workDirectory, updatedJarFileFilter);
 
@@ -486,23 +486,23 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
             {
                 // http://java.sun.com/j2se/1.5.0/docs/guide/deployment/deployment-guide/pack200.html
                 // we need to pack then unpack the files before signing them
-                Pack200.packJars( getWorkDirectory(), updatedJarFileFilter, isGzip() );
-                Pack200.unpackJars( getWorkDirectory(), updatedPack200FileFilter );
+                Pack200.packJars( getLibDirectory(), updatedJarFileFilter, isGzip() );
+                Pack200.unpackJars( getLibDirectory(), updatedPack200FileFilter );
                 // specs says that one should do it twice when there are unsigned jars??
                 // Pack200.unpackJars( applicationDirectory, updatedPack200FileFilter );
             }
 
             int signedJars = signJars( getLibDirectory(), updatedJarFileFilter );
-            
+
             if ( signedJars != getModifiedJnlpArtifacts().size() )
             {
                 throw new IllegalStateException(
                         "The number of signed artifacts differ from the number of modified "
                         + "artifacts. Implementation error" );
             }
-            
+
         }
-        
+
     }
 
     /**
@@ -512,7 +512,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     {
 
         File[] jarFiles = directory.listFiles( fileFilter );
-        
+
         if ( getLog().isDebugEnabled() )
         {
             getLog().debug( "signJars in " + directory + " found " + jarFiles.length + " jar(s) to sign" );
@@ -538,34 +538,34 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         return jarFiles.length;
     }
 
-    /** 
-     * This is to try to workaround an issue with setting setLastModified. 
-     * See MWEBSTART-28. May be removed later on if that doesn't help. 
+    /**
+     * This is to try to workaround an issue with setting setLastModified.
+     * See MWEBSTART-28. May be removed later on if that doesn't help.
      */
     private boolean setLastModified( File file, long timestamp )
     {
         boolean result;
         int nbretries = 3;
-     
-        while ( ! (result = file.setLastModified( timestamp )) && nbretries-- > 0 )
+
+        while ( ! (result = file.setLastModified( timestamp )) && ( nbretries-- > 0 ) )
         {
             getLog().warn("failure to change last modified timestamp... retrying ... See MWEBSTART-28. (especially if you're on NFS).");
-            
-            try 
-            { 
-                Thread.sleep( 4000 ); 
-            } 
+
+            try
+            {
+                Thread.sleep( 4000 );
+            }
             catch (InterruptedException ignore) {
                 //TODO should not be ignoring, because this class doesn't control the Thread policy
             }
-            
+
         }
-        
+
         return result;
-        
+
     }
 
-    protected void packJars() 
+    protected void packJars()
     {
 
         if ( isPack200() )
@@ -641,12 +641,12 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
     private static class CompositeFileFilter implements FileFilter
     {
-        
+
         private List fileFilters = new ArrayList();
 
         CompositeFileFilter( FileFilter filter1, FileFilter filter2 )
         {
-            
+
             if ( filter1 == null )
             {
                 throw new IllegalArgumentException( "filter1 must not be null" );
@@ -656,58 +656,58 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
             {
                 throw new IllegalArgumentException( "filter2 must not be null" );
             }
-            
-            this.fileFilters.add( filter1 );
-            this.fileFilters.add( filter2 );
-            
+
+            fileFilters.add( filter1 );
+            fileFilters.add( filter2 );
+
         }
 
         public boolean accept( File pathname )
         {
-            for ( int i = 0; i < this.fileFilters.size(); i++ )
+            for ( int i = 0; i < fileFilters.size(); i++ )
             {
-                
-                if ( ! ( (FileFilter) this.fileFilters.get( i ) ).accept( pathname ) )
+
+                if ( ! ( (FileFilter) fileFilters.get( i ) ).accept( pathname ) )
                 {
                     return false;
                 }
-                
+
             }
-            
+
             return true;
-            
+
         }
-        
+
     }
 
     // anonymous to inner to work-around qdox 1.6.1 bug (MPLUGIN-26)
     private static class Pack200FileFilter implements FileFilter {
-        
+
         public boolean accept( File pathname )
         {
             return pathname.isFile() &&
                 ( pathname.getName().endsWith( ".jar.pack.gz" ) || pathname.getName().endsWith( ".jar.pack" ) );
         }
-        
+
     };
-        
+
     private class ModifiedFileFilter implements FileFilter
     {
-        
+
         public boolean accept( File pathname )
         {
             boolean modified = pathname.lastModified() > getStartTime();
-            
+
             if ( getLog().isDebugEnabled() )
             {
                 getLog().debug( "File: " + pathname.getName() + " modified: " + modified );
                 getLog().debug( "lastModified: " + pathname.lastModified() + " plugin start time " + getStartTime() );
             }
-            
+
             return modified;
-            
+
         }
-        
+
     }
 
 }
