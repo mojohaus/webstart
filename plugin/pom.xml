@@ -165,6 +165,14 @@
         <artifactId>maven-plugin-plugin</artifactId>
         <version>2.3</version>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.3</version>
+        <configuration> 
+          <useSystemClassLoader>true</useSystemClassLoader><!-- work-around for SUREFIRE-347 -->
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
