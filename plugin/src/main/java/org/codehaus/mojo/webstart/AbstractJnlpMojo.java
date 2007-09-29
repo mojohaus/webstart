@@ -353,6 +353,10 @@ public abstract class AbstractJnlpMojo
         }
     }*/
 
+    /**
+     * Detects improper includes/excludes configuration.
+     * @throws MojoExecutionException if at least one of the specified includes or excludes matches no artifact, false otherwise
+     */
     void checkDependencies()
         throws MojoExecutionException
     {
@@ -380,6 +384,9 @@ public abstract class AbstractJnlpMojo
         }
     }
 
+    /**
+     * @return true if at least one of the pattern in the list matches no artifact, false otherwise
+     */
     private boolean checkDependencies( List patterns, Collection artifacts )
     {
         if ( dependencies == null )
@@ -461,8 +468,9 @@ public abstract class AbstractJnlpMojo
     {
         // TODO: scope handler
         // Include runtime and compile time libraries
-        if ( !Artifact.SCOPE_PROVIDED.equals( artifact.getScope() ) &&
-            !Artifact.SCOPE_TEST.equals( artifact.getScope() ) )
+        if ( !Artifact.SCOPE_SYSTEM.equals( artifact.getScope() ) && 
+             !Artifact.SCOPE_PROVIDED.equals( artifact.getScope() ) &&
+             !Artifact.SCOPE_TEST.equals( artifact.getScope() ) )
         {
             String type = artifact.getType();
             if ( "jar".equals( type ) || "ejb-client".equals( type ) )
