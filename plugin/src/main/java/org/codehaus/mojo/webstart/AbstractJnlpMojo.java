@@ -559,7 +559,13 @@ public abstract class AbstractJnlpMojo
             resourceLoaderPath = new File( jnlp.getInputTemplateResourcePath() );
         }
 
-        Generator jnlpGenerator = new Generator( this, resourceLoaderPath, jnlpOutputFile, templateFileName );
+        Generator jnlpGenerator = new Generator( this.getProject(),
+                                                 this, 
+                                                 resourceLoaderPath, 
+                                                 jnlpOutputFile, 
+                                                 templateFileName, 
+                                                 this.getJnlp().getMainClass() );
+        
         try
         {
             jnlpGenerator.generate();

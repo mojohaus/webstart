@@ -511,7 +511,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
         catch ( Exception e )
         {
             throw new MojoExecutionException( "The following error occurred attempting to generate "
-                                              + "the JNLP deployment descriptor: ", e );
+                                              + "the JNLP deployment descriptor: " + e, e );
         }
     
     }
