@@ -203,19 +203,19 @@ Plugin configuration
            <!-- SIGNING -->
            <!-- defining this will automatically sign the jar and its dependencies, if necessary -->
            <sign>
-             <keystore></keystore>
-             <keypass></keypass>  <!-- we need to override passwords easily from the command line. ${keypass} -->
-             <storepass></storepass> <!-- ${storepass} -->
-             <storetype></storetype>
-             <alias></alias>
-             <validity></validity>
+             <keystore>fillme</keystore>
+             <keypass>fillme</keypass>  <!-- we need to override passwords easily from the command line. ${keypass} -->
+             <storepass>fillme</storepass> <!-- ${storepass} -->
+             <storetype>fillme</storetype>
+             <alias>fillme</alias>
+             <validity>fillme</validity>
 
-             <dnameCn></dnameCn>
-             <dnameOu></dnameOu>
-             <dnameO></dnameO>
-             <dnameL></dnameL>
-             <dnameSt></dnameSt>
-             <dnameC></dnameC>
+             <dnameCn>fillme</dnameCn>
+             <dnameOu>fillme</dnameOu>
+             <dnameO>fillme</dnameO>
+             <dnameL>fillme</dnameL>
+             <dnameSt>fillme</dnameSt>
+             <dnameC>fillme</dnameC>
 
              <verify>true</verify>
 
