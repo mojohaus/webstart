@@ -3,11 +3,18 @@
 
   <part id="General">
 
-    <faq id="question">
-      <question>Question?</question>
+    <faq id="obfuscation_question">
+      <question>Can the Webstart plugin obfuscate jars and deploy them?</question>
       <answer>
         <p>
-          Answer
+          The plugin doesn't obfuscate jars but it can deploy jars that have already been obfuscated. 
+        </p>
+        <p>
+          One approach would be to use the <a href="http://pyx4me.com/pyx4me-maven-plugins/proguard-maven-plugin/introduction.html">proguard-maven-plugin</a>
+          to obfuscate the jars and the <a href="http://mojo.codehaus.org/build-helper-maven-plugin/">build-helper-maven-plugin</a>
+          to attach the obfuscated artifact to the project along with the unobfuscated jar and install them both in 
+          your local repository. Then when you configure the webstart plugin with the dependencies to be deployed in 
+          your JNLP bundle, you can choose between the obfuscated or unobfuscated jars.
         </p>
       </answer>
 
