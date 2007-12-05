@@ -601,21 +601,14 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
             
         }
         
-        File[] filesToCopy = getWorkDirectory().listFiles();
-        
-        for ( int i = 0; i < filesToCopy.length; i++ )
+        try
         {
-            
-            try
-            {
-                FileUtils.copyFileToDirectory( filesToCopy[i], outputDir );
-            }
-            catch ( IOException e )
-            {
-                throw new MojoExecutionException(
-                        "An error occurred attempting to copy a file to the JNLP output directory.", e );
-            }
-            
+            FileUtils.copyDirectoryStructure(getWorkDirectory(), outputDir);
+        }
+        catch (IOException e)
+        {
+            throw new MojoExecutionException(
+                    "An error occurred attempting to copy a file to the JNLP output directory.", e );
         }
         
     }
