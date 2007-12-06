@@ -154,14 +154,14 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
     private final List modifiedJnlpArtifacts = new ArrayList();
 
-    // the jars to sign and pack are selected if they are newer than the plugin start.
+    // the jars to sign and pack are selected if they are suffixed by .unprocessed.
     // as the plugin copies the new versions locally before signing/packing them
     // we just need to see if the plugin copied a new version
     // We achieve that by only filtering files modified after the plugin was started
     // Note: if other files (the pom, the keystore config) have changed, one needs to clean
-    private final FileFilter updatedJarFileFilter;// = new CompositeFileFilter( jarFileFilter, modifiedFileFilter );
+    private final FileFilter unprocessedJarFileFilter;
 
-    private final FileFilter updatedPack200FileFilter;
+    private final FileFilter unprocessedPack200FileFilter;
 
     private long startTime;
     
@@ -195,11 +195,20 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
         };
 
-        FileFilter modifiedFileFilter = new ModifiedFileFilter();
+        unprocessedJarFileFilter = new FileFilter() {
 
-        updatedJarFileFilter = new CompositeFileFilter( jarFileFilter, modifiedFileFilter );
-        updatedPack200FileFilter = new CompositeFileFilter( new Pack200FileFilter(), modifiedFileFilter );
+            public boolean accept( File pathname )
+            {
+                return pathname.isFile() && pathname.getName().endsWith( ".jar.unprocessed" );
+            }
 
+        };
+
+        // FileFilter modifiedFileFilter = new ModifiedFileFilter();
+
+        // unprocessedJarFileFilter = new CompositeFileFilter( jarFileFilter, modifiedFileFilter );
+        // unprocessedPack200FileFilter = new CompositeFileFilter( new Pack200FileFilter(), modifiedFileFilter );
+        unprocessedPack200FileFilter = new UnprocessedPack200FileFilter();
     }
 
     /**
@@ -489,6 +498,47 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
     }
 
+
+    /**
+     * Conditionally copy the jar file into the target directory.
+     * The operation is not performed when a signed target file exists and is up to date.
+     * The signed target file name is taken from the <code>sourceFile</code> name.
+     * The unsigned target file name is taken from the <code>sourceFile</code> name suffixed with ".unprocessed".
+     * TODO this is confusing if the sourceFile is already signed. By unsigned we really mean 'unsignedbyus'
+     *
+     * @return <code>true</code> when the file was copied, <code>false</code> otherwise.
+     * @throws IllegalArgumentException if sourceFile is <code>null</code> or
+     * <code>sourceFile.getName()</code> is <code>null</code>
+     * @throws IOException if an error occurs attempting to copy the file.
+     */
+    protected boolean copyJarAsUnprocessedToDirectoryIfNecessary( File sourceFile, File targetDirectory ) throws IOException
+    {
+
+        if ( sourceFile == null )
+        {
+            throw new IllegalArgumentException( "sourceFile is null" );
+        }
+
+        File signedTargetFile = new File( targetDirectory, sourceFile.getName() );
+
+        File unsignedTargetFile = new File( targetDirectory, sourceFile.getName() + ".unprocessed" );
+
+        boolean shouldCopy = ! signedTargetFile.exists() || ( signedTargetFile.lastModified() < sourceFile.lastModified() );
+
+        if ( shouldCopy )
+        {
+            FileUtils.copyFile( sourceFile, unsignedTargetFile );
+        }
+        else
+        {
+            getLog().debug( "Source file hasn't changed. Do not reprocess "
+                            + signedTargetFile + " with " + sourceFile + "." );
+        }
+
+        return shouldCopy;
+
+    }
+
     protected void signJars() throws MojoExecutionException, MojoFailureException
     {
 
@@ -498,26 +548,26 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
             if( unsignAlreadySignedJars() )
             {
-                removeExistingSignatures(getWorkDirectory(), updatedJarFileFilter);
+                removeExistingSignatures(getWorkDirectory(), unprocessedJarFileFilter );
             }
 
             if ( isPack200() )
             {
                 // http://java.sun.com/j2se/1.5.0/docs/guide/deployment/deployment-guide/pack200.html
                 // we need to pack then unpack the files before signing them
-                Pack200.packJars( getLibDirectory(), updatedJarFileFilter, isGzip() );
-                Pack200.unpackJars( getLibDirectory(), updatedPack200FileFilter );
+                Pack200.packJars( getLibDirectory(), unprocessedJarFileFilter, isGzip() );
+                Pack200.unpackJars( getLibDirectory(), unprocessedPack200FileFilter );
                 // specs says that one should do it twice when there are unsigned jars??
                 // Pack200.unpackJars( applicationDirectory, updatedPack200FileFilter );
             }
 
-            int signedJars = signJars( getLibDirectory(), updatedJarFileFilter );
+            int signedJars = signJars( getLibDirectory(), unprocessedJarFileFilter );
 
             if ( signedJars != getModifiedJnlpArtifacts().size() )
             {
                 throw new IllegalStateException(
-                        "The number of signed artifacts differ from the number of modified "
-                        + "artifacts. Implementation error" );
+                        "The number of signed artifacts (" + signedJars + ") differ from the number of modified "
+                        + "artifacts (" + getModifiedJnlpArtifacts().size() + "). Implementation error" );
             }
 
         }
@@ -525,7 +575,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     }
 
     /**
-     * return the number of signed jars *
+     * @return the number of signed jars
      */
     private int signJars( File directory, FileFilter fileFilter ) throws MojoExecutionException, MojoFailureException
     {
@@ -546,12 +596,30 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
         for ( int i = 0; i < jarFiles.length; i++ )
         {
+            String unprocessedJarFilePath = jarFiles[i].getAbsolutePath();
+            if (!unprocessedJarFilePath.endsWith( ".unprocessed" )) {
+                throw new IllegalStateException( "We are about to sign an non .unprocessed file with path: " + unprocessedJarFilePath );
+            }
             jarSigner.setJarPath( jarFiles[i] );
-            // for some reason, it appears that the signed jar field is not null ?
-            jarSigner.setSignedJar( null );
-            long lastModified = jarFiles[i].lastModified();
+            File signedJar = new File( unprocessedJarFilePath.substring( 0, unprocessedJarFilePath.length() - ".unprocessed".length() ) );
+            jarSigner.setSignedJar( signedJar );
+            if ( signedJar.exists() ) {
+                boolean deleted = signedJar.delete();
+                if (! deleted) {
+                    throw new IllegalStateException( "Couldn't delete obsolete signed jar: " + signedJar.getAbsolutePath() );
+                } 
+            }
+            // long lastModified = unprocessedJarFilePath.lastModified();
             jarSigner.execute();
-            setLastModified( jarFiles[i], lastModified );
+            getLog().debug( "lastModified signedJar:" + signedJar.lastModified() + " unprocessed signed Jar:" + jarFiles[i].lastModified() );
+            //setLastModified( jarFiles[i], lastModified );
+
+            // remove unprocessed files
+            // TODO wouldn't have to do that if we copied the unprocessed jar files in a temporary area
+            boolean deleted = jarFiles[i].delete();
+            if (! deleted) {
+                throw new IllegalStateException( "Couldn't delete obsolete unprocessed jar: " + jarFiles[i].getAbsolutePath() );
+            } 
         }
 
         return jarFiles.length;
@@ -636,6 +704,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      * This is to try to workaround an issue with setting setLastModified.
      * See MWEBSTART-28. May be removed later on if that doesn't help.
      */
+    /*
     private boolean setLastModified( File file, long timestamp )
     {
         boolean result;
@@ -658,6 +727,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         return result;
 
     }
+    */
 
     protected void packJars()
     {
@@ -665,7 +735,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         if ( isPack200() )
         {
             getLog().debug( "packing jars" );
-            Pack200.packJars( getWorkDirectory(), updatedJarFileFilter, isGzip() );
+            Pack200.packJars( getWorkDirectory(), unprocessedJarFileFilter, isGzip() );
         }
 
     }
@@ -775,12 +845,12 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     }
 
     // anonymous to inner to work-around qdox 1.6.1 bug (MPLUGIN-26)
-    private static class Pack200FileFilter implements FileFilter {
+    private static class UnprocessedPack200FileFilter implements FileFilter {
 
         public boolean accept( File pathname )
         {
             return pathname.isFile() &&
-                ( pathname.getName().endsWith( ".jar.pack.gz" ) || pathname.getName().endsWith( ".jar.pack" ) );
+                ( pathname.getName().endsWith( ".jar.unprocessed.pack.gz" ) || pathname.getName().endsWith( ".jar.unprocessed.pack" ) );
         }
 
     };

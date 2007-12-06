@@ -484,7 +484,7 @@ public abstract class AbstractJnlpMojo
                         "artifact " + artifact + " has no matching file, why? Check the logs..." );
                 }
 
-                boolean copied = copyFileToDirectoryIfNecessary( toCopy, getLibDirectory() );
+                boolean copied = copyJarAsUnprocessedToDirectoryIfNecessary( toCopy, getLibDirectory() );
 
                 if ( copied )
                 {

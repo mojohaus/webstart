@@ -68,6 +68,7 @@ public class JarSignMojoConfig implements SignConfig {
     
     /**
      * Returns a fully configured version of a Mojo ready to sign jars.
+     * You will need to attach set the MavenProject is you don't sign in place.
      * @return
      */
     public JarSignerMojo getJarSignerMojo() {
@@ -76,6 +77,7 @@ public class JarSignMojoConfig implements SignConfig {
         signJar.setAlias( getAlias() );
         signJar.setKeypass( getKeypass() );
         signJar.setKeystore( getKeystore() );
+        signJar.setSkipAttachSignedArtifact( true );
         signJar.setSigFile( getSigfile() );
         signJar.setStorepass( getStorepass() );
         signJar.setType( getStoretype() );
