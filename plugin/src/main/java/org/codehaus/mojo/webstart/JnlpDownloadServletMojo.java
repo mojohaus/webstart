@@ -29,6 +29,8 @@ import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
+import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
+import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
@@ -351,12 +353,20 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
                 checkForMainClass( jarResource );
                 jarResourceArtifacts.add( artifact );
             }
+            
+            ScopeArtifactFilter compileFilter = new ScopeArtifactFilter( Artifact.SCOPE_COMPILE );
+            ScopeArtifactFilter runtimeFilter = new ScopeArtifactFilter( Artifact.SCOPE_RUNTIME );
+            AndArtifactFilter artifactFilter = new AndArtifactFilter();
+            artifactFilter.add( compileFilter );
+            artifactFilter.add( runtimeFilter );
 
             ArtifactResolutionResult result = getArtifactResolver().resolveTransitively( jarResourceArtifacts, 
-                                                                                         getProject().getArtifact(), 
+                                                                                         getProject().getArtifact(),
+                                                                                         null, //managedVersions
+                                                                                         getLocalRepository(),
                                                                                          getRemoteRepositories(), 
-                                                                                         getLocalRepository(), 
-                                                                                         this.artifactMetadataSource );
+                                                                                         this.artifactMetadataSource,
+                                                                                         artifactFilter );
             
             Set transitiveResolvedArtifacts = result.getArtifacts();
             
