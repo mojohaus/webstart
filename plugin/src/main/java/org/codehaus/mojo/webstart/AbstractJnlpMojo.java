@@ -34,7 +34,6 @@ import org.apache.maven.plugin.PluginManager;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.settings.Settings;
 import org.codehaus.mojo.webstart.generator.Generator;
-import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 
 /**
@@ -56,14 +55,6 @@ public abstract class AbstractJnlpMojo
      * @required
      */
     private ZipArchiver zipArchiver;
-
-    /**
-     * To look up Archiver/UnArchiver implementations
-     *
-     * @parameter expression="${component.org.codehaus.plexus.archiver.manager.ArchiverManager}"
-     * @required
-     */
-    protected ArchiverManager archiverManager;    
 
     /**
      * The jnlp configuration element.
@@ -101,7 +92,8 @@ public abstract class AbstractJnlpMojo
          *
          * @return The default output version flag.
          */
-        public boolean getOutputJarVersions() {
+        public boolean getOutputJarVersions()
+        {
             return outputJarVersions;
         }
 
@@ -668,55 +660,6 @@ public abstract class AbstractJnlpMojo
             return jnlp.getSpec();
         }
         return "1.0+";
-    }
-    
-    private int removeExistingSignatures(File workDirectory, FileFilter updatedJarFileFilter) 
-        throws MojoExecutionException 
-    {   
-        // cleanup tempDir if exists
-        File tempDir = new File( getWorkDirectory(), "temp_extracted_jars" );
-        removeDirectory(tempDir);
-        
-        // recreate temp dir
-        if ( !tempDir.mkdirs() ) {
-            throw new MojoExecutionException( "Error creating temporary directory: " + tempDir );
-        }        
-        
-        // process jars
-        File[] jarFiles = workDirectory.listFiles( updatedJarFileFilter );
-
-        JarUnsignMojo unsignJar = new JarUnsignMojo();
-//        unsignJar.setBasedir( basedir );
-        unsignJar.setTempDir( tempDir );
-        unsignJar.setVerbose( isVerbose() );
-//        unsignJar.setWorkingDir( getWorkDirectory() );
-
-        unsignJar.setArchiverManager( archiverManager );
-
-        for ( int i = 0; i < jarFiles.length; i++ )
-        {
-            unsignJar.setJarPath( jarFiles[i] );
-            // long lastModified = jarFiles[i].lastModified();
-            unsignJar.execute();
-            // jarFiles[i].setLastModified( lastModified );
-        }
-
-        // cleanup tempDir
-        removeDirectory(tempDir);
-
-        return jarFiles.length;        
-    }
-
-    private void removeDirectory( File dir ) throws MojoExecutionException
-    {
-        if ( dir != null )
-        {
-            if ( dir.exists() && dir.isDirectory() )
-            {
-                getLog().info( "Deleting directory " + dir.getAbsolutePath() );
-                Utils.removeDir( dir );
-            }
-        }
     }
 
     // helper methods

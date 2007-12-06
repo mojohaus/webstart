@@ -31,7 +31,9 @@ import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.jar.JarSignVerifyMojo;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.util.FileUtils;
 
 /**
@@ -162,6 +164,21 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     private final FileFilter updatedPack200FileFilter;
 
     private long startTime;
+    
+    /**
+     * Define whether to remove existing signatures.
+     * 
+     * @parameter alias="unsign" default-value="false"
+     */
+    private boolean unsignAlreadySignedJars;
+
+    /**
+     * To look up Archiver/UnArchiver implementations
+     *
+     * @parameter expression="${component.org.codehaus.plexus.archiver.manager.ArchiverManager}"
+     * @required
+     */
+    protected ArchiverManager archiverManager;
 
     /**
      * Creates a new {@code AbstractBaseJnlpMojo}.
@@ -479,8 +496,10 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         {
             getSign().init(getLog(), getWorkDirectory(), isVerbose());
 
-            // not yet enabled
-            // removeExistingSignatures(workDirectory, updatedJarFileFilter);
+            if( unsignAlreadySignedJars() )
+            {
+                removeExistingSignatures(getWorkDirectory(), updatedJarFileFilter);
+            }
 
             if ( isPack200() )
             {
@@ -536,6 +555,81 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         }
 
         return jarFiles.length;
+    }
+
+    /**
+     * Removes the signature of the files in the specified directory which satisfy the 
+     * specified filter.
+     *  
+     * @return the number of unsigned jars
+     */
+    protected int removeExistingSignatures(File workDirectory, FileFilter updatedJarFileFilter) 
+        throws MojoExecutionException
+    {
+        // cleanup tempDir if exists
+        File tempDir = new File( workDirectory, "temp_extracted_jars" );
+        removeDirectory(tempDir);
+        
+        // recreate temp dir
+        if ( !tempDir.mkdirs() ) {
+            throw new MojoExecutionException( "Error creating temporary directory: " + tempDir );
+        }        
+        
+        // process jars
+        File[] jarFiles = workDirectory.listFiles( updatedJarFileFilter );
+
+        // mojo to verify whether a jar is signed
+        JarSignVerifyMojo verifyMojo = setupVerifyMojo();
+        
+        JarUnsignMojo unsignJar = new JarUnsignMojo();
+//        unsignJar.setBasedir( basedir );
+        unsignJar.setTempDir( tempDir );
+        unsignJar.setVerbose( isVerbose() );
+//        unsignJar.setWorkingDir( getWorkDirectory() );
+
+        unsignJar.setArchiverManager( archiverManager );
+
+        for ( int i = 0; i < jarFiles.length; i++ )
+        {
+            verifyMojo.setJarPath(jarFiles[i]);
+            // if the jar 
+            try {
+                verifyMojo.execute();
+                /*
+                 * if no exception is thrown, the jar is already signed and must
+                 * be unsigned.
+                 */
+                unsignJar.setJarPath(jarFiles[i]);
+                // long lastModified = jarFiles[i].lastModified();
+                unsignJar.execute();
+                // jarFiles[i].setLastModified( lastModified );
+            } catch (MojoExecutionException e) {
+                /*
+                 * exception is thrown if jar is not signed, so unsigning is not required.
+                 */
+                continue;
+            }
+        }
+
+        // cleanup tempDir
+        removeDirectory(tempDir);
+
+        return jarFiles.length;
+    }
+    
+    /**
+     * Returns a configured instance of the JarSignVerifyMojo to test whether a
+     * jar is already signed. The Mojo throws an exception to indicate that a
+     * jar is not signed yet.
+     * 
+     * @return a configured instance of the JarSignVerifyMojo.
+     */
+    private JarSignVerifyMojo setupVerifyMojo()
+    {
+        JarSignVerifyMojo verifyMojo = new JarSignVerifyMojo();
+        verifyMojo.setErrorWhenNotSigned(true);
+        verifyMojo.setWorkingDir(getWorkDirectory());
+        return verifyMojo;
     }
 
     /**
@@ -708,6 +802,35 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
         }
 
+    }
+
+    /**
+     * 
+     * @return true if already signed jars should be unsigned prior to signing
+     *         with own key.
+     */
+    protected boolean unsignAlreadySignedJars()
+    {
+        return unsignAlreadySignedJars;
+    }
+
+    /**
+     * Delete the specified directory.
+     * 
+     * @param dir
+     *            the directory to delete
+     * @throws MojoExecutionException
+     */
+    private void removeDirectory(File dir) throws MojoExecutionException
+    {
+        if (dir != null)
+        {
+            if (dir.exists() && dir.isDirectory())
+            {
+                getLog().info("Deleting directory " + dir.getAbsolutePath());
+                Utils.removeDir(dir);
+            }
+        }
     }
 
 }
