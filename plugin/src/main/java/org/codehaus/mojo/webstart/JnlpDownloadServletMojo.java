@@ -395,7 +395,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
             {
                 JarResource jarResource = (JarResource) itr.next();
                 Artifact artifact = jarResource.getArtifact();
-                boolean copied = copyFileToDirectoryIfNecessary( artifact.getFile(), getWorkDirectory() );
+                boolean copied = copyJarAsUnprocessedToDirectoryIfNecessary( artifact.getFile(), getWorkDirectory() );
                 
                 if ( copied ) {
                     String name = artifact.getFile().getName();
