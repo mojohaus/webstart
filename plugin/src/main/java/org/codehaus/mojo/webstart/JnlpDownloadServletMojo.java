@@ -29,7 +29,7 @@ import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
-import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
+import org.codehaus.mojo.webstart.util.OrArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -356,7 +356,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
             
             ScopeArtifactFilter compileFilter = new ScopeArtifactFilter( Artifact.SCOPE_COMPILE );
             ScopeArtifactFilter runtimeFilter = new ScopeArtifactFilter( Artifact.SCOPE_RUNTIME );
-            AndArtifactFilter artifactFilter = new AndArtifactFilter();
+            OrArtifactFilter artifactFilter = new OrArtifactFilter();
             artifactFilter.add( compileFilter );
             artifactFilter.add( runtimeFilter );
 
