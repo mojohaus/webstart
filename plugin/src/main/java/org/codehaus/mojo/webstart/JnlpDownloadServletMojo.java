@@ -332,6 +332,8 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
      * Resolve the artifacts represented by the given collection of JarResources and 
      * copy them to the working directory if a newer copy of the file doesn't already 
      * exist there. Transitive dependencies will also be retrieved.
+     * <p> 
+     * Transitive dependencies are added to the list specified as parameter. TODO fix that.
      * 
      * @throws MojoExecutionException
      */
@@ -373,6 +375,8 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
             if ( getLog().isDebugEnabled() )
             {
                 getLog().debug("transitively resolved artifacts = " + transitiveResolvedArtifacts);
+                getLog().debug("jarResources = " + jarResources);
+                getLog().debug("jarResourceArtifacts = " + jarResourceArtifacts);
             }
             
             //for each transitive dependency, wrap it in a JarResource and add it to the collection of
@@ -397,8 +401,13 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
                 Artifact artifact = jarResource.getArtifact();
                 boolean copied = copyJarAsUnprocessedToDirectoryIfNecessary( artifact.getFile(), getWorkDirectory() );
                 
-                if ( copied ) {
+                if ( copied )
+                {
                     String name = artifact.getFile().getName();
+                    if ( getLog().isDebugEnabled() )
+                    {
+                        getLog().debug("Adding " + name + " to modifiedJnlpArtifacts list." );
+                    }
                     getModifiedJnlpArtifacts().add( name.substring( 0, name.lastIndexOf( '.' ) ) );
                 }
                 
