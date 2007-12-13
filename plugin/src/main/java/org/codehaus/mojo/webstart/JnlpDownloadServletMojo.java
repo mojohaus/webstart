@@ -385,11 +385,16 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
             {
                 Artifact resolvedArtifact = (Artifact) itr.next();
                 
+                // this whole double check is ugly as well as this method changing the input variable
+                // we should really improve the way we collect the jarResources
                 if ( !jarResourceArtifacts.contains( resolvedArtifact ) )
                 {
                     JarResource newJarResource = new JarResource(resolvedArtifact);
-                    newJarResource.setOutputJarVersion( true );
-                    jarResources.add( newJarResource );
+                    if ( !jarResources.contains( newJarResource ) )
+                    {
+                        newJarResource.setOutputJarVersion( true );
+                        jarResources.add( newJarResource );
+                    }
                 }
                 
             }
