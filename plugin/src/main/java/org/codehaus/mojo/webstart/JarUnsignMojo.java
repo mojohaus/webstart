@@ -148,8 +148,6 @@ public class JarUnsignMojo
             unArchiver.setSourceFile( jarFile );
             unArchiver.setDestDirectory( tempDir );
             unArchiver.extract();            
-        } catch ( IOException ex ) {
-            throw new MojoExecutionException( "Error unpacking file: " + jarFile + "to: " + tempDir, ex );
         } catch ( ArchiverException ex)  {
             throw new MojoExecutionException( "Error unpacking file: " + jarFile + "to: " + tempDir, ex );            
         } catch ( NoSuchArchiverException ex ) {
