@@ -49,7 +49,7 @@
                    * maven-webstart-plugin (revision 5700
                        + patch http://jira.codehaus.org/browse/MWEBSTART-63 "MWEBSTART-63-patch.diff")
             -->
-            <version>1.0-alpha-2-SNAPSHOT</version>
+            <version>testing</version>
             <executions>
                 <execution>
                     <phase>process-resources</phase>
