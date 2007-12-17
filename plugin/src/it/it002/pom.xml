@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>webstart-it002</artifactId>
+  <groupId>org.codehaus.mojo.webstart</groupId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+  <name>Webstart it002</name>
+  <description>Webstart JNLP mojo test case #1 / demo</description>
+
+  <modules>
+    <module>core</module>
+    <module>hello-world</module>
+    <module>webapp</module>
+  </modules>
+
+  <!-- FIXME support jetty -->
+  <!--profiles>
+    <profile>
+      <id>with-jetty</id>
+      <activation>
+        <property>
+          <name>with-jetty</name>
+        </property>
+      </activation>
+      <modules>
+        <module>webapp</module>
+      </modules>
+    </profile>
+  </profiles-->  
+</project>
