@@ -525,6 +525,8 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
         boolean shouldCopy = ! signedTargetFile.exists() || ( signedTargetFile.lastModified() < sourceFile.lastModified() );
 
+        shouldCopy = shouldCopy && (! unsignedTargetFile.exists() || ( unsignedTargetFile.lastModified() < sourceFile.lastModified() ) );
+
         if ( shouldCopy )
         {
             FileUtils.copyFile( sourceFile, unsignedTargetFile );
