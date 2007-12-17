@@ -61,6 +61,13 @@ expectedJnlpImages	.each{
  assert assertExistsFile( new File ( explodedWebstartImages, it ) )
 }
 
-assert explodedWebstart.list().length == 5
+// due to MWEBSTART-69. Remove when fixed
+class SkipSvnFilesFilenameFilter implements FilenameFilter {
+  boolean accept(File dir, String name) {
+    return !name.equals(".svn");
+  }
+}
+
+assert explodedWebstart.list(new SkipSvnFilesFilenameFilter()).length == 5
 
 return true
