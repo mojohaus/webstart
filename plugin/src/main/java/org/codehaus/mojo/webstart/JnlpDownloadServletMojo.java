@@ -355,12 +355,9 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
                 checkForMainClass( jarResource );
                 jarResourceArtifacts.add( artifact );
             }
-            
-            ScopeArtifactFilter compileFilter = new ScopeArtifactFilter( Artifact.SCOPE_COMPILE );
-            ScopeArtifactFilter runtimeFilter = new ScopeArtifactFilter( Artifact.SCOPE_RUNTIME );
-            OrArtifactFilter artifactFilter = new OrArtifactFilter();
-            artifactFilter.add( compileFilter );
-            artifactFilter.add( runtimeFilter );
+
+            // this restricts to runtime and compile scope            
+            ScopeArtifactFilter artifactFilter = new ScopeArtifactFilter( Artifact.SCOPE_RUNTIME );
 
             ArtifactResolutionResult result = getArtifactResolver().resolveTransitively( jarResourceArtifacts, 
                                                                                          getProject().getArtifact(),

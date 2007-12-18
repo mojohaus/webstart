@@ -28,6 +28,17 @@
       <artifactId>core</artifactId>
       <version>1.0</version>
     </dependency>
+
+    <!-- this dependency is not really needed for this module to build, 
+         just added to check that the packaging in the webapp module is correct-->
+    <dependency>
+      <groupId>com.sun</groupId>
+      <artifactId>tools</artifactId>
+      <version>1.4.2</version>
+      <scope>system</scope>
+      <systemPath>${java.home}/../lib/tools.jar</systemPath>
+    </dependency>
+
   </dependencies>
   
 </project>
