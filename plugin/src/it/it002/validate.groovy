@@ -53,8 +53,10 @@ expectedJnlpFiles.each{
  assert assertExistsFile( new File ( explodedWebstart, it ) )
 }
 
-// regression test for MWEBSTART-54: make sure system deps are not included
+// regression test for MWEBSTART-54: make sure test, system and provided deps are not included
 assert ! assertExistsFile( new File ( explodedWebstart, "tools.jar" ) )
+assert ! assertExistsFile( new File ( explodedWebstart, "servlet-api.jar" ) )
+assert ! assertExistsFile( new File ( explodedWebstart, "junit.jar" ) )
 
 File explodedWebstartImages = new File( explodedWebstart, "images" )
 assert assertExistsDirectory( explodedWebstartImages )
