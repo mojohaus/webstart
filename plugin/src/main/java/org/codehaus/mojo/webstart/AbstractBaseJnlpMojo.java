@@ -163,8 +163,6 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
     private final FileFilter unprocessedPack200FileFilter;
 
-    private long startTime;
-    
     /**
      * Define whether to remove existing signatures.
      * 
@@ -204,40 +202,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
         };
 
-        // FileFilter modifiedFileFilter = new ModifiedFileFilter();
-
-        // unprocessedJarFileFilter = new CompositeFileFilter( jarFileFilter, modifiedFileFilter );
-        // unprocessedPack200FileFilter = new CompositeFileFilter( new Pack200FileFilter(), modifiedFileFilter );
         unprocessedPack200FileFilter = new UnprocessedPack200FileFilter();
-    }
-
-    /**
-     * TODO finish comment
-     */
-    protected void initStartTime()
-    {
-        // interesting: copied files lastModified time stamp will be rounded.
-        // We have to be sure that the startTime is before that time...
-        // rounding to the second - 1 millis should be sufficient..
-        startTime = System.currentTimeMillis() - 1000;
-    }
-
-    /**
-     * TODO finish comment
-     *
-     * @return
-     */
-    protected long getStartTime()
-    {
-
-        if ( startTime == 0 )
-        {
-            throw new IllegalStateException( "The startTime field has not initialized. "
-                                             + "The initStartTime() method must be called first." );
-        }
-
-        return startTime;
-
     }
 
     protected void makeWorkingDirIfNecessary() throws MojoExecutionException
@@ -856,25 +821,6 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         }
 
     };
-
-    private class ModifiedFileFilter implements FileFilter
-    {
-
-        public boolean accept( File pathname )
-        {
-            boolean modified = pathname.lastModified() > getStartTime();
-
-            if ( getLog().isDebugEnabled() )
-            {
-                getLog().debug( "File: " + pathname.getName() + " modified: " + modified );
-                getLog().debug( "lastModified: " + pathname.lastModified() + " plugin start time " + getStartTime() );
-            }
-
-            return modified;
-
-        }
-
-    }
 
     /**
      * 

@@ -113,7 +113,6 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
     {
         
         checkConfiguration();
-        initStartTime();
         
         try
         {

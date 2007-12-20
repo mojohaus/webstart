@@ -188,7 +188,6 @@ public abstract class AbstractJnlpMojo
     {
 
         checkInput();
-        initStartTime();
 
         getLog().debug( "using work directory " + getWorkDirectory() );
         getLog().debug( "using library directory " + getLibDirectory() );
