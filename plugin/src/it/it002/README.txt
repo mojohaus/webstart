@@ -13,7 +13,7 @@ The use-case is as follow: within the web-application the HelloWorld-application
 How to use the webstart-demo?
 =============================
 
- 1. First, install the jnlp-servlet.jar from your jdk-installation into your local maven repository using the following command:
+ 1. First, install the jnlp-servlet.jar from your *Sun* jdk-installation (>= 1.5) into your local maven repository using the following command:
  
     mvn install:install-file -Dfile=%JAVA_HOME%\sample\jnlp\servlet\jnlp-servlet.jar -DgroupId=com.sun.java.jnlp -DartifactId=jnlp-servlet -Dversion=5.0 -Dpackaging=jar -DgeneratePom=true
     
