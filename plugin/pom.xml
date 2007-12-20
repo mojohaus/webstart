@@ -65,18 +65,13 @@
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
       <version>2.0.6</version>
+      <exclusions>
+        <exclusion>
+          <groupId>plexus</groupId>
+          <artifactId>plexus-utils</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-    <!-- these 2 are required for the changes to MNG-2293 to be taken into account for MWEBSTART-18 -->
-    <!--dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-tools-java</artifactId>
-      <version>2.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-plugin-plugin</artifactId>
-      <version>2.3</version>
-    </dependency-->
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-descriptor</artifactId>
@@ -86,6 +81,12 @@
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-settings</artifactId>
       <version>2.0.6</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.maven.wagon</groupId>
+          <artifactId>wagon-ssh-external</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -102,7 +103,7 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>1.4.8</version>
+      <version>1.4.9</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -138,11 +139,23 @@
       <groupId>org.apache.maven.reporting</groupId>
       <artifactId>maven-reporting-api</artifactId>
       <version>2.0.6</version>
+      <exclusions>
+        <exclusion>
+          <groupId>plexus</groupId>
+          <artifactId>plexus-utils</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.reporting</groupId>
       <artifactId>maven-reporting-impl</artifactId>
       <version>2.0.4</version>
+      <exclusions>
+        <exclusion>
+          <groupId>plexus</groupId>
+          <artifactId>plexus-utils</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -183,10 +196,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.3</version>
-        <configuration> 
-          <useSystemClassLoader>true</useSystemClassLoader><!-- work-around for SUREFIRE-347 -->
-        </configuration>
+        <version>2.4-SNAPSHOT</version>
       </plugin>
     </plugins>
   </build>
