@@ -160,6 +160,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     // We achieve that by only filtering files modified after the plugin was started
     // Note: if other files (the pom, the keystore config) have changed, one needs to clean
     private final FileFilter unprocessedJarFileFilter;
+    private final FileFilter processedJarFileFilter;
 
     private final FileFilter unprocessedPack200FileFilter;
 
@@ -184,7 +185,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     public AbstractBaseJnlpMojo()
     {
 
-        FileFilter jarFileFilter = new FileFilter() {
+        processedJarFileFilter = new FileFilter() {
 
             public boolean accept( File pathname )
             {
@@ -702,7 +703,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         if ( isPack200() )
         {
             getLog().debug( "packing jars" );
-            Pack200.packJars( getWorkDirectory(), unprocessedJarFileFilter, isGzip() );
+            Pack200.packJars( getWorkDirectory(), processedJarFileFilter, isGzip() );
         }
 
     }
