@@ -62,17 +62,11 @@ File explodedWebstartImages = new File( explodedWebstart, "images" )
 assert assertExistsDirectory( explodedWebstartImages )
 
 String[] expectedJnlpImages = [ "icon.gif" ]
-expectedJnlpImages	.each{
+expectedJnlpImages.each{
  assert assertExistsFile( new File ( explodedWebstartImages, it ) )
 }
 
-// due to MWEBSTART-69. Remove when fixed
-class SkipSvnFilesFilenameFilter implements FilenameFilter {
-  boolean accept(File dir, String name) {
-    return !name.equals(".svn");
-  }
-}
 
-assert explodedWebstart.list(new SkipSvnFilesFilenameFilter()).length == 5
+assert explodedWebstart.list().length == expectedJnlpFiles.length + 1 // images
 
 return true

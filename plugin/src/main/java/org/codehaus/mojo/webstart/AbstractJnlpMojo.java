@@ -295,55 +295,6 @@ public abstract class AbstractJnlpMojo
 
     }
 
-    private static String concat( String[] array, String delim )
-    {
-        StringBuffer buffer = new StringBuffer();
-        for ( int i = 0; i < array.length; i++ )
-        {
-            if ( i > 0 )
-            {
-                buffer.append( delim );
-            }
-            String s = array[i];
-            buffer.append( s ).append( delim );
-        }
-        return buffer.toString();
-    }
-
-    /*private void copyDirectoryStructure( File sourceDirectory, File destinationDirectory, String includes,
-                                         String excludes )
-        throws IOException
-    {
-        if ( ! sourceDirectory.exists() )
-        {
-            return;
-        }
-
-        List files = FileUtils.getFiles( sourceDirectory, includes, excludes );
-
-        for ( Iterator i = files.iterator(); i.hasNext(); )
-        {
-            File file = (File) i.next();
-
-            getLog().debug( "Copying " + file + " to " + destinationDirectory );
-
-            String path = file.getAbsolutePath().substring( sourceDirectory.getAbsolutePath().length() + 1 );
-
-            File destDir = new File( destinationDirectory, path );
-
-            getLog().debug( "Copying " + file + " to " + destDir );
-
-            if ( file.isDirectory() )
-            {
-                destDir.mkdirs();
-            }
-            else
-            {
-                FileUtils.copyFileToDirectory( file, destDir.getParentFile() );
-            }
-        }
-    }*/
-
     /**
      * Detects improper includes/excludes configuration.
      * @throws MojoExecutionException if at least one of the specified includes or excludes matches no artifact, false otherwise

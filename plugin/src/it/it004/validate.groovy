@@ -53,14 +53,7 @@ expectedJnlpFiles.each{
  assert assertExistsFile( new File ( jnlp, it ) )
 }
 
-// due to MWEBSTART-69. Remove when fixed
-class SkipSvnFilesFilenameFilter implements FilenameFilter {
-  boolean accept(File dir, String name) {
-    return !name.equals(".svn");
-  }
-}
-
-assert jnlp.list(new SkipSvnFilesFilenameFilter()).length == expectedJnlpFiles.length + 1 // images
+assert jnlp.list().length == expectedJnlpFiles.length + 1 // images
 
 // validate images
 File jnlpImages = new File( jnlp, "images" )
@@ -71,6 +64,6 @@ expectedJnlpImages.each{
  assert assertExistsFile( new File ( jnlpImages, it ) )
 }
 
-assert jnlpImages.list(new SkipSvnFilesFilenameFilter()).length == expectedJnlpImages.length
+assert jnlpImages.list().length == expectedJnlpImages.length
 
 return true

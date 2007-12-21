@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.SystemUtils;
@@ -34,6 +35,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.jar.JarSignVerifyMojo;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
+import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
 
 /**
@@ -415,17 +417,64 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
                 getLog().debug( "Copying resources from " + resourcesDir.getAbsolutePath() );
 
                 // hopefully available from FileUtils 1.0.5-SNAPSHOT
-                FileUtils.copyDirectoryStructure( resourcesDir , workDirectory );
+                //FileUtils.copyDirectoryStructure( resourcesDir , workDirectory );
 
                 // this may needs to be parametrized somehow
-                //String excludes = concat( DirectoryScanner.DEFAULTEXCLUDES, ", " );
-                //copyDirectoryStructure( resourcesDir, workDirectory, "**", excludes );
+                String excludes = concat( DirectoryScanner.DEFAULTEXCLUDES, ", " );
+                copyDirectoryStructure( resourcesDir, workDirectory, "**", excludes );
             }
 
         }
-
     }
 
+    private static String concat( String[] array, String delim )
+    {
+        StringBuffer buffer = new StringBuffer();
+        for ( int i = 0; i < array.length; i++ )
+        {
+            if ( i > 0 )
+            {
+                buffer.append( delim );
+            }
+            String s = array[i];
+            buffer.append( s ).append( delim );
+        }
+        return buffer.toString();
+    }
+
+    private void copyDirectoryStructure( File sourceDirectory, File destinationDirectory, String includes,
+                                         String excludes )
+        throws IOException
+    {
+        if ( ! sourceDirectory.exists() )
+        {
+            return;
+        }
+
+        List files = FileUtils.getFiles( sourceDirectory, includes, excludes );
+
+        for ( Iterator i = files.iterator(); i.hasNext(); )
+        {
+            File file = (File) i.next();
+
+            getLog().debug( "Copying " + file + " to " + destinationDirectory );
+
+            String path = file.getAbsolutePath().substring( sourceDirectory.getAbsolutePath().length() + 1 );
+
+            File destDir = new File( destinationDirectory, path );
+
+            getLog().debug( "Copying " + file + " to " + destDir );
+
+            if ( file.isDirectory() )
+            {
+                destDir.mkdirs();
+            }
+            else
+            {
+                FileUtils.copyFileToDirectory( file, destDir.getParentFile() );
+            }
+        }
+    }
 
     /**
      * Conditionally copy the file into the target directory.
