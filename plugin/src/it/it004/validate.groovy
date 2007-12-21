@@ -48,22 +48,29 @@ expectedFiles.each{
  assert assertExistsFile( new File ( target, it ) )
 }
 
-String[] expectedJnlpFiles = [ "commons-cli-1.0.jar", "commons-logging-1.0.4.jar", "test.jnlp" ]
+String[] expectedJnlpFiles = [ "commons-cli-1.1.jar", "commons-logging-1.0.4.jar", "test.jnlp" ]
 expectedJnlpFiles.each{
  assert assertExistsFile( new File ( jnlp, it ) )
 }
 
-assert jnlp.list().length == expectedJnlpFiles.length
+// due to MWEBSTART-69. Remove when fixed
+class SkipSvnFilesFilenameFilter implements FilenameFilter {
+  boolean accept(File dir, String name) {
+    return !name.equals(".svn");
+  }
+}
+
+assert jnlp.list(new SkipSvnFilesFilenameFilter()).length == expectedJnlpFiles.length + 1 // images
 
 // validate images
 File jnlpImages = new File( jnlp, "images" )
 assert assertExistsDirectory( jnlpImages )
 
 String[] expectedJnlpImages = [ "icon.gif", "icon.jpg", "icon.png" ]
-expectedJnlpFiles.each{
+expectedJnlpImages.each{
  assert assertExistsFile( new File ( jnlpImages, it ) )
 }
 
-assert jnlpImages.list().length == expectedJnlpImages.length
+assert jnlpImages.list(new SkipSvnFilesFilenameFilter()).length == expectedJnlpImages.length
 
 return true

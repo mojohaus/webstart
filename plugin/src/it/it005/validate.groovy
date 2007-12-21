@@ -48,7 +48,7 @@ expectedFiles.each{
  assert assertExistsFile( new File ( target, it ) )
 }
 
-String[] expectedJnlpFiles = [ "commons-cli-1.0.jar", "commons-cli-1.0.jar.pack", "commons-logging-1.0.4.jar", "commons-logging-1.0.4.jar.pack", "test.jnlp" ]
+String[] expectedJnlpFiles = [ "commons-cli-1.1.jar", "commons-cli-1.1.jar.pack", "commons-logging-1.0.4.jar", "commons-logging-1.0.4.jar.pack", "test.jnlp" ]
 expectedJnlpFiles.each{
  assert assertExistsFile( new File ( jnlp, it ) )
 }
