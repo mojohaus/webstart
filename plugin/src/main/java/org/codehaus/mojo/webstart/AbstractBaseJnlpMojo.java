@@ -525,6 +525,9 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
                 // we need to pack then unpack the files before signing them
                 Pack200.packJars( getLibDirectory(), unprocessedJarFileFilter, isGzip() );
                 Pack200.unpackJars( getLibDirectory(), unprocessedPack200FileFilter );
+                // As out current Pack200 ant tasks don't give us the ability to use a temporary area for
+                // creating those temporary packing, we have to delete the temporary files.
+                deleteFiles( getLibDirectory(), unprocessedPack200FileFilter );
                 // specs says that one should do it twice when there are unsigned jars??
                 // Pack200.unpackJars( applicationDirectory, updatedPack200FileFilter );
             }
@@ -540,6 +543,33 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
         }
 
+    }
+
+    /**
+     * @return the number of deleted files
+     */
+    private int deleteFiles( File directory, FileFilter fileFilter ) throws MojoExecutionException
+    {
+        File[] files = directory.listFiles( fileFilter );
+
+        if ( getLog().isDebugEnabled() )
+        {
+            getLog().debug( "deleteFiles in " + directory + " found " + files.length + " file(s) to delete" );
+        }
+
+        if ( files.length == 0 )
+        {
+            return 0;
+        }
+
+        for ( int i = 0; i < files.length; i++ )
+        {
+            boolean deleted = files[i].delete();
+            if (! deleted) {
+                throw new IllegalStateException( "Couldn't delete file: " + files[i].getAbsolutePath() );
+            } 
+        }
+        return files.length;
     }
 
     /**
