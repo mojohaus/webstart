@@ -507,7 +507,10 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
     }
 
-    protected void signJars() throws MojoExecutionException, MojoFailureException
+    /**
+     * If sign is enabled, sign the jars, otherwise rename them into final jars
+     */
+    protected void signOrRenameJars() throws MojoExecutionException, MojoFailureException
     {
 
         if ( getSign() != null )
@@ -541,9 +544,46 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
                         + "artifacts (" + getModifiedJnlpArtifacts().size() + "). Implementation error" );
             }
 
+        } else {
+            makeUnprocessedFilesFinal( getLibDirectory(), unprocessedJarFileFilter );   
+        }
+    }
+
+    private int makeUnprocessedFilesFinal( File directory, FileFilter fileFilter ) throws MojoExecutionException
+    {
+        File[] files = directory.listFiles( fileFilter );
+
+        if ( getLog().isDebugEnabled() )
+        {
+            getLog().debug( "makeUnprocessedFilesFinal in " + directory + " found " + files.length + " file(s) to rename" );
         }
 
-    }
+        if ( files.length == 0 )
+        {
+            return 0;
+        }
+
+        for ( int i = 0; i < files.length; i++ )
+        {
+            // FIXME refactor with signJars
+            String unprocessedJarFilePath = files[i].getAbsolutePath();
+            if (!unprocessedJarFilePath.endsWith( ".unprocessed" )) {
+                throw new IllegalStateException( "We are about to rename an non .unprocessed file with path: " + unprocessedJarFilePath );
+            }
+            File finalJar = new File( unprocessedJarFilePath.substring( 0, unprocessedJarFilePath.length() - ".unprocessed".length() ) );
+            if ( finalJar.exists() ) {
+                boolean deleted = finalJar.delete();
+                if (! deleted) {
+                    throw new IllegalStateException( "Couldn't delete obsolete final jar: " + finalJar.getAbsolutePath() );
+                }
+            }
+            boolean renamed = files[i].renameTo( finalJar );
+            if (! renamed) {
+                throw new IllegalStateException( "Couldn't rename into final jar: " + finalJar.getAbsolutePath() );
+            }
+        }
+        return files.length;
+    } 
 
     /**
      * @return the number of deleted files

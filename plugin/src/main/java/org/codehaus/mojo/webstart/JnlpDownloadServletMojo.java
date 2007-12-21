@@ -135,7 +135,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
             retrieveJarResources( jnlpFile.getJarResources() );
         }
         
-        signJars();
+        signOrRenameJars();
         packJars();
         
         for ( Iterator itr = this.jnlpFiles.iterator(); itr.hasNext(); )

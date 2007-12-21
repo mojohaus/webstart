@@ -254,7 +254,7 @@ public abstract class AbstractJnlpMojo
                     getModifiedJnlpArtifacts() );
             }
             
-            signJars();
+            signOrRenameJars();
             packJars();
             generateJnlpFile( getWorkDirectory() );
 
