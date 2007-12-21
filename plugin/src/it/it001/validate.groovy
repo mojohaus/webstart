@@ -53,8 +53,14 @@ expectedJnlpFiles.each{
  assert assertExistsFile( new File ( jnlp, it ) )
 }
 
-assert jnlp.list().length == 3
+File explodedJnlpImages = new File( jnlp, "images" )
+assert assertExistsDirectory( explodedJnlpImages )
 
-// FIXME validate images 
+String[] expectedJnlpImages = [ "icon.gif" ]
+expectedJnlpImages.each{
+ assert assertExistsFile( new File ( explodedJnlpImages, it ) )
+}
+
+assert jnlp.list().length == expectedJnlpFiles.length + 1 // images
 
 return true
