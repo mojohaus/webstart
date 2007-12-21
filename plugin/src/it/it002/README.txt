@@ -30,7 +30,9 @@ I you want to fully test the deployment into a jetty server in one step, replace
 
   4. Enter "mvn clean install -Dwith-jetty"
   5. Open browser and go to "http://localhost:8080/webapp" and click on the link "Start HelloWorld". Webstart downloads the jars and asks you to accept the certificate. If you activated the Java console in the Java control panel, you should see the output "Hello World!".
+    Then CTRL-C in the terminal and the build should complete.
 
+  You can change the port number by configuring the webapp/pom.xml appropriately
 
 Some more details
 =================

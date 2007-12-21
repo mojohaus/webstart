@@ -15,18 +15,4 @@
     <module>webapp</module>
   </modules>
 
-  <!-- FIXME support jetty -->
-  <!--profiles>
-    <profile>
-      <id>with-jetty</id>
-      <activation>
-        <property>
-          <name>with-jetty</name>
-        </property>
-      </activation>
-      <modules>
-        <module>webapp</module>
-      </modules>
-    </profile>
-  </profiles-->  
 </project>

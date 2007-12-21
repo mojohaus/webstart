@@ -1,1 +1,1 @@
-clean -X install
+clean install
