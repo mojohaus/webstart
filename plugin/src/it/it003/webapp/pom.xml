@@ -2,8 +2,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.mycompany.webstart</groupId>
-    <artifactId>webstartDemo</artifactId>
+    <groupId>org.codehaus.mojo.webstart.it003</groupId>
+    <artifactId>webstart-it003-parent</artifactId>
     <version>1.0</version>
   </parent>
   
@@ -25,9 +25,10 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.sun.java.jnlp</groupId>
+      <groupId>org.codehaus.mojo.webstart-maven-plugin</groupId>
+      <!--groupId>com.sun.java.jnlp</groupId-->
       <artifactId>jnlp-servlet</artifactId>
-      <version>5.0</version>
+      <version>1.0-6.0-02_ea_b02-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     
@@ -67,7 +68,7 @@
                         <outputFilename>launch1.jnlp</outputFilename>
                         <jarResources>
                             <jarResource>
-                                <groupId>org.mycompany.webstart</groupId>
+                                <groupId>org.codehaus.mojo.webstart.it003</groupId>
                                 <artifactId>hello-world</artifactId>
                                 <version>1.0</version>
                                 <mainClass>org.mycompany.webstart.HelloWorld</mainClass>
@@ -79,7 +80,7 @@
                         <outputFilename>launch2.jnlp</outputFilename>
                         <jarResources>
                             <jarResource>
-                                <groupId>org.mycompany.webstart</groupId>
+                                <groupId>org.codehaus.mojo.webstart.it003</groupId>
                                 <artifactId>hello-world</artifactId>
                                 <version>1.0</version>
                                 <mainClass>org.mycompany.webstart.HelloWorld</mainClass>

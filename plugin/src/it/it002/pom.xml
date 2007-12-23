@@ -2,8 +2,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>webstart-it002</artifactId>
-  <groupId>org.codehaus.mojo.webstart</groupId>
+  <groupId>org.codehaus.mojo.webstart.it002</groupId>
+  <artifactId>webstart-it002-parent</artifactId>
   <version>1.0</version>
   <packaging>pom</packaging>
   <name>Webstart it002</name>
