@@ -2,7 +2,7 @@
   <parent>
     <artifactId>mojo</artifactId>
     <groupId>org.codehaus.mojo</groupId>
-    <version>14</version>
+    <version>16</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>webstart-maven-plugin-parent</artifactId>
@@ -72,7 +72,7 @@
     <module>webstart-jarsigner-api</module>
     <module>plugin</module> <!-- TODO: better name ??-->
     <module>pack200-anttasks</module>
-    <!--module>jnlp-servlet</module-->
+    <module>jnlp-servlet</module>
     <module>pack200-jdk14</module>
   </modules>
 
