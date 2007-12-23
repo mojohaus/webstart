@@ -2,25 +2,20 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.codehaus.mojo</groupId>
-    <artifactId>webstart-maven-plugin-parent</artifactId>
-    <version>1.0-alpha-1-SNAPSHOT</version>
-  </parent>
 
   <groupId>org.codehaus.mojo.webstart-maven-plugin</groupId>
   <artifactId>jnlp-servlet</artifactId>
   <packaging>jar</packaging>
   <name>JNLP Servlet</name>
-  <version>1.0-6.0-b56-SNAPSHOT</version>
-  <description>JNLP Sample servlet that supports pack200 protocol.</description>
-  <url>http://mustang.dev.java.net/</url>
+  <version>1.0-6.0-02_ea_b02-SNAPSHOT</version>
+  <description>JNLP Sample servlet that supports pack200 protocol. Taken from Sun's JDK sample/jnlp directory thanks to its permissive license.</description>
+  <url>http:///jdk6.dev.java.net/</url>
   <licenses>
     <license>
       <name>BSD</name>
       <url>http://www.opensource.org/licenses/bsd-license.php</url>
       <distribution>repo</distribution>
-      <comments>Although Mustang (SDK 6.0) is not under the BSD license, this particular part of the code is.</comments>
+      <comments>Although SDK 6.0 is not under the BSD license, this particular bit of the code is.</comments>
     </license>
   </licenses>
   <!--scm> available in source package inside a mustang snapshot.
@@ -45,8 +40,8 @@
     </dependency>
     -->
     <dependency>
-      <groupId>servletapi</groupId>
-      <artifactId>servletapi</artifactId>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
       <version>[2.3,)</version>
       <scope>provided</scope>
     </dependency>
