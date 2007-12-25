@@ -194,6 +194,17 @@
     </repository>    
   </repositories>
 
+  <pluginRepositories>
+    <pluginRepository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <id>snapshots</id>
+      <name>Maven Central Development Plugin Snapshot Repository</name>
+      <url>http://people.apache.org/maven-snapshot-repository</url>
+    </pluginRepository>    
+  </pluginRepositories>
+
   <build>
     <plugins>
       <plugin>
@@ -263,6 +274,7 @@
           <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>shitty-maven-plugin</artifactId>
+              <version>1.0-alpha-1</version>
               <executions>
                    <execution>
                        <goals>
@@ -275,13 +287,6 @@
            </plugin>
         </plugins>
       </build>
-      <!-- TODO remove when invoker plugin is released -->
-      <pluginRepositories>
-        <pluginRepository>
-          <id>apache.snapshots</id>
-          <url>http://people.apache.org/repo/m2-snapshot-repository</url>
-        </pluginRepository>
-      </pluginRepositories>
     </profile>
 
   </profiles>
