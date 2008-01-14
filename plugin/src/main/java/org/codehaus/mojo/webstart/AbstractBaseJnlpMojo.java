@@ -733,36 +733,17 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         // process jars
         File[] jarFiles = workDirectory.listFiles( updatedJarFileFilter );
 
-        // mojo to verify whether a jar is signed
-        JarSignVerifyMojo verifyMojo = setupVerifyMojo();
-        
         JarUnsignMojo unsignJar = new JarUnsignMojo();
-//        unsignJar.setBasedir( basedir );
         unsignJar.setTempDir( tempDir );
         unsignJar.setVerbose( isVerbose() );
-//        unsignJar.setWorkingDir( getWorkDirectory() );
-
         unsignJar.setArchiverManager( archiverManager );
 
         for ( int i = 0; i < jarFiles.length; i++ )
         {
-            verifyMojo.setJarPath(jarFiles[i]);
-            // if the jar 
-            try {
-                verifyMojo.execute();
-                /*
-                 * if no exception is thrown, the jar is already signed and must
-                 * be unsigned.
-                 */
+            if (isJarSigned(jarFiles[i]))
+            {
                 unsignJar.setJarPath(jarFiles[i]);
-                // long lastModified = jarFiles[i].lastModified();
                 unsignJar.execute();
-                // jarFiles[i].setLastModified( lastModified );
-            } catch (MojoExecutionException e) {
-                /*
-                 * exception is thrown if jar is not signed, so unsigning is not required.
-                 */
-                continue;
             }
         }
 
@@ -770,6 +751,18 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         removeDirectory(tempDir);
 
         return jarFiles.length;
+    }
+    
+    private boolean isJarSigned(File jarFile)
+    {
+        JarSignVerifyMojo verifyMojo = setupVerifyMojo();
+        verifyMojo.setJarPath(jarFile);
+        try {
+            verifyMojo.execute();
+            return true;
+        } catch (MojoExecutionException e) {
+            return false;
+        }
     }
     
     /**
