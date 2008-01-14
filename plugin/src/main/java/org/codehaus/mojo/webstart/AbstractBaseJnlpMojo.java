@@ -733,36 +733,40 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         // process jars
         File[] jarFiles = workDirectory.listFiles( updatedJarFileFilter );
 
-        JarUnsignMojo unsignJar = new JarUnsignMojo();
-        unsignJar.setTempDir( tempDir );
-        unsignJar.setVerbose( isVerbose() );
-        unsignJar.setArchiverManager( archiverManager );
-
         for ( int i = 0; i < jarFiles.length; i++ )
         {
-            if (isJarSigned(jarFiles[i]))
+            if ( isJarSigned( jarFiles[i] ) )
             {
-                unsignJar.setJarPath(jarFiles[i]);
-                unsignJar.execute();
+                unsignJarFile( jarFiles[i], tempDir );
             }
         }
 
         // cleanup tempDir
         removeDirectory(tempDir);
 
-        return jarFiles.length;
+        return jarFiles.length; // FIXME this is wrong. Not all jars are signed.
     }
     
     private boolean isJarSigned(File jarFile)
     {
         JarSignVerifyMojo verifyMojo = setupVerifyMojo();
-        verifyMojo.setJarPath(jarFile);
+        verifyMojo.setJarPath( jarFile );
         try {
             verifyMojo.execute();
             return true;
         } catch (MojoExecutionException e) {
             return false;
         }
+    }
+    
+    private void unsignJarFile(File jarFile, File tempDir) throws MojoExecutionException
+    {
+        JarUnsignMojo unsignJar = new JarUnsignMojo();
+        unsignJar.setTempDir( tempDir );
+        unsignJar.setVerbose( isVerbose() );
+        unsignJar.setArchiverManager( archiverManager );
+        unsignJar.setJarPath( jarFile );
+        unsignJar.execute();
     }
     
     /**
