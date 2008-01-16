@@ -1,0 +1,18 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+  <display-name>Webstart Demo Application</display-name>
+  
+  <servlet>
+    <servlet-name>JnlpDownloadServlet</servlet-name>
+    <servlet-class>jnlp.sample.servlet.JnlpDownloadServlet</servlet-class>
+  </servlet>
+    
+  <servlet-mapping>
+    <servlet-name>JnlpDownloadServlet</servlet-name>
+    <url-pattern>/webstart/*</url-pattern>
+  </servlet-mapping>
+    
+</web-app>

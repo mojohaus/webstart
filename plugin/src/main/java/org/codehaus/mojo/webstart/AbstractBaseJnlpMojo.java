@@ -52,6 +52,9 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
     private static final String DEFAULT_RESOURCES_DIR = "src/main/jnlp/resources";
 
+    /** unprocessed files (that will be signed) are prefixed with this */
+    private static final String UNPROCESSED_PREFIX = "unprocessed_";
+
     /**
      * Artifact resolver, needed to download source jars for inclusion in classpath.
      *
@@ -156,7 +159,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
     private final List modifiedJnlpArtifacts = new ArrayList();
 
-    // the jars to sign and pack are selected if they are suffixed by .unprocessed.
+    // the jars to sign and pack are selected if they are prefixed by UNPROCESSED_PREFIX.
     // as the plugin copies the new versions locally before signing/packing them
     // we just need to see if the plugin copied a new version
     // We achieve that by only filtering files modified after the plugin was started
@@ -191,7 +194,8 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
             public boolean accept( File pathname )
             {
-                return pathname.isFile() && pathname.getName().endsWith( ".jar" );
+                return pathname.isFile() && pathname.getName().endsWith( ".jar" )
+                      && ! pathname.getName().startsWith( UNPROCESSED_PREFIX );
             }
 
         };
@@ -200,7 +204,8 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
             public boolean accept( File pathname )
             {
-                return pathname.isFile() && pathname.getName().endsWith( ".jar.unprocessed" );
+                return pathname.isFile() && pathname.getName().startsWith( UNPROCESSED_PREFIX )
+                       && pathname.getName().endsWith( ".jar" );
             }
 
         };
@@ -517,8 +522,8 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     /**
      * Conditionally copy the jar file into the target directory.
      * The operation is not performed when a signed target file exists and is up to date.
-     * The signed target file name is taken from the <code>sourceFile</code> name.
-     * The unsigned target file name is taken from the <code>sourceFile</code> name suffixed with ".unprocessed".
+     * The signed target file name is taken from the <code>sourceFile</code> name.E
+     * The unsigned target file name is taken from the <code>sourceFile</code> name prefixed with UNPROCESSED_PREFIX.
      * TODO this is confusing if the sourceFile is already signed. By unsigned we really mean 'unsignedbyus'
      *
      * @return <code>true</code> when the file was copied, <code>false</code> otherwise.
@@ -536,7 +541,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
         File signedTargetFile = new File( targetDirectory, sourceFile.getName() );
 
-        File unsignedTargetFile = new File( targetDirectory, sourceFile.getName() + ".unprocessed" );
+        File unsignedTargetFile = new File( targetDirectory, UNPROCESSED_PREFIX + sourceFile.getName() );
 
         boolean shouldCopy = ! signedTargetFile.exists() || ( signedTargetFile.lastModified() < sourceFile.lastModified() );
 
@@ -600,38 +605,38 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
     private int makeUnprocessedFilesFinal( File directory, FileFilter fileFilter ) throws MojoExecutionException
     {
-        File[] files = directory.listFiles( fileFilter );
+        File[] jarFiles = directory.listFiles( fileFilter );
 
         if ( getLog().isDebugEnabled() )
         {
-            getLog().debug( "makeUnprocessedFilesFinal in " + directory + " found " + files.length + " file(s) to rename" );
+            getLog().debug( "makeUnprocessedFilesFinal in " + directory + " found " + jarFiles.length + " file(s) to rename" );
         }
 
-        if ( files.length == 0 )
+        if ( jarFiles.length == 0 )
         {
             return 0;
         }
 
-        for ( int i = 0; i < files.length; i++ )
+        for ( int i = 0; i < jarFiles.length; i++ )
         {
-            // FIXME refactor with signJars
-            String unprocessedJarFilePath = files[i].getAbsolutePath();
-            if (!unprocessedJarFilePath.endsWith( ".unprocessed" )) {
-                throw new IllegalStateException( "We are about to rename an non .unprocessed file with path: " + unprocessedJarFilePath );
+            String unprocessedJarFileName = jarFiles[i].getName();
+            if (!unprocessedJarFileName.startsWith( UNPROCESSED_PREFIX )) {
+                throw new IllegalStateException( "We are about to sign an non " + UNPROCESSED_PREFIX
+                                                 + " file with path: " + jarFiles[i].getAbsolutePath() );
             }
-            File finalJar = new File( unprocessedJarFilePath.substring( 0, unprocessedJarFilePath.length() - ".unprocessed".length() ) );
+            File finalJar = new File( jarFiles[i].getParent(), unprocessedJarFileName.substring( UNPROCESSED_PREFIX.length() ) );
             if ( finalJar.exists() ) {
                 boolean deleted = finalJar.delete();
                 if (! deleted) {
                     throw new IllegalStateException( "Couldn't delete obsolete final jar: " + finalJar.getAbsolutePath() );
                 }
             }
-            boolean renamed = files[i].renameTo( finalJar );
+            boolean renamed = jarFiles[i].renameTo( finalJar );
             if (! renamed) {
                 throw new IllegalStateException( "Couldn't rename into final jar: " + finalJar.getAbsolutePath() );
             }
         }
-        return files.length;
+        return jarFiles.length;
     } 
 
     /**
@@ -683,12 +688,13 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
         for ( int i = 0; i < jarFiles.length; i++ )
         {
-            String unprocessedJarFilePath = jarFiles[i].getAbsolutePath();
-            if (!unprocessedJarFilePath.endsWith( ".unprocessed" )) {
-                throw new IllegalStateException( "We are about to sign an non .unprocessed file with path: " + unprocessedJarFilePath );
+            String unprocessedJarFileName = jarFiles[i].getName();
+            if (!unprocessedJarFileName.startsWith( UNPROCESSED_PREFIX )) {
+                throw new IllegalStateException( "We are about to sign an non " + UNPROCESSED_PREFIX
+                                                 + " file with path: " + jarFiles[i].getAbsolutePath() );
             }
             jarSigner.setJarPath( jarFiles[i] );
-            File signedJar = new File( unprocessedJarFilePath.substring( 0, unprocessedJarFilePath.length() - ".unprocessed".length() ) );
+            File signedJar = new File( jarFiles[i].getParent(), unprocessedJarFileName.substring( UNPROCESSED_PREFIX.length() ) );
             jarSigner.setSignedJar( signedJar );
             if ( signedJar.exists() ) {
                 boolean deleted = signedJar.delete();
@@ -696,10 +702,8 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
                     throw new IllegalStateException( "Couldn't delete obsolete signed jar: " + signedJar.getAbsolutePath() );
                 } 
             }
-            // long lastModified = unprocessedJarFilePath.lastModified();
             jarSigner.execute();
             getLog().debug( "lastModified signedJar:" + signedJar.lastModified() + " unprocessed signed Jar:" + jarFiles[i].lastModified() );
-            //setLastModified( jarFiles[i], lastModified );
 
             // remove unprocessed files
             // TODO wouldn't have to do that if we copied the unprocessed jar files in a temporary area
@@ -934,7 +938,8 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         public boolean accept( File pathname )
         {
             return pathname.isFile() &&
-                ( pathname.getName().endsWith( ".jar.unprocessed.pack.gz" ) || pathname.getName().endsWith( ".jar.unprocessed.pack" ) );
+                pathname.getName().startsWith( UNPROCESSED_PREFIX ) &&
+                ( pathname.getName().endsWith( ".jar.pack.gz" ) || pathname.getName().endsWith( ".jar.pack" ) );
         }
 
     };
