@@ -45,11 +45,6 @@
         <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>webstart-maven-plugin</artifactId>
-            <!--
-                Due to incomplete alpha-status a patched snapshot version is used.
-                   * maven-webstart-plugin (revision 5700
-                       + patch http://jira.codehaus.org/browse/MWEBSTART-63 "MWEBSTART-63-patch.diff")
-            -->
             <version>testing</version>
             <executions>
                 <execution>
