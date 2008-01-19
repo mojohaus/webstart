@@ -18,8 +18,8 @@ package org.codehaus.mojo.webstart.generator;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.webstart.JarResource;
@@ -35,7 +35,7 @@ public class JarResourcesGenerator extends AbstractGenerator
 
 {
 
-    private final List jarResources;
+    private final Collection jarResources;
     
     /**
      * Creates a new {@code JarResources}.
@@ -52,7 +52,7 @@ public class JarResourcesGenerator extends AbstractGenerator
                                   String defaultTemplateResourceName,
                                   File outputFile, 
                                   String templateFile, 
-                                  List jarResources, 
+                                  Collection jarResources, 
                                   String mainClass,
                                   String webstartJarURL )
     {
