@@ -21,6 +21,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -29,7 +30,6 @@ import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
-import org.codehaus.mojo.webstart.util.OrArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -376,7 +376,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
                                                                                          artifactFilter );
             
             Set transitiveResolvedArtifacts = result.getArtifacts();
-            
+
             if ( getLog().isDebugEnabled() )
             {
                 getLog().debug("transitively resolved artifacts = " + transitiveResolvedArtifacts);
@@ -518,11 +518,31 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
         
         File jnlpOutputFile = new File( getWorkDirectory(), jnlpFile.getOutputFilename() );
         
-        List jarResources = new ArrayList();
+        Set jarResources = new LinkedHashSet();
         jarResources.addAll( jnlpFile.getJarResources() );
         
         if ( this.commonJarResources != null && !this.commonJarResources.isEmpty() )
         {
+            
+            for ( Iterator itr = this.commonJarResources.iterator(); itr.hasNext(); )
+            {
+                JarResource jarResource = (JarResource) itr.next();
+                
+                if ( !jarResources.add( jarResource ) )
+                {
+                    String message = "Configuration Error: The jar resource element for artifact "
+                                     + jarResource.getArtifact()
+                                     + " defined in common jar resources is duplicated in the jar "
+                                     + "resources configuration of the jnlp file identified by the template file "
+                                     + jnlpFile.getTemplateFilename()
+                                     + ".";
+                    
+                    throw new MojoExecutionException( message );
+                    
+                }
+                
+            }
+            
             jarResources.addAll( this.commonJarResources );
         }
         
