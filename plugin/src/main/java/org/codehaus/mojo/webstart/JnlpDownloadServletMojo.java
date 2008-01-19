@@ -162,7 +162,13 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
             throw new MojoExecutionException( 
                     "Configuration error: At least one <jnlpFile> element must be specified" );
         }
-        
+
+        if ( this.jnlpFiles.size() == 1 && StringUtils.isEmpty( ((JnlpFile) this.jnlpFiles.get(0)).getOutputFilename() ) )
+        {
+            getLog().debug( "Jnlp output file name not specified in single set of jnlpFiles. Using default output file name: launch.jnlp." );
+            ((JnlpFile) this.jnlpFiles.get(0)).setOutputFilename( "launch.jnlp" );
+        }
+         
         for ( Iterator itr = this.jnlpFiles.iterator(); itr.hasNext(); ) 
         {
             checkJnlpFileConfiguration( (JnlpFile) itr.next() );

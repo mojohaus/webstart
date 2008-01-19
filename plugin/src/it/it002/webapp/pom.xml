@@ -60,7 +60,6 @@
                 <jnlpFiles>
                     <jnlpFile>
                         <templateFilename>jnlpTemplate.vm</templateFilename>
-                        <outputFilename>launch.jnlp</outputFilename>
                         <jarResources>
                             <jarResource>
                                 <groupId>org.codehaus.mojo.webstart.it002</groupId>

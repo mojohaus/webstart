@@ -44,7 +44,7 @@ Simple JnlpDownloadServlet Example
 *The Plugin Configuration
 
     The sample pom.xml file below shows the configuration for a webstart bundle that contains a single
-    jar, and generates a JNLP file called <client.jnlp> from a template called <clientTemplate.vm>.
+    jar, and generates a JNLP file called <launch.jnlp> (by default) from a template called <clientTemplate.vm>.
 
 ---
 <project>
@@ -70,7 +70,6 @@ Simple JnlpDownloadServlet Example
           <jnlpFiles>
             <jnlpFile>
               <templateFilename>clientTemplate.vm</templateFilename>
-              <outputFilename>client.jnlp</outputFilename>
               <jarResources>
                 <jarResource>
                   <groupId>[some groupId]</groupId>
