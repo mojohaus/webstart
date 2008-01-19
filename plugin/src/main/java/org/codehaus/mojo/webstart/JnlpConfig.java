@@ -37,6 +37,12 @@ public class JnlpConfig
 
     private String version;
 
+    private String j2seVersion;
+
+    private String allPermissions;
+
+    private String offlineAllowed;
+
     // private String codebase;
 
     private String href;
@@ -73,6 +79,20 @@ public class JnlpConfig
         this.version = version;
     }
 
+    public void setJ2seVersion( String j2seVersion )
+    {
+        this.j2seVersion = j2seVersion;
+    }
+
+    public void setOfflineAllowed( String offlineAllowed )
+    {
+        this.offlineAllowed = offlineAllowed;
+    }
+
+    public void setAllPermissions( String allPermissions )
+    {
+        this.allPermissions = allPermissions;
+    }
     /*
     public void setCodebase( String codebase )
     {
@@ -117,6 +137,21 @@ public class JnlpConfig
     public String getVersion()
     {
         return version;
+    }
+
+    public String getJ2seVersion()
+    {
+        return j2seVersion;
+    }
+
+    public String getAllPermissions()
+    {
+        return allPermissions;
+    }
+
+    public String getOfflineAllowed()
+    {
+        return offlineAllowed;
     }
 
     public File getResources()

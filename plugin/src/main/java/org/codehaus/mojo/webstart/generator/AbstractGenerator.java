@@ -17,6 +17,7 @@ package org.codehaus.mojo.webstart.generator;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,7 +42,7 @@ import org.apache.velocity.runtime.log.NullLogSystem;
  */
 public abstract class AbstractGenerator {
     
-    private VelocityEngine engine = new VelocityEngine();
+    private VelocityEngine engine;
     
     private final MavenProject mavenProject;
 
@@ -50,6 +51,8 @@ public abstract class AbstractGenerator {
     private final File outputFile;
     
     private final String mainClass;
+
+    private GeneratorExtraConfig extraConfig;
 
 
     /**
@@ -64,9 +67,11 @@ public abstract class AbstractGenerator {
      */
     protected AbstractGenerator(MavenProject mavenProject, 
                                 File resourceLoaderPath, 
+                                String defaultTemplateResourceName,
                                 File outputFile, 
                                 String inputFileTemplatePath, 
-                                String mainClass) 
+                                String mainClass,
+                                String webstartJarURL) 
     {
         
         if ( mavenProject == null ) 
@@ -84,11 +89,6 @@ public abstract class AbstractGenerator {
             throw new IllegalArgumentException( "outputFile must not be null" );
         }
 
-        if ( inputFileTemplatePath == null )
-        {
-            throw new IllegalArgumentException("templateFile must not be null");
-        }
-        
         if ( mainClass == null )
         {
             throw new IllegalArgumentException("mainClass must not be null");
@@ -100,25 +100,39 @@ public abstract class AbstractGenerator {
         
         Properties props = new Properties();
 
-        props.setProperty( VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS,
+        if ( inputFileTemplatePath != null )
+        {
+            props.setProperty( VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS,
                            "org.apache.velocity.runtime.log.NullLogSystem" );
-        props.setProperty( "file.resource.loader.path", resourceLoaderPath.getAbsolutePath() );
+            props.setProperty( "file.resource.loader.path", resourceLoaderPath.getAbsolutePath() );
 
-        try
-        {
-            engine.setProperty( "runtime.log.logsystem", new NullLogSystem() );
-            engine.init( props );
-        }
-        catch ( Exception e )
-        {
-            IllegalArgumentException iae = new IllegalArgumentException( "Could not initialise Velocity" );
-            iae.initCause( e );
-            throw iae;
-        }
+            initVelocity( props );
 
-        if ( ! engine.templateExists( inputFileTemplatePath ) )
-        {
-            System.out.println( "Template not found!! ");
+            if ( ! engine.templateExists( inputFileTemplatePath ) )
+            {
+                System.out.println( "Warning, template not found. Will probably fail.");
+            }
+        }
+        else {
+            System.out.println( "No template specified Using default one.");
+
+            inputFileTemplatePath = defaultTemplateResourceName;
+
+            System.out.println("***** Webstart JAR URL: " + webstartJarURL);
+
+            props = new Properties();
+            props.setProperty( "resource.loader", "jar" );
+            props.setProperty( "jar.resource.loader.description", "Jar resource loader for default webstart templates" );
+            props.setProperty( "jar.resource.loader.class", "org.apache.velocity.runtime.resource.loader.JarResourceLoader" );
+            props.setProperty( "jar.resource.loader.path", webstartJarURL );
+
+            initVelocity( props );
+
+            if ( ! engine.templateExists( inputFileTemplatePath ) )
+            {
+                System.out.println( "Inbuilt template not found!! "  + defaultTemplateResourceName
+                                    + " Will probably fail." );
+            }
         }
 
         try
@@ -132,7 +146,27 @@ public abstract class AbstractGenerator {
             iae.initCause( e );
             throw iae;
         }
-        
+    }
+
+    private void initVelocity( Properties props )
+    {
+        try
+        {
+            engine = new VelocityEngine();
+            engine.setProperty( "runtime.log.logsystem", new NullLogSystem() );
+            engine.init( props );
+        }
+        catch ( Exception e )
+        {
+            IllegalArgumentException iae = new IllegalArgumentException( "Could not initialise Velocity" );
+            iae.initCause( e );
+            throw iae;
+        }
+    }
+
+    public void setExtraConfig( GeneratorExtraConfig extraConfig )
+    {
+        this.extraConfig = extraConfig;
     }
     
     /**
@@ -202,8 +236,15 @@ public abstract class AbstractGenerator {
         context.put( "outputFile", outputFile.getName() );
         context.put( "mainClass", this.mainClass );
 
+        // TODO make this more extensible
+        context.put( "allPermissions", extraConfig.getJnlpSpec() );
+        context.put( "offlineAllowed", extraConfig.getOfflineAllowed() );
+        context.put( "jnlpspec", extraConfig.getJnlpSpec() );
+        context.put( "j2seVersion", extraConfig.getJ2seVersion() );
+
         return context;
     }
+
 
     private void addPropertiesToContext( Properties properties, VelocityContext context ) {
         

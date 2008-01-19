@@ -716,6 +716,32 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         return jarFiles.length;
     }
 
+    protected URL findDefaultJnlpTemplateURL()
+    {
+        URL url = this.getClass().getClassLoader().getResource( "default-jnlp-template.vm" );
+        return url;
+    }
+
+    protected URL getWebstartJarURL()
+    {
+        String url = findDefaultJnlpTemplateURL().toString();
+        try {
+            return new URL( url.substring( "jar:".length(), url.indexOf( "!" ) ) );
+        } catch ( Exception e )
+        {
+            IllegalStateException iae = new IllegalStateException( "Failure to find webstart Jar URL: " + e.getMessage() );
+            iae.initCause( e );
+            throw iae;
+        }
+    }
+
+    /** @return something of the form jar:file:..../webstart-maven-plugin-.....jar!/ */
+    protected String getWebstartJarURLForVelocity()
+    {
+        String url = findDefaultJnlpTemplateURL().toString();
+        return  url.substring( 0, url.indexOf( "!" ) + 2 );
+    }
+
     /**
      * Removes the signature of the files in the specified directory which satisfy the 
      * specified filter.

@@ -34,6 +34,7 @@ import org.apache.maven.plugin.PluginManager;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.settings.Settings;
 import org.codehaus.mojo.webstart.generator.Generator;
+import org.codehaus.mojo.webstart.generator.GeneratorExtraConfig;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 
 /**
@@ -47,6 +48,8 @@ import org.codehaus.plexus.archiver.zip.ZipArchiver;
 public abstract class AbstractJnlpMojo
     extends AbstractBaseJnlpMojo
 {
+
+    private static final String DEFAULT_TEMPLATE_LOCATION = "src/main/jnlp/template.vm";
 
     /**
      * The Zip archiver.
@@ -188,6 +191,8 @@ public abstract class AbstractJnlpMojo
     {
 
         checkInput();
+
+        findDefaultJnlpTemplateURL();
 
         getLog().debug( "using work directory " + getWorkDirectory() );
         getLog().debug( "using library directory " + getLibDirectory() );
@@ -446,7 +451,7 @@ public abstract class AbstractJnlpMojo
 
                 packagedJnlpArtifacts.add( artifact );
 
-                if ( artifactContainsClass( artifact, jnlp.getMainClass() ) )
+                if ( jnlp != null && artifactContainsClass( artifact, jnlp.getMainClass() ) )
                 {
                     if ( artifactWithMainClass == null )
                     {
@@ -486,27 +491,49 @@ public abstract class AbstractJnlpMojo
         }
         File jnlpOutputFile = new File( outputDirectory, jnlp.getOutputFile() );
 
-        if ( jnlp.getInputTemplate() == null || jnlp.getInputTemplate().length() == 0 )
-        {
-            getLog().debug(
-                "Jnlp template file name not specified. Using default output file name: src/main/jnlp/template.vm." );
-            jnlp.setInputTemplate( "src/main/jnlp/template.vm" );
-        }
-        String templateFileName = jnlp.getInputTemplate();
-
-        File resourceLoaderPath = getProject().getBasedir();
+        File templateDirectory = getProject().getBasedir();
 
         if ( jnlp.getInputTemplateResourcePath() != null && jnlp.getInputTemplateResourcePath().length() > 0 )
         {
-            resourceLoaderPath = new File( jnlp.getInputTemplateResourcePath() );
+            templateDirectory = new File( jnlp.getInputTemplateResourcePath() );
         }
+
+        if ( jnlp.getInputTemplate() == null || jnlp.getInputTemplate().length() == 0 )
+        {
+          getLog().debug(
+                "Jnlp template file name not specified. Checking if default output file name exists: "
+                + DEFAULT_TEMPLATE_LOCATION );
+
+          File templateFile = new File( templateDirectory, DEFAULT_TEMPLATE_LOCATION );
+        
+          if ( templateFile.isFile() )
+          {
+              jnlp.setInputTemplate( DEFAULT_TEMPLATE_LOCATION );
+          }
+          else {
+              getLog().debug( "Jnlp template file not found in default location. Using inbuilt one." );
+          }
+        }
+        else {
+          File templateFile = new File( templateDirectory, jnlp.getInputTemplate() );
+        
+          if (! templateFile.isFile() )
+          {
+              throw new MojoExecutionException( "The specified JNLP template does not exist: [" + templateFile + "]" );
+          }
+        }
+        String templateFileName = jnlp.getInputTemplate();
 
         Generator jnlpGenerator = new Generator( this.getProject(),
                                                  this, 
-                                                 resourceLoaderPath, 
+                                                 "default-jnlp-template.vm",
+                                                 templateDirectory, 
                                                  jnlpOutputFile, 
                                                  templateFileName, 
-                                                 this.getJnlp().getMainClass() );
+                                                 this.getJnlp().getMainClass(),
+                                                 getWebstartJarURLForVelocity() );
+
+        jnlpGenerator.setExtraConfig( getGeneratorExtraConfig() );
         
         try
         {
@@ -532,6 +559,47 @@ public abstract class AbstractJnlpMojo
         }
     }
 
+    private GeneratorExtraConfig getGeneratorExtraConfig()
+    {
+        return new GeneratorExtraConfig()
+        {
+            public String getJnlpSpec()
+            {
+                // shouldn't we automatically identify the spec based on the features used in the spec?
+                // also detect conflicts. If user specified 1.0 but uses a 1.5 feature we should fail in checkInput().
+                if ( jnlp.getSpec() != null )
+                {
+                    return jnlp.getSpec();
+                }
+                return "1.0+";
+            }
+            public String getOfflineAllowed()
+            {
+                if ( jnlp.getOfflineAllowed() != null )
+                {
+                    return jnlp.getOfflineAllowed();
+                }
+                return "false";
+            }
+            public String getAllPermissions()
+            {
+                if ( jnlp.getAllPermissions() != null )
+                {
+                    return jnlp.getAllPermissions();
+                }
+                return "true";
+            }
+            public String getJ2seVersion()
+            {
+                if ( jnlp.getJ2seVersion() != null )
+                {
+                    return jnlp.getJ2seVersion();
+                }
+                return "1.5+";
+            }
+        };
+    }
+
     private void checkInput()
         throws MojoExecutionException
     {
@@ -546,11 +614,6 @@ public abstract class AbstractJnlpMojo
         // getLog().debug( "usejnlpservlet " + this.usejnlpservlet );
         getLog().debug( "verifyjar " + isVerifyjar() );
         getLog().debug( "verbose " + isVerbose() );
-
-        if ( jnlp == null )
-        {
-            throw new MojoExecutionException( "<jnlp> configuration element missing." );
-        }
 
         checkPack200();		
         checkDependencies();
@@ -599,17 +662,6 @@ public abstract class AbstractJnlpMojo
         final boolean b = artifactWithMainClass.equals( artifact );
         getLog().debug( "compare " + artifactWithMainClass + " with " + artifact + ": " + b );
         return b;
-    }
-
-    public String getSpec()
-    {
-        // shouldn't we automatically identify the spec based on the features used in the spec?
-        // also detect conflicts. If user specified 1.0 but uses a 1.5 feature we should fail in checkInput().
-        if ( jnlp.getSpec() != null )
-        {
-            return jnlp.getSpec();
-        }
-        return "1.0+";
     }
 
     // helper methods

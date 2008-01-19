@@ -52,10 +52,12 @@ public class JarResourcesGeneratorTest extends TestCase
         
         JarResourcesGenerator generator = new JarResourcesGenerator( mavenProject,
                                                                      resourceLoaderPath,
+                                                                     "default-jnlp-template.vm",
                                                                      outputFile,
                                                                      templateFile.getName(),
                                                                      jarResources,
-                                                                     mainClass);
+                                                                     mainClass,
+                                                                     "jar:file:/tmp/path/to/webstart-plugin.jar" );
         
         //The list of jarResources is empty so the output text should be an empty string
         assertEquals("", generator.getDependenciesText());

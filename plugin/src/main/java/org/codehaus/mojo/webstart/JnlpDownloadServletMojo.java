@@ -34,6 +34,7 @@ import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mojo.webstart.generator.GeneratorExtraConfig;
 import org.codehaus.mojo.webstart.generator.JarResourcesGenerator;
 import org.codehaus.mojo.webstart.generator.VersionXmlGenerator;
 import org.codehaus.plexus.util.FileUtils;
@@ -197,15 +198,17 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
         
         if ( jnlpFile.getTemplateFilename() == null )
         {
-            throw new MojoExecutionException( 
-                    "Configuration error: A templateFilename must be specified for each jnlpFile element" );
+            getLog().info( "No templateFilename found for " + jnlpFile.getOutputFilename()
+                          + ". Will use the default template." );
         }
+        else
+        {        
+          File templateFile = new File( getTemplateDirectory(), jnlpFile.getTemplateFilename() );
         
-        File templateFile = new File( getTemplateDirectory(), jnlpFile.getTemplateFilename() );
-        
-        if ( !templateFile.isFile() )
-        {
-            throw new MojoExecutionException( "The specified JNLP template does not exist: [" + templateFile + "]" );
+          if ( !templateFile.isFile() )
+          {
+              throw new MojoExecutionException( "The specified JNLP template does not exist: [" + templateFile + "]" );
+          }
         }
         
         checkJnlpJarResources( jnlpFile );
@@ -524,12 +527,16 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
         }
         
         JarResourcesGenerator jnlpGenerator = new JarResourcesGenerator( getProject(), 
-                                                   getTemplateDirectory(), 
+                                                   getTemplateDirectory(),
+                                                   "default-jnlp-servlet-template.vm", 
                                                    jnlpOutputFile, 
                                                    jnlpFile.getTemplateFilename(), 
                                                    jarResources, 
-                                                   jnlpFile.getMainClass() );
-        
+                                                   jnlpFile.getMainClass(),
+                                                   getWebstartJarURLForVelocity() );
+
+        jnlpGenerator.setExtraConfig( getGeneratorExtraConfig() );
+
         try
         {
             jnlpGenerator.generate();
@@ -541,6 +548,31 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
         }
     
     }
+
+    private GeneratorExtraConfig getGeneratorExtraConfig()
+    {
+        return new GeneratorExtraConfig()
+        {
+            public String getJnlpSpec()
+            {
+                return "1.0+";
+            }
+            public String getOfflineAllowed()
+            {
+                return "false";
+            }
+            public String getAllPermissions()
+            {
+                return "true";
+            }
+            public String getJ2seVersion()
+            {
+                return "1.5+";
+            }
+        };
+    }
+
+
 
     /**
      * Generates a version.xml file for all the jarResources configured either in jnlpFile elements

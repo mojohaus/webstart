@@ -17,6 +17,7 @@ package org.codehaus.mojo.webstart.generator;
  */
 
 import java.io.File;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 
@@ -48,12 +49,14 @@ public class JarResourcesGenerator extends AbstractGenerator
      */
     public JarResourcesGenerator( MavenProject mavenProject, 
                                   File resourceLoaderPath, 
+                                  String defaultTemplateResourceName,
                                   File outputFile, 
                                   String templateFile, 
                                   List jarResources, 
-                                  String mainClass )
+                                  String mainClass,
+                                  String webstartJarURL )
     {
-        super(mavenProject, resourceLoaderPath, outputFile, templateFile, mainClass);
+        super(mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, templateFile, mainClass, webstartJarURL);
         this.jarResources = jarResources;
     }
 

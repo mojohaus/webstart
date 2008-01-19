@@ -17,6 +17,7 @@ package org.codehaus.mojo.webstart.generator;
  */
 
 import java.io.File;
+import java.net.URL;
 import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
@@ -42,13 +43,15 @@ public class Generator extends AbstractGenerator
      */
     public Generator( MavenProject mavenProject,
                       AbstractJnlpMojo task, 
+                      String defaultTemplateResourceName,
                       File resourceLoaderPath, 
                       File outputFile, 
                       String inputFileTemplatePath, 
-                      String mainClass )
+                      String mainClass, 
+                      String webstartJarURL )
     {
         
-        super(mavenProject, resourceLoaderPath, outputFile, inputFileTemplatePath, mainClass );
+        super(mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, inputFileTemplatePath, mainClass, webstartJarURL );
         
         this.config = task;
 
