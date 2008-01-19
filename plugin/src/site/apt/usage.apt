@@ -72,6 +72,12 @@ mvn install
 ---------------
 
 
+* 19/01/2008
+
+  Renamed the <jnlp><resources> configuration element of the jnlp mojos into <resourcesDirectory>
+  for consistency. See MWEBSTART-81 for discussion.
+
+
 Input/Output
 
   Here are the list of files/directories you might want to be familiar with before starting to use the plugin.
@@ -186,10 +192,11 @@ Plugin configuration
              <excludes-->
            </dependencies>
 
+           <resourcesDirectory>${project.basedir}/src/main/jnlp/resources</resourcesDirectory>
+
            <!-- JNLP generation -->
            <jnlp>
              <!-- default values -->
-             <!--resources>${project.basedir}/src/main/jnlp/resources</resources-->
              <!--inputTemplateResourcePath>${project.basedir}</inputTemplateResourcePath-->
              <!--inputTemplate>src/main/jnlp/template.vm</inputTemplate--> <!-- relative to inputTemplateResourcePath -->
              <outputFile>app.jnlp</outputFile> <!-- defaults to launch.jnlp -->

@@ -618,6 +618,12 @@ public abstract class AbstractJnlpMojo
         checkPack200();		
         checkDependencies();
 
+        if ( jnlp != null && jnlp.getResources() != null )
+        {
+            throw new MojoExecutionException(
+               "The <jnlp><resources> configuration element is obsolete. Use <resourcesDirectory> instead." );
+        }
+
         // FIXME
         /*
         if ( !"pom".equals( getProject().getPackaging() ) ) {

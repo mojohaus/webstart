@@ -51,6 +51,7 @@ public class JnlpConfig
 
     /**
      * The path containing any resources which will be added to the webstart artifact
+     * Obsolete. Will be removed after 1.0-alpha- series.
      */
     private File resources;
 
