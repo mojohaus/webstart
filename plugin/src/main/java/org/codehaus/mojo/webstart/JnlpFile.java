@@ -87,6 +87,15 @@ public class JnlpFile
     }
 
     /**
+     * Sets the outputFileName.
+     * @param outputFilename
+     */
+    protected void setOutputFilename( String outputFilename )
+    {
+        this.outputFilename = outputFilename;
+    }
+
+    /**
      * Sets the fully qualified classname of the class to be specified as 
      * the <code>main-class</code> in the generated JNLP file.
      * @param mainClass 
