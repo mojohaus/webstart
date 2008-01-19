@@ -48,7 +48,7 @@
           <!-- SIGNING -->
           <!-- defining this will automatically sign the jar and its dependencies -->
           <sign>
-            <keystore>/tmp/keystore</keystore>
+            <keystore>${project.build.directory}/keystore</keystore>
             <keypass>m2m2m2</keypass>
             <storepass>m2m2m2</storepass>
             <!--sigfile>m2m2m2</sigfile-->
