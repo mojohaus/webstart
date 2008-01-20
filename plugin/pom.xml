@@ -12,7 +12,7 @@
   <description>Maven plugin that supports webstart application development. Helps generate jnlp files and supports the Jnlp Download Servlet.</description>
 
   <prerequisites>
-    <maven>2.0.5</maven>
+    <maven>2.0.6</maven>
   </prerequisites>
 
 
