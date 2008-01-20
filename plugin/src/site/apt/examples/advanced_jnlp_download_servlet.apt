@@ -121,7 +121,8 @@ Advanced JnlpDownloadServlet Example
           
           <!-- 
           Jar resources that are to be included in all generated JNLP files are specified here. 
-          If specified here, they cannot also be included in a jnlpFile configuration element.   -->
+          If specified here, they cannot also be included in a jnlpFile configuration element.   
+          -->
           <commonJarResources>
             <jarResource>
               <groupId>commons-lang</groupId>

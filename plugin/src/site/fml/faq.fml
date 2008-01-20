@@ -26,12 +26,12 @@
         <p>
           The servlet cannot yet be found on an official maven repository. For demonstration purposes, the webstart project packages one version under the (currently) following identifiers
 <pre>
-      <groupId>org.codehaus.mojo.webstart-maven-plugin</groupId>
-      <!--groupId>com.sun.java.jnlp</groupId-->
-      <artifactId>jnlp-servlet</artifactId>
-      <version>1.0-6.0-02_ea_b02-SNAPSHOT</version>
+      &lt;groupId&gt;org.codehaus.mojo.webstart-maven-plugin&lt;/groupId&gt;
+      &lt;!--groupId&gt;com.sun.java.jnlp&lt;/groupId--&gt;
+      &lt;artifactId&gt;jnlp-servlet&lt;/artifactId&gt;
+      &lt;version&gt;1.0-6.0-02_ea_b02-SNAPSHOT&lt;/version&gt;
 </pre>
-         but most probably you will have to retrieve it from Sun's web site or from you local SDK installation (>= Java 5). See also the <a href="jnlp101.html">jnlp 101</a>
+         but most probably you will have to retrieve it from Sun's web site or from your local SDK installation (>= Java 5). See also the <a href="jnlp101.html">jnlp 101</a>
         </p>
       </answer>
 

@@ -9,11 +9,11 @@
 
 Maven Webstart Plugin
 
-  The Webstart plugin generate application bundles that can be deployed via Web Start.
-  The plugin can be used to prepare standalone webstart applications or webstart app bundled in war
+  The Webstart plugin generates application bundles that can be deployed via Web Start.
+  The plugin can be used to prepare standalone webstart applications or webstart apps bundled in WAR
   files (with or without Sun's Download Servlet).
   It handles the generation of JNLP files and optional version.xml files, using Velocity templates.
-  It also handles the selection and preparation of the dependencies, performing signing, unsigning Pack200
+  It also handles the selection and preparation of the dependencies, performing signing, unsigning and Pack200
   compression when required.
 
   Although not yet at version 1.0, the plugin is approaching maturity and can be used in a production environment.
@@ -47,9 +47,9 @@ Maven Webstart Plugin
 
   * {{{jnlp-mojo.html}webstart:jnlp}}, {{{jnlp-inline-mojo.html}webstart:jnlp-inline}} and {{{jnlp-single-mojo.html}webstart:jnlp-single}} all help package a JNLP application as a ZIP file (useful for standalone static deployments or to further bundle them in war files). Pick the right mojo depending on your use case: multi-module, command line, etc... (FIXME add a note on how to choose between each other).
   
-  * {{{jnlp-download-servlet-mojo.html}webstart:jnlp-download-servlet}} helps to package a JNLP application to use with the Jnlp DownloadServlet
+  * {{{jnlp-download-servlet-mojo.html}webstart:jnlp-download-servlet}} helps to package a JNLP application to be deployed by Sun's JnlpDownloadServlet
 
-  * {{{jnlp-mojo.html}webstart:unsign}} unsign a jar. This mojo is primarily used internally by the jnlp mojos describe above. This mojo will probably move to the {{{http://maven.apache.org/plugins/maven-jar-plugin/}maven-jar-plugin}} in the future, as did the sign jar functionality.
+  * {{{jnlp-mojo.html}webstart:unsign}} unsign a jar. This mojo is primarily used internally by the jnlp mojos described above. This mojo will probably move to the {{{http://maven.apache.org/plugins/maven-jar-plugin/}maven-jar-plugin}} in the future, as did the sign jar functionality.
 
   * {{{jnlp-mojo.html}webstart:report}} Creates a JNLP site report.
 
@@ -63,7 +63,7 @@ Maven Webstart Plugin
 
   * read the {{{jnlp-mojos-overview.html}Jnlp Mojos overview}} 
 
-  * decide your deployment strategy. Combined with the way your build is structured (multi module or not, war or not, ...) that will help you choose the mojo that best suit your needs. You can start looking into the different deployment choices:
+  * decide your deployment strategy. Combined with the way your build is structured (multi module or not, war or not, ...) that will help you choose the mojo that best suits your needs. You can start looking into the different deployment choices:
 
     * with static pages
 
@@ -71,7 +71,7 @@ Maven Webstart Plugin
 
     * within a WAR that uses Sun's Download Servlet
 
-  * start your project using with the {{{examples/inbuilt_templates.html}default inbuilt template}}.
+  * start your project using the {{{examples/inbuilt_templates.html}default inbuilt template}}.
 
   * start with simple signing using the keytool functionality for your {{{examples/keystore_gen.html}signing needs}}
 

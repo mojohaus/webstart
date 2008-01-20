@@ -37,7 +37,7 @@ Configuring your webapp to use JnlpDownloadServlet
      
    * If you have chosen to provide Pack200 format compressed files, JnlpDownloadServlet
      will decide if the webstart client that the user has chosen can handle the compressed
-     format. If the client is compatable, the JnlpDownloadServlet will route requests for
+     format. If the client is compatible, the JnlpDownloadServlet will route requests for
      jar files to the appropriate compressed file. This may improve the download time of
      your application.
  
@@ -64,8 +64,9 @@ Configuring your webapp to use JnlpDownloadServlet
 </web-app>
 -------------------------------
  
- Note: This dependency is to be placed in the webapp's pom.xml. This has nothing
- to do with the webstart project's pom.xml.
+ Note: The dependency described below is to be placed in the webapp's pom.xml. This has nothing
+ to do with the webstart project's pom.xml, unless using the JnlpDownloadServlet mojo, in which case
+ the plugin is configured in the webapp's project.
  
  Unfortunately, the JnlpDownloadServlet's jar file is not yet available in the
  public ibiblio.org/maven2 repository. Until the licensing issues are worked out,
@@ -143,7 +144,7 @@ Pack200 signing explained
  file modifications. This is achieved by packing and unpacking the jar file with the Pack200 utility.
  The result is a jar with modified class files ready to be signed.
 
- The goal then signs this preprepared jar and verifies the signature.
+ The goal then signs this pre-prepared jar and verifies the signature.
 
  The Pack200 packing process is applied again to produce the final downloadable Pack200 file.
 
