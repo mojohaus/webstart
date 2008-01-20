@@ -11,6 +11,7 @@
 #if($offlineAllowed)
     <offline-allowed/>
 #end
+  </information>
 #if($allPermissions)
   <security>
      <all-permissions/>
