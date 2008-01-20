@@ -156,6 +156,13 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      * @parameter expression="${verbose}" default-value="false"
      */
     private boolean verbose;
+    
+    /**
+     * Set to true to exclude all transitive dependencies.
+     * 
+     * @parameter
+     */
+    private boolean excludeTransitive;
 
     private final List modifiedJnlpArtifacts = new ArrayList();
 
@@ -377,6 +384,16 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     protected boolean isVerifyjar()
     {
         return verifyjar;
+    }
+
+    /**
+     * Returns the flag that indicates whether or not all transitive dependencies will be excluded
+     * from the generated JNLP bundle.
+     * @return Returns the value of the excludeTransitive field.
+     */
+    protected boolean isExcludeTransitive()
+    {
+        return this.excludeTransitive;
     }
 
     /**

@@ -363,44 +363,11 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
                 checkForMainClass( jarResource );
                 jarResourceArtifacts.add( artifact );
             }
-
-            // this restricts to runtime and compile scope            
-            ScopeArtifactFilter artifactFilter = new ScopeArtifactFilter( Artifact.SCOPE_RUNTIME );
-
-            ArtifactResolutionResult result = getArtifactResolver().resolveTransitively( jarResourceArtifacts, 
-                                                                                         getProject().getArtifact(),
-                                                                                         null, //managedVersions
-                                                                                         getLocalRepository(),
-                                                                                         getRemoteRepositories(), 
-                                                                                         this.artifactMetadataSource,
-                                                                                         artifactFilter );
             
-            Set transitiveResolvedArtifacts = result.getArtifacts();
-
-            if ( getLog().isDebugEnabled() )
+            if ( !isExcludeTransitive() )
             {
-                getLog().debug("transitively resolved artifacts = " + transitiveResolvedArtifacts);
-                getLog().debug("jarResources = " + jarResources);
-                getLog().debug("jarResourceArtifacts = " + jarResourceArtifacts);
-            }
-            
-            //for each transitive dependency, wrap it in a JarResource and add it to the collection of
-            //existing jar resources
-            for (Iterator itr = transitiveResolvedArtifacts.iterator(); itr.hasNext(); )
-            {
-                Artifact resolvedArtifact = (Artifact) itr.next();
                 
-                // this whole double check is ugly as well as this method changing the input variable
-                // we should really improve the way we collect the jarResources
-                if ( !jarResourceArtifacts.contains( resolvedArtifact ) )
-                {
-                    JarResource newJarResource = new JarResource(resolvedArtifact);
-                    if ( !jarResources.contains( newJarResource ) )
-                    {
-                        newJarResource.setOutputJarVersion( true );
-                        jarResources.add( newJarResource );
-                    }
-                }
+                retrieveTransitiveDependencies( jarResourceArtifacts , jarResources );
                 
             }
             
@@ -511,6 +478,52 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
                                              e);
         }
             
+    }
+    
+    private void retrieveTransitiveDependencies( Set jarResourceArtifacts , List jarResources ) 
+    throws ArtifactResolutionException, ArtifactNotFoundException 
+    {
+
+        // this restricts to runtime and compile scope            
+        ScopeArtifactFilter artifactFilter = new ScopeArtifactFilter( Artifact.SCOPE_RUNTIME );
+        
+        ArtifactResolutionResult result = getArtifactResolver().resolveTransitively( jarResourceArtifacts, 
+                                                                                     getProject().getArtifact(),
+                                                                                     null, //managedVersions
+                                                                                     getLocalRepository(),
+                                                                                     getRemoteRepositories(), 
+                                                                                     this.artifactMetadataSource,
+                                                                                     artifactFilter );
+        
+        Set transitiveResolvedArtifacts = result.getArtifacts();
+
+        if ( getLog().isDebugEnabled() )
+        {
+            getLog().debug("transitively resolved artifacts = " + transitiveResolvedArtifacts);
+            getLog().debug("jarResources = " + jarResources);
+            getLog().debug("jarResourceArtifacts = " + jarResourceArtifacts);
+        }
+        
+        //for each transitive dependency, wrap it in a JarResource and add it to the collection of
+        //existing jar resources
+        for ( Iterator itr = transitiveResolvedArtifacts.iterator(); itr.hasNext(); )
+        {
+            Artifact resolvedArtifact = (Artifact) itr.next();
+            
+            // this whole double check is ugly as well as this method changing the input variable
+            // we should really improve the way we collect the jarResources
+            if ( !jarResourceArtifacts.contains( resolvedArtifact ) )
+            {
+                JarResource newJarResource = new JarResource(resolvedArtifact);
+                if ( !jarResources.contains( newJarResource ) )
+                {
+                    newJarResource.setOutputJarVersion( true );
+                    jarResources.add( newJarResource );
+                }
+            }
+            
+        }
+        
     }
     
     private void generateJnlpFile( JnlpFile jnlpFile ) throws MojoExecutionException

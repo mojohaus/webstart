@@ -133,6 +133,11 @@ Jnlp mojo plugin configuration overview
         </executions>
         <configuration>
            <!--outputDirectory></outputDirectory--> <!-- not required?? -->
+           
+           <!--
+           Set to true to exclude all transitive dependencies. Default is false.
+           -->
+           <excludeTransitive>false</excludeTransitive>
 
            <!-- The path where the libraries are stored within the jnlp structure. not required. by default the libraries are within the working directory -->
            <libPath>lib</libPath>
@@ -286,6 +291,12 @@ JnlpDownloadServlet mojo plugin configuration overview
 
             <configuration>
                 <outputDirectoryName>webstart</outputDirectoryName>
+                           
+                 <!--
+                 Set to true to exclude all transitive dependencies. Default is false.
+                 -->
+                 <excludeTransitive>false</excludeTransitive>
+                
                 <jnlpFiles>
                     <jnlpFile>
                         <templateFilename>jnlpTemplate.vm</templateFilename>

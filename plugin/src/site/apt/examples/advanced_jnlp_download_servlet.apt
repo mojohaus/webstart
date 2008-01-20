@@ -140,6 +140,11 @@ Advanced JnlpDownloadServlet Example
               <includeInJnlp>false</includeInJnlp>
             </jarResource>
           </commonJarResources>
+          
+          <!--
+          Set to true to exclude all transitive dependencies from the JNLP bundle. Default is false.
+          -->
+          <excludeTransitive>false</excludeTransitive>
 
         </configuration>
 

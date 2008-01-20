@@ -398,7 +398,7 @@ public abstract class AbstractJnlpMojo
             filter.add( new ExcludesArtifactFilter( dependencies.getExcludes() ) );
         }
 
-        Collection artifacts = getProject().getArtifacts();
+        Collection artifacts = isExcludeTransitive() ? getProject().getDependencyArtifacts() : getProject().getArtifacts();
 
         for ( Iterator it = artifacts.iterator(); it.hasNext(); )
         {
