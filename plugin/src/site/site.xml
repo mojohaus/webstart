@@ -18,6 +18,7 @@
     <item name="Introduction" href="index.html" />
     <item name="Goals" href="plugin-info.html"/>
     <item name="Usage" href="usage.html"/>
+    <item name="jnlp mojo(s) configuration overview" href="jnlp-mojos-overview.html"/>
     <item name="Plugin Upgrades" href="upgrade.html"/>
     <item name="JNLP 101" href="jnlp101.html"/>
     <item name="FAQ" href="faq.html"/>
@@ -51,7 +52,9 @@
       <item name="Jar signing with Maven" href="http://maven.apache.org/plugins/maven-jar-plugin/" />
     </item>
     <item name="Sun's Download Servlet Guide" href="http://java.sun.com/j2se/1.5.0/docs/guide/javaws/developersguide/downloadservletguide.html" />
+    <item name="Velocity user guide" href="http://velocity.apache.org/engine/releases/velocity-1.5/user-guide.html" />
     <!--item name="" href="" /-->
+
   </menu>
 
   ${reports}
