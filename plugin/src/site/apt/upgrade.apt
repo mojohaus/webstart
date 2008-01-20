@@ -16,35 +16,10 @@ Important changes since 1.0-alpha-1
 
   Changes that affect the use and configuration of the plugin.
 
-* 28/Dec/2006
+* 19/01/2008
 
-  The default location for the template and resources have changed. 
-  See {{{http://jira.codehaus.org/browse/MWEBSTART-16} MWEBSTART-16}} for discussion.
-
-* 03/Jan/2007
-
-  The 1.0-alpha-1 version of the plugin required you to create one module just for
-  the bundling of the webstart elements into its own zip file. To get your current
-  project sources jared, signed and packaged into a webstart application, you 
-  should now be able to do something like:
-
-------------------------------
-mvn install webstart:jnlp
-------------------------------
-
-  on the command line or attach the appropriate mojo (e.g. jnlp-inline) to your package 
-  phase and do something like
-
-------------
-mvn install
-------------
-
-  Any failure should be reported to the {{{http://jira.codehaus.org/browse/MWEBSTART-13} MWEBSTART-13}} issue. The API may change before 1.0-alpha-2 is released.
-
-  The documentation has not been fully updated to reflect this change.
-
-  Multi-project setup (one for the jar, one for the webstart bundle) is still possible.
-
+  Renamed the <jnlp><resources> configuration element of the jnlp mojos into <resourcesDirectory>
+  for consistency. See {{{http://jira.codehaus.org/browse/MWEBSTART-81} MWEBSTART-81}} for discussion.
 
 * 11/Mar/2007
 
@@ -79,9 +54,34 @@ mvn install
 ---------------
 
 
-* 19/01/2008
+* 03/Jan/2007
 
-  Renamed the <jnlp><resources> configuration element of the jnlp mojos into <resourcesDirectory>
-  for consistency. See {{{http://jira.codehaus.org/browse/MWEBSTART-81} MWEBSTART-81}} for discussion.
+  The 1.0-alpha-1 version of the plugin required you to create one module just for
+  the bundling of the webstart elements into its own zip file. To get your current
+  project sources jared, signed and packaged into a webstart application, you 
+  should now be able to do something like:
+
+------------------------------
+mvn install webstart:jnlp
+------------------------------
+
+  on the command line or attach the appropriate mojo (e.g. jnlp-inline) to your package 
+  phase and do something like
+
+------------
+mvn install
+------------
+
+  Any failure should be reported to the {{{http://jira.codehaus.org/browse/MWEBSTART-13} MWEBSTART-13}} issue. The API may change before 1.0-alpha-2 is released.
+
+  The documentation has not been fully updated to reflect this change.
+
+  Multi-project setup (one for the jar, one for the webstart bundle) is still possible.
+
+
+* 28/Dec/2006
+
+  The default location for the template and resources have changed. 
+  See {{{http://jira.codehaus.org/browse/MWEBSTART-16} MWEBSTART-16}} for discussion.
 
 
