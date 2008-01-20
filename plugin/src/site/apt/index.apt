@@ -47,20 +47,29 @@ Maven Webstart Plugin
 
   * The Jnlp Download Servlet mojo functionality is only available in one mojo (The JnlpMojo has 3 mojos to cover various use cases, multi-module, command line, etc...) 
 
+* Getting started
+
+  Start simple.
+
+  * decide your deployment strategy. Combined with the way your build is structured (multi module or not, war or not, ...) that will help you choose the mojo that best suit your needs. You can start looking into the different deployment choices:
+
+  ** with static pages
+
+  ** within a WAR
+
+  ** within a WAR that uses Sun's Download Servlet
+
+  * start your project using with the {{{examples/inbuilt_templates.html}default inbuilt template}}.
+
+  * start with simple signing using the keytool functionality for your {{{examples/keystore_gen.html}signing needs}}
+
+  * test your build (e.g. adding the {{{http://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin/plugin/src/it/it002/}Jetty server to your project}})
+
+  * create a custom and more complex JNLP template if you need.
+
 * Examples
 
-  To provide you with a better understanding of some usages of the Webstart Plugin,
-  you can take a look into the following examples:
-
-  * {{{examples/single_webstart_app.html}Build a standalone Webstart bundle artifact}}.
-
-  * {{{examples/war_bundle_1.html}WAR Bundle #1}}
-  
-  * {{{examples/war_bundle_2.html}WAR Bundle #2}}
-
-  * {{{examples/simple_jnlp_download_servlet.html}Simple Jnlp Download Servlet}}
- 
-  * {{{examples/Advanced_jnlp_download_servlet.html}Advanced Jnlp Download Servlet}}
+  To provide you with a better understanding of some usages of the Webstart Plugin, the documentation contains several examples. Cf the menu on the left.
 
 * Features:
 
