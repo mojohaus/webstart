@@ -20,6 +20,34 @@
 
     </faq>
 
+    <faq id="get_jnlp_download_servlet">
+      <question>Where can I get the Jnlp Download Servlet?</question>
+      <answer>
+        <p>
+          The servlet cannot yet be found on an official maven repository. For demonstration purposes, the webstart project packages one version under the (currently) following identifiers
+<pre>
+      <groupId>org.codehaus.mojo.webstart-maven-plugin</groupId>
+      <!--groupId>com.sun.java.jnlp</groupId-->
+      <artifactId>jnlp-servlet</artifactId>
+      <version>1.0-6.0-02_ea_b02-SNAPSHOT</version>
+</pre>
+         but most probably you will have to retrieve it from Sun's web site or from you local SDK installation (>= Java 5). See also the <a href="jnlp101.html">jnlp 101</a>
+        </p>
+      </answer>
+
+    </faq>
+
+    <faq id="deploy_jnlp">
+      <question>How can I deploy my jnlp application to my server?</question>
+      <answer>
+        <p>
+          Right now (1.0-alpha-2), deployment is not supported out of the box by the plugin. We may add the support in the near future (See <a href="http://jira.codehaus.org/browse/MWEBSTART-25">MWEBSTART-25</a>). You may want to use the <a href="http://myfaces.apache.org/wagon-maven-plugin/usage.html">wagon maven plugin</a>. 
+        </p>
+      </answer>
+
+    </faq>
+
+
   </part>
 
 </faqs>

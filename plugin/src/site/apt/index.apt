@@ -13,23 +13,38 @@ Maven Webstart Plugin
   of an application bundle that can be deployed via Web Start. For example, it handles 
   the generation of a JNLP file that contains references to jar resources declared as project
   dependencies in a Maven project pom.xml file. It also performs jar signing and Pack200 compression 
-  if desired.
+  if desired. It also helps deploying the webstart application using the Java Download Servlet.
+
+  Although not yet 1.0, the plugin is approaching maturity and has been used by many people. Over 15 people have sent contributions. It requires maven 2 (version 2.0.5 or later) to work correctly.
 
 * Goals Overview
 
   General Information about the goals.
 
-  * {{{jnlp-mojo.html}webstart:jnlp}} Packages a JNLP application.
+  * {{{jnlp-mojo.html}webstart:jnlp}}, {{{jnlp-inline-mojo.html}webstart:jnlp-inline}} and {{{jnlp-single-mojo.html}webstart:jnlp-single}} all help package a JNLP application. Pick the right mojo depending on your use case: multi-module, command line, etc... (FIXME add a note on how to choose between each other).
   
-  * {{{jnlp-inline-mojo.html}webstart:jnlp-inline}} Packages a JNLP application without launching a 
-  parallel build lifecycle.
-  
-  * {{{jnlp-single-mojo.html}webstart:jnlp-single}} Packages a JNLP application in non-aggregator mode without launching a 
-  parallel build lifecycle
+  * {{{jnlp-download-servlet-mojo.html}webstart:jnlp-download-servlet}} help to package a JNLP application to use with the Jnlp DownloadServlet
+
+  * {{{jnlp-mojo.html}webstart:unsign}} Unsign a jar. This will probably move to the maven-jar-plugin in the future, as did the sign jar functionality.
+
+  * {{{jnlp-mojo.html}webstart:report}} Creates a JNLP report.
+
 
 * Usage
 
   Instructions on how to use the Maven Webstart Plugin can be found {{{usage.html}here}}.
+
+* Jnlp Download Servlet mojo vs the others
+
+  The Jnlp Download Servlet mojo is similar to the 3 other JNLP mojos, but has a slighly different configuration file format.
+
+** main differences with the other mojos		
+
+  * The Jnlp Download Servlet mojo supports many applications at once (support for the other JNLP mojos is planned: {{{http://jira.codehaus.org/browse/MWEBSTART-58} MWEBSTART-58}})
+
+  * The Jnlp Download Servlet mojo configuration format is slighly more complex but also more flexible when it comes to selection of dependencies to include in the applications.
+
+  * The Jnlp Download Servlet mojo functionality is only available in one mojo (The JnlpMojo has 3 mojos to cover various use cases, multi-module, command line, etc...) 
 
 * Examples
 
@@ -41,26 +56,15 @@ Maven Webstart Plugin
   * {{{examples/war_bundle_1.html}WAR Bundle #1}}
   
   * {{{examples/war_bundle_2.html}WAR Bundle #2}}
-  
-* Plugin Stability
 
-  This is a very early but working release. It requires maven 2 (version 2.0.4 or later) to work correctly.
-
-  <<Change from 1.0-alpha-1>> the most required feature, {{{http://jira.codehaus.org/browse/MWEBSTART-13} MWEBSTART-13}}, 
-  has been partially implemented. It should be possible to use the plugin without using a single module for the webstart 
-  bundling. The {{{usage.html}documentation}} has not been fully updated to reflect this change.
-  
-  <<Change from 1.0-alpha-1>> The default location for the template and resources have changed. 
-  See {{{http://jira.codehaus.org/browse/MWEBSTART-16} MWEBSTART-16}} for discussion.
-
-  <<Note>> in order to build from source, you will need several dependencies. The webstart plugin is in fact a 
-  multi-module project and some of its dependencies are located under the {{{..}parent directory}} of the plugin 
-  itself. Be sure to check out the complete project.
+  * {{{examples/simple_jnlp_download_servlet.html}Simple Jnlp Download Servlet}}
+ 
+  * {{{examples/Advanced_jnlp_download_servlet.html}Advanced Jnlp Download Servlet}}
 
 * Features:
 
    * JNLP file generation where information is inserted into a user
-     defined {{{http://velocity.apache.org/}Velocity template}}
+     defined {{{http://velocity.apache.org/}Velocity template}}. Inbuilt default templates.
 
    * transitive dependencies
    
@@ -80,6 +84,7 @@ Maven Webstart Plugin
 
 * Upcoming changes
 
+  * {{{http://jira.codehaus.org/browse/MWEBSTART-58} MWEBSTART-58}}
 
 * Reported missing features
 

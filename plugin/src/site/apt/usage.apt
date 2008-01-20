@@ -8,74 +8,10 @@
 
 Usage Instructions
 
+    This document describes the functionning of the family of mojos that generate a jnlp file, except the jnlp-download-servlet
+    mojo which, while related, is slighly different in its configuration.
+
     Note: The plugin produces its own artifact.
-
-Important changes since 1.0-alpha-1
-
-  Changes that affect the use and configuration of the plugin.
-
-* 03/Jan/2007
-
-  The 1.0-alpha-1 version of the plugin required you to create one module just for
-  the bundling of the webstart elements into its own zip file. To get your current
-  project sources jared, signed and packaged into a webstart application, you 
-  should now be able to do something like:
-
-------------------------------
-mvn install webstart:jnlp
-------------------------------
-
-  on the command line or attach the appropriate mojo (e.g. jnlp-inline) to your package 
-  phase and do something like
-
-------------
-mvn install
-------------
-
-  Any failure should be reported to the {{{http://jira.codehaus.org/browse/MWEBSTART-13} MWEBSTART-13}} issue. The API may change before 1.0-alpha-2 is released.
-
-  The documentation has not been fully updated to reflect this change.
-
-  Multi-project setup (one for the jar, one for the webstart bundle) is still possible.
-
-
-* 11/Mar/2007
-
-  The default sign configuration triggers a sign procedure that relies on the JarSigningMojo (from the mave-jar-plugin). Implementing {{{http://jira.codehaus.org/browse/MWEBSTART-18} MWEBSTART-18}} allows us to define an external signing process. This forced some changes to the configuration of the plugin: <keystore> management was renamed to <keystoreConfig> and moved inside the <sign> configuration.
-  Here's an example of change applied to an existing pom for the transition from 1.0-alpha-1 to 1.0-alpha-2:
-
----------------
-  Index: project1/pom.xml
-  ===================================================================
-  --- project1/pom.xml    (revision 3560)
-  +++ project1/pom.xml    (working copy)
-  @@ -60,13 +60,14 @@
-               <dnameC>US</dnameC>
-   
-               <verify>true</verify>
-  +
-  +            <keystoreConfig>
-  +              <delete>true</delete>
-  +              <gen>true</gen>
-  +            </keystoreConfig>
-  +
-             </sign>
-   
-  -          <keystore>
-  -            <delete>true</delete>
-  -            <gen>true</gen>
-  -          </keystore>
-  -
-             <verbose>false</verbose>
-           </configuration>
-         </plugin>
----------------
-
-
-* 19/01/2008
-
-  Renamed the <jnlp><resources> configuration element of the jnlp mojos into <resourcesDirectory>
-  for consistency. See MWEBSTART-81 for discussion.
 
 
 Input/Output

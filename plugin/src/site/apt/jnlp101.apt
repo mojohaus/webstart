@@ -26,7 +26,7 @@ images/icon.gif
 Configuring your webapp to use JnlpDownloadServlet
 
  The JnlpDownloadServlet jar file is provided with the Java 5.0 distribution in the
- examples directory.
+ examples directory. 
  
  The JnlpDownloadServlet offers some advantages:
  
