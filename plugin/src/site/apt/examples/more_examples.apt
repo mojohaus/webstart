@@ -1,0 +1,12 @@
+ ------
+ Maven webstart plugin: more examples
+ ------
+ Jerome Lacoste
+ ------
+ 20 Jan 2008
+ ------
+
+More examples
+
+  The plugin comes with several {{{http://svn.mojo.codehaus.org/browse/mojo/trunk/mojo/webstart-maven-plugin/plugin/src/test/projects/}test projects}} and {{{http://svn.mojo.codehaus.org/browse/mojo/trunk/mojo/webstart-maven-plugin/plugin/src/it}integration tests}}.
+

@@ -18,12 +18,12 @@ Important changes since 1.0-alpha-1
 
 * 19/01/2008
 
-  Renamed the <jnlp><resources> configuration element of the jnlp mojos into <resourcesDirectory>
+  Renamed the \<jnlp\>\<resources\> configuration element of the jnlp mojos into \<resourcesDirectory\>
   for consistency. See {{{http://jira.codehaus.org/browse/MWEBSTART-81} MWEBSTART-81}} for discussion.
 
 * 11/Mar/2007
 
-  The default sign configuration triggers a sign procedure that relies on the JarSigningMojo (from the mave-jar-plugin). Implementing {{{http://jira.codehaus.org/browse/MWEBSTART-18} MWEBSTART-18}} allows us to define an external signing process. This forced some changes to the configuration of the plugin: <keystore> management was renamed to <keystoreConfig> and moved inside the <sign> configuration.
+  The default sign configuration triggers a sign procedure that relies on the JarSigningMojo (from the mave-jar-plugin). Implementing {{{http://jira.codehaus.org/browse/MWEBSTART-18} MWEBSTART-18}} allows us to define an external signing process. This forced some changes to the configuration of the plugin: \<keystore\> management was renamed to \<keystoreConfig\> and moved inside the \<sign\> configuration.
   Here's an example of change applied to an existing pom for the transition from 1.0-alpha-1 to 1.0-alpha-2:
 
 ---------------

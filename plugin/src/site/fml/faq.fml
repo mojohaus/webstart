@@ -41,7 +41,7 @@
       <question>How can I deploy my jnlp application to my server?</question>
       <answer>
         <p>
-          Right now (1.0-alpha-2), deployment is not supported out of the box by the plugin. We may add the support in the near future (See <a href="http://jira.codehaus.org/browse/MWEBSTART-25">MWEBSTART-25</a>). You may want to use the <a href="http://myfaces.apache.org/wagon-maven-plugin/usage.html">wagon maven plugin</a>. 
+          Right now (1.0-alpha-2), deployment is not supported out of the box by the plugin. We may add the support in the near future (See <a href="http://jira.codehaus.org/browse/MWEBSTART-25">MWEBSTART-25</a>). You may want to use the <a href="http://myfaces.apache.org/wagon-maven-plugin/usage.html">wagon maven plugin</a> in the mean time. 
         </p>
       </answer>
 

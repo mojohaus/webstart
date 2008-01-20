@@ -128,7 +128,7 @@ Plugin configuration
              <excludes-->
            </dependencies>
 
-           <resourcesDirectory>${project.basedir}/src/main/jnlp/resources</resourcesDirectory>
+           <!--resourcesDirectory>${project.basedir}/src/main/jnlp/resources</resourcesDirectory--> <!-- default value -->
 
            <!-- JNLP generation -->
            <jnlp>
@@ -149,18 +149,20 @@ Plugin configuration
              <keystore>fillme</keystore>
              <keypass>fillme</keypass>  <!-- we need to override passwords easily from the command line. ${keypass} -->
              <storepass>fillme</storepass> <!-- ${storepass} -->
-             <storetype>fillme</storetype>
+             <!--storetype>fillme</storetype-->
              <alias>fillme</alias>
-             <validity>fillme</validity>
 
-             <dnameCn>fillme</dnameCn>
+             <!--validity>fillme</validity-->
+
+             <!-- only required for generating the keystore -->
+             <!--dnameCn>fillme</dnameCn>
              <dnameOu>fillme</dnameOu>
              <dnameO>fillme</dnameO>
              <dnameL>fillme</dnameL>
              <dnameSt>fillme</dnameSt>
-             <dnameC>fillme</dnameC>
+             <dnameC>fillme</dnameC-->
 
-             <verify>true</verify>
+             <verify>true</verify> <!-- verify that the signing operation succeeded -->
 
              <!-- KEYSTORE MANGEMENT -->
              <keystoreConfig>
@@ -170,18 +172,12 @@ Plugin configuration
            </sign>
 
            <!-- BUILDING PROCESS -->
-           <!--usejnlpservlet>true</usejnlpservlet--> <!-- not yet supported -->
 
-           <!-- should we have some more configurations here? E.g. compression level (aka packing effort) -->
-           <!-- not yet implemented -->
            <pack200>true</pack200>
            <gzip>true</gzip> <!-- default force when pack200 false, true when pack200 selected ?? -->
+
            <!-- causes a version attribute to be output in each jar resource element, optional, default is false -->
            <outputJarVersions>true</outputJarVersions>
-
-           <!-- misc -->
-           <!-- if there are multiple apps, do we need to mark one as default? (app/ redirects to app/default.jnlp in jnlp servlet ??)-->
-           <!-- -->
 
            <!--install>false</install--> <!-- not yet supported -->
            <verbose>true</verbose>
@@ -212,12 +208,3 @@ Optimizations
    operations to perform, so it will only resign/repack the JAR files that have changed since
    the last run. In consequence, if you change your signing key or your POM, it will be necessary
    for you to clean your project before rebuilding. Otherwise strange results may happen.
-
-
-Use Cases
-
-* use an external jar signer mechanism
-
-  One may want for example to use a server side jar signing solution.
-
-  See src/test/projects/project5 for example on how to use an external jar signer.
