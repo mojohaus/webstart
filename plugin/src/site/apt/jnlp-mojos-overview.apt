@@ -12,7 +12,7 @@ Jnlp mojos overview
 
     Note: The plugin produces its own artifact.
 
-	* Jnlp Download Servlet mojo vs the others
+* Jnlp Download Servlet mojo vs the others
 
   The Jnlp Download Servlet mojo is similar to the 3 other JNLP mojos, but has a slighly different configuration file format.
 
