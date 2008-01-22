@@ -289,7 +289,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
             
             List jnlpJarResources = jnlpFile.getJarResources();
             
-            for ( Iterator jarResourceItr = jnlpJarResources.iterator(); jnlpFileItr.hasNext(); )
+            for ( Iterator jarResourceItr = jnlpJarResources.iterator(); jarResourceItr.hasNext(); )
             {
                 JarResource jarResource = (JarResource) jarResourceItr.next();
                 
