@@ -175,6 +175,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
             checkJnlpFileConfiguration( (JnlpFile) itr.next() );
         }
         
+        checkForDuplicateJarResources();
         checkCommonJarResources();
         checkForUniqueJnlpFilenames();
         checkPack200();
@@ -214,7 +215,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
         checkJnlpJarResources( jnlpFile );
         
     }
-
+    
     /**
      * Checks the collection of jarResources configured for a given jnlpFile element.
      *
@@ -266,6 +267,49 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
                     + jnlpFile.getOutputFilename() + "]" );
         }
 
+    }
+    
+    /**
+     * Checks that any jarResources defined in the jnlpFile elements are not also defined in 
+     * commonJarResources.
+     * @throws MojoExecutionException if a duplicate is found. 
+     */
+    private void checkForDuplicateJarResources() throws MojoExecutionException 
+    {
+        
+        if ( this.commonJarResources == null || this.commonJarResources.isEmpty() )
+        {
+            return;
+        }
+        
+        for ( Iterator jnlpFileItr = this.jnlpFiles.iterator(); jnlpFileItr.hasNext(); ) 
+        {
+            
+            JnlpFile jnlpFile = (JnlpFile) jnlpFileItr.next();
+            
+            List jnlpJarResources = jnlpFile.getJarResources();
+            
+            for ( Iterator jarResourceItr = jnlpJarResources.iterator(); jnlpFileItr.hasNext(); )
+            {
+                JarResource jarResource = (JarResource) jarResourceItr.next();
+                
+                if ( this.commonJarResources.contains( jarResource ) )
+                {
+                    String message = "Configuration Error: The jar resource element for artifact "
+                                     + jarResource
+                                     + " defined in common jar resources is duplicated in the jar "
+                                     + "resources configuration of the jnlp file identified by the template file "
+                                     + jnlpFile.getTemplateFilename()
+                                     + ".";
+       
+                    throw new MojoExecutionException( message );
+                    
+                }
+                
+            }
+            
+        }
+        
     }
     
     /**
@@ -540,20 +584,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
             for ( Iterator itr = this.commonJarResources.iterator(); itr.hasNext(); )
             {
                 JarResource jarResource = (JarResource) itr.next();
-                
-                if ( !jarResources.add( jarResource ) )
-                {
-                    String message = "Configuration Error: The jar resource element for artifact "
-                                     + jarResource.getArtifact()
-                                     + " defined in common jar resources is duplicated in the jar "
-                                     + "resources configuration of the jnlp file identified by the template file "
-                                     + jnlpFile.getTemplateFilename()
-                                     + ".";
-                    
-                    throw new MojoExecutionException( message );
-                    
-                }
-                
+                jarResources.add( jarResource );
             }
             
             jarResources.addAll( this.commonJarResources );
@@ -616,7 +647,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
     private void generateVersionXml() throws MojoExecutionException 
     {
         
-        List jarResources = new ArrayList();
+        Set/*JarResource*/ jarResources = new LinkedHashSet();
         
         //combine the jar resources from commonJarResources and each JnlpFile config
         

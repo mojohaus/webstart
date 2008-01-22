@@ -142,7 +142,7 @@ public class JarResource
         
     }
     
-    public int fieldHashCode( Object field )
+    private int fieldHashCode( Object field )
     {
         return field == null ? 0 : field.hashCode();
     }

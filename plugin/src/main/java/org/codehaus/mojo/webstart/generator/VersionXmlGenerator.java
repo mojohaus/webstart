@@ -19,8 +19,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.mojo.webstart.JarResource;
@@ -60,7 +60,7 @@ public class VersionXmlGenerator
      * element will be created in the generated file.
      * @throws MojoExecutionException if an error occurs generating the file.
      */
-    public void generate( File outputDir, List/*JarResource*/ jarResources ) throws MojoExecutionException 
+    public void generate( File outputDir, Collection/*JarResource*/ jarResources ) throws MojoExecutionException 
     {
         
         if ( outputDir == null )
@@ -99,7 +99,7 @@ public class VersionXmlGenerator
         
     }
         
-    private void generateXml( BufferedWriter writer, List jarResources ) throws IOException
+    private void generateXml( BufferedWriter writer, Collection jarResources ) throws IOException
     {
         
         writer.write( "<?xml version=\"1.0\"?>" );
