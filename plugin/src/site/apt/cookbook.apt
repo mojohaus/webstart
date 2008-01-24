@@ -1,0 +1,31 @@
+   ------
+   Maven Webstart plugin: getting started
+   ------
+   Jerome lacoste
+   ------
+   24 January 2008
+   ------
+
+
+Getting started
+
+  Start simple.
+
+  * read the {{{jnlp-mojos-overview.html}Jnlp Mojos overview}} 
+
+  * decide your deployment strategy. Combined with the way your build is structured (multi module or not, war or not, ...) that will help you choose the mojo that best suits your needs. You can start looking into the different deployment choices:
+
+    * with static pages
+
+    * within a WAR
+
+    * within a WAR that uses Sun's Download Servlet
+
+  * start your project using the {{{examples/inbuilt_templates.html}default inbuilt template}}.
+
+  * start with simple signing using the keytool functionality for your {{{examples/keystore_gen.html}signing needs}}
+
+  * test your build (e.g. adding the {{{http://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin/plugin/src/it/it002/}Jetty server to your project}})
+
+  * create a custom and more complex JNLP template if you need.
+
