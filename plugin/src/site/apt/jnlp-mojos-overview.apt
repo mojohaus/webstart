@@ -12,20 +12,6 @@ Jnlp mojos overview
 
     Note: The plugin produces its own artifact.
 
-* Jnlp Download Servlet mojo vs the others
-
-  The Jnlp Download Servlet mojo is similar to the 3 other JNLP mojos, but has a slighly different configuration file format.
-
-** Main differences with the other mojos		
-
-  * The Jnlp Download Servlet mojo supports many applications at once (adding this feature to the other JNLP mojos is planned: {{{http://jira.codehaus.org/browse/MWEBSTART-58} MWEBSTART-58}})
-
-  * The Jnlp Download Servlet mojo configuration format is slighly more complex but also more flexible when it comes to selection of dependencies to include in the applications.
-
-  * The Jnlp Download Servlet mojo functionality is only available in one mojo (The JnlpMojo has 3 mojos to cover various use cases, multi-module, command line, etc...) 
-
-  Note: in the future, we will work to make the 2 mojos configuration more similar to ease going from simple projects to those using DownloadServlet.
-
 
 Input/Output
 
@@ -361,35 +347,4 @@ JnlpDownloadServlet mojo plugin configuration overview
 
 -------------------------------
 
-Misc
-
-* Upcoming changes
-
-  * {{{http://jira.codehaus.org/browse/MWEBSTART-58} support for generating multiple bundles from one jnlp project}} (similar to what the jnlp download servlet mojo does).
-
-* Reported missing features
-
-   * {{{http://jira.codehaus.org/browse/MWEBSTART-25} a mojo for deploying the bundles to a remote server}}
-
-   * {{{http://jira.codehaus.org/browse/MWEBSTART-24} a mojo for running the application}}
-
-   * More control on the dependencies: {{{http://jira.codehaus.org/browse/MWEBSTART-72} JarResource exclusions}} and {{{http://jira.codehaus.org/browse/MWEBSTART-90} control of the transitivity}}
-
-   * more support for standalone webstart apps (e.g. download.html/index.html)
-
-   * handling of {{{http://jira.codehaus.org/browse/MWEBSTART-8} native libraries}}
-
-* Other ideas
-
-   * building multiple jnlp app in one zip using one m2 project?? (not sure as this is not a very maven way of doing things)
-
-      * would require merging version.xml
-
-   * what about deploying multiple versions of the same app? Is that ever wanted, e.g. for upgrades?
-
-   * ?? add a new goal to help deal with web applications
-
-      * one step war+webstart generation (one project, webstart plugin used in pre-package phase)
-
-      * more war integration (jnlp, web.xml)
 

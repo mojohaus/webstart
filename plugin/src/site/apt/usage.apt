@@ -8,6 +8,56 @@
 
   Overview of the main usages
 
+Choices
+
+  There are many ways to use the webstart plugin and several mojos available to support your needs.
+
+  Deciding on which approach to use depends on your build & deployment needs. Here are some questions that will help you decide which approach suits you best.
+
+  * Is your build fully automated or do you want to perform some operations on the command line ?
+
+  * Do you have a multi module build ?
+
+  * Do you deploy you JNLP file(s) within a WAR (created by maven) or not ?
+
+  * Do you want to generate the final JNLP file(s) yourself or do you want to dynamically populate it on the server side ? (Dynamicity can be achieved using Sun's Download Servlet but is not limited to it).
+
+  * If you need to generate multiple JNLP file(s), are those sufficiently similar to be generated from a single maven module ?
+
+
+  FIXME
+
+
+
+  The mojos 
+
+* Jnlp Download Servlet mojo vs the others
+
+  The Jnlp Download Servlet mojo is similar to the 3 other JNLP mojos, but has a slighly different configuration file format.
+
+** Main differences with the other mojos		
+
+  * The Jnlp Download Servlet mojo supports many applications at once (adding this feature to the other JNLP mojos is planned: {{{http://jira.codehaus.org/browse/MWEBSTART-58} MWEBSTART-58}})
+
+  * The Jnlp Download Servlet mojo configuration format is slighly more complex but also more flexible when it comes to selection of dependencies to include in the applications.
+
+  * The Jnlp Download Servlet mojo functionality is only available in one mojo (The JnlpMojo has 3 mojos to cover various use cases, multi-module, command line, etc...) 
+
+  Note: in the future, we will work to make the 2 mojos configuration more similar to ease going from simple projects to those using DownloadServlet.
+
+* Goals Overview
+
+  General Information about the goals.
+
+  * {{{jnlp-mojo.html}webstart:jnlp}}, {{{jnlp-inline-mojo.html}webstart:jnlp-inline}} and {{{jnlp-single-mojo.html}webstart:jnlp-single}} all help package a JNLP application as a ZIP file (useful for standalone static deployments or to further bundle them in war files). Pick the right mojo depending on your use case: multi-module, command line, etc... (FIXME add a note on how to choose between each other).
+  
+  * {{{jnlp-download-servlet-mojo.html}webstart:jnlp-download-servlet}} helps to package a JNLP application to be deployed by Sun's JnlpDownloadServlet
+
+  * {{{jnlp-mojo.html}webstart:unsign}} unsign a jar. This mojo is primarily used internally by the jnlp mojos described above. This mojo will probably move to the {{{http://maven.apache.org/plugins/maven-jar-plugin/}maven-jar-plugin}} in the future, as did the sign jar functionality.
+
+  * {{{jnlp-mojo.html}webstart:report}} Creates a JNLP site report.
+
+
 How to build a jnlp ZIP bundle
 
   one typically attaches the jnlp-inline mojo to the package phase and execute:

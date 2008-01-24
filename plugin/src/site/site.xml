@@ -17,10 +17,11 @@
   <menu name="Maven Webstart Quickstart">
     <item name="Introduction" href="index.html" />
     <item name="Goals" href="plugin-info.html"/>
-    <item name="Usage" href="usage.html"/>
     <item name="cookbook recipe" href="cookbook.html"/>
+    <item name="Usage" href="usage.html"/>
     <item name="mojo(s) config. overview" href="jnlp-mojos-overview.html"/>
     <item name="Plugin Upgrades" href="upgrade.html"/>
+    <item name="Notes to users and contributors" href="contributors.html"/>
     <item name="JNLP 101" href="jnlp101.html"/>
     <item name="FAQ" href="faq.html"/>
   </menu>

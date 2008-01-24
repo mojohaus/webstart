@@ -41,17 +41,13 @@ Maven Webstart Plugin
    * pluggable API for jar signer
 
 
-* Goals Overview
+* Long time users: upgrading from older releases
 
-  General Information about the goals.
+  See the {{{upgrade.html}upgrade documentation}}.
 
-  * {{{jnlp-mojo.html}webstart:jnlp}}, {{{jnlp-inline-mojo.html}webstart:jnlp-inline}} and {{{jnlp-single-mojo.html}webstart:jnlp-single}} all help package a JNLP application as a ZIP file (useful for standalone static deployments or to further bundle them in war files). Pick the right mojo depending on your use case: multi-module, command line, etc... (FIXME add a note on how to choose between each other).
-  
-  * {{{jnlp-download-servlet-mojo.html}webstart:jnlp-download-servlet}} helps to package a JNLP application to be deployed by Sun's JnlpDownloadServlet
+* New users: getting started
 
-  * {{{jnlp-mojo.html}webstart:unsign}} unsign a jar. This mojo is primarily used internally by the jnlp mojos described above. This mojo will probably move to the {{{http://maven.apache.org/plugins/maven-jar-plugin/}maven-jar-plugin}} in the future, as did the sign jar functionality.
-
-  * {{{jnlp-mojo.html}webstart:report}} Creates a JNLP site report.
+  Read the {{{cookbook.html}cookbook recipe}}.
 
 * Usage
 

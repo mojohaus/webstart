@@ -1,0 +1,45 @@
+   ------
+   Maven webstart plugin: information to users && contributors
+   ------
+   Jerome Lacoste
+   ------
+   24 January 2008
+   ------
+
+
+
+Misc
+
+* Upcoming changes
+
+  * {{{http://jira.codehaus.org/browse/MWEBSTART-58} support for generating multiple bundles from one jnlp project}} (similar to what the jnlp download servlet mojo does).
+
+  More generally some work is going to be done to make the jnlp mojos configuration more compatible.
+
+
+* Reported missing features
+
+   * {{{http://jira.codehaus.org/browse/MWEBSTART-25} a mojo for deploying the bundles to a remote server}}
+
+   * {{{http://jira.codehaus.org/browse/MWEBSTART-24} a mojo for running the application}}
+
+   * More control on the dependencies: {{{http://jira.codehaus.org/browse/MWEBSTART-72} JarResource exclusions}} and {{{http://jira.codehaus.org/browse/MWEBSTART-90} control of the transitivity}}
+
+   * more support for standalone webstart apps (e.g. download.html/index.html)
+
+   * handling of {{{http://jira.codehaus.org/browse/MWEBSTART-8} native libraries}}
+
+* Other ideas
+
+   * building multiple jnlp app in one zip using one m2 project?? (not sure as this is not a very maven way of doing things)
+
+      * would require merging version.xml
+
+   * what about deploying multiple versions of the same app? Is that ever wanted, e.g. for upgrades?
+
+   * ?? add a new goal to help deal with web applications
+
+      * one step war+webstart generation (one project, webstart plugin used in pre-package phase)
+
+      * more war integration (jnlp, web.xml)
+

@@ -11,15 +11,9 @@ Getting started
 
   Start simple.
 
+  * read the {{{usage.html}usage}} document to decide how to use the plugin depending on your build and deployment strategies
+
   * read the {{{jnlp-mojos-overview.html}Jnlp Mojos overview}} 
-
-  * decide your deployment strategy. Combined with the way your build is structured (multi module or not, war or not, ...) that will help you choose the mojo that best suits your needs. You can start looking into the different deployment choices:
-
-    * with static pages
-
-    * within a WAR
-
-    * within a WAR that uses Sun's Download Servlet
 
   * start your project using the {{{examples/inbuilt_templates.html}default inbuilt template}}.
 
