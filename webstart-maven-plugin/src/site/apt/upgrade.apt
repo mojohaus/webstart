@@ -16,6 +16,26 @@ Important changes since 1.0-alpha-1
 
   Changes that affect the use and configuration of the plugin.
 
+* 25/01/2008
+
+  The groupIds have been renamed. You should replace:
+
+-------------
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>webstart-maven-plugin</artifactId>
+-------------
+
+with
+
+-------------
+      <groupId>org.codehaus.mojo.webstart</groupId>
+      <artifactId>webstart-maven-plugin</artifactId>
+-------------
+
+
+  See {{{http://jira.codehaus.org/browse/MWEBSTART-81} MWEBSTART-81}} for discussion.
+
+
 * 19/01/2008
 
   Renamed the \<jnlp\>\<resources\> configuration element of the jnlp mojos into \<resourcesDirectory\>

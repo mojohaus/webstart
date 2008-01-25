@@ -54,7 +54,7 @@ Simple JnlpDownloadServlet Example
     <plugins>
     
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>org.codehaus.mojo.webstart</groupId>
         <artifactId>webstart-maven-plugin</artifactId>
         <executions>
           <execution>

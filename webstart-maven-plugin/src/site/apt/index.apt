@@ -43,7 +43,7 @@ Maven Webstart Plugin
 
 * Long time users: upgrading from older releases
 
-  See the {{{upgrade.html}upgrade documentation}}.
+  Settings are *incompatible with 1.0-alpha-1* ! See the {{{upgrade.html}upgrade documentation}}.
 
 * New users: getting started
 

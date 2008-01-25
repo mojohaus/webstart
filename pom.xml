@@ -5,12 +5,13 @@
     <version>16</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>webstart-maven-plugin-parent</artifactId>
+  <groupId>org.codehaus.mojo.webstart</groupId>
+  <artifactId>webstart</artifactId>
   <packaging>pom</packaging>
   <version>1.0-alpha-2-SNAPSHOT</version>
-  <name>Maven Webstart Plugin Parent</name>
+  <name>Maven Webstart Plugin Parent POM</name>
   <inceptionYear>2005</inceptionYear>
-  <url>http://mojo.codehaus.org/webstart-maven-plugin-parent</url>
+  <url>http://mojo.codehaus.org/webstart</url>
   <issueManagement>
     <system>jira</system>
     <url>http://jira.codehaus.org/browse/MWEBSTART</url>
@@ -25,11 +26,12 @@
   </licenses>
 
   <!-- work-around a maven issue MOJO-361 -->
-  <scm>
-    <url>https://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin</url>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin</developerConnection>
-  </scm>
+  <!-- TODO we probably don't need this anymore -->
+  <!--scm>
+    <url>https://svn.codehaus.org/mojo/trunk/mojo/webstart</url>
+    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart</developerConnection>
+  </scm-->
 
   <developers>
     <developer>
@@ -70,10 +72,10 @@
 
   <modules>
     <module>webstart-jarsigner-api</module>
-    <module>plugin</module> <!-- TODO: better name ??-->
-    <module>pack200-anttasks</module>
-    <module>jnlp-servlet</module>
-    <module>pack200-jdk14</module>
+    <module>webstart-maven-plugin</module>
+    <module>webstart-pack200-anttasks</module>
+    <module>webstart-jnlp-servlet</module>
+    <module>webstart-pack200-jdk14</module>
   </modules>
 
   <profiles>
@@ -84,7 +86,7 @@
       </activation>
 
       <modules>
-        <module>pack200-jdk15</module>
+        <module>webstart-pack200-jdk15</module>
       </modules>
     </profile>
 
@@ -95,13 +97,13 @@
       </activation>
 
       <modules>
-        <module>pack200-jdk15</module>
+        <module>webstart-pack200-jdk15</module>
       </modules>
     </profile>
 
   </profiles>
 
-  <reporting>
+  <!--reporting>
     <plugins>
       <plugin>
         <artifactId>maven-project-info-reports-plugin</artifactId>
@@ -111,5 +113,5 @@
           </configuration>
         </plugin>
     </plugins>
-  </reporting>
+  </reporting-->
 </project>

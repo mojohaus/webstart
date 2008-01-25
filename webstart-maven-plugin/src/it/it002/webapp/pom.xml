@@ -25,9 +25,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.codehaus.mojo.webstart-maven-plugin</groupId>
+      <groupId>org.codehaus.mojo.webstart</groupId>
       <!--groupId>com.sun.java.jnlp</groupId-->
-      <artifactId>jnlp-servlet</artifactId>
+      <artifactId>webstart-jnlp-servlet</artifactId>
       <version>1.0-6.0-02_ea_b02-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
@@ -43,7 +43,7 @@
   <build>
     <plugins>
         <plugin>
-            <groupId>org.codehaus.mojo</groupId>
+            <groupId>org.codehaus.mojo.webstart</groupId>
             <artifactId>webstart-maven-plugin</artifactId>
             <version>testing</version>
             <executions>

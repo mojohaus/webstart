@@ -8,5 +8,5 @@
 
 More examples
 
-  The plugin comes with several {{{http://svn.mojo.codehaus.org/browse/mojo/trunk/mojo/webstart-maven-plugin/plugin/src/test/projects/}test projects}} and {{{http://svn.mojo.codehaus.org/browse/mojo/trunk/mojo/webstart-maven-plugin/plugin/src/it}integration tests}}.
+  The plugin comes with several {{{http://svn.mojo.codehaus.org/browse/mojo/trunk/mojo/webstart/webstart-maven-plugin/src/test/projects/}test projects}} and {{{http://svn.mojo.codehaus.org/browse/mojo/trunk/mojo/webstart/webstart-maven-plugin/src/it}integration tests}}.
 

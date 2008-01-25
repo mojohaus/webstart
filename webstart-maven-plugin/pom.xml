@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.codehaus.mojo</groupId>
-    <artifactId>webstart-maven-plugin-parent</artifactId>
+    <groupId>org.codehaus.mojo.webstart</groupId>
+    <artifactId>webstart</artifactId>
     <version>1.0-alpha-2-SNAPSHOT</version>
   </parent>
 
@@ -17,11 +17,11 @@
 
 
   <!-- work-around a maven issue MOJO-361 -->
-  <scm>
+  <!--scm>
     <url>https://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin/plugin</url>
     <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin/plugin</connection>
     <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin/plugin</developerConnection>
-  </scm>
+  </scm-->
 
   <developers>
     <developer>
@@ -59,14 +59,14 @@
       <artifactId>maven-plugin-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.mojo</groupId>
+      <groupId>org.codehaus.mojo.webstart</groupId>
       <artifactId>webstart-jarsigner-api</artifactId>
       <version>${version}</version>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.mojo.webstart-maven-plugin</groupId>
+      <groupId>org.codehaus.mojo.webstart</groupId>
       <!--groupId>com.sun.java.jnlp</groupId-->
-      <artifactId>jnlp-servlet</artifactId>
+      <artifactId>webstart-jnlp-servlet</artifactId>
       <version>1.0-6.0-02_ea_b02-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
@@ -260,8 +260,8 @@
       </activation>
       <dependencies>
         <dependency>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>pack200-jdk15</artifactId>
+          <groupId>org.codehaus.mojo.webstart</groupId>
+          <artifactId>webstart-pack200-jdk15</artifactId>
           <version>${version}</version>
         </dependency>
       </dependencies>
@@ -273,8 +273,8 @@
       </activation>
       <dependencies>
         <dependency>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>pack200-jdk15</artifactId>
+          <groupId>org.codehaus.mojo.webstart</groupId>
+          <artifactId>webstart-pack200-jdk15</artifactId>
           <version>${version}</version>
         </dependency>
       </dependencies>
@@ -286,8 +286,8 @@
       </activation>
       <dependencies>
         <dependency>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>pack200-jdk14</artifactId>
+          <groupId>org.codehaus.mojo.webstart</groupId>
+          <artifactId>webstart-pack200-jdk14</artifactId>
           <version>${version}</version>
         </dependency>
       </dependencies>

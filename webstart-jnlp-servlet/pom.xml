@@ -4,13 +4,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.codehaus.mojo</groupId>
-    <artifactId>webstart-maven-plugin-parent</artifactId>
+    <groupId>org.codehaus.mojo.webstart</groupId>
+    <artifactId>webstart</artifactId>
     <version>1.0-alpha-2-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.codehaus.mojo.webstart-maven-plugin</groupId>
-  <artifactId>jnlp-servlet</artifactId>
+  <artifactId>webstart-jnlp-servlet</artifactId>
   <packaging>jar</packaging>
   <name>JNLP Servlet</name>
   <version>1.0-6.0-02_ea_b02-SNAPSHOT</version>
@@ -53,7 +52,7 @@
     </dependency>
   </dependencies>
 
-  <reporting>
+  <!--reporting>
     <plugins>
       <plugin>
         <artifactId>maven-project-info-reports-plugin</artifactId>
@@ -63,6 +62,6 @@
           </configuration>
         </plugin>
     </plugins>
-  </reporting>
+  </reporting-->
 
 </project>
