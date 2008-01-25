@@ -25,7 +25,7 @@ Important changes since 1.0-alpha-1
       <artifactId>webstart-maven-plugin</artifactId>
 -------------
 
-with
+  with
 
 -------------
       <groupId>org.codehaus.mojo.webstart</groupId>
