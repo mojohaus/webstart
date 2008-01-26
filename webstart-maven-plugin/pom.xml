@@ -190,7 +190,7 @@
 
   </dependencies>
 
-  <repositories>
+  <!--repositories>
     <repository>
       <releases>
         <enabled>false</enabled>
@@ -210,7 +210,7 @@
       <name>Maven Central Development Plugin Snapshot Repository</name>
       <url>http://people.apache.org/maven-snapshot-repository</url>
     </pluginRepository>    
-  </pluginRepositories>
+  </pluginRepositories-->
 
   <build>
     <plugins>
@@ -323,7 +323,7 @@
 
   </profiles>
 
-    <reporting>
+    <!--reporting>
       <plugins>
         <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
@@ -333,5 +333,5 @@
             </configuration>
           </plugin>
       </plugins>
-    </reporting>
+    </reporting-->
 </project>
