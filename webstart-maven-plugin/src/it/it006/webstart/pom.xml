@@ -88,8 +88,7 @@
 
                     <verify>false</verify> <!-- verify the signature after signing -->
                 </sign>
-                <unsign>true</unsign> <!-- unsign already signed packages and sign them with own key -->
-
+                <unsignAlreadySignedJars>true</unsignAlreadySignedJars> <!-- unsign already signed packages and sign them with own key -->
                 <verifyjar>false</verifyjar>
             </configuration>
         </plugin>

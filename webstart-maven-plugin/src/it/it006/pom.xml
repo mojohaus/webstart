@@ -7,7 +7,7 @@
   <version>1.0</version>
   <packaging>pom</packaging>
   <name>Webstart it006</name>
-  <description>Webstart JNLP to test unsigning of signed dependencies before signing. The first module creates a signed dependency reused in the second module.</description>
+  <description>Webstart JNLP to test unsigning of signed dependencies before signing. The first module creates a signed dependency reused in the second module, which uses the jnlp download servlet mojo.</description>
 
   <modules>
     <module>sign-one</module>
