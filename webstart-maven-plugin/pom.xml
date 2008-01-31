@@ -138,7 +138,7 @@
     <dependency>
       <groupId>org.codehaus.mojo</groupId>
       <artifactId>keytool-maven-plugin</artifactId>
-      <version>1.0-beta-2-SNAPSHOT</version>
+      <version>1.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.velocity</groupId>
