@@ -10,10 +10,8 @@
   <href>http://www.codehaus.org</href>
  </bannerRight>
  <body>
-  <links>
-   <item name="Mojo" href="http://mojo.codehaus.org"/>
-   <item name="Maven" href="http://maven.apache.org/maven2"/>
-  </links>
+  <menu ref="parent" />
+
   <menu name="Maven Webstart Quickstart">
     <item name="Introduction" href="index.html" />
     <item name="Goals" href="plugin-info.html"/>
@@ -59,6 +57,6 @@
 
   </menu>
 
-  ${reports}
+  <menu ref="reports" />
  </body>
 </project>

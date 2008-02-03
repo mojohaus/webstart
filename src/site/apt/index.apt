@@ -1,0 +1,13 @@
+   ------
+   Introduction
+   ------
+   Jerome Lacoste
+   ------
+   03 Feb 2008
+   ------
+
+
+Maven Webstart Plugin
+
+  This set of modules provide functionality related to the Mojo {{{webstart-maven-plugin}maven webstart plugin}}.
+
