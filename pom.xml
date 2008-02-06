@@ -9,13 +9,16 @@
   <artifactId>webstart</artifactId>
   <packaging>pom</packaging>
   <version>1.0-alpha-2-SNAPSHOT</version>
-  <name>Maven Webstart Plugin Parent POM</name>
-  <inceptionYear>2005</inceptionYear>
+  <name>Webstart Maven Plugin Parent POM</name>
+  <description>Webstart Maven Plugin and related modules</description>
   <url>http://mojo.codehaus.org/webstart</url>
+
   <issueManagement>
     <system>jira</system>
     <url>http://jira.codehaus.org/browse/MWEBSTART</url>
   </issueManagement>
+
+  <inceptionYear>2005</inceptionYear>
 
   <licenses>
     <license>
@@ -25,13 +28,11 @@
     </license>
   </licenses>
 
-  <!-- work-around a maven issue MOJO-361 -->
-  <!-- TODO we probably don't need this anymore -->
-  <!--scm>
+  <scm>
     <url>https://svn.codehaus.org/mojo/trunk/mojo/webstart</url>
     <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart</connection>
     <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart</developerConnection>
-  </scm-->
+  </scm>
 
   <developers>
     <developer>
