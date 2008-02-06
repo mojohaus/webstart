@@ -3,10 +3,11 @@
   <parent>
     <groupId>org.codehaus.mojo.webstart</groupId>
     <artifactId>webstart</artifactId>
-    <version>1.0-alpha-2</version>
+    <version>1.0-beta-1-SNAPSHOT</version>
   </parent>
 
   <artifactId>webstart-pack200-jdk14</artifactId>
+  <version> 1.0-beta-1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Pack 200 support for SDK 1.4</name>
   <developers>
