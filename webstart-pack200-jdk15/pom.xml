@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.codehaus.mojo.webstart</groupId>
     <artifactId>webstart</artifactId>
-    <version>1.0-alpha-2-SNAPSHOT</version>
+    <version>1.0-alpha-2</version>
   </parent>
 
   <artifactId>webstart-pack200-jdk15</artifactId>
@@ -32,7 +32,7 @@
     <dependency>
       <groupId>org.codehaus.mojo.webstart</groupId>
       <artifactId>webstart-pack200-anttasks</artifactId>
-      <version>1.1-SNAPSHOT</version>
+      <version>1.1</version>
     </dependency>
     <dependency>
       <groupId>ant</groupId>

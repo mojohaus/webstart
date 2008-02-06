@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.codehaus.mojo.webstart</groupId>
     <artifactId>webstart</artifactId>
-    <version>1.0-alpha-2-SNAPSHOT</version>
+    <version>1.0-alpha-2</version>
   </parent>
 
   <artifactId>webstart-maven-plugin</artifactId>
@@ -67,7 +67,7 @@
       <groupId>org.codehaus.mojo.webstart</groupId>
       <!--groupId>com.sun.java.jnlp</groupId-->
       <artifactId>webstart-jnlp-servlet</artifactId>
-      <version>1.0-6.0-02_ea_b02-SNAPSHOT</version>
+      <version>1.0-6.0-02_ea_b02</version>
       <scope>test</scope>
     </dependency>
 
@@ -240,7 +240,7 @@
               <tasks>
                 <copy todir="${project.build.directory}/site/examples/">
                   <fileset dir="${basedir}/src/main/resources">
-                    <include name="**/*.vm"/>
+                    <include name="**/*.vm" />
                   </fileset>
                   <mapper type="flatten" />
                 </copy>
