@@ -1,18 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.codehaus.mojo.webstart</groupId>
     <artifactId>webstart</artifactId>
-    <version>1.0-alpha-2-SNAPSHOT</version>
+    <version>1.0-alpha-2</version>
   </parent>
 
   <artifactId>webstart-jnlp-servlet</artifactId>
   <packaging>jar</packaging>
   <name>JNLP Servlet</name>
-  <version>1.0-6.0-02_ea_b02-SNAPSHOT</version>
+  <version>1.0-6.0-02_ea_b02</version>
   <description>JNLP Sample servlet that supports pack200 protocol. Taken from Sun's JDK sample/jnlp directory thanks to its permissive license.</description>
   <url>http:///jdk6.dev.java.net/</url>
   <licenses>
@@ -24,10 +22,10 @@
     </license>
   </licenses>
   <!--scm> available in source package inside a mustang snapshot.
-    <connection/>
-    <developerConnection/>
-    <tag/>
-    <url/>
+    <connection />
+    <developerConnection />
+    <tag />
+    <url />
   </scm-->
   <organization>
     <name>Sun Microsystems</name>

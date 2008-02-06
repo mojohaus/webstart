@@ -3,13 +3,13 @@
   <parent>
     <groupId>org.codehaus.mojo.webstart</groupId>
     <artifactId>webstart</artifactId>
-    <version>1.0-alpha-2-SNAPSHOT</version>
+    <version>1.0-alpha-2</version>
   </parent>
 
   <groupId>org.codehaus.mojo.webstart</groupId>
   <artifactId>webstart-pack200-anttasks</artifactId>
   <name>Pack200</name>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.1</version>
   <packaging>jar</packaging>
   <description>Ant tasks for pack200 operations</description>
   <url>http://java-pack200-ant-task.dev.java.net/</url>
