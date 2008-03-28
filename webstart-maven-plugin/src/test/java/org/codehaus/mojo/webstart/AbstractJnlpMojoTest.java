@@ -41,7 +41,7 @@ import java.util.ArrayList;
 
 /**
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
- * @version $Id: SignConfigTest.java 1403 2006-01-27 02:36:18Z carlos $
+ * @version $Id$
  */
 public class AbstractJnlpMojoTest
     extends AbstractMojoTestCase

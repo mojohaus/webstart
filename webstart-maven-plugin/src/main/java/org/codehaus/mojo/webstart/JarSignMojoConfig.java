@@ -58,7 +58,7 @@ import java.util.List;
  * Specific to the JarSignMojo
  *
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
- * @version $Id: SignConfig.java 1403 2006-01-27 02:36:18Z carlos $
+ * @version $Id$
  */
 public class JarSignMojoConfig implements SignConfig {
     

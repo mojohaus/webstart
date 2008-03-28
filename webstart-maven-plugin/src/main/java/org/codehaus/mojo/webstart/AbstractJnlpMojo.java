@@ -39,7 +39,7 @@ import org.codehaus.plexus.archiver.zip.ZipArchiver;
 
 /**
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
- * @version $Id: JnlpMojo.java 2897 2007-01-02 12:55:00Z lacostej $
+ * @version $Id$
  *
  * @todo refactor the common code with javadoc plugin
  * @todo how to propagate the -X argument to enable verbose?

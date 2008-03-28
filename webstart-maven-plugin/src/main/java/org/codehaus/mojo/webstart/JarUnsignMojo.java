@@ -38,7 +38,7 @@ import java.util.List;
  * This code will hopefully be moved into the jar plugin when stable enough.
  * 
  * @author <a href="mailto:jerome@coffeebreaks.org">Jerome Lacoste</a>, <a href="mailto:andrius@pivotcapital.com">Andrius Šabanas</a>
- * @version $Id: JarSignMojo.java 393237 2006-04-11 14:47:48Z kenney $
+ * @version $Id$
  * @goal unsign
  * @phase package
  * @requiresProject

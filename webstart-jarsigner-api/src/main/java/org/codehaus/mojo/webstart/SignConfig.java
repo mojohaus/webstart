@@ -27,7 +27,7 @@ import org.apache.maven.plugin.MojoFailureException;
  * Bean that represents the JarSigner configuration.
  *
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
- * @version $Id: SignConfig.java 1403 2006-01-27 02:36:18Z carlos $
+ * @version $Id$
  */
 public interface SignConfig {
     /**

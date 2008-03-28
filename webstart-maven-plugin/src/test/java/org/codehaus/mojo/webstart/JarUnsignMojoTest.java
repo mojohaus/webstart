@@ -43,7 +43,7 @@ import java.io.IOException;
  * on existing jars
  *
  * @author Jerome Lacoste <jerome@coffeebreaks.org>
- * @version $Id: JarSignMojoTest.java 393237 2006-04-11 14:47:48Z kenney $
+ * @version $Id$
  */
 public class JarUnsignMojoTest
     extends PlexusTestCase
