@@ -590,7 +590,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
             if( unsignAlreadySignedJars() )
             {
-                removeExistingSignatures( getWorkDirectory(), unprocessedJarFileFilter );
+                removeExistingSignatures( getLibDirectory(), unprocessedJarFileFilter );
             }
 
             if ( isPack200() )
