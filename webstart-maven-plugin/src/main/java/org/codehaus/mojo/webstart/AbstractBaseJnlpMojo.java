@@ -590,7 +590,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
 
             if( unsignAlreadySignedJars() )
             {
-                removeExistingSignatures(getWorkDirectory(), unprocessedJarFileFilter );
+                removeExistingSignatures( getWorkDirectory(), unprocessedJarFileFilter );
             }
 
             if ( isPack200() )
@@ -768,6 +768,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     protected int removeExistingSignatures(File workDirectory, FileFilter updatedJarFileFilter) 
         throws MojoExecutionException
     {
+        verboseLog("Start removing existing signatures");
         // cleanup tempDir if exists
         File tempDir = new File( workDirectory, "temp_extracted_jars" );
         removeDirectory(tempDir);
@@ -784,7 +785,11 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         {
             if ( isJarSigned( jarFiles[i] ) )
             {
+                verboseLog("remove signature from : " + jarFiles[i]);
                 unsignJarFile( jarFiles[i], tempDir );
+            } else
+            {
+                verboseLog("not signed : " + jarFiles[i]);
             }
         }
 
@@ -1013,6 +1018,27 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
                 getLog().info("Deleting directory " + dir.getAbsolutePath());
                 Utils.removeDir(dir);
             }
+        }
+    }
+
+    /**
+     * Log as info when verbose or info is enabled, as debug otherwise.
+     */
+    protected void verboseLog( String msg )
+    {
+        infoOrDebug( isVerbose() || getLog().isInfoEnabled(), msg );
+    }
+
+    /** if info is true, log as info(), otherwise as debug() */
+    private void infoOrDebug( boolean info , String msg )
+    {
+        if ( info )
+        {
+            getLog().info( msg );
+        }
+        else
+        {
+            getLog().debug( msg );
         }
     }
 

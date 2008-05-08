@@ -108,14 +108,15 @@ public class JarUnsignMojo
      */
     protected ArchiverManager archiverManager;    
 
+    private final String[] EXT_ARRAY = { "DSA", "RSA", "SF" };
     private FileFilter removeSignatureFileFilter = new FileFilter() {
-        private final String[] EXT_ARRAY = { "DSA", "RSA", "SF" };
         private final List EXT_TO_REMOVE = Arrays.asList(EXT_ARRAY);
         
         public boolean accept(File file) {
             String extension = FileUtils.getExtension(file.getAbsolutePath());
             return (EXT_TO_REMOVE.contains(extension));
         }
+
     };
     
     public void execute()
@@ -157,18 +158,21 @@ public class JarUnsignMojo
         // create and check META-INF directory
         File metaInf = new File( tempDir, "META-INF" );
         if ( !metaInf.isDirectory() ) {
+            verboseLog( "META-INT dir not found : nothing to do for file: " + jarPath.getAbsolutePath() );
             return;
         }
         
         // filter signature files and remove them
         File[] filesToRemove = metaInf.listFiles( this.removeSignatureFileFilter );                
         if ( filesToRemove.length == 0 ) {
+            verboseLog( "no files match " + toString(EXT_ARRAY) + " : nothing to do for file: " + jarPath.getAbsolutePath() );
             return;
         }                
         for ( int i = 0; i < filesToRemove.length; i++ ) {
             if ( !filesToRemove[i].delete() ) {
                 throw new MojoExecutionException( "Error removing signature file: " + filesToRemove[i] );
             }
+            verboseLog("remove file :" + filesToRemove[i]);
         }
         
         // recreate archive
@@ -194,6 +198,27 @@ public class JarUnsignMojo
         }
     }
     
+    /**
+     * Log as info when verbose or info is enabled, as debug otherwise.
+     */
+    protected void verboseLog( String msg )
+    {
+        infoOrDebug( isVerbose() || getLog().isInfoEnabled(), msg );
+    }
+
+    /** if info is true, log as info(), otherwise as debug() */
+    private void infoOrDebug( boolean info , String msg )
+    {
+        if ( info )
+        {
+            getLog().info( msg );
+        }
+        else
+        {
+            getLog().debug( msg );
+        }
+    }
+
 
     public void setTempDir( File tempDirectory )
     {
@@ -215,6 +240,11 @@ public class JarUnsignMojo
         this.unsignedjar = unsignedjar;
     }
 */
+    public boolean isVerbose()
+    {
+        return verbose;
+    }
+
     public void setVerbose( boolean verbose )
     {
         this.verbose = verbose;
@@ -230,4 +260,20 @@ public class JarUnsignMojo
         this.verify = verify;
     }
 */
+
+    public String toString( String[] items )
+    {
+        StringBuffer back = new StringBuffer( "{" );
+        for( int i = 0; i < items.length; i++ )
+        {
+            if ( i != 0 )
+            {
+                back.append( ", " );
+            }
+            back.append( '"' ).append( items[i] ).append( '"' );
+        }
+        back.append( "}" );
+        return back.toString();
+    }
+
 }

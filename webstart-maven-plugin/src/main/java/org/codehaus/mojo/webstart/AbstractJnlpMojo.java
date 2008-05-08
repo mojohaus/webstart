@@ -673,26 +673,6 @@ public abstract class AbstractJnlpMojo
     // helper methods
 
     /**
-     * Log as info when verbose or info is enabled, as debug otherwise.
-     */
-    private void verboseLog( String msg )
-    {
-        infoOrDebug( isVerbose() || getLog().isInfoEnabled(), msg );
-    }
-
-    private void infoOrDebug( boolean info , String msg )
-    {
-        if ( info )
-        {
-            getLog().info( msg );
-        }
-        else
-        {
-            getLog().debug( msg );
-        }
-    }
-
-    /**
      * Returns the flag that indicates whether or not a version attribute 
      * should be output in each jar resource element in the generated 
      * JNLP file. The default is false.
