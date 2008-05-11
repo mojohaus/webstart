@@ -16,8 +16,9 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>org.codehaus.mojo.webstart</groupId>
         <artifactId>webstart-maven-plugin</artifactId>
+        <version>1.0-alpha-2</version>
         <executions>
           <execution>
             <goals>
@@ -33,11 +34,12 @@
             </excludes>
           </dependencies>
 
+          <resourcesDirectory>${project.basedir}/src/jnlp/resources</resourcesDirectory>
+
           <jnlp>
             <!-- we play with the resource path and template relative path to test MOJO-391 -->
             <inputTemplateResourcePath>${project.basedir}/src/</inputTemplateResourcePath>
             <inputTemplate>jnlp/template.vm</inputTemplate>
-            <resources>${project.basedir}/src/jnlp/resources</resources>
             <outputFile>test.jnlp</outputFile>
             <mainClass>org.apache.commons.cli.BasicParser</mainClass>
           </jnlp>
