@@ -25,10 +25,6 @@ Choices
   * If you need to generate multiple JNLP file(s), are those sufficiently similar to be generated from a single maven module ?
 
 
-  FIXME
-
-
-
   The mojos 
 
 * Jnlp Download Servlet mojo vs the others
@@ -49,13 +45,13 @@ Choices
 
   General Information about the goals.
 
-  * {{{jnlp-mojo.html}webstart:jnlp}}, {{{jnlp-inline-mojo.html}webstart:jnlp-inline}} and {{{jnlp-single-mojo.html}webstart:jnlp-single}} all help package a JNLP application as a ZIP file (useful for standalone static deployments or to further bundle them in war files). Pick the right mojo depending on your use case: multi-module, command line, etc... (FIXME add a note on how to choose between each other).
+  * {{{jnlp-mojo.html}webstart:jnlp}}, {{{jnlp-inline-mojo.html}webstart:jnlp-inline}} and {{{jnlp-single-mojo.html}webstart:jnlp-single}} all help package a JNLP application as a ZIP file (useful for standalone static deployments or to further bundle them in war files). Pick the right mojo depending on your use case: multi-module, command line, etc... Be sure to read the {{{plugin-info.html}plugins information}} to decide which mojo suit you best.
   
   * {{{jnlp-download-servlet-mojo.html}webstart:jnlp-download-servlet}} helps to package a JNLP application to be deployed by Sun's JnlpDownloadServlet
 
-  * {{{jnlp-mojo.html}webstart:unsign}} unsign a jar. This mojo is primarily used internally by the jnlp mojos described above. This mojo will probably move to the {{{http://maven.apache.org/plugins/maven-jar-plugin/}maven-jar-plugin}} in the future, as did the sign jar functionality.
+  * {{{unsign-mojo.html}webstart:unsign}} unsign a jar. This mojo is primarily used internally by the jnlp mojos described above. This mojo will probably move to the {{{http://maven.apache.org/plugins/maven-jar-plugin/}maven-jar-plugin}} in the future, as did the sign jar functionality.
 
-  * {{{jnlp-mojo.html}webstart:report}} Creates a JNLP site report.
+  * {{{report-mojo.html}webstart:report}} Creates a JNLP site report.
 
 
 How to build a jnlp ZIP bundle
@@ -72,7 +68,7 @@ mvn package
 mvn webstart:jnlp-inline
 -------------------------------
 
-  finally one may need to add the current module as a dependency to the webstart bundle
+  finally one may need to add the current module as a dependency to the webstart bundle and not install the resulting ZIP file in the local repository
 
 -------------------------------
 mvn install webstart:jnlp
