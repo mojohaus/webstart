@@ -36,11 +36,6 @@
 
 package jnlp.sample.jardiff;
 
-import java.io.*;
-import java.util.*;
-import java.util.jar.*;
-import java.util.zip.*;
-
 /**
  * Constants used by creating patch and applying patch for JarDiff.
  *

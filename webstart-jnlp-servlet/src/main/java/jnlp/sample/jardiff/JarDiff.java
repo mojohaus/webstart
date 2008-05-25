@@ -39,7 +39,6 @@ package jnlp.sample.jardiff;
 import java.io.*;
 import java.util.*;
 import java.util.jar.*;
-import java.util.zip.*;
 
 
 /**
@@ -63,10 +62,10 @@ public class JarDiff implements JarDiffConstants {
     private static boolean _debug;
 
     public static ResourceBundle getResources() {
-	if (_resources == null) {
-	    _resources = ResourceBundle.getBundle("jnlp/sample/jardiff/resources/strings");
-	}
-	return _resources;
+    	if (_resources == null) {
+    	    _resources = ResourceBundle.getBundle("jnlp/sample/jardiff/resources/strings");
+    	}
+    	return _resources;
     }
 
     /**
@@ -74,10 +73,10 @@ public class JarDiff implements JarDiffConstants {
      * to <code>os</code>.
      */
     public static void createPatch(String oldPath, String newPath,
-                            OutputStream os, boolean minimal) throws IOException{
+                            OutputStream os, boolean minimal) throws IOException {
         JarFile2 oldJar = new JarFile2(oldPath);
         JarFile2 newJar = new JarFile2(newPath);
-      
+
         try {
           Iterator entries;
           HashMap moved = new HashMap();
@@ -99,7 +98,7 @@ public class JarDiff implements JarDiffConstants {
             while (entries.hasNext()) {
                 JarEntry newEntry = (JarEntry)entries.next(); 
 		        String newname = newEntry.getName();
-	
+
                 // Return best match of contents, will return a name match if possible 
                 String oldname = oldJar.getBestMatch(newJar, newEntry);
                 if (oldname == null) {
@@ -128,12 +127,11 @@ public class JarDiff implements JarDiffConstants {
                     // JarDiffPatcher also.
                         if (!minimal && (implicit.contains(oldname) || 
                             moveSrc.contains(oldname) )) {
-			    
+
                             // generate non-minimal jardiff
                             // for backward compatibility
-			   
+
                             if (_debug) {
-				    
                                 System.out.println("NEW: "+ newname); 
                             }
                             newEntries.add(newname);			
@@ -147,24 +145,23 @@ public class JarDiff implements JarDiffConstants {
                         }
                         // Check if this disables an implicit 'move <oldname> <oldname>'
                         if (implicit.contains(oldname) && minimal) { 
-			  
+
                            if (_debug) {
                               System.err.println("implicit.remove " + oldname);
-				
+
                               System.err.println("moved.put " + oldname + " " + oldname); 
-				
                             }
                             implicit.remove(oldname);
                             moved.put(oldname, oldname);
                             moveSrc.add(oldname);		     
                         }
 
-		
+
                     } 
                 }
             }
           } //if (entries != null)
-	
+
           // SECOND PASS: <deleted files> = <oldjarnames> - <implicitmoves> - 
           // <source of move commands> - <new or modified entries>
           ArrayList deleted = new ArrayList();
@@ -182,7 +179,7 @@ public class JarDiff implements JarDiffConstants {
                   }
               }
           }
-	
+
           //DEBUG
           if (_debug) {
               //DEBUG:  print out moved map
@@ -195,7 +192,7 @@ public class JarDiff implements JarDiffConstants {
                       System.out.println("key is " + newName + " value is " + oldName);
                       }
               }
-	    
+
               //DEBUG:  print out IMOVE map
               entries = implicit.iterator();
               if (entries != null) {
@@ -215,7 +212,7 @@ public class JarDiff implements JarDiffConstants {
           // Put in New and Modified entries
           entries = newEntries.iterator();
           if (entries != null) {
-	   
+
               while (entries.hasNext()) {
                   String newName = (String)entries.next();		      
                   if (_debug) {
@@ -224,8 +221,8 @@ public class JarDiff implements JarDiffConstants {
                   writeEntry(jos, newJar.getEntryByName(newName), newJar);
               }
           }
-     
-    
+
+
           jos.finish();
           jos.close();
 
@@ -276,13 +273,12 @@ public class JarDiff implements JarDiffConstants {
                 String newName = (String)names.next();
                 String oldName = (String)movedMap.get(newName);
 
-		writer.write(MOVE_COMMAND);
-		writer.write(" ");
-		writeEscapedString(writer, oldName);
-		writer.write(" ");
-		writeEscapedString(writer, newName);
-		writer.write("\r\n");
-		   
+        		writer.write(MOVE_COMMAND);
+        		writer.write(" ");
+        		writeEscapedString(writer, oldName);
+        		writer.write(" ");
+        		writeEscapedString(writer, newName);
+        		writer.write("\r\n");
             }
         }
 
@@ -345,12 +341,11 @@ public class JarDiff implements JarDiffConstants {
             } catch(IOException e){
                 //Ignore
             }
-
         }
     }
 
-   
-  
+
+
 
     /**
      * JarFile2 wraps a JarFile providing some convenience methods.
@@ -359,8 +354,8 @@ public class JarDiff implements JarDiffConstants {
         private JarFile _jar;
         private List _entries;
         private HashMap _nameToEntryMap;
-	private HashMap _crcToEntryMap;
-            
+        private HashMap _crcToEntryMap;
+
         public JarFile2(String path) throws IOException {
             _jar = new JarFile(new File(path));
             index();
@@ -378,138 +373,138 @@ public class JarDiff implements JarDiffConstants {
             return (JarEntry)_nameToEntryMap.get(name);
         }
 
-	/**
-	 * Returns true if the two InputStreams differ.
-	 */
-	private static boolean differs(InputStream oldIS, InputStream newIS) 
-	    throws IOException {
-        int newSize = 0;
-        int oldSize;
-        int total = 0;
-        boolean retVal = false;
-	    
-        try{
-            while (newSize != -1) {
-                newSize = newIS.read(newBytes);
-                oldSize = oldIS.read(oldBytes);
-		
-                if (newSize != oldSize) {
-                    if (_debug) {
-                        System.out.println("\tread sizes differ: " + newSize +
-                            " " + oldSize + " total " + total);
+    	/**
+    	 * Returns true if the two InputStreams differ.
+    	 */
+    	private static boolean differs(InputStream oldIS, InputStream newIS) 
+    	    throws IOException {
+            int newSize = 0;
+            int oldSize;
+            int total = 0;
+            boolean retVal = false;
+
+            try {
+                while (newSize != -1) {
+                    newSize = newIS.read(newBytes);
+                    oldSize = oldIS.read(oldBytes);
+
+                    if (newSize != oldSize) {
+                        if (_debug) {
+                            System.out.println("\tread sizes differ: " + newSize +
+                                " " + oldSize + " total " + total);
+                        }
+                        retVal = true;
+                        break;
                     }
-                    retVal = true;
-                    break;
-                }
-                if (newSize > 0) {
-                    while (--newSize >= 0) {
-                        total++;
-                        if (newBytes[newSize] != oldBytes[newSize]) {
-                            if (_debug) {
-                                System.out.println("\tbytes differ at " +
-                                                    total);
+                    if (newSize > 0) {
+                        while (--newSize >= 0) {
+                            total++;
+                            if (newBytes[newSize] != oldBytes[newSize]) {
+                                if (_debug) {
+                                    System.out.println("\tbytes differ at " +
+                                                        total);
+                                }
+                                retVal = true;
+                                break;
                             }
-                            retVal = true;
-                            break;
+                            if ( retVal ) {
+                                //Jump out
+                                break;
+                            }
+                            newSize = 0;
                         }
-                        if ( retVal ) {
-                            //Jump out
-                            break;
-                        }
-                        newSize = 0;
                     }
                 }
+            } catch(IOException ioE){
+                throw ioE;
+            } finally {
+                try {
+                    oldIS.close();
+                } catch(IOException e){
+                    //Ignore
+                }
+                try {
+                    newIS.close();
+                } catch(IOException e){
+                    //Ignore
+                }
             }
-        } catch(IOException ioE){
-            throw ioE;
-        } finally {
-            try {
-                oldIS.close();
-            } catch(IOException e){
-                //Ignore
-            }
-            try {
-                newIS.close();
-            } catch(IOException e){
-                //Ignore
-            }
-        }
-	    return retVal;
-	}
+    	    return retVal;
+    	}
+
+    	public String getBestMatch(JarFile2 file, JarEntry entry) throws IOException {
+    	    // check for same name and same content, return name if found
+    	    if (contains(file, entry)) {
+    	        return (entry.getName());
+    	    }
+
+    	    // return name of same content file or null
+    	    return (hasSameContent(file,entry));
+    	}
 	
-	public String getBestMatch(JarFile2 file, JarEntry entry) throws IOException {
-	    // check for same name and same content, return name if found
-	    if (contains(file, entry)) {
-		return (entry.getName());
-	    }
+    	public boolean contains(JarFile2 f, JarEntry e) throws IOException {
 
-	    // return name of same content file or null
-	    return (hasSameContent(file,entry));
-	}
-	
-	public boolean contains(JarFile2 f, JarEntry e) throws IOException {
+    	    JarEntry thisEntry = getEntryByName(e.getName());
 
-	    JarEntry thisEntry = getEntryByName(e.getName());
-	  	 
-	    // Look up name in 'this' Jar2File - if not exist return false
-	    if (thisEntry == null)
-		return false;
+    	    // Look up name in 'this' Jar2File - if not exist return false
+    	    if (thisEntry == null)
+    	        return false;
 
-	    // Check CRC - if no match - return false
-	    if (thisEntry.getCrc() != e.getCrc())
-		return false;
+    	    // Check CRC - if no match - return false
+    	    if (thisEntry.getCrc() != e.getCrc())
+    	        return false;
 
-	    // Check contents - if no match - return false
-	    InputStream oldIS = getJarFile().getInputStream(thisEntry);
-	    InputStream newIS = f.getJarFile().getInputStream(e);
-	    boolean retValue = differs(oldIS, newIS);
+    	    // Check contents - if no match - return false
+    	    InputStream oldIS = getJarFile().getInputStream(thisEntry);
+    	    InputStream newIS = f.getJarFile().getInputStream(e);
+    	    boolean retValue = differs(oldIS, newIS);
 
-	    return !retValue;
-	}
+    	    return !retValue;
+    	}
 
-	public String hasSameContent(JarFile2 file, JarEntry entry) throws
-	IOException {
+    	public String hasSameContent(JarFile2 file, JarEntry entry)
+    	    throws IOException {
 
-	    String thisName = null;
-	    
-	    Long crcL = new Long(entry.getCrc());
+    	    String thisName = null;
 
-	    // check if this jar contains files with the passed in entry's crc
-	    if (_crcToEntryMap.containsKey(crcL)) {
-	        // get the Linked List with files with the crc
-      		LinkedList ll = (LinkedList)_crcToEntryMap.get(crcL);
-	        // go through the list and check for content match
-	        ListIterator li = ll.listIterator(0);
-	        if (li != null) {
-	            while (li.hasNext()) {
-		            JarEntry thisEntry = (JarEntry)li.next();
+    	    Long crcL = new Long(entry.getCrc());
 
-		            // check for content match
-	                InputStream oldIS = getJarFile().getInputStream(thisEntry);
-	                InputStream newIS = file.getJarFile().getInputStream(entry);		
-			    
-	                if (!differs(oldIS, newIS)) {
-	                    thisName = thisEntry.getName();
-	                    return thisName;
-	                }
-	            }
-		    }
-	    }
-	 
-	    return thisName;
-	   
-	}
+    	    // check if this jar contains files with the passed in entry's crc
+    	    if (_crcToEntryMap.containsKey(crcL)) {
+    	        // get the Linked List with files with the crc
+          		LinkedList ll = (LinkedList)_crcToEntryMap.get(crcL);
+    	        // go through the list and check for content match
+    	        ListIterator li = ll.listIterator(0);
+    	        if (li != null) {
+    	            while (li.hasNext()) {
+    		            JarEntry thisEntry = (JarEntry)li.next();
+
+    		            // check for content match
+    	                InputStream oldIS = getJarFile().getInputStream(thisEntry);
+    	                InputStream newIS = file.getJarFile().getInputStream(entry);		
+
+    	                if (!differs(oldIS, newIS)) {
+    	                    thisName = thisEntry.getName();
+    	                    return thisName;
+    	                }
+    	            }
+    		    }
+    	    }
+
+    	    return thisName;
+
+    	}
 
 
-      
 
-       
+
+
         private void index() throws IOException {
             Enumeration entries = _jar.entries();
 
             _nameToEntryMap = new HashMap();
-	    _crcToEntryMap = new HashMap();
-         
+    	    _crcToEntryMap = new HashMap();
+
             _entries = new ArrayList();
             if (_debug) {
                 System.out.println("indexing: " + _jar.getName());
@@ -517,49 +512,48 @@ public class JarDiff implements JarDiffConstants {
             if (entries != null) {
                 while (entries.hasMoreElements()) {
                     JarEntry entry = (JarEntry)entries.nextElement();
-                   
-		    long crc = entry.getCrc(); 
 
-		    Long crcL = new Long(crc);
+        		    long crc = entry.getCrc(); 
+
+        		    Long crcL = new Long(crc);
 
                     if (_debug) {
-                        System.out.println("\t" + entry.getName() + " CRC " +
-                                      crc);
+                        System.out.println("\t" + entry.getName() + " CRC " + crc);
                     }
-		 
+
                     _nameToEntryMap.put(entry.getName(), entry);
                     _entries.add(entry);
 
-		    // generate the CRC to entries map
-		    if (_crcToEntryMap.containsKey(crcL)) {
-			// key exist, add the entry to the correcponding
-			// linked list
+        		    // generate the CRC to entries map
+        		    if (_crcToEntryMap.containsKey(crcL)) {
+            			// key exist, add the entry to the correcponding
+            			// linked list
 
-			// get the linked list
-			LinkedList ll = (LinkedList)_crcToEntryMap.get(crcL);
+            			// get the linked list
+            			LinkedList ll = (LinkedList)_crcToEntryMap.get(crcL);
 
-			// put in the new entry
-			ll.add(entry);
+            			// put in the new entry
+            			ll.add(entry);
 
-			// put it back in the hash map
-			_crcToEntryMap.put(crcL, ll);
-		    } else {
-			// create a new entry in the hashmap for the new key
-			
-			// first create the linked list and put in the new
-			// entry
-			LinkedList ll = new LinkedList();
-			ll.add(entry);
+            			// put it back in the hash map
+            			_crcToEntryMap.put(crcL, ll);
+        		    } else {
+            			// create a new entry in the hashmap for the new key
 
-			// create the new entry in the hashmap
-			_crcToEntryMap.put(crcL, ll);
-		    }
-                  
+            			// first create the linked list and put in the new
+            			// entry
+            			LinkedList ll = new LinkedList();
+            			ll.add(entry);
+
+            			// create the new entry in the hashmap
+            			_crcToEntryMap.put(crcL, ll);
+        		    }
+
                 }
             }
         }
-             
-    }
+
+    } // end of class JarFile2
 
 
     private static void showHelp() {
@@ -569,35 +563,29 @@ public class JarDiff implements JarDiffConstants {
     // -creatediff -applydiff -debug -output file
     public static void main(String[] args) throws IOException {
         boolean diff = true;
-	boolean minimal = true;
+    	boolean minimal = true;
         String outputFile = "out.jardiff";
 
         for (int counter = 0; counter < args.length; counter++) {
-	    // for backward compatibilty with 1.0.1/1.0
-	    if (args[counter].equals("-nonminimal") ||
-                args[counter].equals("-n")) {
-		minimal = false;
-	    } 
-	    else if (args[counter].equals("-creatediff") ||
-                args[counter].equals("-c")) {
+    	    // for backward compatibilty with 1.0.1/1.0
+    	    if (args[counter].equals("-nonminimal") || args[counter].equals("-n")) {
+    	        minimal = false;
+    	    } 
+    	    else if (args[counter].equals("-creatediff") || args[counter].equals("-c")) {
                 diff = true;
             }
-            else if (args[counter].equals("-applydiff") ||
-                args[counter].equals("-a")) {
+            else if (args[counter].equals("-applydiff") || args[counter].equals("-a")) {
                 diff = false;
             }
-            else if (args[counter].equals("-debug") ||
-                args[counter].equals("-d")) {
+            else if (args[counter].equals("-debug") || args[counter].equals("-d")) {
                 _debug = true;
             }
-            else if (args[counter].equals("-output") ||
-                     args[counter].equals("-o")) {
+            else if (args[counter].equals("-output") || args[counter].equals("-o")) {
                 if (++counter < args.length) {
                     outputFile = args[counter];
                 }
             }
-            else if (args[counter].equals("-applydiff") ||
-                args[counter].equals("-a")) {
+            else if (args[counter].equals("-applydiff") || args[counter].equals("-a")) {
                 diff = false;
             }
             else {
@@ -613,11 +601,11 @@ public class JarDiff implements JarDiffConstants {
 					      args[counter + 1], os, minimal);
                         os.close();
                     } catch (IOException ioe) {
-			try {
-			    System.out.println(getResources().getString("jardiff.error.create") + " " + ioe);
-			} catch (MissingResourceException mre) {
-			}
-		    }
+            			try {
+            			    System.out.println(getResources().getString("jardiff.error.create") + " " + ioe);
+            			} catch (MissingResourceException mre) {
+            			}
+            	    }
                 }
                 else {
                     try {
@@ -630,10 +618,10 @@ public class JarDiff implements JarDiffConstants {
                             os);
                         os.close();
                     } catch (IOException ioe) {
-			try {
-			    System.out.println(getResources().getString("jardiff.error.apply") + " " + ioe);
-			} catch (MissingResourceException mre) {
-			}
+            			try {
+            			    System.out.println(getResources().getString("jardiff.error.apply") + " " + ioe);
+            			} catch (MissingResourceException mre) {
+            			}
                     }
                 }
                 System.exit(0);
