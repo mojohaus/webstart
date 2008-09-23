@@ -1,22 +1,24 @@
  ------
- Maven Webstart Plugin - How-to upgrade from previous version
+ Upgrade from a previous version
  ------
  Jerome Lacoste
  ------
- 26 Oct 2005
+ 2008-09-23
  ------
+
+Upgrade from a previous version
 
   Because we're adding new features, and the plugin wasn't designed sufficiently in the start, we've slightly evolved the configuration.
 
   This document should help you update your POM if you want to upgrade between stable releases.
 
-  Note: we may further change the POM configuration, especially if we fix {{{http://jira.codehaus.org/browse/MWEBSTART-58} MWEBSTART-58}}.
+  <<Note:>> we may further change the POM configuration, especially if we fix {{{http://jira.codehaus.org/browse/MWEBSTART-58} MWEBSTART-58}}.
 
-Important changes since 1.0-alpha-1
+* Important changes since 1.0-alpha-1
 
   Changes that affect the use and configuration of the plugin.
 
-* 25/01/2008
+** 2008-01-25
 
   The groupIds have been renamed. You should replace:
 
@@ -36,15 +38,15 @@ Important changes since 1.0-alpha-1
   See {{{http://jira.codehaus.org/browse/MWEBSTART-81} MWEBSTART-81}} for discussion.
 
 
-* 19/01/2008
+** 2008-01-19
 
-  Renamed the \<jnlp\>\<resources\> configuration element of the jnlp mojos into \<resourcesDirectory\>
+  Renamed the <<<\<jnlp\>>>><<<\<resources\>>>> configuration element of the JNLP mojos into <<<\<resourcesDirectory\>>>>
   for consistency. See {{{http://jira.codehaus.org/browse/MWEBSTART-81} MWEBSTART-81}} for discussion.
 
-* 11/Mar/2007
+** 2007-03-11
 
-  The default sign configuration triggers a sign procedure that relies on the JarSigningMojo (from the mave-jar-plugin). Implementing {{{http://jira.codehaus.org/browse/MWEBSTART-18} MWEBSTART-18}} allows us to define an external signing process. This forced some changes to the configuration of the plugin: \<keystore\> management was renamed to \<keystoreConfig\> and moved inside the \<sign\> configuration.
-  Here's an example of change applied to an existing pom for the transition from 1.0-alpha-1 to 1.0-alpha-2:
+  The default sign configuration triggers a sign procedure that relies on the JarSigningMojo (from the Maven JAR Plugin). Implementing {{{http://jira.codehaus.org/browse/MWEBSTART-18} MWEBSTART-18}} allows us to define an external signing process. This forced some changes to the configuration of the plugin: <<<\<keystore\>>>> management was renamed to <<<\<keystoreConfig\>>>> and moved inside the <<<\<sign\>>>> configuration.
+  Here's an example of that change applied to an existing POM for the transition from 1.0-alpha-1 to 1.0-alpha-2:
 
 ---------------
   Index: project1/pom.xml
@@ -74,7 +76,7 @@ Important changes since 1.0-alpha-1
 ---------------
 
 
-* 03/Jan/2007
+** 2007-01-03
 
   The 1.0-alpha-1 version of the plugin required you to create one module just for
   the bundling of the webstart elements into its own zip file. To get your current
@@ -85,7 +87,7 @@ Important changes since 1.0-alpha-1
 mvn install webstart:jnlp
 ------------------------------
 
-  on the command line or attach the appropriate mojo (e.g. jnlp-inline) to your package 
+  on the command line or attach the appropriate mojo (e.g. <<<jnlp-inline>>>) to your <<<package>>>
   phase and do something like
 
 ------------
@@ -96,10 +98,10 @@ mvn install
 
   The documentation has not been fully updated to reflect this change.
 
-  Multi-project setup (one for the jar, one for the webstart bundle) is still possible.
+  Multi-project setup (one for the JAR, one for the webstart bundle) is still possible.
 
 
-* 28/Dec/2006
+** 2006-12-28
 
   The default location for the template and resources have changed. 
   See {{{http://jira.codehaus.org/browse/MWEBSTART-16} MWEBSTART-16}} for discussion.

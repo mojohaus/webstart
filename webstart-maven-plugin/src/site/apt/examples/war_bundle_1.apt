@@ -1,9 +1,9 @@
  ------
- Example WAR Bundle 1
+ Example WAR Bundle #1
  ------
  Jerome Lacoste
  ------
- 26 Oct 2005
+ 2008-09-23
  ------
 
 
@@ -38,7 +38,7 @@ Example WAR Bundle #1
 
     Because the JNLP projects have no knowledge of the webapp project, they don't need
     to be treated any differently from a normal standalone JNLP project as described
-    in {{{single_webstart_app.html}Example 1}}. Follow the instructions in that example
+    in the {{{single_webstart_app.html}Single webstart application example}}. Follow the instructions in that example
     to create the <sample-jnlp1> and <sample-jnlp2> projects. They can be deployed
     to any repository that the webapp project will have access to.
         
@@ -49,45 +49,51 @@ Example WAR Bundle #1
     Once created, add the following plugin configuration, which uses the 
     {{{http://maven.apache.org/plugins/maven-dependency-plugin}Maven Dependency Plugin}} 
     to retrieve the JNLP bundles and unpack them into the web application project. This 
-    example will result in the JNLP applications being placed in the </webstart> directory
+    example will result in the JNLP applications being placed in the <<</webstart>>> directory
     of your web application.
 
 -------------------------------
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>dependency-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <!-- 
-                            Copy the webstart bundle in as a resource
-                            before packaging starts.
-                        -->
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <artifactItems>
-                        <artifactItem>
-                            <groupId>someGroupId</groupId>
-                            <artifactId>sample-jnlp1</artifactId>
-                            <version>1.0</version>
-                            <type>zip</type>                            
-                        </artifactItem>
-                        <artifactItem>
-                            <groupId>someGroupId</groupId>
-                            <artifactId>sample-jnlp2</artifactId>
-                            <version>1.0</version>
-                            <type>zip</type>                            
-                        </artifactItem>
-                    </artifactItems>
-                    <outputDirectory>${project.build.directory}/${project.build.finalName}/webstart</outputDirectory>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+<project>
+  ...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>dependency-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- 
+              Copy the webstart bundle in as a resource
+              before packaging starts.
+            -->
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <artifactItems>
+            <artifactItem>
+              <groupId>someGroupId</groupId>
+              <artifactId>sample-jnlp1</artifactId>
+              <version>1.0</version>
+              <type>zip</type>                            
+            </artifactItem>
+            <artifactItem>
+              <groupId>someGroupId</groupId>
+              <artifactId>sample-jnlp2</artifactId>
+              <version>1.0</version>
+              <type>zip</type>                            
+            </artifactItem>
+          </artifactItems>
+          <outputDirectory>${project.build.directory}/${project.build.finalName}/webstart</outputDirectory>
+        </configuration>
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
 -------------------------------

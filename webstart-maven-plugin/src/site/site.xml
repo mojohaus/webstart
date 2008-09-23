@@ -1,27 +1,18 @@
-<project name="Maven Webstart Plug-In">
- <bannerLeft>
-  <name>Mojo</name>
-  <src>http://mojo.codehaus.org/images/mojo_logo.png</src>
-  <href>http://mojo.codehaus.org</href>
- </bannerLeft>
- <bannerRight>
-  <name>Codehaus</name>
-  <src>http://mojo.codehaus.org/images/codehaus-small.png</src>
-  <href>http://www.codehaus.org</href>
- </bannerRight>
+<project>
  <body>
   <menu ref="parent" />
 
-  <menu name="Maven Webstart Quickstart">
+  <menu name="Overview">
     <item name="Introduction" href="index.html" />
     <item name="Goals" href="plugin-info.html"/>
-    <item name="cookbook recipe" href="cookbook.html"/>
     <item name="Usage" href="usage.html"/>
-    <item name="mojo(s) config. overview" href="jnlp-mojos-overview.html"/>
+    <item name="FAQ" href="faq.html"/>
+
+    <item name="Cookbook recipe" href="cookbook.html"/>
+    <item name="JNLP mojos overview" href="jnlp-mojos-overview.html"/>
     <item name="Plugin Upgrades" href="upgrade.html"/>
     <item name="Notes to users and contributors" href="contributors.html"/>
     <item name="JNLP 101" href="jnlp101.html"/>
-    <item name="FAQ" href="faq.html"/>
   </menu>
   
   <menu name="Examples">
@@ -39,7 +30,7 @@
       <item name="Advanced" href="examples/advanced_jnlp_download_servlet.html" />
     </item>
     <!--item name="Advanced" collapse="false"-->
-      <item name="Advanced: Pluggable Jar signing" href="examples/pluggable_jar_signing.html" />
+      <item name="Advanced: Pluggable JAR signing" href="examples/pluggable_jar_signing.html" />
     <!--/item-->
     <item name="More examples" href="examples/more_examples.html" />
   </menu>
@@ -48,15 +39,13 @@
     <item name="Java Webstart" href="http://java.sun.com/products/javawebstart/" />
     <item name="Security" collapse="false">
       <item name="Java Security Tools" href="http://java.sun.com/j2se/1.5.0/docs/tooldocs/#security" />
-      <item name="keytool Maven plugin" href="http://mojo.codehaus.org/keytool-maven-plugin/" />
-      <item name="Jar signing with Maven" href="http://maven.apache.org/plugins/maven-jar-plugin/" />
+      <item name="Keytool Maven Plugin" href="http://mojo.codehaus.org/keytool-maven-plugin/" />
+      <item name="JAR signing with Maven" href="http://maven.apache.org/plugins/maven-jar-plugin/" />
     </item>
     <item name="Sun's Download Servlet Guide" href="http://java.sun.com/j2se/1.5.0/docs/guide/javaws/developersguide/downloadservletguide.html" />
     <item name="Velocity user guide" href="http://velocity.apache.org/engine/releases/velocity-1.5/user-guide.html" />
     <!--item name="" href="" /-->
 
   </menu>
-
-  <menu ref="reports" />
  </body>
 </project>

@@ -1,28 +1,30 @@
  ------
- Maven Webstart Plugin
+ Example WAR Bundle #2
  ------
  Jerome Lacoste
  ------
- 26 Oct 2005
+ 2008-09-23
  ------
 
-Another way way of doing it
+Example WAR Bundle #2
 
-    * place each of your webstart app in a particular project
+  * Place each of your webstart app in a particular project
 
-    * use webstart plugin as shown above to generate and install the zip in the local repository
+  * Use Webstart Plugin as shown above to generate and install the zip in the local repository
 
-    * generate your webapp using a project with war packaging
+  * Generate your webapp using a project with <<<war>>> packaging
 
-    * use a project to combine the war + n zip files
+  * Use a project to combine the WAR + n zip files
+
+  []
 
   E.g.
 
 -------------------------------
-jnlp-project1/pom.xml - pom or jar packaging. Uses webstart plugin to package the generated files into a zip
-jnlp-project2/pom.xml - pom or jar packaging. Uses webstart plugin to package the generated files into another zip
-webapp/pom.xml        - war packaging. Creates a war file.
-webapp-bundle/pom.xml - pom packaging. Uses user defined assembly to combines the jnlp-project* resulting zip and the war into its own war.
+jnlp-project1/pom.xml - pom or jar packaging. Uses Webstart Plugin to package the generated files into a zip
+jnlp-project2/pom.xml - pom or jar packaging. Uses Webstart Plugin to package the generated files into another zip
+webapp/pom.xml        - war packaging. Creates a WAR file.
+webapp-bundle/pom.xml - pom packaging. Uses user defined assembly to combines the jnlp-project* resulting zip and the WAR into its own WAR.
 -------------------------------
 
   In webapp-bundle:
@@ -78,10 +80,10 @@ webapp-bundle/pom.xml - pom packaging. Uses user defined assembly to combines th
         <artifactId>maven-assembly-plugin</artifactId>
         <version>2.1-SNAPSHOT</version>
         <executions>
-           <execution>
-             <phase>verify</phase> <!-- FIXME should be package, but inifinte loop see MNG-1311 -->
-             <goals><goal>assembly</goal></goals>
-           </execution>
+          <execution>
+            <phase>verify</phase> <!-- FIXME should be package, but inifinte loop see MNG-1311 -->
+            <goals><goal>assembly</goal></goals>
+          </execution>
         </executions>
         <configuration>
           <descriptor>src/assemble/main.xml</descriptor>
@@ -126,7 +128,7 @@ webapp-bundle/pom.xml - pom packaging. Uses user defined assembly to combines th
       <unpack>true</unpack>
       <scope>runtime</scope>
     </dependencySet>
-    <!--dependencySet> NOT YET IN IBIBLIO
+    <!--dependencySet> NOT YET IN CENTRAL REPOSITORY
       <outputDirectory>WEB-INF/lib</outputDirectory>
       <includes>
         <include>com.sun.java.jnlp:jnlp-servlet</include>

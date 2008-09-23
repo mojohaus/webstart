@@ -1,25 +1,25 @@
    ------
-   Maven Webstart plugin: getting started
+   Cookbook
    ------
    Jerome lacoste
    ------
-   24 January 2008
+   2008-09-23
    ------
 
 
-Getting started
+Cookbook
 
   Start simple.
 
-  * read the {{{usage.html}usage}} document to decide how to use the plugin depending on your build and deployment strategies
+  * Read the {{{usage.html}usage}} document to decide how to use the plugin depending on your build and deployment strategies
 
-  * read the {{{jnlp-mojos-overview.html}Jnlp Mojos overview}} 
+  * Read the {{{jnlp-mojos-overview.html}JNLP Mojos overview}} 
 
-  * start your project using the {{{examples/inbuilt_templates.html}default inbuilt template}}.
+  * Start your project using the {{{examples/inbuilt_templates.html}default inbuilt template}}
 
-  * start with simple signing using the keytool functionality for your {{{examples/keystore_gen.html}signing needs}}
+  * Start with simple signing using the keytool functionality for your {{{examples/keystore_gen.html}signing needs}}
 
-  * test your build (e.g. adding the {{{http://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin/plugin/src/it/it002/}Jetty server to your project}})
+  * Test your build (e.g. adding the {{{http://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin/plugin/src/it/it002/}Jetty server to your project}})
 
-  * create a custom and more complex JNLP template if you need.
+  * Create a custom and more complex JNLP template if you need.
 

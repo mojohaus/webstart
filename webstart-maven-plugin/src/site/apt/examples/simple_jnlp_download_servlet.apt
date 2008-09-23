@@ -3,7 +3,7 @@
    ------
    Kevin Stembridge
    ------
-   04 June 2007
+   2008-09-23
    ------
 
 Simple JnlpDownloadServlet Example
@@ -14,10 +14,10 @@ Simple JnlpDownloadServlet Example
 
 *The web.xml
 
-    The web.xml file of your web application must include the appropriate servlet mapping for the JnlpDownloadServlet
+    The <<<web.xml>>> file of your web application must include the appropriate servlet mapping for the JnlpDownloadServlet
     as described in the {{{http://java.sun.com/javase/6/docs/technotes/guides/javaws/developersguide/downloadservletguide.html}JnlpDownloadServlet Guide}}.
-    For convenience, a basic but complete example is provided below. Note the url-pattern provided in the servlet-mapping. 
-    The webstart plugin uses a default value of <<webstart>> for the name of the directory that contains the JNLP file
+    For convenience, a basic but complete example is provided below. Note the <<<url-pattern>>> provided in the <<<servlet-mapping>>>. 
+    The Webstart Plugin uses a default value of <<webstart>> for the name of the directory that contains the JNLP file
     and its associated resources.
     
     
@@ -43,8 +43,8 @@ Simple JnlpDownloadServlet Example
 
 *The Plugin Configuration
 
-    The sample pom.xml file below shows the configuration for a webstart bundle that contains a single
-    jar, and generates a JNLP file called <launch.jnlp> (by default) from a template called <clientTemplate.vm>.
+    The sample <<<pom.xml>>> file below shows the configuration for a webstart bundle that contains a single
+    JAR, and generates a JNLP file called <<<launch.jnlp>>> (by default) from a template called <<<clientTemplate.vm>>>.
 
 ---
 <project>
@@ -91,5 +91,3 @@ Simple JnlpDownloadServlet Example
 </project>
 
 ---
-
-

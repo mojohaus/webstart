@@ -1,13 +1,15 @@
  ------
- Inbuilt templates
+ Using an external JAR signer
  ------
  Jerome Lacoste
  ------
- 26 Oct 2005
+ 2008-09-23
  ------
 
-Using an external jar signer mechanism
+Using an external JAR signer
 
-  The jar signer is pluggable, so that one can adapt the signing to their own needs. For example, one may want for example to use a server side jar signing solution ({{{http://jira.codehaus.org/browse/MWEBSTART-88} provides an example of such signing implementation}}).
+  The JAR signer is pluggable, so that one can adapt the signing to their own needs. For example, one may want for example to use a server side JAR signing solution ({{{http://jira.codehaus.org/browse/MWEBSTART-88} provides an example of such a signing implementation}}).
 
-  See {{{http://svn.mojo.codehaus.org/browse/mojo/trunk/mojo/webstart/webstart-maven-plugin/src/test/projects/project5}src/test/projects/project5}} as an example on how to use an external jar signer. (FIXME further describe here and move to an it test)
+  See {{{http://svn.mojo.codehaus.org/browse/mojo/trunk/mojo/webstart/webstart-maven-plugin/src/test/projects/project5}src/test/projects/project5}} as an example on how to use an external JAR signer.
+
+~~ FIXME further describe here and move to an integration test

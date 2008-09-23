@@ -3,22 +3,22 @@
    ------
    TBC
    ------
-   23 April 2007
+   2008-09-23
    ------
 
 
-Maven Webstart Plugin
+Webstart Maven Plugin
 
-  The Webstart plugin generates application bundles that can be deployed via Web Start.
+  The Webstart Plugin generates application bundles that can be deployed via Web Start.
   The plugin can be used to prepare standalone webstart applications or webstart apps bundled in WAR
   files (with or without Sun's Download Servlet).
-  It handles the generation of JNLP files and optional version.xml files, using Velocity templates.
+  It handles the generation of JNLP files and optional <<<version.xml>>> files, using Velocity templates.
   It also handles the selection and preparation of the dependencies, performing signing, unsigning and Pack200
   compression when required.
 
   Although not yet at version 1.0, the plugin is approaching maturity and can be used in a production environment.
 
-  It requires maven 2 (version 2.0.6 or later) to work correctly.
+  It requires Maven 2 (version 2.0.6 or later) to work correctly.
 
 * Features
 
@@ -29,16 +29,16 @@ Maven Webstart Plugin
    
       * possibilities to include/exclude dependencies
 
-   * key generation (thanks to the {{{http://mojo.codehaus.org/keytool-maven-plugin/} keytool-maven-plugin}})
+   * key generation (thanks to the {{{http://mojo.codehaus.org/keytool-maven-plugin/}Keytool Maven Plugin}})
 
-   * jar signing and signing verification
+   * JAR signing and signing verification
 
-   * unsign already signed jars
+   * unsign already signed JARs
 
-   * pack200 support for compressed versions of the jar files resulting in
+   * pack200 support for compressed versions of the JAR files resulting in
      faster network downloads of your webstart application.
 
-   * pluggable API for jar signer
+   * pluggable API for JAR signer
 
 
 * Long time users: upgrading from older releases
@@ -51,16 +51,16 @@ Maven Webstart Plugin
 
 * Usage
 
-  Instructions on how to use the Maven Webstart Plugin can be found on the {{{usage.html}usage page}}.
+  Instructions on how to use the Webstart Maven Plugin can be found on the {{{usage.html}usage page}}.
 
 * Examples
 
-  To provide you with a better understanding of some usages of the Webstart Plugin, the documentation contains several examples. Cf the menu on the left.
+  To provide you with a better understanding of some usages of the Webstart Plugin, the documentation contains several examples. See the menu on the left.
 
 
 * Links
 
-  * {{{http://docs.codehaus.org/display/MOJO/Webstart+Plugin} confluence wiki page for the plugin}}
+  * {{{http://docs.codehaus.org/display/MOJO/Webstart+Plugin} Confluence wiki page for the plugin}}
 
   * {{{http://sun-jnlp-servlet.dev.java.net/} http://sun-jnlp-servlet.dev.java.net/}}
 

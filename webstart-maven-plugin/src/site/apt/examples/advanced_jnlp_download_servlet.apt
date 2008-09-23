@@ -1,25 +1,25 @@
    ------
-   Simple JnlpDownloadServlet Example
+   Advanced JnlpDownloadServlet Example
    ------
    Kevin Stembridge
    ------
-   04 June 2007
+   2008-09-23
    ------
 
 Advanced JnlpDownloadServlet Example
 
-    This example shows how to configure the <<jnlp-download-servlet>> goal for its more advanced features. 
+    This example shows how to configure the <<<jnlp-download-servlet>>> goal for its more advanced features. 
     
     * Multiple JNLP applications.
     
-    * Sharing jar resources between applications.
+    * Sharing JAR resources between applications.
     
     * Deploying multiple versions of some artifacts.
     
 
 *The web.xml
 
-    The web.xml file of your web application must include the appropriate servlet mapping for the JnlpDownloadServlet
+    The <<<web.xml>>> file of your web application must include the appropriate servlet mapping for the JnlpDownloadServlet
     as described in the {{{http://java.sun.com/javase/6/docs/technotes/guides/javaws/developersguide/downloadservletguide.html}JnlpDownloadServlet Guide}}.
     For convenience, a basic but complete example is provided below.
     

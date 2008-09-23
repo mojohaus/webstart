@@ -4,44 +4,44 @@
   <part id="General">
 
     <faq id="obfuscation_question">
-      <question>Can the Webstart plugin obfuscate jars and deploy them?</question>
+      <question>Can the Webstart plugin obfuscate JARs and deploy them?</question>
       <answer>
         <p>
-          The plugin doesn't obfuscate jars but it can deploy jars that have already been obfuscated. 
+          The plugin doesn't obfuscate JARs but it can deploy JARs that have already been obfuscated. 
         </p>
         <p>
           One approach would be to use the <a href="http://pyx4me.com/pyx4me-maven-plugins/proguard-maven-plugin/introduction.html">proguard-maven-plugin</a>
-          to obfuscate the jars and the <a href="http://mojo.codehaus.org/build-helper-maven-plugin/">build-helper-maven-plugin</a>
-          to attach the obfuscated artifact to the project along with the unobfuscated jar and install them both in 
-          your local repository. Then when you configure the webstart plugin with the dependencies to be deployed in 
-          your JNLP bundle, you can choose between the obfuscated or unobfuscated jars.
+          to obfuscate the JARs and the <a href="http://mojo.codehaus.org/build-helper-maven-plugin/">build-helper-maven-plugin</a>
+          to attach the obfuscated artifact to the project along with the unobfuscated JAR and install them both in 
+          your local repository. Then when you configure the Webstart Plugin with the dependencies to be deployed in 
+          your JNLP bundle, you can choose between the obfuscated or unobfuscated JARs.
         </p>
       </answer>
 
     </faq>
 
     <faq id="get_jnlp_download_servlet">
-      <question>Where can I get the Jnlp Download Servlet?</question>
+      <question>Where can I get the JNLP Download Servlet?</question>
       <answer>
         <p>
-          The servlet cannot yet be found on an official maven repository. For demonstration purposes, the webstart project packages one version under the (currently) following identifiers
+          The servlet cannot yet be found on an central Maven repository. For demonstration purposes, the webstart project packages one version under the (currently) following identifiers
 <pre>
       &lt;groupId&gt;org.codehaus.mojo.webstart-maven-plugin&lt;/groupId&gt;
       &lt;!--groupId&gt;com.sun.java.jnlp&lt;/groupId--&gt;
       &lt;artifactId&gt;jnlp-servlet&lt;/artifactId&gt;
       &lt;version&gt;1.0-6.0-02_ea_b02-SNAPSHOT&lt;/version&gt;
 </pre>
-         but most probably you will have to retrieve it from Sun's web site or from your local SDK installation (>= Java 5). See also the <a href="jnlp101.html">jnlp 101</a>
+         but most probably you will have to retrieve it from Sun's web site or from your local SDK installation (>= Java 5). See also the <a href="jnlp101.html">JNLP 101</a>.
         </p>
       </answer>
 
     </faq>
 
     <faq id="deploy_jnlp">
-      <question>How can I deploy my jnlp application to my server?</question>
+      <question>How can I deploy my JNLP application to my server?</question>
       <answer>
         <p>
-          Right now (1.0-alpha-2), deployment is not supported out of the box by the plugin. We may add the support in the near future (See <a href="http://jira.codehaus.org/browse/MWEBSTART-25">MWEBSTART-25</a>). You may want to use the <a href="http://myfaces.apache.org/wagon-maven-plugin/usage.html">wagon maven plugin</a> in the mean time. 
+          Right now (1.0-alpha-2), deployment is not supported out of the box by the plugin. We may add the support in the near future (See <a href="http://jira.codehaus.org/browse/MWEBSTART-25">MWEBSTART-25</a>). You may want to use the <a href="http://myfaces.apache.org/wagon-maven-plugin/usage.html">Wagon Maven Plugin</a> in the mean time. 
         </p>
       </answer>
 

@@ -9,8 +9,8 @@
   <artifactId>webstart-maven-plugin</artifactId>
   <version> 1.0-beta-1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
-  <name>Maven Webstart Plugin</name>
-  <description>Maven plugin that supports webstart application development. Helps generate jnlp files and supports the Jnlp Download Servlet.</description>
+  <name>Webstart Maven Plugin</name>
+  <description>Maven plugin that supports webstart application development. Helps generate JNLP files and supports the JnlpDownloadServlet.</description>
 
   <prerequisites>
     <maven>2.0.6</maven>
