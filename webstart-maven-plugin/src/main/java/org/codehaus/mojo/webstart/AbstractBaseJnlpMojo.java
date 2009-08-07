@@ -637,19 +637,23 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         for ( int i = 0; i < jarFiles.length; i++ )
         {
             String unprocessedJarFileName = jarFiles[i].getName();
-            if (!unprocessedJarFileName.startsWith( UNPROCESSED_PREFIX )) {
+            if (!unprocessedJarFileName.startsWith( UNPROCESSED_PREFIX ))
+            {
                 throw new IllegalStateException( "We are about to sign an non " + UNPROCESSED_PREFIX
                                                  + " file with path: " + jarFiles[i].getAbsolutePath() );
             }
             File finalJar = new File( jarFiles[i].getParent(), unprocessedJarFileName.substring( UNPROCESSED_PREFIX.length() ) );
-            if ( finalJar.exists() ) {
+            if ( finalJar.exists() )
+            {
                 boolean deleted = finalJar.delete();
-                if (! deleted) {
+                if (! deleted)
+                {
                     throw new IllegalStateException( "Couldn't delete obsolete final jar: " + finalJar.getAbsolutePath() );
                 }
             }
             boolean renamed = jarFiles[i].renameTo( finalJar );
-            if (! renamed) {
+            if (! renamed)
+            {
                 throw new IllegalStateException( "Couldn't rename into final jar: " + finalJar.getAbsolutePath() );
             }
         }
@@ -676,7 +680,8 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         for ( int i = 0; i < files.length; i++ )
         {
             boolean deleted = files[i].delete();
-            if (! deleted) {
+            if (! deleted)
+            {
                 throw new IllegalStateException( "Couldn't delete file: " + files[i].getAbsolutePath() );
             } 
         }
@@ -706,16 +711,22 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         for ( int i = 0; i < jarFiles.length; i++ )
         {
             String unprocessedJarFileName = jarFiles[i].getName();
-            if (!unprocessedJarFileName.startsWith( UNPROCESSED_PREFIX )) {
+            if (!unprocessedJarFileName.startsWith( UNPROCESSED_PREFIX ))
+            {
                 throw new IllegalStateException( "We are about to sign an non " + UNPROCESSED_PREFIX
                                                  + " file with path: " + jarFiles[i].getAbsolutePath() );
             }
             jarSigner.setJarPath( jarFiles[i] );
+
             File signedJar = new File( jarFiles[i].getParent(), unprocessedJarFileName.substring( UNPROCESSED_PREFIX.length() ) );
+
             jarSigner.setSignedJar( signedJar );
-            if ( signedJar.exists() ) {
+
+            if ( signedJar.exists() )
+            {
                 boolean deleted = signedJar.delete();
-                if (! deleted) {
+                if (! deleted)
+                {
                     throw new IllegalStateException( "Couldn't delete obsolete signed jar: " + signedJar.getAbsolutePath() );
                 } 
             }
@@ -725,7 +736,8 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
             // remove unprocessed files
             // TODO wouldn't have to do that if we copied the unprocessed jar files in a temporary area
             boolean deleted = jarFiles[i].delete();
-            if (! deleted) {
+            if (! deleted)
+            {
                 throw new IllegalStateException( "Couldn't delete obsolete unprocessed jar: " + jarFiles[i].getAbsolutePath() );
             } 
         }
@@ -742,7 +754,8 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     protected URL getWebstartJarURL()
     {
         String url = findDefaultJnlpTemplateURL().toString();
-        try {
+        try
+        {
             return new URL( url.substring( "jar:".length(), url.indexOf( "!" ) ) );
         } catch ( Exception e )
         {
@@ -803,7 +816,8 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     {
         JarSignVerifyMojo verifyMojo = setupVerifyMojo();
         verifyMojo.setJarPath( jarFile );
-        try {
+        try
+        {
             verifyMojo.execute();
             return true;
         } catch (MojoExecutionException e) {
