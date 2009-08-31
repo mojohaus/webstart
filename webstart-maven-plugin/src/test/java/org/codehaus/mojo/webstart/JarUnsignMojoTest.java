@@ -16,27 +16,22 @@ package org.codehaus.mojo.webstart;
  * limitations under the License.
  */
 
-import junit.framework.TestCase;
-import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.archiver.Archiver;
+import java.io.File;
 
-import org.codehaus.plexus.util.FileUtils;
-
-import org.apache.maven.plugin.jar.JarSignMojo;
-import org.apache.maven.plugin.jar.JarSignVerifyMojo;
-import org.codehaus.mojo.keytool.GenkeyMojo;
-import org.apache.maven.embedder.MavenEmbedder;
-import org.apache.maven.embedder.MavenEmbedderConsoleLogger;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.versioning.VersionRange;
+import org.apache.maven.embedder.MavenEmbedder;
+import org.apache.maven.embedder.MavenEmbedderConsoleLogger;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.jar.JarSignMojo;
+import org.apache.maven.plugin.jar.JarSignVerifyMojo;
+import org.codehaus.mojo.keytool.GenkeyMojo;
+import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
-
-import java.io.File;
-import java.io.IOException;
+import org.codehaus.plexus.util.FileUtils;
 
 /**
  * This is more an integration test as we exercise both the signing and unsigning operations
