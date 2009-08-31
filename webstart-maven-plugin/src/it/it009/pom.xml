@@ -20,7 +20,7 @@
       <plugin>
         <groupId>org.codehaus.mojo.webstart</groupId>
         <artifactId>webstart-maven-plugin</artifactId>
-        <version>testing</version>
+        <version>@project.version@</version>
         <executions>
           <execution>
             <goals>
