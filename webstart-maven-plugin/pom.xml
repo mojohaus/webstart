@@ -16,14 +16,6 @@
     <maven>2.0.6</maven>
   </prerequisites>
 
-
-  <!-- work-around a maven issue MOJO-361 -->
-  <!--scm>
-    <url>https://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin/plugin</url>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin/plugin</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin/plugin</developerConnection>
-  </scm-->
-
   <developers>
     <developer>
       <name>Jerome Lacoste</name>
