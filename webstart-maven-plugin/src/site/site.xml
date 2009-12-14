@@ -9,12 +9,12 @@
     <item name="FAQ" href="faq.html"/>
 
     <item name="Cookbook recipe" href="cookbook.html"/>
-    <item name="JNLP mojos overview" href="jnlp-mojos-overview.html"/>
+    <item name="JNLP goals overview" href="jnlp-mojos-overview.html"/>
     <item name="Plugin Upgrades" href="upgrade.html"/>
     <item name="Notes to users and contributors" href="contributors.html"/>
     <item name="JNLP 101" href="jnlp101.html"/>
   </menu>
-  
+
   <menu name="Examples">
     <item name="Getting Started" collapse="false">
       <item name="Default inbuilt templates" href="examples/inbuilt_templates.html" />

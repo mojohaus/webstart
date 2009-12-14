@@ -10,7 +10,7 @@
 Webstart Maven Plugin
 
   The Webstart Plugin generates application bundles that can be deployed via Web Start.
-  The plugin can be used to prepare standalone webstart applications or webstart apps bundled in WAR
+  The plugin can be used to prepare standalone Web Start applications or Web Start applications bundled in WAR
   files (with or without Sun's Download Servlet).
   It handles the generation of JNLP files and optional <<<version.xml>>> files, using Velocity templates.
   It also handles the selection and preparation of the dependencies, performing signing, unsigning and Pack200
@@ -23,22 +23,22 @@ Webstart Maven Plugin
 * Features
 
    * JNLP file generation where information is inserted into a user
-     defined {{{http://velocity.apache.org/}Velocity template}}. Inbuilt default templates.
+     defined {{{http://velocity.apache.org/}Velocity template}}. Inbuilt default templates
 
-   * transitive dependencies
-   
-      * possibilities to include/exclude dependencies
+   * Transitive dependencies
 
-   * key generation (thanks to the {{{http://mojo.codehaus.org/keytool-maven-plugin/}Keytool Maven Plugin}})
+      * Possibilities to include/exclude dependencies
+
+   * Key generation (thanks to the {{{http://mojo.codehaus.org/keytool-maven-plugin/}Keytool Maven Plugin}})
 
    * JAR signing and signing verification
 
-   * unsign already signed JARs
+   * Unsign already signed JARs
 
-   * pack200 support for compressed versions of the JAR files resulting in
-     faster network downloads of your webstart application.
+   * Pack200 support for compressed versions of the JAR files resulting in
+     faster network downloads of your webstart application
 
-   * pluggable API for JAR signer
+   * Pluggable API for JAR signer
 
 
 * Long time users: upgrading from older releases
@@ -55,7 +55,7 @@ Webstart Maven Plugin
 
 * Examples
 
-  To provide you with a better understanding of some usages of the Webstart Plugin, the documentation contains several examples. See the menu on the left.
+  To provide you with a better understanding of some usages of the Webstart Maven Plugin, the documentation contains several examples. See the menu on the left.
 
 
 * Links

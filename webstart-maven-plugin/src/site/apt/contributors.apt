@@ -12,9 +12,9 @@ Notes to users and contributors
 
 * Upcoming changes
 
-  * {{{http://jira.codehaus.org/browse/MWEBSTART-58} Support for generating multiple bundles from one JNLP project}} (similar to what the JNLP download servlet mojo does).
+  * {{{http://jira.codehaus.org/browse/MWEBSTART-58} Support for generating multiple bundles from one JNLP project}} (similar to what the <<<jnlp-download-servlet>>> goal does).
 
-  * More generally some work is going to be done to make the JNLP mojos configuration more compatible.
+  * More generally some work is going to be done to make the JNLP goals configuration more compatible.
 
 
 * Reported missing features
@@ -25,21 +25,21 @@ Notes to users and contributors
 
    * More control on the dependencies: {{{http://jira.codehaus.org/browse/MWEBSTART-72} JarResource exclusions}} and {{{http://jira.codehaus.org/browse/MWEBSTART-90} control of the transitivity}}
 
-   * More support for standalone webstart apps (e.g. <<<download.html/index.html>>>)
+   * More support for standalone Web Start apps (e.g. <<<download.html/index.html>>>)
 
    * Handling of {{{http://jira.codehaus.org/browse/MWEBSTART-8} native libraries}}
 
 * Other ideas
 
-   * Building multiple JNLP apps in one zip using one Maven 2 project?? (not sure as this is not a very Maven way of doing things)
+   * Building multiple JNLP apps in one zip using one Maven 2 project? (not sure as this is not a very Maven way of doing things)
 
       * Would require merging <<<version.xml>>>
 
    * What about deploying multiple versions of the same app? Is that ever wanted, e.g. for upgrades?
 
-   * ?? Add a new goal to help deal with web applications
+   * Add a new goal to help deal with web applications?
 
-      * One step WAR+webstart generation (one project, webstart plugin used in pre-package phase)
+      * One step WAR+webstart generation (one project, Webstart Plugin used in <<<pre-package>>> phase)
 
       * More WAR integration (JNLP, <<<web.xml>>>)
 

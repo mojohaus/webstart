@@ -20,7 +20,7 @@ Upgrade from a previous version
 
 ** 2008-01-25
 
-  The groupIds have been renamed. You should replace:
+  The groupId has been changed. You should replace:
 
 -------------
       <groupId>org.codehaus.mojo</groupId>
@@ -40,7 +40,7 @@ Upgrade from a previous version
 
 ** 2008-01-19
 
-  Renamed the <<<\<jnlp\>>>><<<\<resources\>>>> configuration element of the JNLP mojos into <<<\<resourcesDirectory\>>>>
+  Renamed the <<<\<jnlp\>>>>/<<<\<resources\>>>> configuration element of the JNLP goals to <<<\<resourcesDirectory\>>>>
   for consistency. See {{{http://jira.codehaus.org/browse/MWEBSTART-81} MWEBSTART-81}} for discussion.
 
 ** 2007-03-11
@@ -55,7 +55,7 @@ Upgrade from a previous version
   +++ project1/pom.xml    (working copy)
   @@ -60,13 +60,14 @@
                <dnameC>US</dnameC>
-   
+
                <verify>true</verify>
   +
   +            <keystoreConfig>
@@ -64,7 +64,7 @@ Upgrade from a previous version
   +            </keystoreConfig>
   +
              </sign>
-   
+
   -          <keystore>
   -            <delete>true</delete>
   -            <gen>true</gen>
@@ -80,14 +80,14 @@ Upgrade from a previous version
 
   The 1.0-alpha-1 version of the plugin required you to create one module just for
   the bundling of the webstart elements into its own zip file. To get your current
-  project sources jared, signed and packaged into a webstart application, you 
+  project sources JARed, signed and packaged into a Web Start application, you
   should now be able to do something like:
 
 ------------------------------
 mvn install webstart:jnlp
 ------------------------------
 
-  on the command line or attach the appropriate mojo (e.g. <<<jnlp-inline>>>) to your <<<package>>>
+  on the command line or attach the appropriate goal (e.g. <<<jnlp-inline>>>) to your <<<package>>>
   phase and do something like
 
 ------------
@@ -98,12 +98,12 @@ mvn install
 
   The documentation has not been fully updated to reflect this change.
 
-  Multi-project setup (one for the JAR, one for the webstart bundle) is still possible.
+  Multi-project setup (one for the JAR, one for the Web Start bundle) is still possible.
 
 
 ** 2006-12-28
 
-  The default location for the template and resources have changed. 
+  The default location for the template and resources have changed.
   See {{{http://jira.codehaus.org/browse/MWEBSTART-16} MWEBSTART-16}} for discussion.
 
 

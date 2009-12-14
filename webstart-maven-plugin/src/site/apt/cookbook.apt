@@ -13,13 +13,13 @@ Cookbook
 
   * Read the {{{usage.html}usage}} document to decide how to use the plugin depending on your build and deployment strategies
 
-  * Read the {{{jnlp-mojos-overview.html}JNLP Mojos overview}} 
+  * Read the {{{jnlp-mojos-overview.html}JNLP goals overview}}
 
   * Start your project using the {{{examples/inbuilt_templates.html}default inbuilt template}}
 
   * Start with simple signing using the keytool functionality for your {{{examples/keystore_gen.html}signing needs}}
 
-  * Test your build (e.g. adding the {{{http://svn.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin/plugin/src/it/it002/}Jetty server to your project}})
+  * Test your build (e.g. adding the {{{http://svn.mojo.codehaus.org/mojo/trunk/mojo/webstart-maven-plugin/plugin/src/it/it002/}Jetty server to your project}})
 
-  * Create a custom and more complex JNLP template if you need.
+  * Create a custom and more complex JNLP template if you need
 

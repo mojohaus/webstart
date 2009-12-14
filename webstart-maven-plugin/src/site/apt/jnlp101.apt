@@ -8,7 +8,7 @@
 
 JNLP 101
 
- Some things that are not directly related to the Webstart Plugin but can help you make good use of it.
+ Some things that are not directly related to the Webstart Maven Plugin but can help you make good use of it.
 
 
 * Recommended work directory layout
@@ -27,28 +27,28 @@ images/icon.gif
 * Configuring your webapp to use JnlpDownloadServlet
 
  The JnlpDownloadServlet JAR file is provided with the Java 5.0 distribution in the
- examples directory. 
- 
+ examples directory.
+
  The JnlpDownloadServlet offers some advantages:
- 
+
    * <<<$$codebase>>>, <<<$$context>>> and <<<$$name>>> tokens in your JNLP file are replaced with values
      that represent where your JNLP file is hosted. This allows you to deploy your
      web application anywhere without modification. The relevant paths will be worked
      out at runtime.
-     
+
    * If you have chosen to provide Pack200 format compressed files, JnlpDownloadServlet
      will decide if the webstart client that the user has chosen can handle the compressed
      format. If the client is compatible, the JnlpDownloadServlet will route requests for
      JAR files to the appropriate compressed file. This may improve the download time of
      your application.
- 
+
  To use the JnlpDownloadServlet you must declare a dependency on it in the webapp's
  <<<pom.xml>>> and you must make modifications to your webapp's <<<web.xml>>> file.
- 
+
  Here is an example of a <<<web.xml>>> with the JnlpDownladServlet enabled. All requests to
  files ending in <<<.jnlp>>> are routed through the download servlet. More information and
  examples are availabe in the JnlpDownloadServlet's documentation.
- 
+
 -------------------------------
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 
@@ -57,18 +57,18 @@ images/icon.gif
         <servlet-name>JnlpDownloadServlet</servlet-name>
         <servlet-class>jnlp.sample.servlet.JnlpDownloadServlet</servlet-class>
     </servlet>
-    
+
     <servlet-mapping>
         <servlet-name>JnlpDownloadServlet</servlet-name>
         <url-pattern>*.jnlp</url-pattern>
     </servlet-mapping>
 </web-app>
 -------------------------------
- 
+
  <<Note:>> The dependency described below is to be placed in the webapp's <<<pom.xml>>>. This has nothing
- to do with the webstart project's <<<pom.xml>>>, unless using the JnlpDownloadServlet mojo, in which case
+ to do with the webstart project's <<<pom.xml>>>, unless using the <<<jnlp-download-servlet>>> goal, in which case
  the plugin is configured in the webapp's project.
- 
+
  Unfortunately, the JnlpDownloadServlet's JAR file is not yet available in the
  central Maven repository. Until the licensing issues are worked out,
  you'll need to keep a copy of the JAR file in your own remote repository or
@@ -80,11 +80,11 @@ mvn install:install-file -Dfile=%JAVA_HOME%\sample\jnlp\servlet\jnlp-servlet.jar
 -DgroupId=com.sun.java.jnlp -DartifactId=jnlp-servlet -Dversion=5.0 \
 -Dpackaging=jar -DgeneratePom=true
 -------------------------------
- 
+
  And the corresponding dependency definition:
 
 -------------------------------
-<!-- 
+<!--
     Sun's JnlpDownladServlet takes the template JNLP file and inserts
     relevant values for $$codebase and other parameters
 -->
@@ -96,7 +96,7 @@ mvn install:install-file -Dfile=%JAVA_HOME%\sample\jnlp\servlet\jnlp-servlet.jar
 </dependency>
 -------------------------------
 
-** How to detect the codebase from the webstart application using the JNLP API
+** How to detect the codebase from the Web Start application using the JNLP API
 
   Code by Geoffrey De Smet.
 
@@ -142,7 +142,7 @@ mvn install:install-file -Dfile=%JAVA_HOME%\sample\jnlp\servlet\jnlp-servlet.jar
  any digital signature that is applied before the packing takes place will be invalidated.
 
  Before a digital signature is applied Pack200 must be allowed to carry out its aggressive class
- file modifications. This is achieved by packing and unpacking the jar file with the Pack200 utility.
+ file modifications. This is achieved by packing and unpacking the JAR file with the Pack200 utility.
  The result is a JAR with modified class files ready to be signed.
 
  The goal then signs this pre-prepared JAR and verifies the signature.
