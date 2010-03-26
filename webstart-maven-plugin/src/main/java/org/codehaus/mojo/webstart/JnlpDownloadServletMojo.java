@@ -46,7 +46,7 @@ import org.codehaus.plexus.util.StringUtils;
  * 
  * @author Kevin Stembridge
  * @since 1.0-alpha-2
- * @version $Id:$
+ * @version $Id$
  * @goal jnlp-download-servlet
  * @requiresDependencyResolution runtime
  * @requiresProject
@@ -415,12 +415,12 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
                 
             }
             
-            //for each JarResource, copy its artifact to the working directory if necessary
+            //for each JarResource, copy its artifact to the lib directory if necessary
             for ( Iterator itr = jarResources.iterator(); itr.hasNext(); )
             {
                 JarResource jarResource = (JarResource) itr.next();
                 Artifact artifact = jarResource.getArtifact();
-                boolean copied = copyJarAsUnprocessedToDirectoryIfNecessary( artifact.getFile(), getWorkDirectory() );
+                boolean copied = copyJarAsUnprocessedToDirectoryIfNecessary( artifact.getFile(), getLibDirectory() );
                 
                 if ( copied )
                 {
@@ -686,6 +686,11 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
     private String buildHrefValue( Artifact artifact )
     {
         StringBuffer sbuf = new StringBuffer();
+        if ( StringUtils.isNotEmpty( getLibPath() ) )
+        {
+            sbuf.append( getLibPath() );
+            sbuf.append( '/' );
+        }
         sbuf.append( artifact.getArtifactId() );
         
         if ( StringUtils.isNotEmpty( artifact.getClassifier() ) ) 
