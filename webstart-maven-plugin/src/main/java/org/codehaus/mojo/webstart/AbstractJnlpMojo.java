@@ -653,16 +653,6 @@ public abstract class AbstractJnlpMojo
     }
     */
     
-    /**
-     * Sets the flag that indicates whether or not a version attribute
-     * should be output in each jar resource element in the generated 
-     * JNLP file. The default is false.
-     * @param outputJarVersions 
-     */
-//    public void setOutputJarVersions(boolean outputJarVersions) {
-//        this.outputJarVersions = outputJarVersions;
-//    }
-
     public boolean isArtifactWithMainClass( Artifact artifact )
     {
         final boolean b = artifactWithMainClass.equals( artifact );
@@ -683,8 +673,10 @@ public abstract class AbstractJnlpMojo
     }
 
     /**
-     * Set the value of the outputJarVersions field.
-     * @param outputJarVersions 
+     * Sets the flag that indicates whether or not a version attribute
+     * should be output in each jar resource element in the generated
+     * JNLP file. The default is false.
+     * @param outputJarVersions
      */
     public void setOutputJarVersions( boolean outputJarVersions )
     {
