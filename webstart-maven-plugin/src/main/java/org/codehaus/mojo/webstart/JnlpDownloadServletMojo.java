@@ -141,7 +141,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
         
         for ( Iterator itr = this.jnlpFiles.iterator(); itr.hasNext(); )
         {
-            generateJnlpFile( (JnlpFile) itr.next() );
+            generateJnlpFile( (JnlpFile) itr.next(), getLibPath() );
         }
         
         generateVersionXml();
@@ -437,7 +437,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
                 
             }
 
-        } 
+        }
         catch ( ArtifactResolutionException e )
         {
             throw new MojoExecutionException( "Unable to resolve an artifact", e );
@@ -570,7 +570,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
         
     }
     
-    private void generateJnlpFile( JnlpFile jnlpFile ) throws MojoExecutionException
+    private void generateJnlpFile( JnlpFile jnlpFile, String libPath ) throws MojoExecutionException
     {
         
         File jnlpOutputFile = new File( getWorkDirectory(), jnlpFile.getOutputFilename() );
@@ -597,7 +597,8 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
                                                    jnlpFile.getTemplateFilename(), 
                                                    jarResources, 
                                                    jnlpFile.getMainClass(),
-                                                   getWebstartJarURLForVelocity() );
+                                                   getWebstartJarURLForVelocity(),
+                                                   libPath);
 
         jnlpGenerator.setExtraConfig( getGeneratorExtraConfig() );
 
@@ -663,7 +664,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
         }
         
         VersionXmlGenerator generator = new VersionXmlGenerator();
-        generator.generate( getWorkDirectory(), jarResources );
+        generator.generate( getLibDirectory(), jarResources );
         
     }
     
@@ -686,11 +687,6 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
     private String buildHrefValue( Artifact artifact )
     {
         StringBuffer sbuf = new StringBuffer();
-        if ( StringUtils.isNotEmpty( getLibPath() ) )
-        {
-            sbuf.append( getLibPath() );
-            sbuf.append( '/' );
-        }
         sbuf.append( artifact.getArtifactId() );
         
         if ( StringUtils.isNotEmpty( artifact.getClassifier() ) ) 

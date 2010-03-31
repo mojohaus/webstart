@@ -57,7 +57,8 @@ public class JarResourcesGeneratorTest extends TestCase
                                                                      templateFile.getName(),
                                                                      jarResources,
                                                                      mainClass,
-                                                                     "jar:file:/tmp/path/to/webstart-plugin.jar" );
+                                                                     "jar:file:/tmp/path/to/webstart-plugin.jar",
+                                                                     null);
         
         //The list of jarResources is empty so the output text should be an empty string
         assertEquals("", generator.getDependenciesText());
@@ -82,14 +83,31 @@ public class JarResourcesGeneratorTest extends TestCase
         
         Assert.assertEquals( expectedText, actualText );
         
+        JarResourcesGenerator generator2 = new JarResourcesGenerator( mavenProject,
+                                                                     resourceLoaderPath,
+                                                                     "default-jnlp-template.vm",
+                                                                     outputFile,
+                                                                     templateFile.getName(),
+                                                                     jarResources,
+                                                                     mainClass,
+                                                                     "jar:file:/tmp/path/to/webstart-plugin.jar",
+                                                                     "myLib");
+
+        String expectedText2 = "\n<jar href=\"myLib/href1\" version=\"1.1\" main=\"true\"/>\n"
+                             + "<jar href=\"myLib/href2\" version=\"1.2\"/>\n"
+                             + "<jar href=\"myLib/href3\"/>\n";
+
+        String actualText2 = generator2.getDependenciesText( );
+
+        Assert.assertEquals( expectedText2, actualText2 );
 
     }
     
-    private JarResource buildJarResource( final String hrefValue, 
+    private JarResource buildJarResource( final String hrefValue,
                                           final String version, 
-                                          final String mainClass, 
-                                          final boolean outputJarVersion, 
-                                          final boolean includeInJnlp ) 
+                                          final String mainClass,
+                                          final boolean outputJarVersion,
+                                          final boolean includeInJnlp )
     {
         
         return new JarResource( ) {

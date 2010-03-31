@@ -307,6 +307,8 @@ public class JarResource
             .append( this.mainClass )
             .append( "', outputJarVersion='" )
             .append( this.outputJarVersion )
+            .append( "', hrefValue='" )
+            .append( this.hrefValue )
             .append( "' ]" );
         return sbuf.toString();
                      

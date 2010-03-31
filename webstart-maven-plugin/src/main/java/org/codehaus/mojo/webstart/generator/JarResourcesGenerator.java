@@ -17,12 +17,12 @@ package org.codehaus.mojo.webstart.generator;
  */
 
 import java.io.File;
-import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.webstart.JarResource;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * Generates a JNLP deployment descriptor.
@@ -36,6 +36,7 @@ public class JarResourcesGenerator extends AbstractGenerator
 {
 
     private final Collection jarResources;
+    private String libPath;
     
     /**
      * Creates a new {@code JarResources}.
@@ -46,6 +47,7 @@ public class JarResourcesGenerator extends AbstractGenerator
      * @param templateFile relative to resourceLoaderPath
      * @param jarResources The collection of JarResources that will be output in the JNLP file.
      * @param mainClass The fully qualified name of the application's main class.
+     * @param libPath The path where the libraries are placed within the jnlp structure
      */
     public JarResourcesGenerator( MavenProject mavenProject, 
                                   File resourceLoaderPath, 
@@ -54,10 +56,12 @@ public class JarResourcesGenerator extends AbstractGenerator
                                   String templateFile, 
                                   Collection jarResources, 
                                   String mainClass,
-                                  String webstartJarURL )
+                                  String webstartJarURL,
+                                  String libPath )
     {
         super(mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, templateFile, mainClass, webstartJarURL);
         this.jarResources = jarResources;
+        this.libPath = libPath;
     }
 
     /** 
@@ -82,7 +86,14 @@ public class JarResourcesGenerator extends AbstractGenerator
                     continue;
                 }
                 
-                buffer.append( "<jar href=\"" ).append( jarResource.getHrefValue() ).append( "\"" );
+                buffer.append( "<jar href=\"" );
+                if ( StringUtils.isNotEmpty( libPath ) )
+                {
+                    buffer.append( libPath );
+                    buffer.append( '/' );
+                }
+                buffer.append( jarResource.getHrefValue() );
+                buffer.append( "\"" );
                 
                 if ( jarResource.isOutputJarVersion() ) 
                 {
