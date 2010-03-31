@@ -37,7 +37,7 @@ import org.apache.velocity.runtime.log.NullLogSystem;
  *
  * @author Kevin Stembridge
  * @since 30 Aug 2007
- * @version $Revision:$
+ * @version $Revision$
  *
  */
 public abstract class AbstractGenerator {
@@ -61,7 +61,7 @@ public abstract class AbstractGenerator {
      * @param resourceLoaderPath  used to find the template in conjunction to inputFileTemplatePath
      * @param outputFile The location of the file to be generated.
      * @param inputFileTemplatePath relative to resourceLoaderPath 
-     * @param mainCLass The text that should replace the $mainClass placeholder in the JNLP template.
+     * @param mainClass The text that should replace the $mainClass placeholder in the JNLP template.
      * 
      * @throws IllegalArgumentException if any argument is null.
      */
