@@ -87,6 +87,15 @@ public class JnlpFile
     }
 
     /**
+     * Sets the collection of <code>JarResource</code> elements for this JNLP file.
+     * @param jarResources
+     */
+    protected void setJarResources( List jarResources )
+    {
+        this.jarResources = jarResources;
+    }
+
+    /**
      * Sets the outputFileName.
      * @param outputFilename
      */

@@ -197,7 +197,7 @@ public class JarResource
     }
 
     /**
-     * Returns the flag that indicates whether or not the jar resource 
+     * Sets the flag that indicates whether or not the jar resource 
      * element in the generated JNLP file should include a version attribute.
      * Default is true.
      * @param outputJarVersion 
@@ -305,6 +305,8 @@ public class JarResource
             .append( this.classifier )
             .append( "', mainClass='" )
             .append( this.mainClass )
+            .append( "', outputJarVersion='" )
+            .append( this.outputJarVersion )
             .append( "' ]" );
         return sbuf.toString();
                      
