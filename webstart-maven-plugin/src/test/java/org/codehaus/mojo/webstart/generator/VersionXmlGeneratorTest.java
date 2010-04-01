@@ -17,7 +17,6 @@ package org.codehaus.mojo.webstart.generator;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +31,7 @@ import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.mojo.webstart.JarResource;
+import org.codehaus.plexus.util.ReaderFactory;
 import org.custommonkey.xmlunit.Diff;
 import org.xml.sax.SAXException;
 
@@ -182,7 +182,7 @@ public class VersionXmlGeneratorTest extends TestCase
         
         try 
         {
-            reader = new BufferedReader( new FileReader( file ) );
+            reader = new BufferedReader( ReaderFactory.newXmlReader( file ) );
             
             String line = null;
             

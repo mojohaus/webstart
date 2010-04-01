@@ -16,7 +16,7 @@
 package org.codehaus.mojo.webstart.generator;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.Writer;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,6 +30,8 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.log.NullLogSystem;
+
+import org.codehaus.plexus.util.WriterFactory;
 
 /**
  * The abstract superclass for classes that generate the JNLP files produced by the 
@@ -177,7 +179,7 @@ public abstract class AbstractGenerator {
     {
         VelocityContext context = createAndPopulateContext();
 
-        FileWriter writer = new FileWriter( outputFile );
+        Writer writer = WriterFactory.newXmlWriter( outputFile );
         
         try
         {

@@ -17,13 +17,13 @@ package org.codehaus.mojo.webstart.generator;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.mojo.webstart.JarResource;
+import org.codehaus.plexus.util.WriterFactory;
 
 /**
  * This class generates a <code>version.xml</code> file for a given collection of
@@ -73,7 +73,7 @@ public class VersionXmlGenerator
         try 
         {
             File versionXmlFile = new File( outputDir, "version.xml" );
-            writer = new BufferedWriter( new FileWriter( versionXmlFile ) );
+            writer = new BufferedWriter( WriterFactory.newXmlWriter( versionXmlFile ) );
             
             generateXml( writer, jarResources );
             
