@@ -431,10 +431,13 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
                     }
                     getModifiedJnlpArtifacts().add( name.substring( 0, name.lastIndexOf( '.' ) ) );
                 }
-                
-                String hrefValue = buildHrefValue(artifact);
-                jarResource.setHrefValue( hrefValue );
-                
+
+                if( jarResource.isOutputJarVersion() )
+                {
+                    // Create and set a version-less href for this jarResource 
+                    String hrefValue = buildHrefValue( artifact );
+                    jarResource.setHrefValue( hrefValue );
+                }
             }
 
         }
