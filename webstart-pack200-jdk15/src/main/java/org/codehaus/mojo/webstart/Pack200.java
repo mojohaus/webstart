@@ -54,6 +54,10 @@ public class Pack200
             packTask.setDestfile( pack200Jar );
             packTask.setSrc( jarFiles[i] );
             packTask.setGZIPOutput( gzip );
+
+            // Work around a JDK bug affecting large JAR files, see MWEBSTART-125
+            packTask.setSegmentLimit("-1");
+
             packTask.execute();
             pack200Jar.setLastModified( jarFiles[i].lastModified() );
         }
