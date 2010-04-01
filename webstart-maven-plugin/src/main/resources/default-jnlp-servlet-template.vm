@@ -5,10 +5,18 @@
     context="$$context"
     href="$$name">
   <information>
+#if($project.Name)
     <title>$project.Name</title>
+#end
+#if($project.Organization.Name)
     <vendor>$project.Organization.Name</vendor>
+#end
+#if($project.Url)
     <homepage href="$project.Url"/>
+#end
+#if($project.Description)
     <description>$project.Description</description>
+#end
 #if($offlineAllowed)
     <offline-allowed/>
 #end
