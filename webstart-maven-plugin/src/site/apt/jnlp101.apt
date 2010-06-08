@@ -3,7 +3,7 @@
  ------
  Jerome Lacoste
  ------
- 2008-09-23
+ 2010-06-08
  ------
 
 JNLP 101
@@ -84,16 +84,16 @@ mvn install:install-file -Dfile=%JAVA_HOME%\sample\jnlp\servlet\jnlp-servlet.jar
  And the corresponding dependency definition:
 
 -------------------------------
-<!--
-    Sun's JnlpDownladServlet takes the template JNLP file and inserts
-    relevant values for $$codebase and other parameters
--->
-<dependency>
-    <groupId>com.sun.java.jnlp</groupId>
-    <artifactId>jnlp-servlet</artifactId>
-    <version>5.0</version>
-    <scope>runtime</scope>
-</dependency>
+    <!--
+      Sun's JnlpDownladServlet takes the template JNLP file and inserts
+      relevant values for $$codebase and other parameters
+    -->
+    <dependency>
+      <groupId>com.sun.java.jnlp</groupId>
+      <artifactId>jnlp-servlet</artifactId>
+      <version>5.0</version>
+      <scope>runtime</scope>
+    </dependency>
 -------------------------------
 
 ** How to detect the codebase from the Web Start application using the JNLP API

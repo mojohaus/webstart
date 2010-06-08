@@ -17,7 +17,6 @@
           your JNLP bundle, you can choose between the obfuscated or unobfuscated JARs.
         </p>
       </answer>
-
     </faq>
 
     <faq id="get_jnlp_download_servlet">
@@ -34,19 +33,16 @@
          but most probably you will have to retrieve it from Sun's web site or from your local SDK installation (>= Java 5). See also the <a href="jnlp101.html">JNLP 101</a>.
         </p>
       </answer>
-
     </faq>
 
     <faq id="deploy_jnlp">
       <question>How can I deploy my JNLP application to my server?</question>
       <answer>
         <p>
-          Right now (1.0-alpha-2), deployment is not supported out of the box by the plugin. We may add the support in the near future (See <a href="http://jira.codehaus.org/browse/MWEBSTART-25">MWEBSTART-25</a>). You may want to use the <a href="http://myfaces.apache.org/wagon-maven-plugin/usage.html">Wagon Maven Plugin</a> in the mean time. 
+          Right now, deployment is not supported out of the box by the plugin. We may add the support in the near future (See <a href="http://jira.codehaus.org/browse/MWEBSTART-25">MWEBSTART-25</a>). You may want to use the <a href="http://myfaces.apache.org/wagon-maven-plugin/usage.html">Wagon Maven Plugin</a> in the mean time. 
         </p>
       </answer>
-
     </faq>
-
 
   </part>
 

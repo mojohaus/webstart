@@ -1,4 +1,4 @@
-<project>
+<project xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
  <body>
   <menu ref="parent" />
 
@@ -44,8 +44,6 @@
     </item>
     <item name="Sun's Download Servlet Guide" href="http://java.sun.com/j2se/1.5.0/docs/guide/javaws/developersguide/downloadservletguide.html" />
     <item name="Velocity user guide" href="http://velocity.apache.org/engine/releases/velocity-1.5/user-guide.html" />
-    <!--item name="" href="" /-->
-
   </menu>
  </body>
 </project>

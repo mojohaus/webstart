@@ -3,13 +3,13 @@
    ------
    TBC
    ------
-   2008-09-23
+   2010-06-08
    ------
 
 
 Webstart Maven Plugin
 
-  The Webstart Plugin generates application bundles that can be deployed via Web Start.
+  The Webstart Maven Plugin generates application bundles that can be deployed via Web Start.
   The plugin can be used to prepare standalone Web Start applications or Web Start applications bundled in WAR
   files (with or without Sun's Download Servlet).
   It handles the generation of JNLP files and optional <<<version.xml>>> files, using Velocity templates.
@@ -36,7 +36,7 @@ Webstart Maven Plugin
    * Unsign already signed JARs
 
    * Pack200 support for compressed versions of the JAR files resulting in
-     faster network downloads of your webstart application
+     faster network downloads of your Webstart application
 
    * Pluggable API for JAR signer
 
