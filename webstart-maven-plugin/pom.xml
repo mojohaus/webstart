@@ -13,7 +13,7 @@
   <description>Maven plugin that supports webstart application development. Helps generate JNLP files and supports the JnlpDownloadServlet.</description>
 
   <prerequisites>
-    <maven>2.0.6</maven>
+    <maven>${mavenVersion}</maven>
   </prerequisites>
 
   <developers>
@@ -49,7 +49,13 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+      <version>${mavenVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
+      <version>${mavenVersion}</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.mojo.webstart</groupId>
@@ -67,12 +73,12 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-project</artifactId>
-      <version>2.0.6</version>
+      <version>${mavenVersion}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <version>2.0.6</version>
+      <version>${mavenVersion}</version>
       <exclusions>
         <exclusion>
           <groupId>plexus</groupId>
@@ -82,13 +88,8 @@
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-descriptor</artifactId>
-      <version>2.0.6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
       <artifactId>maven-settings</artifactId>
-      <version>2.0.6</version>
+      <version>${mavenVersion}</version>
       <exclusions>
         <exclusion>
           <groupId>org.apache.maven.wagon</groupId>
@@ -141,7 +142,7 @@
     <dependency>
       <groupId>org.apache.maven.reporting</groupId>
       <artifactId>maven-reporting-api</artifactId>
-      <version>2.0.6</version>
+      <version>${mavenVersion}</version>
       <exclusions>
         <exclusion>
           <groupId>plexus</groupId>
@@ -301,4 +302,8 @@
           </plugin>
       </plugins>
     </reporting-->
+
+  <properties>
+    <mavenVersion>2.0.6</mavenVersion>
+  </properties>
 </project>
