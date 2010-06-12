@@ -3,11 +3,11 @@
   <parent>
     <groupId>org.codehaus.mojo.webstart</groupId>
     <artifactId>webstart</artifactId>
-    <version>1.0-beta-1-SNAPSHOT</version>
+    <version>1.0-beta-1</version>
   </parent>
 
   <artifactId>webstart-jarsigner-api</artifactId>
-  <version> 1.0-beta-1-SNAPSHOT</version>
+  <version> 1.0-beta-1</version>
   <name>Maven Webstart Pluggable JarSigner API</name>
   <inceptionYear>2007</inceptionYear>
   <dependencies>
