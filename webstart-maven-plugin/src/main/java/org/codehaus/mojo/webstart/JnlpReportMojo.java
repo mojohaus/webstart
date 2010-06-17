@@ -28,7 +28,7 @@ public class JnlpReportMojo
     /**
      * Location where generated html will be created.
      *
-     * @parameter expression="${project.build.directory}/site"
+     * @parameter default-value="${project.build.directory}/site"
      */
     private File outputDirectory;
 
@@ -36,22 +36,24 @@ public class JnlpReportMojo
      * <i>Maven Internal</i>: The Doxia Site Renderer.
      *
      * @component
-     * @required @readonly
+     * @required 
+     * @readonly
      */
     private Renderer siteRenderer;
 
     /**
      * Maven Project
      *
-     * @parameter expression="${project}"
-     * @required @readonly
+     * @parameter default-value="${project}"
+     * @required 
+     * @readonly
      */
     private MavenProject project;
 
     /**
      * Directory where the jnlp artifacts and jnlp sources files reside.
      *
-     * @parameter expression="${project.build.directory}/jnlp"
+     * @parameter default-value="${project.build.directory}/jnlp"
      * @required
      */
     private File jnlpSourceDirectory;
@@ -59,7 +61,7 @@ public class JnlpReportMojo
     /**
      * Directory in the site directory where the jnlp artifacts and jnlp sources files reside.
      *
-     * @parameter expression="jnlp/launch.jnlp"
+     * @parameter default-value="jnlp/launch.jnlp"
      * @required
      */
     private String siteJnlpFile;

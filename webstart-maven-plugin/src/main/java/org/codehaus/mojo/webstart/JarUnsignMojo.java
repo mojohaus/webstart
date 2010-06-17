@@ -103,7 +103,7 @@ public class JarUnsignMojo
     /**
      * To look up Archiver/UnArchiver implementations
      *
-     * @parameter expression="${component.org.codehaus.plexus.archiver.manager.ArchiverManager}"
+     * @component
      * @required
      */
     protected ArchiverManager archiverManager;    

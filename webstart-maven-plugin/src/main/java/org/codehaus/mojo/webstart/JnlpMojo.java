@@ -40,7 +40,7 @@ public class JnlpMojo
     /**
      * Get the executed project from the forked lifecycle.
      *
-     * @parameter expression="${executedProject}"
+     * @parameter default-value="${executedProject}"
      * @required
      * @readonly
      */

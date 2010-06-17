@@ -17,7 +17,6 @@ package org.codehaus.mojo.webstart;
  */
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,7 +53,7 @@ public abstract class AbstractJnlpMojo
     /**
      * The Zip archiver.
      *
-     * @parameter expression="${component.org.codehaus.plexus.archiver.Archiver#zip}"
+     * @component role="org.codehaus.plexus.archiver.Archiver" roleHint="zip"
      * @required
      */
     private ZipArchiver zipArchiver;
@@ -140,7 +139,7 @@ public abstract class AbstractJnlpMojo
     // private boolean usejnlpservlet;
 
     /**
-     * @parameter expression="${basedir}"
+     * @parameter default-value="${basedir}"
      * @required
      * @readonly
      */
@@ -148,7 +147,7 @@ public abstract class AbstractJnlpMojo
 
     /**
      * The project helper used to attach the artifact produced by this plugin to the project.
-     * @parameter expression="${component.org.apache.maven.project.MavenProjectHelper}
+     * @component
      */
     private MavenProjectHelper projectHelper;
 
@@ -157,7 +156,7 @@ public abstract class AbstractJnlpMojo
      * <br/>
      * plugin manager API calls.
      *
-     * @parameter expression="${settings}"
+     * @parameter default-value="${settings}"
      * @required
      * @readonly
      */

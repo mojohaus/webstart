@@ -74,7 +74,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     private ArtifactFactory artifactFactory;
 
     /**
-     * @parameter expression="${localRepository}"
+     * @parameter default-value="${localRepository}"
      * @required
      * @readonly
      */
@@ -83,7 +83,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     /**
      * The collection of remote artifact repositories.
      *
-     * @parameter expression="${project.remoteArtifactRepositories}"
+     * @parameter default-value="${project.remoteArtifactRepositories}"
      * @readonly
      * @required
      */
@@ -92,7 +92,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     /**
      * The directory in which files will be stored prior to processing.
      *
-     * @parameter expression="${project.build.directory}/jnlp"
+     * @parameter default-value="${project.build.directory}/jnlp"
      * @required
      */
     private File workDirectory;
@@ -100,7 +100,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     /**
      * The path where the libraries are placed within the jnlp structure.
      *
-     * @parameter expression=""
+     * @parameter default-value=""
      */
     protected String libPath;
 
@@ -115,7 +115,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     /**
      * The location where the JNLP Velocity template files are stored.
      *
-     * @parameter expression="${project.basedir}/src/main/jnlp"
+     * @parameter default-value="${project.basedir}/src/main/jnlp"
      * @required
      */
     private File templateDirectory;
@@ -186,7 +186,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     /**
      * To look up Archiver/UnArchiver implementations
      *
-     * @parameter expression="${component.org.codehaus.plexus.archiver.manager.ArchiverManager}"
+     * @component
      * @required
      */
     protected ArchiverManager archiverManager;
