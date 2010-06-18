@@ -1,23 +1,25 @@
 package org.codehaus.mojo.webstart.generator;
 
 /*
- * Copyright 2005 Nick C
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License" );
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import java.io.File;
-import java.net.URL;
 import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
@@ -50,11 +52,10 @@ public class Generator extends AbstractGenerator
                       String mainClass, 
                       String webstartJarURL )
     {
-        
-        super(mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, inputFileTemplatePath, mainClass, webstartJarURL );
+        super( mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, 
+               inputFileTemplatePath, mainClass, webstartJarURL );
         
         this.config = task;
-
     }
 
     /**
@@ -71,26 +72,30 @@ public class Generator extends AbstractGenerator
         List artifacts = config.getPackagedJnlpArtifacts();
         if ( artifacts.size() != 0 )
         {
-            StringBuffer buffer = new StringBuffer( 100 * artifacts.size() );
+            final int multiplier = 100;
+            StringBuffer buffer = new StringBuffer( multiplier * artifacts.size() );
             buffer.append( "\n" );
 
-			String jarLibPath = null;
-            if (config.getLibPath() != null) {
+            String jarLibPath = null;
+            if ( config.getLibPath() != null ) 
+            {
                 jarLibPath = config.getLibPath();
-                jarLibPath = (jarLibPath != null && jarLibPath.trim().length() != 0) ? jarLibPath.trim() : null;
+                jarLibPath = ( jarLibPath != null && jarLibPath.trim().length() != 0 ) ? jarLibPath.trim() : null;
             }
 
-            for (int i = 0; i < artifacts.size(); i++) {
-                Artifact artifact = (Artifact)artifacts.get(i);
-                buffer.append("<jar href=\"");
-                if (jarLibPath != null) {
-                    buffer.append(jarLibPath).append("/");
+            for ( int i = 0; i < artifacts.size(); i++ ) 
+            {
+                Artifact artifact = ( Artifact ) artifacts.get( i );
+                buffer.append( "<jar href=\"" );
+                if ( jarLibPath != null ) 
+                {
+                    buffer.append( jarLibPath ).append( "/" );
                 }
                 buffer.append( artifact.getFile().getName() ).append( "\"" );
                 
-                if (config.isOutputJarVersions()) 
+                if ( config.isOutputJarVersions() ) 
                 {
-                    buffer.append(" version=\"").append(artifact.getVersion()).append("\"");
+                    buffer.append( " version=\"" ).append( artifact.getVersion() ).append( "\"" );
                 }
                 
                 if ( config.isArtifactWithMainClass( artifact ) )
@@ -103,5 +108,4 @@ public class Generator extends AbstractGenerator
         }
         return dependenciesText;
     }
-    
 }

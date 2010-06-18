@@ -1,56 +1,30 @@
 package org.codehaus.mojo.webstart;
 
 /*
- * Copyright 2001-2005 The Apache Software Foundation.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License" );
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
-import org.apache.maven.plugin.logging.Log;
+import java.io.File;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
-import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
-import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
-import org.apache.maven.artifact.resolver.filter.ExcludesArtifactFilter;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.PluginManager;
-import org.apache.maven.plugin.jar.JarSignMojo;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectHelper;
-import org.apache.maven.settings.Settings;
-
+import org.apache.maven.plugin.logging.Log;
 import org.codehaus.mojo.keytool.GenkeyMojo;
-import org.codehaus.mojo.webstart.generator.Generator;
-import org.codehaus.plexus.archiver.zip.ZipArchiver;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.DirectoryScanner;
-
-import org.apache.commons.lang.SystemUtils;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Bean that represents the JarSigner configuration.
@@ -60,7 +34,8 @@ import java.util.List;
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
  */
-public class JarSignMojoConfig implements SignConfig {
+public class JarSignMojoConfig implements SignConfig 
+{
     
     protected Log log;
     protected File workDirectory;
@@ -71,7 +46,8 @@ public class JarSignMojoConfig implements SignConfig {
      * You will need to attach set the MavenProject is you don't sign in place.
      * @return
      */
-    public JarSignerMojo getJarSignerMojo() {
+    public JarSignerMojo getJarSignerMojo() 
+    {
         JarSignMojo2 signJar = new JarSignMojo2();
         
         signJar.setAlias( getAlias() );
@@ -89,7 +65,9 @@ public class JarSignMojoConfig implements SignConfig {
         return signJar;
     }
     
-    public void init(Log log, File workDirectory, boolean verbose) throws MojoExecutionException, MojoFailureException {
+    public void init( Log log, File workDirectory, boolean verbose ) 
+        throws MojoExecutionException, MojoFailureException 
+    {
         this.log = log;
         this.workDirectory = workDirectory;
         this.verbose = verbose;
@@ -104,7 +82,10 @@ public class JarSignMojoConfig implements SignConfig {
         }
     }
     
-    
+    /**
+     * Keystore configuration
+     * 
+     */
     public static class KeystoreConfig
     {
         private boolean delete;
@@ -204,147 +185,183 @@ public class JarSignMojoConfig implements SignConfig {
      */
     private boolean verify;
     
-    public void setKeystoreConfig( KeystoreConfig keystoreConfig ) {
+    public void setKeystoreConfig( KeystoreConfig keystoreConfig ) 
+    {
         this.keystoreConfig = keystoreConfig;
     }
 
-    public void setKeystore( String keystore ) {
+    public void setKeystore( String keystore ) 
+    {
         this.keystore = keystore;
     }
 
-    public void setKeyalg( String keyalg ) {
+    public void setKeyalg( String keyalg ) 
+    {
         this.keyalg = keyalg;
     }
 
-    public void setKeysize( String keysize ) {
+    public void setKeysize( String keysize ) 
+    {
         this.keysize = keysize;
     }
 
-    public void setSigalg( String sigalg ) {
+    public void setSigalg( String sigalg ) 
+    {
         this.sigalg = sigalg;
     }
 
-    public void setSigfile( String sigfile ) {
+    public void setSigfile( String sigfile ) 
+    {
         this.sigfile = sigfile;
     }
 
-    public void setStoretype( String storetype ) {
+    public void setStoretype( String storetype ) 
+    {
         this.storetype = storetype;
     }
 
-    public void setStorepass( String storepass ) {
+    public void setStorepass( String storepass ) 
+    {
         this.storepass = storepass;
     }
 
-    public void setKeypass( String keypass ) {
+    public void setKeypass( String keypass ) 
+    {
         this.keypass = keypass;
     }
 
-    public void setValidity( String validity ) {
+    public void setValidity( String validity ) 
+    {
         this.validity = validity;
     }
 
-    public void setDnameCn( String dnameCn ) {
+    public void setDnameCn( String dnameCn ) 
+    {
         this.dnameCn = dnameCn;
     }
 
-    public void setDnameOu( String dnameOu ) {
+    public void setDnameOu( String dnameOu ) 
+    {
         this.dnameOu = dnameOu;
     }
 
-    public void setDnameL( String dnameL ) {
+    public void setDnameL( String dnameL ) 
+    {
         this.dnameL = dnameL;
     }
 
-    public void setDnameSt( String dnameSt ) {
+    public void setDnameSt( String dnameSt ) 
+    {
         this.dnameSt = dnameSt;
     }
 
-    public void setDnameO( String dnameO ) {
+    public void setDnameO( String dnameO ) 
+    {
         this.dnameO = dnameO;
     }
 
-    public void setDnameC( String dnameC ) {
+    public void setDnameC( String dnameC ) 
+    {
         this.dnameC = dnameC;
     }
 
-    public void setAlias( String alias ) {
+    public void setAlias( String alias ) 
+    {
         this.alias = alias;
     }
 
-    public void setVerify( boolean verify ) {
+    public void setVerify( boolean verify ) 
+    {
         this.verify = verify;
     }
 
-    public String getKeystore() {
+    public String getKeystore() 
+    {
         return keystore;
     }
 
-    public String getKeyalg() {
+    public String getKeyalg() 
+    {
         return keyalg;
     }
 
-    public String getKeysize() {
+    public String getKeysize() 
+    {
         return keysize;
     }
 
-    public String getSigalg() {
+    public String getSigalg() 
+    {
         return sigalg;
     }
 
-    public String getSigfile() {
+    public String getSigfile() 
+    {
         return sigfile;
     }
 
-    public String getStoretype() {
+    public String getStoretype() 
+    {
         return storetype;
     }
 
-    public String getStorepass() {
+    public String getStorepass() 
+    {
         return storepass;
     }
 
-    public String getKeypass() {
+    public String getKeypass() 
+    {
         return keypass;
     }
 
-    public String getValidity() {
+    public String getValidity() 
+    {
         return validity;
     }
 
-    public String getDnameCn() {
+    public String getDnameCn() 
+    {
         return dnameCn;
     }
 
-    public String getDnameOu() {
+    public String getDnameOu() 
+    {
         return dnameOu;
     }
 
-    public String getDnameL() {
+    public String getDnameL()
+    {
         return dnameL;
     }
 
-    public String getDnameSt() {
+    public String getDnameSt() 
+    {
         return dnameSt;
     }
 
-    public String getDnameO() {
+    public String getDnameO() 
+    {
         return dnameO;
     }
 
-    public String getDnameC() {
+    public String getDnameC() 
+    {
         return dnameC;
     }
 
-    public String getAlias() {
+    public String getAlias() 
+    {
         return alias;
     }
 
-    public boolean getVerify() {
+    public boolean getVerify() 
+    {
         return verify;
     }
 
-    public String getDname() {
+    public String getDname() 
+    {
         StringBuffer buffer = new StringBuffer( 128 );
 
         appendToDnameBuffer( dnameCn, buffer, "CN" );
@@ -357,14 +374,16 @@ public class JarSignMojoConfig implements SignConfig {
         return buffer.toString();
     }
 
-    private void appendToDnameBuffer( final String property, StringBuffer buffer, final String prefix ) {
-        if ( property != null ) {
-            if ( buffer.length() > 0)
+    private void appendToDnameBuffer( final String property, StringBuffer buffer, final String prefix ) 
+    {
+        if ( property != null ) 
+        {
+            if ( buffer.length() > 0 )
             {
-                buffer.append(", ");
+                buffer.append( ", " );
             }
-            buffer.append(prefix).append("=");
-            buffer.append(property);
+            buffer.append( prefix ).append( "=" );
+            buffer.append( property );
         }
     }
 

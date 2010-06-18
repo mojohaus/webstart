@@ -1,19 +1,22 @@
 package org.codehaus.mojo.webstart;
 
 /*
- * Copyright 2001-2005 The Apache Software Foundation.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License" );
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import java.io.File;
@@ -264,7 +267,8 @@ public abstract class AbstractJnlpMojo
 
             // package the zip. Note this is very simple. Look at the JarMojo which does more things.
             // we should perhaps package as a war when inside a project with war packaging ?
-            File toFile = new File( getProject().getBuild().getDirectory(), getProject().getBuild().getFinalName() + ".zip" );
+            File toFile = new File( getProject().getBuild().getDirectory(), 
+                                    getProject().getBuild().getFinalName() + ".zip" );
             if ( toFile.exists() )
             {
                 getLog().debug( "deleting file " + toFile );
@@ -301,13 +305,16 @@ public abstract class AbstractJnlpMojo
 
     /**
      * Detects improper includes/excludes configuration.
-     * @throws MojoExecutionException if at least one of the specified includes or excludes matches no artifact, false otherwise
+     * @throws MojoExecutionException if at least one of the specified includes or excludes matches no artifact, 
+     *              false otherwise
      */
     void checkDependencies()
         throws MojoExecutionException
     {
         if ( dependencies == null )
+        {
             return;
+        }
 
         boolean failed = false;
 
@@ -326,7 +333,8 @@ public abstract class AbstractJnlpMojo
 
         if ( failed )
         {
-            throw new MojoExecutionException( "At least one specified dependency is incorrect. Review your project configuration." );
+            throw new MojoExecutionException( "At least one specified dependency is incorrect. " 
+                                              + "Review your project configuration." );
         }
     }
 
@@ -336,7 +344,9 @@ public abstract class AbstractJnlpMojo
     private boolean checkDependencies( List patterns, Collection artifacts )
     {
         if ( dependencies == null )
+        {
             return false;
+        }
 
         boolean failed = false;
         for ( Iterator it = patterns.iterator(); it.hasNext(); )
@@ -397,7 +407,8 @@ public abstract class AbstractJnlpMojo
             filter.add( new ExcludesArtifactFilter( dependencies.getExcludes() ) );
         }
 
-        Collection artifacts = isExcludeTransitive() ? getProject().getDependencyArtifacts() : getProject().getArtifacts();
+        Collection artifacts = isExcludeTransitive() 
+            ? getProject().getDependencyArtifacts() : getProject().getArtifacts();
 
         for ( Iterator it = artifacts.iterator(); it.hasNext(); )
         {
@@ -414,9 +425,9 @@ public abstract class AbstractJnlpMojo
     {
         // TODO: scope handler
         // Include runtime and compile time libraries
-        if ( !Artifact.SCOPE_SYSTEM.equals( artifact.getScope() ) && 
-             !Artifact.SCOPE_PROVIDED.equals( artifact.getScope() ) &&
-             !Artifact.SCOPE_TEST.equals( artifact.getScope() ) )
+        if ( !Artifact.SCOPE_SYSTEM.equals( artifact.getScope() ) 
+                        && !Artifact.SCOPE_PROVIDED.equals( artifact.getScope() ) 
+                        && !Artifact.SCOPE_TEST.equals( artifact.getScope() ) )
         {
             String type = artifact.getType();
             if ( "jar".equals( type ) || "ejb-client".equals( type ) )
@@ -455,13 +466,13 @@ public abstract class AbstractJnlpMojo
                     if ( artifactWithMainClass == null )
                     {
                         artifactWithMainClass = artifact;
-                        getLog().debug( "Found main jar. Artifact " + artifactWithMainClass +
-                            " contains the main class: " + jnlp.getMainClass() );
+                        getLog().debug( "Found main jar. Artifact " + artifactWithMainClass 
+                                        + " contains the main class: " + jnlp.getMainClass() );
                     }
                     else
                     {
-                        getLog().warn( "artifact " + artifact + " also contains the main class: " +
-                            jnlp.getMainClass() + ". IGNORED." );
+                        getLog().warn( "artifact " + artifact + " also contains the main class: " 
+                                       + jnlp.getMainClass() + ". IGNORED." );
                     }
                 }
             }
@@ -509,14 +520,16 @@ public abstract class AbstractJnlpMojo
           {
               jnlp.setInputTemplate( DEFAULT_TEMPLATE_LOCATION );
           }
-          else {
+          else 
+          {
               getLog().debug( "Jnlp template file not found in default location. Using inbuilt one." );
           }
         }
-        else {
+        else 
+        {
           File templateFile = new File( templateDirectory, jnlp.getInputTemplate() );
         
-          if (! templateFile.isFile() )
+          if ( !templateFile.isFile() )
           {
               throw new MojoExecutionException( "The specified JNLP template does not exist: [" + templateFile + "]" );
           }
@@ -614,7 +627,7 @@ public abstract class AbstractJnlpMojo
         getLog().debug( "verifyjar " + isVerifyjar() );
         getLog().debug( "verbose " + isVerbose() );
 
-        checkPack200();		
+        checkPack200();
         checkDependencies();
 
         if ( jnlp != null && jnlp.getResources() != null )
@@ -626,7 +639,7 @@ public abstract class AbstractJnlpMojo
         // FIXME
         /*
         if ( !"pom".equals( getProject().getPackaging() ) ) {
-            throw new MojoExecutionException( "'" + getProject().getPackaging() + "' packaging unsupported. Use 'pom'" );
+           throw new MojoExecutionException( "'" + getProject().getPackaging() + "' packaging unsupported. Use 'pom'" );
         }
         */
     }
@@ -667,7 +680,8 @@ public abstract class AbstractJnlpMojo
      * JNLP file. The default is false.
      * @return Returns the value of the {@code outputJarVersions} property.
      */
-    public boolean isOutputJarVersions() {
+    public boolean isOutputJarVersions() 
+    {
         return this.outputJarVersions;
     }
 

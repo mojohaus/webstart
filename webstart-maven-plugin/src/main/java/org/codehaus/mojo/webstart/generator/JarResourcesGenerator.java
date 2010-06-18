@@ -1,19 +1,22 @@
 package org.codehaus.mojo.webstart.generator;
 
 /*
- * Copyright 2005 Nick C
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License" );
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import java.io.File;
@@ -59,7 +62,8 @@ public class JarResourcesGenerator extends AbstractGenerator
                                   String webstartJarURL,
                                   String libPath )
     {
-        super(mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, templateFile, mainClass, webstartJarURL);
+        super( mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, 
+               templateFile, mainClass, webstartJarURL );
         this.jarResources = jarResources;
         this.libPath = libPath;
     }
@@ -67,14 +71,15 @@ public class JarResourcesGenerator extends AbstractGenerator
     /** 
      * {@inheritDoc}
      */
-    protected String getDependenciesText() {
+    protected String getDependenciesText() 
+    {
 
         String jarResourcesText = "";
         
         if ( this.jarResources.size() != 0 )
         {
-            
-            StringBuffer buffer = new StringBuffer( 100 * this.jarResources.size() );
+            final int multiplier = 100;
+            StringBuffer buffer = new StringBuffer( multiplier * this.jarResources.size() );
             buffer.append( "\n" );
 
             for ( Iterator itr = this.jarResources.iterator(); itr.hasNext(); )
@@ -97,7 +102,7 @@ public class JarResourcesGenerator extends AbstractGenerator
                 
                 if ( jarResource.isOutputJarVersion() ) 
                 {
-                    buffer.append(" version=\"").append(jarResource.getVersion()).append("\"");
+                    buffer.append( " version=\"" ).append( jarResource.getVersion() ).append( "\"" );
                 }
                 
                 if ( jarResource.getMainClass() != null )
@@ -107,13 +112,9 @@ public class JarResourcesGenerator extends AbstractGenerator
                 
                 buffer.append( "/>\n" );
             }
-                
             jarResourcesText = buffer.toString();
-            
         }
-            
         return jarResourcesText;
-
     }
 
 }

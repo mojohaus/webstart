@@ -1,19 +1,22 @@
 package org.codehaus.mojo.webstart;
 
 /*
- * Copyright 2001-2007 The Apache Software Foundation.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License" );
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -37,7 +40,8 @@ import java.util.List;
  *
  * This code will hopefully be moved into the jar plugin when stable enough.
  * 
- * @author <a href="mailto:jerome@coffeebreaks.org">Jerome Lacoste</a>, <a href="mailto:andrius@pivotcapital.com">Andrius Šabanas</a>
+ * @author <a href="mailto:jerome@coffeebreaks.org">Jerome Lacoste</a>
+ * @author <a href="mailto:andrius@pivotcapital.com">Andrius Šabanas</a>
  * @version $Id$
  * @goal unsign
  * @phase package
@@ -65,7 +69,8 @@ public class JarUnsignMojo
     /**
      * Path of the jar to unsign. When specified, the finalName is ignored.
      *
-     * @parameter alias="jarpath" default-value="${project.build.directory}/${project.build.finalName}.${project.packaging}"
+     * @parameter alias="jarpath" 
+     *      default-value="${project.build.directory}/${project.build.finalName}.${project.packaging}"
      */
     private File jarPath;
 
@@ -108,15 +113,17 @@ public class JarUnsignMojo
      */
     protected ArchiverManager archiverManager;    
 
-    private final String[] EXT_ARRAY = { "DSA", "RSA", "SF" };
-    private FileFilter removeSignatureFileFilter = new FileFilter() {
-        private final List EXT_TO_REMOVE = Arrays.asList(EXT_ARRAY);
+    private static final String[] EXT_ARRAY = { "DSA", "RSA", "SF" };
+    
+    private FileFilter removeSignatureFileFilter = new FileFilter() 
+    {
+        private final List extToRemove = Arrays.asList( EXT_ARRAY );
         
-        public boolean accept(File file) {
-            String extension = FileUtils.getExtension(file.getAbsolutePath());
-            return (EXT_TO_REMOVE.contains(extension));
+        public boolean accept( File file ) 
+        {
+            String extension = FileUtils.getExtension( file.getAbsolutePath() );
+            return ( extToRemove.contains( extension ) );
         }
-
     };
     
     public void execute()
@@ -136,7 +143,8 @@ public class JarUnsignMojo
         // create temp dir
         File tempDir = new File( tempDirParent, jarFile.getName() );
 
-        if ( !tempDir.mkdirs() ) {
+        if ( !tempDir.mkdirs() ) 
+        {
             throw new MojoExecutionException( "Error creating temporary directory: " + tempDir );
         }
         // FIXME we probably want to be more security conservative here. 
@@ -144,56 +152,76 @@ public class JarUnsignMojo
         // to access/change its contents before the file is rejared..
         
         // extract jar into temporary directory
-        try {
+        try 
+        {
             UnArchiver unArchiver = this.archiverManager.getUnArchiver( archiveExt );
             unArchiver.setSourceFile( jarFile );
             unArchiver.setDestDirectory( tempDir );
             unArchiver.extract();            
-        } catch ( ArchiverException ex)  {
+        } 
+        catch ( ArchiverException ex )  
+        {
             throw new MojoExecutionException( "Error unpacking file: " + jarFile + "to: " + tempDir, ex );            
-        } catch ( NoSuchArchiverException ex ) {
+        } 
+        catch ( NoSuchArchiverException ex ) 
+        {
             throw new MojoExecutionException( "Error acquiring unarchiver for extension: " + archiveExt, ex );
         }
         
         // create and check META-INF directory
         File metaInf = new File( tempDir, "META-INF" );
-        if ( !metaInf.isDirectory() ) {
+        if ( !metaInf.isDirectory() ) 
+        {
             verboseLog( "META-INT dir not found : nothing to do for file: " + jarPath.getAbsolutePath() );
             return;
         }
         
         // filter signature files and remove them
         File[] filesToRemove = metaInf.listFiles( this.removeSignatureFileFilter );                
-        if ( filesToRemove.length == 0 ) {
-            verboseLog( "no files match " + toString(EXT_ARRAY) + " : nothing to do for file: " + jarPath.getAbsolutePath() );
+        if ( filesToRemove.length == 0 ) 
+        {
+            verboseLog( "no files match " + toString( EXT_ARRAY ) 
+                        + " : nothing to do for file: " + jarPath.getAbsolutePath() );
             return;
         }                
-        for ( int i = 0; i < filesToRemove.length; i++ ) {
-            if ( !filesToRemove[i].delete() ) {
+        for ( int i = 0; i < filesToRemove.length; i++ ) 
+        {
+            if ( !filesToRemove[i].delete() ) 
+            {
                 throw new MojoExecutionException( "Error removing signature file: " + filesToRemove[i] );
             }
-            verboseLog("remove file :" + filesToRemove[i]);
+            verboseLog( "remove file :" + filesToRemove[i] );
         }
         
         // recreate archive
-        try {
+        try 
+        {
             JarArchiver jarArchiver = (JarArchiver) this.archiverManager.getArchiver( "jar" );
             jarArchiver.setUpdateMode( false );
             jarArchiver.addDirectory( tempDir );
             jarArchiver.setDestFile( jarFile );
             jarArchiver.createArchive();
             
-        } catch ( ArchiverException ex ) {
+        } 
+        catch ( ArchiverException ex ) 
+        {
             throw new MojoExecutionException( "Error packing directory: " + tempDir + "to: " + jarFile, ex );
-        } catch ( IOException ex ) {
+        } 
+        catch ( IOException ex ) 
+        {
             throw new MojoExecutionException( "Error packing directory: " + tempDir + "to: " + jarFile, ex );
-        } catch ( NoSuchArchiverException ex ) {
+        } 
+        catch ( NoSuchArchiverException ex ) 
+        {
             throw new MojoExecutionException( "Error acquiring archiver for extension: jar", ex );
         }
 
-        try {
+        try 
+        {
             FileUtils.deleteDirectory( tempDir );
-        } catch ( IOException ex ) {
+        } 
+        catch ( IOException ex ) 
+        {
             throw new MojoExecutionException( "Error cleaning up temporary directory file: " + tempDir, ex );
         }
     }
@@ -264,7 +292,7 @@ public class JarUnsignMojo
     public String toString( String[] items )
     {
         StringBuffer back = new StringBuffer( "{" );
-        for( int i = 0; i < items.length; i++ )
+        for ( int i = 0; i < items.length; i++ )
         {
             if ( i != 0 )
             {

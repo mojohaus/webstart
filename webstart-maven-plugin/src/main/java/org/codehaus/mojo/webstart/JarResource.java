@@ -1,19 +1,23 @@
-/*
- * Copyright 2001-2005 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License" );
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.codehaus.mojo.webstart;
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 import org.apache.maven.artifact.Artifact;
 
@@ -66,7 +70,7 @@ public class JarResource
      */
     public JarResource( Artifact artifact )
     {
-        setArtifact(artifact);
+        setArtifact( artifact );
     }
 
     /**
@@ -82,29 +86,29 @@ public class JarResource
             return true;
         }
         
-        if ( ! (obj instanceof JarResource ) )
+        if ( ! ( obj instanceof JarResource ) )
         {
             return false;
         }
         
-        JarResource other = (JarResource) obj;
+        JarResource other = ( JarResource ) obj;
         
         if ( fieldsAreNotEqual( getGroupId(), other.getGroupId() ) )
         {
             return false;
         }
         
-        if ( fieldsAreNotEqual( getArtifactId(), other.getArtifactId() ))
+        if ( fieldsAreNotEqual( getArtifactId(), other.getArtifactId() ) )
         {
             return false;
         }
         
-        if ( fieldsAreNotEqual( getVersion(), other.getVersion() ))
+        if ( fieldsAreNotEqual( getVersion(), other.getVersion() ) )
         {
             return false;
         }
         
-        if ( fieldsAreNotEqual( getClassifier(), other.getClassifier() ))
+        if ( fieldsAreNotEqual( getClassifier(), other.getClassifier() ) )
         {
             return false;
         }
@@ -132,12 +136,13 @@ public class JarResource
      */
     public int hashCode() 
     {
-        
-        int result = 17; 
-        result += 37 * fieldHashCode( getGroupId() );
-        result += 37 * fieldHashCode( getArtifactId() );
-        result += 37 * fieldHashCode( getVersion() );
-        result += 37 * fieldHashCode( getClassifier() );
+        final int offset = 17;
+        final int multiplier = 37;
+        int result = offset; 
+        result += multiplier * fieldHashCode( getGroupId() );
+        result += multiplier * fieldHashCode( getArtifactId() );
+        result += multiplier * fieldHashCode( getVersion() );
+        result += multiplier * fieldHashCode( getClassifier() );
         return result;
         
     }
@@ -234,18 +239,15 @@ public class JarResource
      */
     public void setArtifact( Artifact artifact )
     {
-
         if ( artifact == null )
         {
-            throw new IllegalArgumentException("artifact must not be null");
+            throw new IllegalArgumentException( "artifact must not be null" );
         }
-        
         this.artifact = artifact;
         this.artifactId = artifact.getArtifactId();
         this.classifier = artifact.getClassifier();
         this.groupId = artifact.getGroupId();
         this.version = artifact.getVersion();
-        
     }
 
     /**
@@ -268,13 +270,11 @@ public class JarResource
      */
     public String getHrefValue()
     {
-        
-        if (this.hrefValue == null && this.artifact != null) {
+        if ( this.hrefValue == null && this.artifact != null ) 
+        {
             return this.artifact.getFile().getName();
         }
-        
         return this.hrefValue;
-        
     }
     
     /**
@@ -292,12 +292,12 @@ public class JarResource
     /**
      * {@inheritDoc}
      */
-    public String toString() {
-        
+    public String toString() 
+    {
         StringBuffer sbuf = new StringBuffer();
-        sbuf.append( "JarResource[ groupId='")
+        sbuf.append( "JarResource[ groupId='" )
             .append( this.groupId )
-            .append( "', artifactId='")
+            .append( "', artifactId='" )
             .append( this.artifactId )
             .append( "', version='" )
             .append( this.version )
@@ -311,7 +311,5 @@ public class JarResource
             .append( this.hrefValue )
             .append( "' ]" );
         return sbuf.toString();
-                     
     }
-
 }

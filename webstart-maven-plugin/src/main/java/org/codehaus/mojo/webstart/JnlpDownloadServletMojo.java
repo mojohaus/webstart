@@ -1,19 +1,23 @@
-/*
- * Copyright 2001-2005 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License" );
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.codehaus.mojo.webstart;
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 import java.io.File;
 import java.io.IOException;
@@ -121,18 +125,18 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
         }
         catch ( IOException e )
         {
-            throw new MojoExecutionException("An error occurred attempting to copy " 
-                                             + "resources to the working directory.", e);
+            throw new MojoExecutionException( "An error occurred attempting to copy " 
+                                             + "resources to the working directory.", e );
         }
         
-        if (this.commonJarResources != null )
+        if ( this.commonJarResources != null )
         {
             retrieveJarResources( this.commonJarResources );
         }
         
-        for (Iterator itr = this.jnlpFiles.iterator(); itr.hasNext(); )
+        for ( Iterator itr = this.jnlpFiles.iterator(); itr.hasNext(); )
         {
-            JnlpFile jnlpFile = (JnlpFile) itr.next();
+            JnlpFile jnlpFile = ( JnlpFile ) itr.next();
             retrieveJarResources( jnlpFile.getJarResources() );
         }
         
@@ -141,7 +145,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
         
         for ( Iterator itr = this.jnlpFiles.iterator(); itr.hasNext(); )
         {
-            generateJnlpFile( (JnlpFile) itr.next(), getLibPath() );
+            generateJnlpFile( ( JnlpFile ) itr.next(), getLibPath() );
         }
         
         generateVersionXml();
@@ -164,15 +168,17 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
                     "Configuration error: At least one <jnlpFile> element must be specified" );
         }
 
-        if ( this.jnlpFiles.size() == 1 && StringUtils.isEmpty( ((JnlpFile) this.jnlpFiles.get(0)).getOutputFilename() ) )
+        if ( this.jnlpFiles.size() == 1 
+                        && StringUtils.isEmpty( ( ( JnlpFile ) this.jnlpFiles.get( 0 ) ).getOutputFilename() ) )
         {
-            getLog().debug( "Jnlp output file name not specified in single set of jnlpFiles. Using default output file name: launch.jnlp." );
-            ((JnlpFile) this.jnlpFiles.get(0)).setOutputFilename( "launch.jnlp" );
+            getLog().debug( "Jnlp output file name not specified in single set of jnlpFiles. " 
+                            + "Using default output file name: launch.jnlp." );
+            ( ( JnlpFile ) this.jnlpFiles.get( 0 ) ).setOutputFilename( "launch.jnlp" );
         }
          
         for ( Iterator itr = this.jnlpFiles.iterator(); itr.hasNext(); ) 
         {
-            checkJnlpFileConfiguration( (JnlpFile) itr.next() );
+            checkJnlpFileConfiguration( ( JnlpFile ) itr.next() );
         }
         
         checkForDuplicateJarResources();
@@ -328,15 +334,15 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
             return;
         }
         
-        for (Iterator itr = this.commonJarResources.iterator(); itr.hasNext(); )
+        for ( Iterator itr = this.commonJarResources.iterator(); itr.hasNext(); )
         {
             JarResource jarResource = (JarResource) itr.next();
             checkMandatoryJarResourceFields( jarResource );
             
             if ( jarResource.getMainClass() != null )
             {
-                throw new MojoExecutionException("Configuration Error: A mainClass must not be specified "
-                                                 + "on a JarResource in the commonJarResources collection.");
+                throw new MojoExecutionException( "Configuration Error: A mainClass must not be specified "
+                                                 + "on a JarResource in the commonJarResources collection." );
             }
             
         }
@@ -348,7 +354,8 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
 
         if ( StringUtils.isEmpty( jarResource.getGroupId() )
              || StringUtils.isEmpty( jarResource.getArtifactId() )
-             || StringUtils.isEmpty( jarResource.getVersion() ) ) {
+             || StringUtils.isEmpty( jarResource.getVersion() ) ) 
+        {
             throw new MojoExecutionException(
                     "Configuration error: groupId, artifactId or version missing for jarResource["
                     + jarResource + "]." );
@@ -400,8 +407,8 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
             //check it for the mainClass if specified
             for (  Iterator itr = jarResources.iterator(); itr.hasNext(); )
             {   
-                JarResource jarResource = (JarResource) itr.next();
-                Artifact artifact = createArtifact(jarResource);
+                JarResource jarResource = ( JarResource ) itr.next();
+                Artifact artifact = createArtifact( jarResource );
                 getArtifactResolver().resolve( artifact, getRemoteRepositories(), getLocalRepository() );
                 jarResource.setArtifact( artifact );
                 checkForMainClass( jarResource );
@@ -418,7 +425,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
             //for each JarResource, copy its artifact to the lib directory if necessary
             for ( Iterator itr = jarResources.iterator(); itr.hasNext(); )
             {
-                JarResource jarResource = (JarResource) itr.next();
+                JarResource jarResource = ( JarResource ) itr.next();
                 Artifact artifact = jarResource.getArtifact();
                 boolean copied = copyJarAsUnprocessedToDirectoryIfNecessary( artifact.getFile(), getLibDirectory() );
                 
@@ -427,12 +434,12 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
                     String name = artifact.getFile().getName();
                     if ( getLog().isDebugEnabled() )
                     {
-                        getLog().debug("Adding " + name + " to modifiedJnlpArtifacts list." );
+                        getLog().debug( "Adding " + name + " to modifiedJnlpArtifacts list." );
                     }
                     getModifiedJnlpArtifacts().add( name.substring( 0, name.lastIndexOf( '.' ) ) );
                 }
 
-                if( jarResource.isOutputJarVersion() )
+                if ( jarResource.isOutputJarVersion() )
                 {
                     // Create and set a version-less href for this jarResource 
                     String hrefValue = buildHrefValue( artifact );
@@ -503,7 +510,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
             throw new IllegalStateException( "Implementation Error: The given jarResource cannot be checked for "
                                              + "a main class until the underlying artifact has been resolved: ["
                                              + jarResource
-                                             + "]");
+                                             + "]" );
         }
         
         try
@@ -517,12 +524,12 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
         }
         catch ( MalformedURLException e )
         {
-            throw new MojoExecutionException("Attempting to find main class ["
+            throw new MojoExecutionException( "Attempting to find main class ["
                                              + mainClass
                                              + "] in ["
                                              + artifact
                                              + "]",
-                                             e);
+                                             e );
         }
             
     }
@@ -546,9 +553,9 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
 
         if ( getLog().isDebugEnabled() )
         {
-            getLog().debug("transitively resolved artifacts = " + transitiveResolvedArtifacts);
-            getLog().debug("jarResources = " + jarResources);
-            getLog().debug("jarResourceArtifacts = " + jarResourceArtifacts);
+            getLog().debug( "transitively resolved artifacts = " + transitiveResolvedArtifacts );
+            getLog().debug( "jarResources = " + jarResources );
+            getLog().debug( "jarResourceArtifacts = " + jarResourceArtifacts );
         }
         
         //for each transitive dependency, wrap it in a JarResource and add it to the collection of
@@ -561,7 +568,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
             // we should really improve the way we collect the jarResources
             if ( !jarResourceArtifacts.contains( resolvedArtifact ) )
             {
-                JarResource newJarResource = new JarResource(resolvedArtifact);
+                JarResource newJarResource = new JarResource( resolvedArtifact );
                 if ( !jarResources.contains( newJarResource ) )
                 {
                     newJarResource.setOutputJarVersion( true );
@@ -586,7 +593,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
             
             for ( Iterator itr = this.commonJarResources.iterator(); itr.hasNext(); )
             {
-                JarResource jarResource = (JarResource) itr.next();
+                JarResource jarResource = ( JarResource ) itr.next();
                 jarResources.add( jarResource );
             }
             
@@ -601,7 +608,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
                                                    jarResources, 
                                                    jnlpFile.getMainClass(),
                                                    getWebstartJarURLForVelocity(),
-                                                   libPath);
+                                                   libPath );
 
         jnlpGenerator.setExtraConfig( getGeneratorExtraConfig() );
 
@@ -655,9 +662,9 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
         
         //combine the jar resources from commonJarResources and each JnlpFile config
         
-        for (Iterator itr = this.jnlpFiles.iterator(); itr.hasNext(); )
+        for ( Iterator itr = this.jnlpFiles.iterator(); itr.hasNext(); )
         {
-            JnlpFile jnlpFile = (JnlpFile) itr.next();
+            JnlpFile jnlpFile = ( JnlpFile ) itr.next();
             jarResources.addAll( jnlpFile.getJarResources() );
         }
         
@@ -709,8 +716,8 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
     private void copyWorkingDirToOutputDir() throws MojoExecutionException
     {
         
-        File outputDir = new File(getProject().getBuild().getDirectory(), 
-                                  getProject().getBuild().getFinalName() + File.separator + this.outputDirectoryName);
+        File outputDir = new File( getProject().getBuild().getDirectory(), 
+                                  getProject().getBuild().getFinalName() + File.separator + this.outputDirectoryName );
         
         if ( !outputDir.exists() ) 
         {
@@ -729,9 +736,9 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo
         
         try
         {
-            FileUtils.copyDirectoryStructure(getWorkDirectory(), outputDir);
+            FileUtils.copyDirectoryStructure( getWorkDirectory(), outputDir );
         }
-        catch (IOException e)
+        catch ( IOException e )
         {
             throw new MojoExecutionException(
                     "An error occurred attempting to copy a file to the JNLP output directory.", e );
