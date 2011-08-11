@@ -19,6 +19,7 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
@@ -747,15 +748,15 @@ public abstract class AbstractJnlpMojo
     void checkExtension( JnlpExtension extension )
             throws MojoExecutionException
     {
-        if (extension.getName() == null || extension.getName().trim().isEmpty() )
+        if ( StringUtils.isEmpty( extension.getName() ) )
         {
             throw new MojoExecutionException( "JnlpExtension name is mandatory. Review your project configuration." );
         }
-        if (extension.getVendor() == null || extension.getVendor().trim().isEmpty() )
+        if ( StringUtils.isEmpty( extension.getVendor() ) )
         {
             throw new MojoExecutionException( "JnlpExtension vendor is mandatory. Review your project configuration." );
         }
-        if (extension.getTitle() == null || extension.getTitle().trim().isEmpty() )
+        if ( StringUtils.isEmpty( extension.getTitle() ) )
         {
             throw new MojoExecutionException( "JnlpExtension name is title. Review your project configuration." );
         }
