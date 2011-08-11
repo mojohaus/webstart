@@ -28,7 +28,7 @@
       <groupId>org.codehaus.mojo.webstart</groupId>
       <!--groupId>com.sun.java.jnlp</groupId-->
       <artifactId>webstart-jnlp-servlet</artifactId>
-      <version>1.0-6.0.02_ea_b02.1-SNAPSHOT</version>
+      <version>1.0-6.0.02_ea_b02.2-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     
