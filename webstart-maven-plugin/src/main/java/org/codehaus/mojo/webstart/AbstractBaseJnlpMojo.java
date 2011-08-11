@@ -806,6 +806,12 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
         return url;
     }
 
+    protected URL findDefaultJnlpExtensionTemplateURL()
+    {
+        URL url = this.getClass().getClassLoader().getResource( "default-jnlp-extension-template.vm" );
+        return url;
+    }
+    
     protected URL getWebstartJarURL()
     {
         String url = findDefaultJnlpTemplateURL().toString();
@@ -903,7 +909,7 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      * 
      * @return a configured instance of the JarSignVerifyMojo.
      */
-    private JarSignVerifyMojo setupVerifyMojo()
+    protected JarSignVerifyMojo setupVerifyMojo()
     {
         JarSignVerifyMojo verifyMojo = new JarSignVerifyMojo();
         verifyMojo.setErrorWhenNotSigned( true );

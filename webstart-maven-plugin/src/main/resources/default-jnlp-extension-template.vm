@@ -4,17 +4,13 @@
     codebase="$project.Url"
     href="$outputFile">
   <information>
-#if($project.Name)
-    <title>$project.Name</title>
+    <title>$extension.Title</title>
+    <vendor>$extension.Vendor</vendor>
+#if($extension.Homepage) 
+    <homepage href="$extension.Homepage"/>
 #end
-#if($project.Organization.Name)
-    <vendor>$project.Organization.Name</vendor>
-#end
-#if($project.Url)
-    <homepage href="$project.Url"/>
-#end
-#if($project.Description)
-    <description>$project.Description</description>
+#if($extension.Description)
+    <description>$extension.Description</description>
 #end
 #if($offlineAllowed)
     <offline-allowed/>
@@ -28,8 +24,7 @@
   <resources>
     <j2se version="$j2seVersion"/>
      $dependencies
-     $extensions
   </resources>
-  <application-desc main-class="$mainClass"/>
+  <component-desc/>
 </jnlp>
 

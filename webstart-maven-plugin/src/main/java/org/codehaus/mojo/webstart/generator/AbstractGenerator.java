@@ -217,7 +217,7 @@ public abstract class AbstractGenerator
      * 
      * @return Returns a velocity context with system and maven properties added
      */
-    private VelocityContext createAndPopulateContext() 
+    protected VelocityContext createAndPopulateContext() 
     {
         VelocityContext context = new VelocityContext();
 
@@ -290,5 +290,29 @@ public abstract class AbstractGenerator
         DateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
         df.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
         return new StringBuffer( "TS: " ).append( df.format( date ) ).append( "Z" ).toString();
+    }
+
+    /**
+     * Add {@code level} space caracteres at the begin of each lines of the
+     * given {@code text}.
+     *
+     * @param level the number of space caracteres to add
+     * @param text the text to prefix
+     * @return the indented text
+     */
+    protected String indentText( int level , String text )
+    {
+        StringBuffer buffer = new StringBuffer( );
+        String [] lines = text.split("\n");
+        String prefix = "";
+        for (int i=0 ;i < level ; i++)
+        {
+            prefix += " ";
+        }
+        for (int i=0, j= lines.length; i<j; i++)
+        {
+            buffer.append(prefix).append(lines[i]).append("\n");
+        }
+        return buffer.toString();
     }
 }
