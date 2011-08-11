@@ -19,15 +19,6 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -41,6 +32,15 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * The superclass for all JNLP generating MOJOs.
@@ -167,6 +167,24 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
      * @parameter
      */
     private boolean excludeTransitive;
+
+    /**
+     * Flag to create the archive or not.
+     *
+     *
+     * @parameter default-value="true"
+     * @since 1.0-beta-2
+     */
+    private boolean makeArchive;
+
+    /**
+     * Flag to attach the archive or not to the project's build.
+     *
+     *
+     * @parameter default-value="true"
+     * @since 1.0-beta-2
+     */
+    private boolean attachArchive;
 
     private final List modifiedJnlpArtifacts = new ArrayList();
 
@@ -402,6 +420,25 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo
     protected boolean isExcludeTransitive()
     {
         return this.excludeTransitive;
+    }
+
+    /**
+     * Returns the flag indicates whether or not archive must be build.
+     *
+     * @return Returns the value of the makeArchive field.
+     */
+    protected boolean isMakeArchive()
+    {
+        return makeArchive;
+    }
+
+    /**
+     * Returns the flag indicates whether or not archive must be deployed.
+     * @return Returns the value of the attachArchive field.
+     */
+    protected boolean isAttachArchive()
+    {
+        return attachArchive;
     }
 
     /**

@@ -19,13 +19,6 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
@@ -38,6 +31,13 @@ import org.apache.maven.settings.Settings;
 import org.codehaus.mojo.webstart.generator.Generator;
 import org.codehaus.mojo.webstart.generator.GeneratorExtraConfig;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
@@ -265,23 +265,27 @@ public abstract class AbstractJnlpMojo
             packJars();
             generateJnlpFile( getWorkDirectory() );
 
-            // package the zip. Note this is very simple. Look at the JarMojo which does more things.
-            // we should perhaps package as a war when inside a project with war packaging ?
-            File toFile = new File( getProject().getBuild().getDirectory(), 
-                                    getProject().getBuild().getFinalName() + ".zip" );
-            if ( toFile.exists() )
+            if ( isMakeArchive() )
             {
-                getLog().debug( "deleting file " + toFile );
-                toFile.delete();
+                // package the zip. Note this is very simple. Look at the JarMojo which does more things.
+                // we should perhaps package as a war when inside a project with war packaging ?
+                File toFile = new File( getProject().getBuild().getDirectory(), getProject().getBuild().getFinalName() + ".zip" );
+                if ( toFile.exists() )
+                {
+                    getLog().debug( "deleting file " + toFile );
+                    toFile.delete();
+                }
+                zipArchiver.addDirectory( getWorkDirectory() );
+                zipArchiver.setDestFile( toFile );
+                getLog().debug( "about to call createArchive" );
+                zipArchiver.createArchive();
+
+                if (isAttachArchive())
+                {
+                    // maven 2 version 2.0.1 method
+                    projectHelper.attachArtifact( getProject(), "zip", toFile );
+                }
             }
-            zipArchiver.addDirectory( getWorkDirectory() );
-            zipArchiver.setDestFile( toFile );
-            getLog().debug( "about to call createArchive" );
-            zipArchiver.createArchive();
-
-            // maven 2 version 2.0.1 method
-            projectHelper.attachArtifact( getProject(), "zip", toFile );
-
         }
         catch ( MojoExecutionException e )
         {
@@ -626,6 +630,12 @@ public abstract class AbstractJnlpMojo
         // getLog().debug( "usejnlpservlet " + this.usejnlpservlet );
         getLog().debug( "verifyjar " + isVerifyjar() );
         getLog().debug( "verbose " + isVerbose() );
+
+        if ( isAttachArchive() && !isMakeArchive() ) {
+            getLog().warn( "Can not attach archive while parameter makeArchive is setted to false." );
+        }
+        getLog().debug( "makeArchive " + isMakeArchive() );
+        getLog().debug( "attachArchive " + isAttachArchive() );
 
         checkPack200();
         checkDependencies();
