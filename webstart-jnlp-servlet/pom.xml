@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -11,7 +12,9 @@
   <packaging>jar</packaging>
   <name>JNLP Servlet</name>
   <version>1.0-6.0.02_ea_b02.2-SNAPSHOT</version>
-  <description>JNLP Sample servlet that supports pack200 protocol. Taken from Sun's JDK sample/jnlp directory thanks to its permissive license.</description>
+  <description>JNLP Sample servlet that supports pack200 protocol. Taken from Sun's JDK sample/jnlp directory thanks to
+    its permissive license.
+  </description>
   <url>http:///jdk6.dev.java.net/</url>
   <licenses>
     <license>
@@ -45,7 +48,6 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>2.3</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
