@@ -11,9 +11,9 @@ Using the Inbuilt Velocity Templates
   As described in the usage, the JNLP mojos depend on Velocity templates.
   If you don't provide one, an inbuilt template will be picked up. They are accessible below for reference.
 
-  * {{{default-jnlp-template.vm}JNLP Mojos inbuilt template}}
+  * {{{./default-jnlp-template.vm}JNLP Mojos inbuilt template}}
 
-  * {{{default-jnlp-servlet-template.vm}JNLP Download Servlet Mojo inbuilt template}}
+  * {{{./default-jnlp-servlet-template.vm}JNLP Download Servlet Mojo inbuilt template}}
 
   []
 
