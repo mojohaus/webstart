@@ -20,24 +20,24 @@ package org.codehaus.mojo.webstart;
  */
 
 
-import java.io.File;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+
+import java.io.File;
 
 /**
  * Provides an abstraction for all Mojos that are capable of signing
  * jar files. Most use cases will involve signing jars with the keytool
  * provided with the java development kit. However, a particular enterprise
  * may require a different method of signing jars.
- * 
+ * <p/>
  * In a corporate environment, PCs typically have a company certificate
  * installed so that applications like Java Webstart know that when
  * code is signed by the company certificate it can be trusted. Companies
  * don't want to expose this certificate's private key to individual
  * developers. Instead, the company needs to keep the key secret and provide
  * a customised way of developers submitting jar files to be signed.
- * 
+ * <p/>
  * This interface allows enterprise users to develop a Mojo which doesn't
  * use the java keytool to sign jars. For example, the Maven Webstart
  * plugin signs jars as part of its operation. Using this interface, the
@@ -45,29 +45,33 @@ import org.apache.maven.plugin.MojoFailureException;
  * use JarSignMojo as a default) so that the user can plug in a custom
  * Mojo to sign their jars.
  */
-public interface JarSignerMojo 
+public interface JarSignerMojo
 {
     /**
      * Sets the location of the unsigned jar file.
+     *
      * @param jarPath path to jar
      */
     void setJarPath( File jarPath );
-    
+
     /**
      * Sets the output filename for the signed jar.
      * This may be the same location as specified in setJarPath(). If this
      * is the case, the unsigned jar file will be overwritten with the
      * signed jar file.
+     *
      * @param signedJar the signed jar
      */
     void setSignedJar( File signedJar );
-    
+
     /**
      * Executes the jar signing process.
-     * 
-     * Same throws declaration as AbstractMojo.execute() 
+     * <p/>
+     * Same throws declaration as AbstractMojo.execute()
+     *
      * @throws MojoExecutionException
      * @throws MojoFailureException
      */
-    void execute() throws MojoExecutionException, MojoFailureException;
+    void execute()
+        throws MojoExecutionException, MojoFailureException;
 }

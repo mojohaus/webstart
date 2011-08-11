@@ -24,10 +24,9 @@ import org.apache.maven.plugin.MojoExecutionException;
 import java.io.File;
 
 /**
- * 
  * Some FileUtil methods
- * @todo check if this can be replaced with org.codehaus.plexus.util.FileUtils
  *
+ * @todo check if this can be replaced with org.codehaus.plexus.util.FileUtils
  */
 class Utils
 {
@@ -61,14 +60,14 @@ class Utils
                 }
             }
         }
-    
+
         if ( !delete( d ) )
         {
             String message = "Unable to delete directory " + d.getAbsolutePath();
             throw new MojoExecutionException( message );
         }
-    }    
-    
+    }
+
     /**
      * Accommodate Windows bug encountered in both Sun and IBM JDKs.
      * Others possible. If the delete does not work, call System.gc(),

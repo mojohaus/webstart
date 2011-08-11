@@ -35,6 +35,7 @@
  */
 
 package jnlp.sample.util;
+
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -45,64 +46,97 @@ import java.util.StringTokenizer;
  *  (version-id ('+'?) ' ') *
  *
  */
-public class VersionString {
+public class VersionString
+{
     private ArrayList _versionIds;
-    
-    /** Constructs a VersionString object from string */
-    public VersionString(String vs) {
-	_versionIds = new ArrayList();
-	if (vs != null) {
-	    StringTokenizer st = new StringTokenizer(vs, " ", false);
-	    while(st.hasMoreElements()) {
-		// Note: The VersionID class takes care of a postfixed '+'
-		_versionIds.add(new VersionID(st.nextToken()));
-	    }
-	}
-    }
-    
-    /** Check if this VersionString object contains the VersionID m */
-    public boolean contains(VersionID m) {
-	for(int i = 0; i < _versionIds.size(); i++) {
-	    VersionID vi = (VersionID)_versionIds.get(i);
-	    boolean check = vi.match(m);
-	    if (check) return true;
-	}
-	return false;
-    }
-       
-    /** Check if this VersionString object contains the VersionID m, given as a string */
-    public boolean contains(String versionid) {
-	return contains(new VersionID(versionid));
-    }
-    
-    /** Check if this VersionString object contains anything greater than m */
-    public boolean containsGreaterThan(VersionID m) {
-        for(int i = 0; i < _versionIds.size(); i++) {
-            VersionID vi = (VersionID)_versionIds.get(i);
-            boolean check = vi.isGreaterThan(m);
-            if (check) return true;
+
+    /**
+     * Constructs a VersionString object from string
+     */
+    public VersionString( String vs )
+    {
+        _versionIds = new ArrayList();
+        if ( vs != null )
+        {
+            StringTokenizer st = new StringTokenizer( vs, " ", false );
+            while ( st.hasMoreElements() )
+            {
+                // Note: The VersionID class takes care of a postfixed '+'
+                _versionIds.add( new VersionID( st.nextToken() ) );
+            }
         }
-        return false;
-    }   
-  
-    /** Check if this VersionString object contains anything greater than the VersionID m, given as a string */
-    public boolean containsGreaterThan(String versionid) {
-	return containsGreaterThan(new VersionID(versionid));
-    }
-    
-    /** Check if the versionString 'vs' contains the VersionID 'vi' */
-    static public boolean contains(String vs, String vi) {
-	return (new VersionString(vs)).contains(vi);
     }
 
-    /** Pretty-print object */
-    public String toString() {
-	StringBuffer sb = new StringBuffer();
-	for(int i = 0; i < _versionIds.size(); i++) {
-	    sb.append(_versionIds.get(i).toString());
-	    sb.append(' ');
-	}
-	return sb.toString();
+    /**
+     * Check if this VersionString object contains the VersionID m
+     */
+    public boolean contains( VersionID m )
+    {
+        for ( int i = 0; i < _versionIds.size(); i++ )
+        {
+            VersionID vi = (VersionID) _versionIds.get( i );
+            boolean check = vi.match( m );
+            if ( check )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if this VersionString object contains the VersionID m, given as a string
+     */
+    public boolean contains( String versionid )
+    {
+        return contains( new VersionID( versionid ) );
+    }
+
+    /**
+     * Check if this VersionString object contains anything greater than m
+     */
+    public boolean containsGreaterThan( VersionID m )
+    {
+        for ( int i = 0; i < _versionIds.size(); i++ )
+        {
+            VersionID vi = (VersionID) _versionIds.get( i );
+            boolean check = vi.isGreaterThan( m );
+            if ( check )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if this VersionString object contains anything greater than the VersionID m, given as a string
+     */
+    public boolean containsGreaterThan( String versionid )
+    {
+        return containsGreaterThan( new VersionID( versionid ) );
+    }
+
+    /**
+     * Check if the versionString 'vs' contains the VersionID 'vi'
+     */
+    static public boolean contains( String vs, String vi )
+    {
+        return ( new VersionString( vs ) ).contains( vi );
+    }
+
+    /**
+     * Pretty-print object
+     */
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer();
+        for ( int i = 0; i < _versionIds.size(); i++ )
+        {
+            sb.append( _versionIds.get( i ).toString() );
+            sb.append( ' ' );
+        }
+        return sb.toString();
     }
 }
 

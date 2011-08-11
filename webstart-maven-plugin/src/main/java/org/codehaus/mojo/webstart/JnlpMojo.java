@@ -26,7 +26,7 @@ import org.apache.maven.project.MavenProject;
  * <p/>
  * The plugin tries to not re-sign/re-pack if the dependent jar hasn't changed.
  * As a consequence, if one modifies the pom jnlp config or a keystore, one should clean before rebuilding.
- * <p/>This mojo forks a build lifecycle and won't install the zip packages in your local repository. 
+ * <p/>This mojo forks a build lifecycle and won't install the zip packages in your local repository.
  * You probably want to use the jnlp-inline instead.
  *
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>

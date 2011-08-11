@@ -19,15 +19,15 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
-import java.io.File;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 import org.apache.velocity.VelocityContext;
 import org.codehaus.mojo.webstart.AbstractJnlpMojo;
 import org.codehaus.mojo.webstart.JnlpExtension;
+
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Generates a JNLP deployment descriptor
@@ -35,29 +35,25 @@ import org.codehaus.mojo.webstart.JnlpExtension;
  * @author ngc
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  */
-public class Generator extends AbstractGenerator
+public class Generator
+    extends AbstractGenerator
 {
 
     private AbstractJnlpMojo config;
 
     /**
      * @param task
-     * @param resourceLoaderPath  used to find the template in conjunction to inputFileTemplatePath
+     * @param resourceLoaderPath    used to find the template in conjunction to inputFileTemplatePath
      * @param outputFile
      * @param inputFileTemplatePath relative to resourceLoaderPath
      */
-    public Generator( MavenProject mavenProject,
-                      AbstractJnlpMojo task, 
-                      String defaultTemplateResourceName,
-                      File resourceLoaderPath, 
-                      File outputFile, 
-                      String inputFileTemplatePath, 
-                      String mainClass, 
+    public Generator( MavenProject mavenProject, AbstractJnlpMojo task, String defaultTemplateResourceName,
+                      File resourceLoaderPath, File outputFile, String inputFileTemplatePath, String mainClass,
                       String webstartJarURL )
     {
-        super( mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, 
-               inputFileTemplatePath, mainClass, webstartJarURL );
-        
+        super( mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, inputFileTemplatePath,
+               mainClass, webstartJarURL );
+
         this.config = task;
     }
 
@@ -66,25 +62,26 @@ public class Generator extends AbstractGenerator
      */
     protected String getDependenciesText()
     {
-        return indentText( 4 , getDependenciesText( config ) );
+        return indentText( 4, getDependenciesText( config ) );
     }
 
-    protected VelocityContext createAndPopulateContext() {
+    protected VelocityContext createAndPopulateContext()
+    {
         VelocityContext context = super.createAndPopulateContext();
-        if (config.hasJnlpExtensions() )
+        if ( config.hasJnlpExtensions() )
         {
             // add extensions
-            context.put( "extensions", indentText( 4 , getExtensionsText( config ) ) );
+            context.put( "extensions", indentText( 4, getExtensionsText( config ) ) );
         }
         return context;
     }
 
     static String getDependenciesText( AbstractJnlpMojo config )
     {
-        return getDependenciesText(config, config.getPackagedJnlpArtifacts() );
+        return getDependenciesText( config, config.getPackagedJnlpArtifacts() );
     }
 
-    static String getDependenciesText( AbstractJnlpMojo config , List artifacts )
+    static String getDependenciesText( AbstractJnlpMojo config, List artifacts )
     {
         String dependenciesText = "";
         if ( artifacts.size() != 0 )
@@ -92,23 +89,26 @@ public class Generator extends AbstractGenerator
             StringBuffer buffer = new StringBuffer( 100 * artifacts.size() );
             buffer.append( "\n" );
 
-			String jarLibPath = null;
-            if (config.getLibPath() != null) {
+            String jarLibPath = null;
+            if ( config.getLibPath() != null )
+            {
                 jarLibPath = config.getLibPath();
-                jarLibPath = (jarLibPath != null && jarLibPath.trim().length() != 0) ? jarLibPath.trim() : null;
+                jarLibPath = ( jarLibPath != null && jarLibPath.trim().length() != 0 ) ? jarLibPath.trim() : null;
             }
 
-            for (int i = 0; i < artifacts.size(); i++) {
-                Artifact artifact = (Artifact)artifacts.get(i);
-                buffer.append("<jar href=\"");
-                if (jarLibPath != null) {
-                    buffer.append(jarLibPath).append("/");
+            for ( int i = 0; i < artifacts.size(); i++ )
+            {
+                Artifact artifact = (Artifact) artifacts.get( i );
+                buffer.append( "<jar href=\"" );
+                if ( jarLibPath != null )
+                {
+                    buffer.append( jarLibPath ).append( "/" );
                 }
                 buffer.append( artifact.getFile().getName() ).append( "\"" );
 
-                if (config.isOutputJarVersions())
+                if ( config.isOutputJarVersions() )
                 {
-                    buffer.append(" version=\"").append(artifact.getVersion()).append("\"");
+                    buffer.append( " version=\"" ).append( artifact.getVersion() ).append( "\"" );
                 }
 
                 if ( config.isArtifactWithMainClass( artifact ) )
@@ -125,19 +125,20 @@ public class Generator extends AbstractGenerator
     static String getExtensionsText( AbstractJnlpMojo config )
     {
         String text = "";
-        List  extensions = config.getJnlpExtensions();
-        if ( extensions!=null && !extensions.isEmpty() )
+        List extensions = config.getJnlpExtensions();
+        if ( extensions != null && !extensions.isEmpty() )
         {
             StringBuffer buffer = new StringBuffer( 100 * extensions.size() );
             buffer.append( "\n" );
 
-            for (Iterator it = extensions.iterator(); it.hasNext();) {
+            for ( Iterator it = extensions.iterator(); it.hasNext(); )
+            {
                 JnlpExtension extension = (JnlpExtension) it.next();
-                buffer.append("<extension name=\"");
-                buffer.append(extension.getName());
-                buffer.append("\" href=\"");
-                buffer.append(extension.getOutputFile());
-                buffer.append("\"/>\n");
+                buffer.append( "<extension name=\"" );
+                buffer.append( extension.getName() );
+                buffer.append( "\" href=\"" );
+                buffer.append( extension.getOutputFile() );
+                buffer.append( "\"/>\n" );
             }
             text = buffer.toString();
         }

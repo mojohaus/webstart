@@ -19,20 +19,20 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.codehaus.mojo.webstart.JarResource;
+import org.codehaus.plexus.util.WriterFactory;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.codehaus.mojo.webstart.JarResource;
-import org.codehaus.plexus.util.WriterFactory;
-
 /**
  * This class generates a <code>version.xml</code> file for a given collection of
  * <code>JarResource</code> objects in the format expected by the <code>JnlpDownloadServlet</code>.
- * 
+ * <p/>
  * <p>
  * For a full description of the version.xml syntax, refer to the
  * <a href="http://java.sun.com/javase/6/docs/technotes/guides/javaws/developersguide/downloadservletguide.html">
@@ -40,13 +40,12 @@ import org.codehaus.plexus.util.WriterFactory;
  * </p>
  *
  * @author Kevin Stembridge
- * @since 1.0-alpha-2
  * @version $Revision$
- *
+ * @since 1.0-alpha-2
  */
 public class VersionXmlGenerator
 {
-    
+
     /**
      * Creates a new {@code VersionXmlGenerator}.
      */
@@ -54,44 +53,45 @@ public class VersionXmlGenerator
     {
         //do nothing
     }
-    
+
     /**
      * Generates a file named <code>version.xml</code> in the given <code>outputDir</code>.
      * The generated file will contain resource elements for each of the JarResource
      * objects in the given collection.
      *
-     * @param outputDir The directory in which the file will be generated. Must not be null.
+     * @param outputDir    The directory in which the file will be generated. Must not be null.
      * @param jarResources The collection of JarResources for which a resource
-     * element will be created in the generated file.
+     *                     element will be created in the generated file.
      * @throws MojoExecutionException if an error occurs generating the file.
      */
-    public void generate( File outputDir, Collection/*JarResource*/ jarResources ) throws MojoExecutionException 
+    public void generate( File outputDir, Collection/*JarResource*/ jarResources )
+        throws MojoExecutionException
     {
-        
+
         if ( outputDir == null )
         {
             throw new IllegalArgumentException( "outputDir must not be null" );
         }
-        
+
         BufferedWriter writer = null;
-        
-        try 
+
+        try
         {
             File versionXmlFile = new File( outputDir, "version.xml" );
             writer = new BufferedWriter( WriterFactory.newXmlWriter( versionXmlFile ) );
-            
+
             generateXml( writer, jarResources );
-            
-        } 
-        catch ( IOException e ) 
-        {
-            throw new MojoExecutionException( "Unable to create the version.xml file", e ); 
+
         }
-        finally 
+        catch ( IOException e )
         {
-            if ( writer != null ) 
+            throw new MojoExecutionException( "Unable to create the version.xml file", e );
+        }
+        finally
+        {
+            if ( writer != null )
             {
-                try 
+                try
                 {
                     writer.close();
                 }
@@ -101,20 +101,21 @@ public class VersionXmlGenerator
                 }
             }
         }
-        
+
     }
-        
-    private void generateXml( BufferedWriter writer, Collection jarResources ) throws IOException
+
+    private void generateXml( BufferedWriter writer, Collection jarResources )
+        throws IOException
     {
-        
+
         writer.write( "<?xml version=\"1.0\"?>" );
         writer.newLine();
         writer.write( "<jnlp-versions>" );
         writer.newLine();
-        
-        for ( Iterator itr = jarResources.iterator(); itr.hasNext(); ) 
+
+        for ( Iterator itr = jarResources.iterator(); itr.hasNext(); )
         {
-            
+
             JarResource jarResource = (JarResource) itr.next();
             writer.write( "  <resource>" );
             writer.newLine();
@@ -137,7 +138,7 @@ public class VersionXmlGenerator
             writer.write( "  </resource>" );
             writer.newLine();
         }
-        
+
         writer.write( "</jnlp-versions>" );
         writer.newLine();
     }

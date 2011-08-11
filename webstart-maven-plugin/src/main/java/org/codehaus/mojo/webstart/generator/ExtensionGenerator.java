@@ -27,13 +27,15 @@ import java.util.List;
 
 /**
  * To generate an extension jnlp file.
- * 
+ *
  * @author chemit
  */
-public class ExtensionGenerator extends AbstractGenerator
+public class ExtensionGenerator
+    extends AbstractGenerator
 {
 
     private AbstractJnlpMojo config;
+
     private JnlpExtension extension;
 
     /**
@@ -41,33 +43,29 @@ public class ExtensionGenerator extends AbstractGenerator
      * @param task
      * @param extension
      * @param defaultTemplateResourceName
-     * @param resourceLoaderPath  used to find the template in conjunction to inputFileTemplatePath
+     * @param resourceLoaderPath          used to find the template in conjunction to inputFileTemplatePath
      * @param outputFile
-     * @param inputFileTemplatePath relative to resourceLoaderPath
+     * @param inputFileTemplatePath       relative to resourceLoaderPath
      * @param mainClass
      * @param webstartJarURL
      */
-    public ExtensionGenerator( MavenProject mavenProject,
-                      AbstractJnlpMojo task,
-                      JnlpExtension extension,
-                      String defaultTemplateResourceName,
-                      File resourceLoaderPath,
-                      File outputFile,
-                      String inputFileTemplatePath,
-                      String mainClass,
-                      String webstartJarURL )
+    public ExtensionGenerator( MavenProject mavenProject, AbstractJnlpMojo task, JnlpExtension extension,
+                               String defaultTemplateResourceName, File resourceLoaderPath, File outputFile,
+                               String inputFileTemplatePath, String mainClass, String webstartJarURL )
     {
 
-        super( mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, inputFileTemplatePath, mainClass, webstartJarURL );
-        
+        super( mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, inputFileTemplatePath,
+               mainClass, webstartJarURL );
+
         this.config = task;
-        this.extension=extension;
+        this.extension = extension;
     }
 
-    protected VelocityContext createAndPopulateContext() {
-        VelocityContext context = super.createAndPopulateContext( );
+    protected VelocityContext createAndPopulateContext()
+    {
+        VelocityContext context = super.createAndPopulateContext();
         // add the extension in velocity context
-        context.put( "extension" , extension );
+        context.put( "extension", extension );
         return context;
     }
 
@@ -78,8 +76,8 @@ public class ExtensionGenerator extends AbstractGenerator
     protected String getDependenciesText()
     {
         List dependencies = (List) config.getExtensionsJnlpArtifacts().get( extension );
-        
-        return indentText ( 4 , Generator.getDependenciesText( config, dependencies ) );
+
+        return indentText( 4, Generator.getDependenciesText( config, dependencies ) );
     }
 
 }

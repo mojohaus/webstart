@@ -22,15 +22,16 @@ import java.util.List;
  * Bean to host a jnlp extension configuration.
  *
  * @author <a href="chemit@codelutin.com">tony Chemit</a>
- * @version $Id: JnlpConfig.java 5959 2008-01-19 17:28:39Z lacostej $
+ * @version $Id$
  */
-public class JnlpExtension extends JnlpConfig
+public class JnlpExtension
+    extends JnlpConfig
 {
 
     private List includes;
 
     private String name;
-    
+
     private String title;
 
     private String vendor;

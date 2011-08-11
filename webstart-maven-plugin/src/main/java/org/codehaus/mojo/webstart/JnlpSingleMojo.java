@@ -23,7 +23,7 @@ import org.apache.maven.project.MavenProject;
 
 /**
  * Packages a jnlp application without launching a parallel lifecycle build.
- * Also, this mojo is not an aggregator, so it can be used multiple times 
+ * Also, this mojo is not an aggregator, so it can be used multiple times
  * in a single multimodule build.
  * <p/>
  * The plugin tries to not re-sign/re-pack if the dependent jar hasn't changed.

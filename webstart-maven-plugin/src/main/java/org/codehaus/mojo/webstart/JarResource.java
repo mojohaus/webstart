@@ -24,35 +24,34 @@ import org.apache.maven.artifact.Artifact;
 /**
  * This class represents a &lt;jarResource&gt; configuration element from the
  * pom.xml file. It identifies an artifact that is to be processed by the plugin
- * for inclusion in the JNLP bundle. 
+ * for inclusion in the JNLP bundle.
  *
  * @author Kevin Stembridge
  * @author $LastChangedBy$
- * @since 19 May 2007
  * @version $Revision$
- *
+ * @since 19 May 2007
  */
 public class JarResource
 {
-    
+
     private String groupId;
-    
+
     private String artifactId;
-    
+
     private String version;
-    
+
     private String classifier;
-    
+
     private String mainClass;
-    
+
     private boolean outputJarVersion = true;
-    
+
     private Artifact artifact;
-    
+
     private String hrefValue;
-    
+
     private boolean includeInJnlp = true;
-    
+
     /**
      * Creates a new uninitialized {@code JarResource}.
      */
@@ -60,12 +59,11 @@ public class JarResource
     {
         // do nothing
     }
-    
+
     /**
      * Creates a new {@code JarResource} that wraps the given artifact.
      *
      * @param artifact The artifact that this instance represents.
-     * 
      * @throws IllegalArgumentException if {@code artifact} is null.
      */
     public JarResource( Artifact artifact )
@@ -75,85 +73,86 @@ public class JarResource
 
     /**
      * Returns true if the given object is a JarResource and has the same
-     * combination of <code>groupId</code>, <code>artifactId</code>, 
+     * combination of <code>groupId</code>, <code>artifactId</code>,
      * <code>version</code> and <code>classifier</code>.
      */
-    public boolean equals( Object obj ) 
+    public boolean equals( Object obj )
     {
-        
+
         if ( obj == this )
         {
             return true;
         }
-        
-        if ( ! ( obj instanceof JarResource ) )
+
+        if ( !( obj instanceof JarResource ) )
         {
             return false;
         }
-        
-        JarResource other = ( JarResource ) obj;
-        
+
+        JarResource other = (JarResource) obj;
+
         if ( fieldsAreNotEqual( getGroupId(), other.getGroupId() ) )
         {
             return false;
         }
-        
+
         if ( fieldsAreNotEqual( getArtifactId(), other.getArtifactId() ) )
         {
             return false;
         }
-        
+
         if ( fieldsAreNotEqual( getVersion(), other.getVersion() ) )
         {
             return false;
         }
-        
+
         if ( fieldsAreNotEqual( getClassifier(), other.getClassifier() ) )
         {
             return false;
         }
-        
+
         return true;
-        
+
     }
-    
+
     private boolean fieldsAreNotEqual( Object field1, Object field2 )
     {
-        
+
         if ( field1 == null )
         {
             return field2 != null;
         }
-        else 
+        else
         {
-            return ! field1.equals( field2 );
+            return !field1.equals( field2 );
         }
-        
+
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public int hashCode() 
+    public int hashCode()
     {
         final int offset = 17;
         final int multiplier = 37;
-        int result = offset; 
+        int result = offset;
         result += multiplier * fieldHashCode( getGroupId() );
         result += multiplier * fieldHashCode( getArtifactId() );
         result += multiplier * fieldHashCode( getVersion() );
         result += multiplier * fieldHashCode( getClassifier() );
         return result;
-        
+
     }
-    
+
     private int fieldHashCode( Object field )
     {
         return field == null ? 0 : field.hashCode();
     }
-    
+
     /**
      * Returns the value of the artifactId field.
+     *
      * @return Returns the value of the artifactId field.
      */
     public String getArtifactId()
@@ -163,6 +162,7 @@ public class JarResource
 
     /**
      * Returns the value of the classifier field.
+     *
      * @return Returns the value of the classifier field.
      */
     public String getClassifier()
@@ -172,6 +172,7 @@ public class JarResource
 
     /**
      * Returns the value of the groupId field.
+     *
      * @return Returns the value of the groupId field.
      */
     public String getGroupId()
@@ -181,6 +182,7 @@ public class JarResource
 
     /**
      * Returns the value of the version field.
+     *
      * @return Returns the value of the version field.
      */
     public String getVersion()
@@ -190,11 +192,12 @@ public class JarResource
 
     /**
      * Returns the fully qualified class name of the JNLP application's 'main' class but
-     * only if it is contained in the jar represented by this instance. Only one jarResource per 
-     * plugin configuration can be declared with a main class. This is the value that will be 
-     * populated in the generated JNLP file. 
-     * @return Returns the value of the mainClass field, or null if the jar represented 
-     * by this instance is not the one that contains the application's main class.
+     * only if it is contained in the jar represented by this instance. Only one jarResource per
+     * plugin configuration can be declared with a main class. This is the value that will be
+     * populated in the generated JNLP file.
+     *
+     * @return Returns the value of the mainClass field, or null if the jar represented
+     *         by this instance is not the one that contains the application's main class.
      */
     public String getMainClass()
     {
@@ -202,10 +205,11 @@ public class JarResource
     }
 
     /**
-     * Sets the flag that indicates whether or not the jar resource 
+     * Sets the flag that indicates whether or not the jar resource
      * element in the generated JNLP file should include a version attribute.
      * Default is true.
-     * @param outputJarVersion 
+     *
+     * @param outputJarVersion
      */
     protected void setOutputJarVersion( boolean outputJarVersion )
     {
@@ -213,9 +217,10 @@ public class JarResource
     }
 
     /**
-     * Returns the flag that indicates whether or not the jar resource 
+     * Returns the flag that indicates whether or not the jar resource
      * element in the generated JNLP file should include a version attribute.
      * Default is true.
+     *
      * @return Returns the value of the outputJarVersion field.
      */
     public boolean isOutputJarVersion()
@@ -225,6 +230,7 @@ public class JarResource
 
     /**
      * Returns the underlying artifact that this instance represents.
+     *
      * @return Returns the value of the artifact field.
      */
     public Artifact getArtifact()
@@ -234,7 +240,8 @@ public class JarResource
 
     /**
      * Sets the underlying artifact that this instance represents.
-     * @param artifact 
+     *
+     * @param artifact
      * @throws IllegalArgumentException if {@code artifact} is null.
      */
     public void setArtifact( Artifact artifact )
@@ -251,10 +258,11 @@ public class JarResource
     }
 
     /**
-     * Sets the value that should be output for this jar in the href attribute of the 
-     * jar resource element in the generated JNLP file. If not set explicitly, this defaults 
+     * Sets the value that should be output for this jar in the href attribute of the
+     * jar resource element in the generated JNLP file. If not set explicitly, this defaults
      * to the file name of the underlying artifact.
-     * @param hrefValue 
+     *
+     * @param hrefValue
      */
     protected void setHrefValue( String hrefValue )
     {
@@ -262,26 +270,26 @@ public class JarResource
     }
 
     /**
-     * Returns the value that should be output for this jar in the href attribute of the 
-     * jar resource element in the generated JNLP file. If not set explicitly, this defaults 
+     * Returns the value that should be output for this jar in the href attribute of the
+     * jar resource element in the generated JNLP file. If not set explicitly, this defaults
      * to the file name of the underlying artifact.
      *
      * @return The href attribute to be output for this jar resource in the generated JNLP file.
      */
     public String getHrefValue()
     {
-        if ( this.hrefValue == null && this.artifact != null ) 
+        if ( this.hrefValue == null && this.artifact != null )
         {
             return this.artifact.getFile().getName();
         }
         return this.hrefValue;
     }
-    
+
     /**
-     * Returns the flag that indicates whether or not this resource should be included 
+     * Returns the flag that indicates whether or not this resource should be included
      * in the generated JNLP file. The default is true, but you may want to exclude jars
      * from the JNLP in cases where multiple versions of a jar are included in the JNLP bundle.
-     * 
+     *
      * @return Returns the value of the includeInJnlp field.
      */
     public boolean isIncludeInJnlp()
@@ -292,24 +300,14 @@ public class JarResource
     /**
      * {@inheritDoc}
      */
-    public String toString() 
+    public String toString()
     {
         StringBuffer sbuf = new StringBuffer();
-        sbuf.append( "JarResource[ groupId='" )
-            .append( this.groupId )
-            .append( "', artifactId='" )
-            .append( this.artifactId )
-            .append( "', version='" )
-            .append( this.version )
-            .append( "', classifier='" )
-            .append( this.classifier )
-            .append( "', mainClass='" )
-            .append( this.mainClass )
-            .append( "', outputJarVersion='" )
-            .append( this.outputJarVersion )
-            .append( "', hrefValue='" )
-            .append( this.hrefValue )
-            .append( "' ]" );
+        sbuf.append( "JarResource[ groupId='" ).append( this.groupId ).append( "', artifactId='" ).append(
+            this.artifactId ).append( "', version='" ).append( this.version ).append( "', classifier='" ).append(
+            this.classifier ).append( "', mainClass='" ).append( this.mainClass ).append(
+            "', outputJarVersion='" ).append( this.outputJarVersion ).append( "', hrefValue='" ).append(
+            this.hrefValue ).append( "' ]" );
         return sbuf.toString();
     }
 }

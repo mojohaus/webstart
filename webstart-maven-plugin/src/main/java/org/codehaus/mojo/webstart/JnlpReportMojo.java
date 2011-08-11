@@ -19,23 +19,22 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.List;
-import java.util.Iterator;
-
+import org.apache.maven.doxia.siterenderer.Renderer;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
-
-import org.apache.maven.doxia.siterenderer.Renderer;
 import org.codehaus.plexus.util.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Creates a JNLP report.
- * 
+ *
  * @author Geoffrey De Smet
  * @description Creates a Jnlp Report
  * @goal report
@@ -55,7 +54,7 @@ public class JnlpReportMojo
      * <i>Maven Internal</i>: The Doxia Site Renderer.
      *
      * @component
-     * @required 
+     * @required
      * @readonly
      */
     private Renderer siteRenderer;
@@ -64,7 +63,7 @@ public class JnlpReportMojo
      * Maven Project
      *
      * @parameter default-value="${project}"
-     * @required 
+     * @required
      * @readonly
      */
     private MavenProject project;
@@ -103,7 +102,7 @@ public class JnlpReportMojo
     private void copyJnlpFiles()
         throws MavenReportException
     {
-        if ( ! jnlpSourceDirectory.exists() )
+        if ( !jnlpSourceDirectory.exists() )
         {
             throw new MavenReportException( "jnlpSourceDirectory does not exist" );
         }

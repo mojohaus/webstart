@@ -19,12 +19,11 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
-import java.io.File;
-
-import org.apache.maven.plugin.logging.Log;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
+
+import java.io.File;
 
 /**
  * Bean that represents the JarSigner configuration.
@@ -32,25 +31,25 @@ import org.apache.maven.plugin.MojoFailureException;
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
  */
-public interface SignConfig 
+public interface SignConfig
 {
 
     /**
      * Returns a fully configured version of a Mojo ready to sign jars.
-     * 
+     *
      * @return
      * @throws MojoExecutionException
      * @throws MojoFailureException
      */
-    JarSignerMojo getJarSignerMojo() 
+    JarSignerMojo getJarSignerMojo()
         throws MojoExecutionException, MojoFailureException;
-    
+
 
     /**
      * Called before any Jars get signed. This method allows you to
      * create any keys or perform any initialisation that the
      * method of signature that you're implementing requires.
-     * 
+     *
      * @param log
      * @param workingDirectory
      * @param verbose

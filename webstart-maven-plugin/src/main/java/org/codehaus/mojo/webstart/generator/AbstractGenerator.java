@@ -19,6 +19,13 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
+import org.apache.maven.project.MavenProject;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.log.NullLogSystem;
+import org.codehaus.plexus.util.WriterFactory;
+
 import java.io.File;
 import java.io.Writer;
 import java.text.DateFormat;
@@ -28,33 +35,25 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.TimeZone;
 
-import org.apache.maven.project.MavenProject;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.log.NullLogSystem;
-import org.codehaus.plexus.util.WriterFactory;
-
 /**
- * The abstract superclass for classes that generate the JNLP files produced by the 
+ * The abstract superclass for classes that generate the JNLP files produced by the
  * various MOJOs available in the plugin.
  *
  * @author Kevin Stembridge
- * @since 30 Aug 2007
  * @version $Revision$
- *
+ * @since 30 Aug 2007
  */
-public abstract class AbstractGenerator 
+public abstract class AbstractGenerator
 {
-    
+
     private VelocityEngine engine;
-    
+
     private final MavenProject mavenProject;
 
     private Template velocityTemplate;
 
     private final File outputFile;
-    
+
     private final String mainClass;
 
     private GeneratorExtraConfig extraConfig;
@@ -62,24 +61,19 @@ public abstract class AbstractGenerator
 
     /**
      * Creates a new {@code AbstractGenerator}.
-     * 
-     * @param resourceLoaderPath  used to find the template in conjunction to inputFileTemplatePath
-     * @param outputFile The location of the file to be generated.
-     * @param inputFileTemplatePath relative to resourceLoaderPath 
-     * @param mainClass The text that should replace the $mainClass placeholder in the JNLP template.
-     * 
+     *
+     * @param resourceLoaderPath    used to find the template in conjunction to inputFileTemplatePath
+     * @param outputFile            The location of the file to be generated.
+     * @param inputFileTemplatePath relative to resourceLoaderPath
+     * @param mainClass             The text that should replace the $mainClass placeholder in the JNLP template.
      * @throws IllegalArgumentException if any argument is null.
      */
-    protected AbstractGenerator( MavenProject mavenProject, 
-                                File resourceLoaderPath, 
-                                String defaultTemplateResourceName,
-                                File outputFile, 
-                                String inputFileTemplatePath, 
-                                String mainClass,
-                                String webstartJarURL ) 
+    protected AbstractGenerator( MavenProject mavenProject, File resourceLoaderPath, String defaultTemplateResourceName,
+                                 File outputFile, String inputFileTemplatePath, String mainClass,
+                                 String webstartJarURL )
     {
-        
-        if ( mavenProject == null ) 
+
+        if ( mavenProject == null )
         {
             throw new IllegalArgumentException( "mavenProject must not be null" );
         }
@@ -98,17 +92,17 @@ public abstract class AbstractGenerator
         {
             throw new IllegalArgumentException( "mainClass must not be null" );
         }
-        
+
         this.outputFile = outputFile;
         this.mainClass = mainClass;
         this.mavenProject = mavenProject;
-        
+
         Properties props = new Properties();
 
         if ( inputFileTemplatePath != null )
         {
             props.setProperty( VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS,
-                           "org.apache.velocity.runtime.log.NullLogSystem" );
+                               "org.apache.velocity.runtime.log.NullLogSystem" );
             props.setProperty( "file.resource.loader.path", resourceLoaderPath.getAbsolutePath() );
 
             initVelocity( props );
@@ -118,7 +112,7 @@ public abstract class AbstractGenerator
                 System.out.println( "Warning, template not found. Will probably fail." );
             }
         }
-        else 
+        else
         {
             System.out.println( "No template specified Using default one." );
 
@@ -128,18 +122,18 @@ public abstract class AbstractGenerator
 
             props = new Properties();
             props.setProperty( "resource.loader", "jar" );
-            props.setProperty( "jar.resource.loader.description", 
+            props.setProperty( "jar.resource.loader.description",
                                "Jar resource loader for default webstart templates" );
-            props.setProperty( "jar.resource.loader.class", 
+            props.setProperty( "jar.resource.loader.class",
                                "org.apache.velocity.runtime.resource.loader.JarResourceLoader" );
             props.setProperty( "jar.resource.loader.path", webstartJarURL );
 
             initVelocity( props );
 
-            if ( ! engine.templateExists( inputFileTemplatePath ) )
+            if ( !engine.templateExists( inputFileTemplatePath ) )
             {
-                System.out.println( "Inbuilt template not found!! "  + defaultTemplateResourceName
-                                    + " Will probably fail." );
+                System.out.println(
+                    "Inbuilt template not found!! " + defaultTemplateResourceName + " Will probably fail." );
             }
         }
 
@@ -176,17 +170,19 @@ public abstract class AbstractGenerator
     {
         this.extraConfig = extraConfig;
     }
-    
+
     /**
      * Generate the JNLP file.
+     *
      * @throws Exception
      */
-    public final void generate() throws Exception
+    public final void generate()
+        throws Exception
     {
         VelocityContext context = createAndPopulateContext();
 
         Writer writer = WriterFactory.newXmlWriter( outputFile );
-        
+
         try
         {
             velocityTemplate.merge( context, writer );
@@ -194,40 +190,41 @@ public abstract class AbstractGenerator
         }
         catch ( Exception e )
         {
-            throw new Exception( "Could not generate the template " + velocityTemplate.getName() 
-                                 + ": " + e.getMessage(), e );
+            throw new Exception(
+                "Could not generate the template " + velocityTemplate.getName() + ": " + e.getMessage(), e );
         }
         finally
         {
             writer.close();
         }
-        
+
     }
 
     /**
-     * Subclasses must implement this method to return the text that should 
+     * Subclasses must implement this method to return the text that should
      * replace the $dependencies placeholder in the JNLP template.
+     *
      * @return The dependencies text, never null.
      */
-    protected abstract String getDependenciesText( );
-    
+    protected abstract String getDependenciesText();
+
     /**
      * Creates a Velocity context and populates it with replacement values
      * for our pre-defined placeholders.
-     * 
+     *
      * @return Returns a velocity context with system and maven properties added
      */
-    protected VelocityContext createAndPopulateContext() 
+    protected VelocityContext createAndPopulateContext()
     {
         VelocityContext context = new VelocityContext();
 
-        context.put( "dependencies", getDependenciesText( ) );
+        context.put( "dependencies", getDependenciesText() );
 
         // Note: properties that contain dots will not be properly parsed by Velocity. 
         // Should we replace dots with underscores ?        
         addPropertiesToContext( System.getProperties(), context );
         addPropertiesToContext( mavenProject.getProperties(), context );
-     
+
         context.put( "project", mavenProject.getModel() );
 
         // aliases named after the JNLP file structure
@@ -238,12 +235,12 @@ public abstract class AbstractGenerator
             context.put( "informationVendor", mavenProject.getModel().getOrganization().getName() );
             context.put( "informationHomepage", mavenProject.getModel().getOrganization().getUrl() );
         }
-        
+
         // explicit timestamps in local and and UTC time zones
         Date timestamp = new Date();
         context.put( "explicitTimestamp", dateToExplicitTimestamp( timestamp ) );
         context.put( "explicitTimestampUTC", dateToExplicitTimestampUTC( timestamp ) );
-        
+
         context.put( "outputFile", outputFile.getName() );
         context.put( "mainClass", this.mainClass );
 
@@ -257,35 +254,35 @@ public abstract class AbstractGenerator
     }
 
 
-    private void addPropertiesToContext( Properties properties, VelocityContext context ) 
+    private void addPropertiesToContext( Properties properties, VelocityContext context )
     {
-        for ( Iterator iter = properties.keySet().iterator(); iter.hasNext(); ) 
+        for ( Iterator iter = properties.keySet().iterator(); iter.hasNext(); )
         {
-            String nextKey = ( String ) iter.next();
+            String nextKey = (String) iter.next();
             String nextValue = properties.getProperty( nextKey );
             context.put( nextKey, nextValue );
         }
     }
-    
+
     /**
      * Converts a given date to an explicit timestamp string in local time zone.
-     * 
+     *
      * @param date a timestamp to convert.
      * @return a string representing a timestamp.
      */
-    private String dateToExplicitTimestamp( Date date ) 
+    private String dateToExplicitTimestamp( Date date )
     {
-        DateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ssZ" );        
+        DateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ssZ" );
         return new StringBuffer( "TS: " ).append( df.format( date ) ).toString();
     }
-    
+
     /**
      * Converts a given date to an explicit timestamp string in UTC time zone.
-     * 
+     *
      * @param date a timestamp to convert.
      * @return a string representing a timestamp.
      */
-    private String dateToExplicitTimestampUTC( Date date ) 
+    private String dateToExplicitTimestampUTC( Date date )
     {
         DateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
         df.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
@@ -297,21 +294,21 @@ public abstract class AbstractGenerator
      * given {@code text}.
      *
      * @param level the number of space caracteres to add
-     * @param text the text to prefix
+     * @param text  the text to prefix
      * @return the indented text
      */
-    protected String indentText( int level , String text )
+    protected String indentText( int level, String text )
     {
-        StringBuffer buffer = new StringBuffer( );
-        String [] lines = text.split("\n");
+        StringBuffer buffer = new StringBuffer();
+        String[] lines = text.split( "\n" );
         String prefix = "";
-        for (int i=0 ;i < level ; i++)
+        for ( int i = 0; i < level; i++ )
         {
             prefix += " ";
         }
-        for (int i=0, j= lines.length; i<j; i++)
+        for ( int i = 0, j = lines.length; i < j; i++ )
         {
-            buffer.append(prefix).append(lines[i]).append("\n");
+            buffer.append( prefix ).append( lines[i] ).append( "\n" );
         }
         return buffer.toString();
     }

@@ -32,13 +32,13 @@ public class Pack200
 
     public static void packJars( File directory, FileFilter jarFileFilter, boolean gzip )
     {
-        throw new IllegalStateException( "Pack200 doesn't exist for SDK 1.4. Should never be called. " 
-                                         + "Compilation stub only" );
+        throw new IllegalStateException(
+            "Pack200 doesn't exist for SDK 1.4. Should never be called. " + "Compilation stub only" );
     }
 
     public static void unpackJars( File directory, FileFilter pack200FileFilter )
     {
-        throw new IllegalStateException( "Pack200 doesn't exist for SDK 1.4. Should never be called. " 
-                                         + "Compilation stub only" );
+        throw new IllegalStateException(
+            "Pack200 doesn't exist for SDK 1.4. Should never be called. " + "Compilation stub only" );
     }
 }

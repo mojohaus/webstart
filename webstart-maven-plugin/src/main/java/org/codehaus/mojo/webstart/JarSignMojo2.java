@@ -23,13 +23,14 @@ import org.apache.maven.plugin.jar.JarSignMojo;
 
 /**
  * Just exists to make JarSignMojo implement JarSignerMojo.
- * 
+ * <p/>
  * The JarSignerMojo interface should be moved to the jar plugin.
- * 
- * @author dboden
  *
+ * @author dboden
  */
-class JarSignMojo2 extends JarSignMojo implements JarSignerMojo 
+class JarSignMojo2
+    extends JarSignMojo
+    implements JarSignerMojo
 {
 
 }

@@ -19,22 +19,23 @@ package org.codehaus.mojo.webstart.util;
  * under the License.
  */
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
-
 
 /**
  * An 'OR' artifact filter
- *
+ * <p/>
  * TODO this functionality must be available somewhere else
  *
  * @author jerome@coffeebreaks.org
  */
-public class OrArtifactFilter implements ArtifactFilter
+public class OrArtifactFilter
+    implements ArtifactFilter
 {
     private final List filters = new ArrayList();
 

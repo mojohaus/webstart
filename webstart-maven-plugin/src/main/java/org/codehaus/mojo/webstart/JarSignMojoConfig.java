@@ -19,37 +19,41 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
-import java.io.File;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.mojo.keytool.GenkeyMojo;
 
+import java.io.File;
+
 /**
  * Bean that represents the JarSigner configuration.
- * 
+ * <p/>
  * Specific to the JarSignMojo
  *
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
  */
-public class JarSignMojoConfig implements SignConfig 
+public class JarSignMojoConfig
+    implements SignConfig
 {
-    
+
     protected Log log;
+
     protected File workDirectory;
+
     protected boolean verbose;
-    
+
     /**
      * Returns a fully configured version of a Mojo ready to sign jars.
      * You will need to attach set the MavenProject is you don't sign in place.
+     *
      * @return
      */
-    public JarSignerMojo getJarSignerMojo() 
+    public JarSignerMojo getJarSignerMojo()
     {
         JarSignMojo2 signJar = new JarSignMojo2();
-        
+
         signJar.setAlias( getAlias() );
         signJar.setKeypass( getKeypass() );
         signJar.setKeystore( getKeystore() );
@@ -61,17 +65,17 @@ public class JarSignMojoConfig implements SignConfig
         signJar.setWorkingDir( workDirectory );
         signJar.setVerbose( verbose );
         signJar.setLog( log );
-        
+
         return signJar;
     }
-    
-    public void init( Log log, File workDirectory, boolean verbose ) 
-        throws MojoExecutionException, MojoFailureException 
+
+    public void init( Log log, File workDirectory, boolean verbose )
+        throws MojoExecutionException, MojoFailureException
     {
         this.log = log;
         this.workDirectory = workDirectory;
         this.verbose = verbose;
-        
+
         if ( keystoreConfig != null && keystoreConfig.isGen() )
         {
             if ( keystoreConfig.isDelete() )
@@ -81,10 +85,9 @@ public class JarSignMojoConfig implements SignConfig
             genKeyStore();
         }
     }
-    
+
     /**
      * Keystore configuration
-     * 
      */
     public static class KeystoreConfig
     {
@@ -112,10 +115,10 @@ public class JarSignMojoConfig implements SignConfig
             this.gen = gen;
         }
     }
-    
-    
+
+
     private KeystoreConfig keystoreConfig;
-    
+
     /**
      */
     private String keystore;
@@ -184,148 +187,148 @@ public class JarSignMojoConfig implements SignConfig
      * Whether we want to auto-verify the signed jars.
      */
     private boolean verify;
-    
-    public void setKeystoreConfig( KeystoreConfig keystoreConfig ) 
+
+    public void setKeystoreConfig( KeystoreConfig keystoreConfig )
     {
         this.keystoreConfig = keystoreConfig;
     }
 
-    public void setKeystore( String keystore ) 
+    public void setKeystore( String keystore )
     {
         this.keystore = keystore;
     }
 
-    public void setKeyalg( String keyalg ) 
+    public void setKeyalg( String keyalg )
     {
         this.keyalg = keyalg;
     }
 
-    public void setKeysize( String keysize ) 
+    public void setKeysize( String keysize )
     {
         this.keysize = keysize;
     }
 
-    public void setSigalg( String sigalg ) 
+    public void setSigalg( String sigalg )
     {
         this.sigalg = sigalg;
     }
 
-    public void setSigfile( String sigfile ) 
+    public void setSigfile( String sigfile )
     {
         this.sigfile = sigfile;
     }
 
-    public void setStoretype( String storetype ) 
+    public void setStoretype( String storetype )
     {
         this.storetype = storetype;
     }
 
-    public void setStorepass( String storepass ) 
+    public void setStorepass( String storepass )
     {
         this.storepass = storepass;
     }
 
-    public void setKeypass( String keypass ) 
+    public void setKeypass( String keypass )
     {
         this.keypass = keypass;
     }
 
-    public void setValidity( String validity ) 
+    public void setValidity( String validity )
     {
         this.validity = validity;
     }
 
-    public void setDnameCn( String dnameCn ) 
+    public void setDnameCn( String dnameCn )
     {
         this.dnameCn = dnameCn;
     }
 
-    public void setDnameOu( String dnameOu ) 
+    public void setDnameOu( String dnameOu )
     {
         this.dnameOu = dnameOu;
     }
 
-    public void setDnameL( String dnameL ) 
+    public void setDnameL( String dnameL )
     {
         this.dnameL = dnameL;
     }
 
-    public void setDnameSt( String dnameSt ) 
+    public void setDnameSt( String dnameSt )
     {
         this.dnameSt = dnameSt;
     }
 
-    public void setDnameO( String dnameO ) 
+    public void setDnameO( String dnameO )
     {
         this.dnameO = dnameO;
     }
 
-    public void setDnameC( String dnameC ) 
+    public void setDnameC( String dnameC )
     {
         this.dnameC = dnameC;
     }
 
-    public void setAlias( String alias ) 
+    public void setAlias( String alias )
     {
         this.alias = alias;
     }
 
-    public void setVerify( boolean verify ) 
+    public void setVerify( boolean verify )
     {
         this.verify = verify;
     }
 
-    public String getKeystore() 
+    public String getKeystore()
     {
         return keystore;
     }
 
-    public String getKeyalg() 
+    public String getKeyalg()
     {
         return keyalg;
     }
 
-    public String getKeysize() 
+    public String getKeysize()
     {
         return keysize;
     }
 
-    public String getSigalg() 
+    public String getSigalg()
     {
         return sigalg;
     }
 
-    public String getSigfile() 
+    public String getSigfile()
     {
         return sigfile;
     }
 
-    public String getStoretype() 
+    public String getStoretype()
     {
         return storetype;
     }
 
-    public String getStorepass() 
+    public String getStorepass()
     {
         return storepass;
     }
 
-    public String getKeypass() 
+    public String getKeypass()
     {
         return keypass;
     }
 
-    public String getValidity() 
+    public String getValidity()
     {
         return validity;
     }
 
-    public String getDnameCn() 
+    public String getDnameCn()
     {
         return dnameCn;
     }
 
-    public String getDnameOu() 
+    public String getDnameOu()
     {
         return dnameOu;
     }
@@ -335,32 +338,32 @@ public class JarSignMojoConfig implements SignConfig
         return dnameL;
     }
 
-    public String getDnameSt() 
+    public String getDnameSt()
     {
         return dnameSt;
     }
 
-    public String getDnameO() 
+    public String getDnameO()
     {
         return dnameO;
     }
 
-    public String getDnameC() 
+    public String getDnameC()
     {
         return dnameC;
     }
 
-    public String getAlias() 
+    public String getAlias()
     {
         return alias;
     }
 
-    public boolean getVerify() 
+    public boolean getVerify()
     {
         return verify;
     }
 
-    public String getDname() 
+    public String getDname()
     {
         StringBuffer buffer = new StringBuffer( 128 );
 
@@ -374,9 +377,9 @@ public class JarSignMojoConfig implements SignConfig
         return buffer.toString();
     }
 
-    private void appendToDnameBuffer( final String property, StringBuffer buffer, final String prefix ) 
+    private void appendToDnameBuffer( final String property, StringBuffer buffer, final String prefix )
     {
-        if ( property != null ) 
+        if ( property != null )
         {
             if ( buffer.length() > 0 )
             {
@@ -389,10 +392,11 @@ public class JarSignMojoConfig implements SignConfig
 
     /**
      * Used by init()
+     *
      * @throws MojoExecutionException
      */
     private void genKeyStore()
-    throws MojoExecutionException
+        throws MojoExecutionException
     {
         GenkeyMojo genKeystore = new GenkeyMojo();
         genKeystore.setAlias( getAlias() );
@@ -408,10 +412,10 @@ public class JarSignMojoConfig implements SignConfig
         genKeystore.setVerbose( verbose );
         genKeystore.setWorkingDir( workDirectory );
         genKeystore.setLog( log );
-    
+
         genKeystore.execute();
     }
-    
+
     private void deleteKeyStore()
     {
         File keyStore = null;

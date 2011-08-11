@@ -21,13 +21,17 @@ package org.codehaus.mojo.webstart.generator;
 
 /**
  * Interface for configuration elements used by the generator.
+ *
  * @author jerome@coffeebreaks.org
  * @since 1.0-alpha-2
  */
-public interface GeneratorExtraConfig 
+public interface GeneratorExtraConfig
 {
     String getJnlpSpec();
+
     String getOfflineAllowed();
+
     String getAllPermissions();
+
     String getJ2seVersion();
 }
