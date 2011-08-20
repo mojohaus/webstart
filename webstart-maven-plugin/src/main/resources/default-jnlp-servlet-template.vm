@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
     spec="$jnlpspec"
-    codebase="$$codebase"
+    codebase="$jnlpCodebase"
     context="$$context"
     href="$$name">
   <information>

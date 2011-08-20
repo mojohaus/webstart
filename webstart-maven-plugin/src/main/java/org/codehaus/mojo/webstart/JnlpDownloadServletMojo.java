@@ -636,6 +636,12 @@ public class JnlpDownloadServletMojo
             {
                 return "1.5+";
             }
+
+            public String getJnlpCodeBase()
+            {
+                return getCodebase();
+            }
+
         };
     }
 

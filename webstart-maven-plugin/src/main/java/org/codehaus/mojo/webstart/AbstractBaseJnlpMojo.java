@@ -186,6 +186,14 @@ public abstract class AbstractBaseJnlpMojo
      */
     private boolean attachArchive;
 
+    /**
+     * The code base to use on the generated jnlp files.
+     *
+     * @parameter expression="${jnlp.codebase}" default-value="${project.url}"
+     * @since 1.0-beta-2
+     **/
+    private String codebase;
+
     private final List modifiedJnlpArtifacts = new ArrayList();
 
     // the jars to sign and pack are selected if they are prefixed by UNPROCESSED_PREFIX.
@@ -393,6 +401,16 @@ public abstract class AbstractBaseJnlpMojo
     protected SignConfig getSign()
     {
         return sign;
+    }
+
+   /**
+     * Returns the code base to inject in the generated jnlp.
+     *
+     * @return Returns the value of codebase field.
+     */
+    public String getCodebase()
+    {
+        return codebase;
     }
 
     /**

@@ -34,4 +34,6 @@ public interface GeneratorExtraConfig
     String getAllPermissions();
 
     String getJ2seVersion();
+
+    String getJnlpCodeBase();
 }

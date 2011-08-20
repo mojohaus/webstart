@@ -658,6 +658,12 @@ public abstract class AbstractJnlpMojo
                 }
                 return "1.5+";
             }
+
+            public String getJnlpCodeBase()
+            {
+                return getCodebase();
+            }
+
         };
     }
 
@@ -1046,6 +1052,11 @@ public abstract class AbstractJnlpMojo
                     return extension.getJ2seVersion();
                 }
                 return "1.5+";
+            }
+
+            public String getJnlpCodeBase()
+            {
+                return getCodebase();
             }
 
         };

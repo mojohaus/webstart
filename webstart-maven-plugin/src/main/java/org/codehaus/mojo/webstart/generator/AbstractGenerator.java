@@ -226,6 +226,7 @@ public abstract class AbstractGenerator
         addPropertiesToContext( mavenProject.getProperties(), context );
 
         context.put( "project", mavenProject.getModel() );
+        context.put( "jnlpCodebase", extraConfig.getJnlpCodeBase() );
 
         // aliases named after the JNLP file structure
         context.put( "informationTitle", mavenProject.getModel().getName() );

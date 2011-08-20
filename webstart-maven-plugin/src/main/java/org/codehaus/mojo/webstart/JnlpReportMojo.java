@@ -92,6 +92,15 @@ public class JnlpReportMojo
      */
     private String outputName;
 
+    /**
+     * The code base to use on the generated jnlp files.
+     *
+     * @parameter expression="${jnlp.codebase}" default-value="${project.url}"
+     * @since 1.0-beta-2
+     *
+     */
+    private String codebase;
+
     public void executeReport( Locale locale )
         throws MavenReportException
     {
@@ -146,7 +155,20 @@ public class JnlpReportMojo
         getSink().text( getBundle( locale ).getString( "report.jnlp-report.label.installation.description" ) );
         getSink().paragraph_();
         getSink().paragraph();
-        getSink().link( siteJnlpFile );
+        if ( codebase.startsWith( "file://" ) )
+        {
+            if ( ! codebase.endsWith( File.separator ) )
+            {
+                codebase += File.separator;
+            }
+        } else {
+            if ( ! codebase.endsWith("/") )
+            {
+                codebase += "/" ;
+            }
+        }
+        getSink().link( codebase + siteJnlpFile );
+
         getSink().text( getBundle( locale ).getString( "report.jnlp-report.label.installation.webStartMeNow" ) );
         getSink().link_();
         getSink().paragraph_();
