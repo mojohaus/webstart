@@ -44,9 +44,9 @@ public class JnlpReportMojo
     extends AbstractMavenReport
 {
     /**
-     * Location where generated html will be created.
+     * Location where the site is generated.
      *
-     * @parameter default-value="${project.build.directory}/site"
+     * @parameter default-value="${project.reporting.outputDirectory}"
      */
     private File outputDirectory;
 
@@ -79,7 +79,15 @@ public class JnlpReportMojo
     /**
      * Directory in the site directory where the jnlp artifacts and jnlp sources files reside.
      *
-     * @parameter default-value="jnlp/launch.jnlp"
+     * @parameter expression="${jnlp.siteJnlDirectory}" default-value="jnlp"
+     * @required
+     */
+    private String siteJnlDirectory;
+
+    /**
+     * Name of the main jnlp file of the project.
+     *
+     * @parameter expression="${jnlp.siteJnlpFile}" default-value="launch.jnlp"
      * @required
      */
     private String siteJnlpFile;
@@ -95,7 +103,7 @@ public class JnlpReportMojo
     /**
      * The code base to use on the generated jnlp files.
      *
-     * @parameter expression="${jnlp.codebase}" default-value="${project.url}"
+     * @parameter expression="${jnlp.codebase}" default-value="${project.url}/jnlp"
      * @since 1.0-beta-2
      *
      */
@@ -117,7 +125,7 @@ public class JnlpReportMojo
         }
         try
         {
-            File destinationDirectory = new File( outputDirectory, siteJnlpFile ).getParentFile();
+            File destinationDirectory = new File( outputDirectory, siteJnlDirectory);
             List files = FileUtils.getFiles( jnlpSourceDirectory, "**/*", "" );
             for ( Iterator i = files.iterator(); i.hasNext(); )
             {
@@ -144,15 +152,16 @@ public class JnlpReportMojo
 
     private void fillReport( Locale locale )
     {
+        ResourceBundle bundle = getBundle( locale );
         getSink().head();
-        getSink().text( getBundle( locale ).getString( "report.jnlp-report.description" ) );
+        getSink().text( bundle.getString( "report.jnlp-report.description" ) );
         getSink().head_();
         getSink().body();
         getSink().sectionTitle1();
-        getSink().text( getBundle( locale ).getString( "report.jnlp-report.label.installation.header" ) );
+        getSink().text( bundle.getString( "report.jnlp-report.label.installation.header" ) );
         getSink().sectionTitle1_();
         getSink().paragraph();
-        getSink().text( getBundle( locale ).getString( "report.jnlp-report.label.installation.description" ) );
+        getSink().text( bundle.getString( "report.jnlp-report.label.installation.description" ) );
         getSink().paragraph_();
         getSink().paragraph();
         if ( codebase.startsWith( "file://" ) )
@@ -169,20 +178,20 @@ public class JnlpReportMojo
         }
         getSink().link( codebase + siteJnlpFile );
 
-        getSink().text( getBundle( locale ).getString( "report.jnlp-report.label.installation.webStartMeNow" ) );
+        getSink().text( bundle.getString( "report.jnlp-report.label.installation.webStartMeNow" ) );
         getSink().link_();
         getSink().paragraph_();
         getSink().paragraph();
-        getSink().text( getBundle( locale ).getString( "report.jnlp-report.label.installation.getJava" ) + " " );
+        getSink().text( bundle.getString( "report.jnlp-report.label.installation.getJava" ) + " " );
         getSink().link( "http://java.com" );
         getSink().text( "http://java.com" );
         getSink().link_();
         getSink().paragraph_();
         getSink().sectionTitle1();
-        getSink().text( getBundle( locale ).getString( "report.jnlp-report.label.uninstallation.header" ) );
+        getSink().text( bundle.getString( "report.jnlp-report.label.uninstallation.header" ) );
         getSink().sectionTitle1_();
         getSink().paragraph();
-        getSink().text( getBundle( locale ).getString( "report.jnlp-report.label.uninstallation.description" ) );
+        getSink().text( bundle.getString( "report.jnlp-report.label.uninstallation.description" ) );
         getSink().paragraph_();
         getSink().body_();
         getSink().flush();

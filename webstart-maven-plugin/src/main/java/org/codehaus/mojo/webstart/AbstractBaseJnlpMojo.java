@@ -189,7 +189,7 @@ public abstract class AbstractBaseJnlpMojo
     /**
      * The code base to use on the generated jnlp files.
      *
-     * @parameter expression="${jnlp.codebase}" default-value="${project.url}"
+     * @parameter expression="${jnlp.codebase}" default-value="${project.url}/jnlp"
      * @since 1.0-beta-2
      **/
     private String codebase;
