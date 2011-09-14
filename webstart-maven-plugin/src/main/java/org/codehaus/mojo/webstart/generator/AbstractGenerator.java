@@ -19,6 +19,7 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.maven.project.MavenProject;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -246,8 +247,8 @@ public abstract class AbstractGenerator
         context.put( "mainClass", this.mainClass );
 
         // TODO make this more extensible
-        context.put( "allPermissions", extraConfig.getJnlpSpec() );
-        context.put( "offlineAllowed", extraConfig.getOfflineAllowed() );
+        context.put( "allPermissions", Boolean.valueOf( BooleanUtils.toBoolean( extraConfig.getAllPermissions() ) ) );
+        context.put( "offlineAllowed", Boolean.valueOf( BooleanUtils.toBoolean( extraConfig.getOfflineAllowed() ) ) );
         context.put( "jnlpspec", extraConfig.getJnlpSpec() );
         context.put( "j2seVersion", extraConfig.getJ2seVersion() );
 
