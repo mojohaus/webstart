@@ -999,7 +999,7 @@ public abstract class AbstractBaseJnlpMojo
         if ( isPack200() )
         {
             getLog().debug( "packing jars" );
-            Pack200.packJars( getWorkDirectory(), processedJarFileFilter, isGzip() );
+            Pack200.packJars( getLibDirectory(), processedJarFileFilter, isGzip() );
         }
 
     }
