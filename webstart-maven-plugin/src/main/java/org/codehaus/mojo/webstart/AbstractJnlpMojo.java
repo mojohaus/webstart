@@ -227,7 +227,7 @@ public abstract class AbstractJnlpMojo
 
         try
         {
-            copyResources( getResourcesDirectory(), getLibDirectory() );
+            copyResources( getResourcesDirectory(), getWorkDirectory() );
 
             artifactWithMainClass = null;
 
