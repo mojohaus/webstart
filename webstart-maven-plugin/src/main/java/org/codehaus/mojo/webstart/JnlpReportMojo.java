@@ -79,10 +79,10 @@ public class JnlpReportMojo
     /**
      * Directory in the site directory where the jnlp artifacts and jnlp sources files reside.
      *
-     * @parameter expression="${jnlp.siteJnlDirectory}" default-value="jnlp"
+     * @parameter expression="${jnlp.siteJnlpDirectory}" default-value="jnlp"
      * @required
      */
-    private String siteJnlDirectory;
+    private String siteJnlpDirectory;
 
     /**
      * Name of the main jnlp file of the project.
@@ -125,7 +125,7 @@ public class JnlpReportMojo
         }
         try
         {
-            File destinationDirectory = new File( outputDirectory, siteJnlDirectory);
+            File destinationDirectory = new File( outputDirectory, siteJnlpDirectory);
             List files = FileUtils.getFiles( jnlpSourceDirectory, "**/*", "" );
             for ( Iterator i = files.iterator(); i.hasNext(); )
             {
