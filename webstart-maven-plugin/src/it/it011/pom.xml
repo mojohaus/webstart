@@ -1,0 +1,149 @@
+<!-- Test project which creates and signs a jar artifact -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.codehaus.mojo.webstart.it011</groupId>
+  <artifactId>webstart-it011</artifactId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+  <name>Webstart it011</name>
+  <description>Test Case for MWEBSTART-99: Add an integration test for the report mojo.</description>
+
+  <organization>
+    <name>CoffeeBreaks</name>
+  </organization>
+
+
+  <properties>
+    <jnlp.codebase>file://${project.build.directory}/site/jnlp</jnlp.codebase>
+    <jnlp.outputFile>test.jnlp</jnlp.outputFile>
+    <jnlp.siteJnlpFile>${jnlp.outputFile}</jnlp.siteJnlpFile>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo.webstart</groupId>
+        <artifactId>webstart-maven-plugin</artifactId>
+        <version>@project.version@</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jnlp-inline</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <makeArchive>false</makeArchive>
+          <attachArchive>false</attachArchive>
+          <jnlp>
+            <!-- we play with the resource path and template relative path to test MOJO-391 -->
+            <outputFile>${jnlp.outputFile}</outputFile>
+            <mainClass>org.apache.commons.cli.BasicParser</mainClass>
+          </jnlp>
+
+          <!-- SIGNING -->
+          <!-- defining this will automatically sign the jar and its dependencies -->
+          <sign>
+            <keystore>${project.build.directory}/keystore</keystore>
+            <keypass>m2m2m2</keypass>
+            <storepass>m2m2m2</storepass>
+            <!--sigfile>m2m2m2</sigfile-->
+            <alias>alias</alias>
+            <validity>180</validity>
+
+            <dnameCn>www.example.com</dnameCn>
+            <dnameOu>None</dnameOu>
+            <dnameO>ExampleOrg</dnameO>
+            <dnameL>Seattle</dnameL>
+            <dnameSt>Washington</dnameSt>
+            <dnameC>US</dnameC>
+
+            <verify>true</verify>
+
+            <keystoreConfig>
+              <delete>true</delete>
+              <gen>true</gen>
+            </keystoreConfig>
+          </sign>
+
+          <verbose>false</verbose>
+          <jnlpExtensions>
+            <jnlpExtension>
+              <name>sun</name>
+              <title>Sun MicroSystems</title>
+              <vendor>Sun MicroSystems, Inc.</vendor>
+              <includes>
+                <include>javax.help:javahelp</include>
+              </includes>
+            </jnlpExtension>
+            <jnlpExtension>
+              <name>jxlayer</name>
+              <title>Swing labs JXLayer</title>
+              <vendor>Swing Labs</vendor>
+              <includes>
+                <include>org.swinglabs:jxlayer</include>
+              </includes>
+            </jnlpExtension>
+          </jnlpExtensions>
+        </configuration>
+      </plugin>
+    </plugins>
+
+    <pluginManagement>
+      <plugins>
+
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo.webstart</groupId>
+          <artifactId>webstart-maven-plugin</artifactId>
+          <version>@project.version@</version>
+        </plugin>
+        
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo.webstart</groupId>
+        <artifactId>webstart-maven-plugin</artifactId>
+        <version>@project.version@</version>
+      </plugin>
+    </plugins>
+  </reporting>
+
+  <dependencies>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+      <version>1.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.help</groupId>
+      <artifactId>javahelp</artifactId>
+      <version>2.0.02</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.swinglabs</groupId>
+      <artifactId>jxlayer</artifactId>
+      <version>3.0.4</version>
+    </dependency>
+
+  </dependencies>
+</project>
