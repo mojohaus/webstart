@@ -9,7 +9,7 @@
   <version>1.0</version>
   <packaging>pom</packaging>
   <name>Webstart it010</name>
-  <description>Test Case for MWEBSTART-???: usage of extension in generated jnlp file.</description>
+  <description>Test Case for MWEBSTART-156: usage of extension in generated jnlp file.</description>
 
   <organization>
     <name>CoffeeBreaks</name>
