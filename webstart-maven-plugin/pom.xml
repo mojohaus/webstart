@@ -151,6 +151,14 @@
 
   </dependencies>
 
+  <properties>
+    <javadocPluginVersion>2.7</javadocPluginVersion>
+
+    <!-- versions of javadoc tagglets -->
+    <mavenPluginToolsJavadocVersion>2.5.1</mavenPluginToolsJavadocVersion>
+    <plexusComponentJavadocVersion>1.3.0</plexusComponentJavadocVersion>
+  </properties>
+  
   <build>
     <plugins>
       <plugin>
@@ -182,6 +190,33 @@
         </executions>
       </plugin>
     </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${javadocPluginVersion}</version>
+          <configuration>
+            <charset>${project.reporting.outputEncoding}</charset>
+            <links>
+              <link>http://download.oracle.com/javase/6/docs/api</link>
+            </links>
+            <tagletArtifacts>
+              <tagletArtifact>
+                <groupId>org.apache.maven.plugin-tools</groupId>
+                <artifactId>maven-plugin-tools-javadoc</artifactId>
+                <version>${mavenPluginToolsJavadocVersion}</version>
+              </tagletArtifact>
+              <tagletArtifact>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-component-javadoc</artifactId>
+                <version>${plexusComponentJavadocVersion}</version>
+              </tagletArtifact>
+            </tagletArtifacts>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <profiles>
@@ -269,31 +304,34 @@
       </build>
     </profile>
 
+    <profile>
+      <id>reporting</id>
+      <activation>
+        <property>
+          <name>skipReports</name>
+          <value>!true</value>
+        </property>
+      </activation>
+
+      <reporting>
+        <plugins>
+          <plugin>
+            <artifactId>maven-invoker-plugin</artifactId>
+            <version>1.5</version>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>l10n-maven-plugin</artifactId>
+            <version>1.0-alpha-2</version>
+            <configuration>
+              <locales>
+                <locale>fr</locale>
+              </locales>
+            </configuration>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
   </profiles>
-
-  <reporting>
-    <plugins>
-<!--
-      <plugin>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.0</version>
-        <configuration>
-          <checkoutDirectoryName>plugin</checkoutDirectoryName>
-        </configuration>
-      </plugin>
--->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>l10n-maven-plugin</artifactId>
-        <version>1.0-alpha-2</version>
-        <configuration>
-          <locales>
-            <locale>fr</locale>
-          </locales>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
-
 
 </project>
