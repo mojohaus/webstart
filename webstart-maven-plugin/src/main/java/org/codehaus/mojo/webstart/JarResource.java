@@ -52,6 +52,8 @@ public class JarResource
 
     private boolean includeInJnlp = true;
 
+    private String type;
+    
     /**
      * Creates a new uninitialized {@code JarResource}.
      */
@@ -106,6 +108,12 @@ public class JarResource
             return false;
         }
 
+
+        if ( fieldsAreNotEqual( getType(), other.getType() ) )
+        {
+            return false;
+        }
+        
         if ( fieldsAreNotEqual( getClassifier(), other.getClassifier() ) )
         {
             return false;
@@ -140,6 +148,7 @@ public class JarResource
         result += multiplier * fieldHashCode( getGroupId() );
         result += multiplier * fieldHashCode( getArtifactId() );
         result += multiplier * fieldHashCode( getVersion() );
+        result += multiplier * fieldHashCode( getType() );
         result += multiplier * fieldHashCode( getClassifier() );
         return result;
 
@@ -158,6 +167,15 @@ public class JarResource
     public String getArtifactId()
     {
         return this.artifactId;
+    }
+
+    /**
+     * Returns the value of the type field.
+     * @return Returns the value of the type field.
+     */
+    public String getType()
+    {
+    	return this.type;
     }
 
     /**
@@ -252,6 +270,7 @@ public class JarResource
         }
         this.artifact = artifact;
         this.artifactId = artifact.getArtifactId();
+        this.type = artifact.getType();
         this.classifier = artifact.getClassifier();
         this.groupId = artifact.getGroupId();
         this.version = artifact.getVersion();

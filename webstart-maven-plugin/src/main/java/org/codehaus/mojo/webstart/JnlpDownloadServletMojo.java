@@ -562,7 +562,7 @@ public class JnlpDownloadServletMojo
             if ( !jarResourceArtifacts.contains( resolvedArtifact ) )
             {
                 JarResource newJarResource = new JarResource( resolvedArtifact );
-                if ( !jarResources.contains( newJarResource ) )
+                if ( !jarResources.contains( newJarResource ) && !newJarResource.getType().equals("pom") )
                 {
                     newJarResource.setOutputJarVersion( true );
                     jarResources.add( newJarResource );

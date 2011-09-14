@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>MWEBSTART-138</groupId>
+    <artifactId>test</artifactId>
+    <version>1.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>MWEBSTART-138</groupId>
+  <artifactId>jnlp</artifactId>
+  <packaging>jar</packaging>
+  <name>JNLP Test (Full Build)</name>
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.codehaus.mojo.webstart</groupId>
+        <artifactId>webstart-maven-plugin</artifactId>
+        <version>@project.version@</version>
+        <!-- <version>1.0-beta-1</version> -->
+        <executions>
+          <execution>
+            <goals>
+              <goal>jnlp-download-servlet</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <jnlpFiles>
+                <jnlpFile>
+                  <templateFilename>app.vm</templateFilename>
+                  <outputFilename>app.jnlp</outputFilename>
+                  <jarResources>
+                    <jarResource>
+                      <groupId>MWEBSTART-138</groupId>
+                      <artifactId>jnlp-dep</artifactId>
+                      <version>${project.version}</version>
+                      <mainClass>org.codehaus.mwebstart.Main</mainClass>
+                    </jarResource>
+                  </jarResources>
+                </jnlpFile>
+              </jnlpFiles>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <templateDirectory>src/main/jnlp</templateDirectory>
+          <outputJarVersions>false</outputJarVersions>
+          <verifyjar>true</verifyjar>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>MWEBSTART-138</groupId>
+      <artifactId>jnlp-dep</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+</project>
