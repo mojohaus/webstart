@@ -3,11 +3,11 @@
   <parent>
     <groupId>org.codehaus.mojo.webstart</groupId>
     <artifactId>webstart</artifactId>
-    <version>1.0-beta-2</version>
+    <version>1.0-beta-3-SNAPSHOT</version>
   </parent>
 
   <artifactId>webstart-maven-plugin</artifactId>
-  <version>1.0-beta-2</version>
+  <version>1.0-beta-3-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   <name>MWEBSTART :: Webstart Maven Plugin</name>
   <description>Maven plugin that supports webstart application development. Helps generate JNLP files and supports the
@@ -108,7 +108,7 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>webstart-jnlp-servlet</artifactId>
-      <version>1.0-6.0.02_ea_b02.2</version>
+      <version>1.0-7.0.02_ea_b02.2-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 

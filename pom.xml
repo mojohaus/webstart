@@ -8,7 +8,7 @@
   <groupId>org.codehaus.mojo.webstart</groupId>
   <artifactId>webstart</artifactId>
   <packaging>pom</packaging>
-  <version>1.0-beta-2</version>
+  <version>1.0-beta-3-SNAPSHOT</version>
   <name>MWEBSTART :: Webstart Maven Plugin Parent</name>
   <description>Webstart Maven Plugin and related modules</description>
   <url>http://mojo.codehaus.org/webstart</url>
@@ -29,9 +29,9 @@
   </licenses>
 
   <scm>
-    <url>https://svn.codehaus.org/mojo/tags/webstart-1.0-beta-2</url>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/tags/webstart-1.0-beta-2</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/tags/webstart-1.0-beta-2</developerConnection>
+    <url>https://svn.codehaus.org/mojo/trunk/mojo/webstart</url>
+    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart</developerConnection>
   </scm>
 
   <developers>

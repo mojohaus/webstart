@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.codehaus.mojo.webstart</groupId>
     <artifactId>webstart</artifactId>
-    <version>1.0-beta-2</version>
+    <version>1.0-beta-3-SNAPSHOT</version>
   </parent>
 
   <artifactId>webstart-jarsigner-api</artifactId>

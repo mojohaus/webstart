@@ -4,12 +4,12 @@
   <parent>
     <groupId>org.codehaus.mojo.webstart</groupId>
     <artifactId>webstart</artifactId>
-    <version>1.0-beta-2</version>
+    <version>1.0-beta-3-SNAPSHOT</version>
   </parent>
 
   <artifactId>webstart-jnlp-servlet</artifactId>
   <name>MWEBSTART :: JNLP Servlet</name>
-  <version>1.0-6.0.02_ea_b02.2</version>
+  <version>1.0-7.0.02_ea_b02.2-SNAPSHOT</version>
   
   <description>JNLP Sample servlet that supports pack200 protocol. Taken from Sun's JDK sample/jnlp directory thanks to
     its permissive license.
