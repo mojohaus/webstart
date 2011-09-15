@@ -29,7 +29,8 @@
           </execution>
         </executions>
         <configuration>
-
+          <unsign>true</unsign>
+          <canUnsign>false</canUnsign>
           <jnlp>
             <!-- we play with the resource path and template relative path to test MOJO-391 -->
             <outputFile>test.jnlp</outputFile>

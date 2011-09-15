@@ -53,7 +53,7 @@ public class JarResource
     private boolean includeInJnlp = true;
 
     private String type;
-    
+
     /**
      * Creates a new uninitialized {@code JarResource}.
      */
@@ -108,12 +108,11 @@ public class JarResource
             return false;
         }
 
-
         if ( fieldsAreNotEqual( getType(), other.getType() ) )
         {
             return false;
         }
-        
+
         if ( fieldsAreNotEqual( getClassifier(), other.getClassifier() ) )
         {
             return false;
@@ -171,11 +170,12 @@ public class JarResource
 
     /**
      * Returns the value of the type field.
+     *
      * @return Returns the value of the type field.
      */
     public String getType()
     {
-    	return this.type;
+        return this.type;
     }
 
     /**

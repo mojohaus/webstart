@@ -191,7 +191,7 @@ public abstract class AbstractBaseJnlpMojo
      *
      * @parameter expression="${jnlp.codebase}" default-value="${project.url}/jnlp"
      * @since 1.0-beta-2
-     **/
+     */
     private String codebase;
 
     private final List modifiedJnlpArtifacts = new ArrayList();
@@ -215,12 +215,36 @@ public abstract class AbstractBaseJnlpMojo
     private boolean unsignAlreadySignedJars;
 
     /**
+     * To authorize or not to unsign some already signed jar.
+     * <p/>
+     * If set to false and the {@code unsign} parameter is set to {@code true} then the build will fail if there is
+     * a jar to unsign, to avoid this use then the extension jnlp component.
+     *
+     * @parameter default-value="true"
+     * @since 1.0-beta-2
+     */
+    private boolean canUnsign;
+
+    /**
      * To look up Archiver/UnArchiver implementations
      *
      * @component
      * @required
      */
     protected ArchiverManager archiverManager;
+
+    /**
+     * All available pack200 tools.
+     * <p/>
+     * We use a plexusi list injection instead of a direct component injection since for a jre 1.4, we will at the
+     * moment have no implementation of this tool.
+     * <p/>
+     * Later in the execute of mojo, we will check if at least one implementation is available if required.
+     *
+     * @component role="org.codehaus.mojo.webstart.Pack200Tool"
+     * @since 1.0-beta-2
+     */
+    private List pack200Tools;
 
     /**
      * Creates a new {@code AbstractBaseJnlpMojo}.
@@ -403,7 +427,7 @@ public abstract class AbstractBaseJnlpMojo
         return sign;
     }
 
-   /**
+    /**
      * Returns the code base to inject in the generated jnlp.
      *
      * @return Returns the value of codebase field.
@@ -475,6 +499,11 @@ public abstract class AbstractBaseJnlpMojo
         return attachArchive;
     }
 
+    public boolean isCanUnsign()
+    {
+        return canUnsign;
+    }
+
     /**
      * Returns the collection of artifacts that have been modified
      * since the last time this mojo was run.
@@ -494,13 +523,25 @@ public abstract class AbstractBaseJnlpMojo
     protected void checkPack200()
         throws MojoExecutionException
     {
+        if ( !isPack200() )
+        {
+
+            // pack 200 is not required, so no check to do
+            return;
+        }
+
         final float javaVersion5 = 1.5f;
-        if ( isPack200() && ( SystemUtils.JAVA_VERSION_FLOAT < javaVersion5 ) )
+        if ( SystemUtils.JAVA_VERSION_FLOAT < javaVersion5 )
         {
             throw new MojoExecutionException(
                 "Configuration error: Pack200 compression is only available on SDK 5.0 or above." );
         }
 
+        // check the pack200Tool exists
+        if ( pack200Tools.isEmpty() )
+        {
+            throw new MojoExecutionException( "Configuration error: No Pack200Tool found." );
+        }
     }
 
     protected void copyResources( File resourcesDir, File workDirectory )
@@ -615,7 +656,6 @@ public abstract class AbstractBaseJnlpMojo
         }
 
         return shouldCopy;
-
     }
 
 
@@ -661,7 +701,6 @@ public abstract class AbstractBaseJnlpMojo
         }
 
         return shouldCopy;
-
     }
 
     /**
@@ -684,8 +723,8 @@ public abstract class AbstractBaseJnlpMojo
             {
                 // http://java.sun.com/j2se/1.5.0/docs/guide/deployment/deployment-guide/pack200.html
                 // we need to pack then unpack the files before signing them
-                Pack200.packJars( getLibDirectory(), unprocessedJarFileFilter, isGzip() );
-                Pack200.unpackJars( getLibDirectory(), unprocessedPack200FileFilter );
+                getPack200Tool().packJars( getLibDirectory(), unprocessedJarFileFilter, isGzip() );
+                getPack200Tool().unpackJars( getLibDirectory(), unprocessedPack200FileFilter );
                 // As out current Pack200 ant tasks don't give us the ability to use a temporary area for
                 // creating those temporary packing, we have to delete the temporary files.
                 deleteFiles( getLibDirectory(), unprocessedPack200FileFilter );
@@ -904,10 +943,20 @@ public abstract class AbstractBaseJnlpMojo
         // process jars
         File[] jarFiles = workDirectory.listFiles( updatedJarFileFilter );
 
+        boolean canUnsign = isCanUnsign();
+
         for ( int i = 0; i < jarFiles.length; i++ )
         {
             if ( isJarSigned( jarFiles[i] ) )
             {
+                if ( !canUnsign )
+                {
+                    throw new MojoExecutionException(
+                        "neverUnsignAlreadySignedJar is set to true and a jar file [" + jarFiles[i] +
+                            " was asked to be unsign,\n please prefer use in this case an extension for " +
+                            "signed jars or not set to true the neverUnsignAlreadySignedJar parameter, Make " +
+                            "your choice:)" );
+                }
                 verboseLog( "remove signature from : " + jarFiles[i] );
                 unsignJarFile( jarFiles[i], tempDir );
             }
@@ -999,7 +1048,7 @@ public abstract class AbstractBaseJnlpMojo
         if ( isPack200() )
         {
             getLog().debug( "packing jars" );
-            Pack200.packJars( getLibDirectory(), processedJarFileFilter, isGzip() );
+            getPack200Tool().packJars( getLibDirectory(), processedJarFileFilter, isGzip() );
         }
 
     }
@@ -1093,6 +1142,11 @@ public abstract class AbstractBaseJnlpMojo
     protected boolean unsignAlreadySignedJars()
     {
         return unsignAlreadySignedJars;
+    }
+
+    protected Pack200Tool getPack200Tool()
+    {
+        return (Pack200Tool) pack200Tools.get( 0 );
     }
 
     /**

@@ -105,7 +105,6 @@ public class JnlpReportMojo
      *
      * @parameter expression="${jnlp.codebase}" default-value="${project.url}/jnlp"
      * @since 1.0-beta-2
-     *
      */
     private String codebase;
 
@@ -125,7 +124,7 @@ public class JnlpReportMojo
         }
         try
         {
-            File destinationDirectory = new File( outputDirectory, siteJnlpDirectory);
+            File destinationDirectory = new File( outputDirectory, siteJnlpDirectory );
             List files = FileUtils.getFiles( jnlpSourceDirectory, "**/*", "" );
             for ( Iterator i = files.iterator(); i.hasNext(); )
             {
@@ -166,14 +165,16 @@ public class JnlpReportMojo
         getSink().paragraph();
         if ( codebase.startsWith( "file://" ) )
         {
-            if ( ! codebase.endsWith( File.separator ) )
+            if ( !codebase.endsWith( File.separator ) )
             {
                 codebase += File.separator;
             }
-        } else {
-            if ( ! codebase.endsWith("/") )
+        }
+        else
+        {
+            if ( !codebase.endsWith( "/" ) )
             {
-                codebase += "/" ;
+                codebase += "/";
             }
         }
         getSink().link( codebase + siteJnlpFile );

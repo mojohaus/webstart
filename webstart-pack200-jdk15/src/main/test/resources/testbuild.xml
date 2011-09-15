@@ -1,0 +1,162 @@
+<project name="Pack200 Ant Tasks Tests">
+
+  <typedef resource="org/jdesktop/deployment/ant/pack200/antlib.xml"/>
+
+  <property name="test.dir" value="target/jars"/>
+
+  <target name="init">
+    <!-- Create the test directory -->
+    <mkdir dir="${test.dir}"/>
+    
+    <!-- Download the test jar -->
+    <get src="http://download.java.net/maven/2/javax/mail/mail/1.4.3/mail-1.4.3.jar" dest="${test.dir}/mail.jar" usetimestamp="true"/>
+    
+    <!-- Remove the other files from the test directory -->
+    <delete>
+      <fileset dir="${test.dir}">
+        <exclude name="mail.jar"/>
+      </fileset>
+    </delete>
+  </target>
+
+  <!-- Simple roundtrip pack->unpack -->
+  <target name="roundtrip">
+    <pack200 src="${test.dir}/mail.jar" destfile="${test.dir}/mail.jar.pack"/>
+    <unpack200 src="${test.dir}/mail.jar.pack" dest="${test.dir}/mail.unpacked.jar"/>
+  </target>
+
+  <!-- Simple roundtrip pack->unpack with gzip compression -->
+  <target name="roundtrip-gzip">
+    <pack200 src="${test.dir}/mail.jar" destfile="${test.dir}/mail.jar.pack.gz" gzipoutput="true"/>
+    <unpack200 src="${test.dir}/mail.jar.pack.gz" dest="${test.dir}/mail.unpacked.jar"/>
+  </target>
+  
+  <!-- Unpack a non packed jar file -->
+  <target name="unpack-jar">
+    <unpack200 src="${test.dir}/mail.jar" dest="${test.dir}/mail.unpacked.jar"/>
+  </target>
+
+  <!-- Unpack an unsupported file -->
+  <target name="unpack-unsupported-format">
+    <echo file="${test.dir}/test.txt">This is not a jar file</echo>
+    <unpack200 src="${test.dir}/test.txt" dest="${test.dir}/test.unpacked.txt"/>
+  </target>
+  
+  <!-- Unpack to a directory -->
+  <target name="unpack-todir">
+    <mkdir dir="${test.dir}/subdir"/>
+    <unpack200 src="${test.dir}/mail.jar" dest="${test.dir}/subdir"/>
+  </target>
+
+  <!-- Pack with an external configuration file -->
+  <target name="config-file">
+    <property name="config.file" value="src/test/resources/pack200.properties"/>
+    <pack200 src="${test.dir}/mail.jar" destfile="${test.dir}/mail.jar.pack" configfile="${config.file}"/>
+  </target>
+
+  <!-- Pack with a missing external configuration file -->
+  <target name="missing-config-file">
+    <property name="config.file" value="missing.properties"/>
+    <pack200 src="${test.dir}/mail.jar" destfile="${test.dir}/mail.jar.pack" configfile="${config.file}"/>
+  </target>
+
+  <!-- Pack with an external configuration pointing to a directory -->
+  <target name="directory-config-file">
+    <property name="config.file" value="src"/>
+    <pack200 src="${test.dir}/mail.jar" destfile="${test.dir}/mail.jar.pack" configfile="${config.file}"/>
+  </target>
+
+  <!-- Repack and sign -->
+  <target name="repack-sign">
+    <property name="keystore" value="src/test/resources/pack200.keystore"/>
+    
+    <pack200 src="${test.dir}/mail.jar" destfile="${test.dir}/mail.repacked.jar" repack="true" segmentlimit="10000"/>
+    
+    <signjar alias="test" keystore="${keystore}" storepass="pack200" jar="${test.dir}/mail.repacked.jar" signedjar="${test.dir}/mail.signed.jar"/>
+    
+    <pack200 src="${test.dir}/mail.signed.jar" destfile="${test.dir}/mail.signed.jar.pack" segmentlimit="10000"/>
+    
+    <unpack200 src="${test.dir}/mail.signed.jar.pack" dest="${test.dir}/mail.unpacked.jar"/>
+    
+    <verifyjar alias="test" keystore="${keystore}" storepass="pack200" verbose="false" >
+      <fileset dir="${test.dir}" includes="mail.unpacked.jar"/>
+    </verifyjar>
+  </target>
+
+  <!-- Repack a jar over itself -->
+  <target name="repack-self">
+    <copy file="${test.dir}/mail.jar" tofile="${test.dir}/mail2.jar"/>
+    <pack200 src="${test.dir}/mail2.jar" destfile="${test.dir}/mail2.jar" repack="true" overwrite="true"/>
+  </target>
+
+  <!-- Pack a jar with effort=0 -->
+  <target name="pack-effort-zero">
+    <pack200 src="${test.dir}/mail.jar" destfile="${test.dir}/mail2.jar" effort="0"/>
+  </target>
+
+  <!-- Pack with an external configuration file -->
+  <target name="pack-effort-zero-with-config-file">
+    <property name="config.file" value="src/test/resources/pack200.properties"/>
+    <pack200 src="${test.dir}/mail.jar" destfile="${test.dir}/mail2.jar" configfile="${config.file}"/>
+  </target>
+
+  <!-- Illegal value for the modificationtime attribute -->
+  <target name="illegal-modificationtime">
+    <pack200 src="${test.dir}/mail.jar" destfile="${test.dir}/mail.jar.pack" modificationtime="earliest"/>
+  </target>
+
+  <!-- Illegal value for the deflatehint attribute -->
+  <target name="illegal-deflatehint">
+    <pack200 src="${test.dir}/mail.jar" destfile="${test.dir}/mail.jar.pack" deflatehint="remove"/>
+  </target>
+
+  <!-- Illegal value for the unknownattribute attribute -->
+  <target name="illegal-unknownattribute">
+    <pack200 src="${test.dir}/mail.jar" destfile="${test.dir}/mail.jar.pack" unknownattribute="erase"/>
+  </target>
+
+  <!-- Pack a corrupted jar file -->
+  <target name="pack-corrupted-file">
+    <echo file="${test.dir}/test.txt">This is not a jar file</echo>
+    <pack200 src="${test.dir}/test.txt" destfile="${test.dir}/test.packed.txt"/>
+  </target>
+
+  <target name="strip-debug">
+    <pack200 src="${test.dir}/mail.jar" destfile="${test.dir}/mail.repacked.jar" repack="true"/>
+    <pack200 src="${test.dir}/mail.jar" destfile="${test.dir}/mail.striped.jar"  repack="true" stripdebug="true"/>
+  </target>
+
+  <target name="modificationtime">
+    <pack200 src="${test.dir}/mail.jar" destfile="${test.dir}/mail.keep.jar.pack"   segmentlimit="100000" modificationtime="keep"/>
+    <pack200 src="${test.dir}/mail.jar" destfile="${test.dir}/mail.latest.jar.pack" segmentlimit="100000" modificationtime="latest"/>
+  </target>
+
+  <!-- Packing and unpacking of multiple jars -->
+  <target name="fileset">
+    <copy file="${test.dir}/mail.jar" tofile="${test.dir}/mail2.jar"/>
+    <pack200 todir="${test.dir}">
+      <fileset dir="${test.dir}"/>
+    </pack200>
+    
+    <delete>
+      <fileset dir="${test.dir}" includes="*.jar"/>
+    </delete>
+    
+    <unpack200 todir="${test.dir}">
+      <fileset dir="${test.dir}"/>
+    </unpack200>
+  </target>
+
+  <!-- Custom file mapper -->
+  <target name="mapper">
+    <pack200 todir="${test.dir}" repack="true">
+      <fileset dir="${test.dir}"/>
+      <mapper type="glob" from="*.jar" to="*.repacked.jar"/>
+    </pack200>
+    <unpack200 todir="${test.dir}">
+      <fileset dir="${test.dir}"/>
+      <mapper type="glob" from="*.repacked.jar" to="*.unpacked.jar"/>
+    </unpack200>
+  </target>
+
+</project>

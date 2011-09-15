@@ -9,7 +9,7 @@
 
   <artifactId>webstart-jarsigner-api</artifactId>
 
-  <name>Maven Webstart Pluggable JarSigner API</name>
+  <name>MWEBSTART :: Maven Webstart Pluggable JarSigner API</name>
   <inceptionYear>2007</inceptionYear>
 
   <dependencies>

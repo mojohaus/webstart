@@ -206,6 +206,11 @@ public abstract class AbstractJnlpMojo
         throws MojoExecutionException
     {
 
+//        if (isNeverUnsignAlreadySignedJar() && unsignAlreadySignedJars()) {
+//            throw  new MojoExecutionException(
+//                "neverUnsignAlreadySignedJar and unsignAlreadySignedJars are not compatible!" );
+//        }
+        
         boolean withExtensions = hasJnlpExtensions();
 
         if ( withExtensions )
@@ -215,7 +220,7 @@ public abstract class AbstractJnlpMojo
         }
 
         checkInput();
-
+        
         findDefaultJnlpTemplateURL();
 
         getLog().debug( "using work directory " + getWorkDirectory() );

@@ -9,32 +9,13 @@
 
   <artifactId>webstart-pack200-jdk14</artifactId>
 
-  <name>Pack 200 support for SDK 1.4</name>
+  <name>MWEBSTART :: Pack 200 support for SDK 1.4</name>
 
-  <developers>
-    <developer>
-      <name>Jerome Lacoste</name>
-      <email>jerome@coffeebreaks.org</email>
-      <organization>CoffeeBreaks</organization>
-      <organizationUrl>http://www.coffeebreaks.org</organizationUrl>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Java Developer</role>
-      </roles>
-    </developer>
-  </developers>
-
-  <dependencies/>
-
-  <!--reporting>
-    <plugins>
-      <plugin>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.0</version>
-         <configuration>
-            <checkoutDirectoryName>pack200-jdk14</checkoutDirectoryName>
-          </configuration>
-        </plugin>
-    </plugins>
-  </reporting-->
+  <dependencies>
+     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>webstart-jarsigner-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
 </project>

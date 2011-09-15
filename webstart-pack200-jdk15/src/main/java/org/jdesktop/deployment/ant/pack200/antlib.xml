@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<antlib>
+   <typedef name="pack200"   classname="org.jdesktop.deployment.ant.pack200.Pack200Task"/>
+   <typedef name="unpack200" classname="org.jdesktop.deployment.ant.pack200.Unpack200Task"/>
+</antlib>

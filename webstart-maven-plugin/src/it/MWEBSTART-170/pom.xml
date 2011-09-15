@@ -4,23 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.codehaus.mojo.webstart.it011</groupId>
-  <artifactId>webstart-it011</artifactId>
+  <groupId>org.codehaus.mojo.webstart</groupId>
+  <artifactId>MWEBSTART-170</artifactId>
   <version>1.0</version>
   <packaging>pom</packaging>
-  <name>Webstart it011</name>
-  <description>Test Case for MWEBSTART-99: Add an integration test for the report mojo.</description>
+  <name>MWEBSTART-170</name>
+  <description>Test Case for MWEBSTART-170.</description>
 
   <organization>
     <name>CoffeeBreaks</name>
   </organization>
-
-
-  <properties>
-    <jnlp.codebase>file://${project.build.directory}/site/jnlp</jnlp.codebase>
-    <jnlp.outputFile>test.jnlp</jnlp.outputFile>
-    <jnlp.siteJnlpFile>${jnlp.outputFile}</jnlp.siteJnlpFile>
-  </properties>
 
   <build>
     <plugins>
@@ -42,8 +35,6 @@
           <makeArchive>false</makeArchive>
           <attachArchive>false</attachArchive>
           <jnlp>
-            <!-- we play with the resource path and template relative path to test MOJO-391 -->
-            <outputFile>${jnlp.outputFile}</outputFile>
             <mainClass>org.apache.commons.cli.BasicParser</mainClass>
           </jnlp>
 
@@ -75,14 +66,6 @@
           <verbose>false</verbose>
           <jnlpExtensions>
             <jnlpExtension>
-              <name>sun</name>
-              <title>Sun MicroSystems</title>
-              <vendor>Sun MicroSystems, Inc.</vendor>
-              <includes>
-                <include>javax.help:javahelp</include>
-              </includes>
-            </jnlpExtension>
-            <jnlpExtension>
               <name>jxlayer</name>
               <title>Swing labs JXLayer</title>
               <vendor>Swing Labs</vendor>
@@ -99,29 +82,14 @@
       <plugins>
 
         <plugin>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>3.0</version>
-        </plugin>
-
-        <plugin>
           <groupId>org.codehaus.mojo.webstart</groupId>
           <artifactId>webstart-maven-plugin</artifactId>
           <version>@project.version@</version>
         </plugin>
-        
+
       </plugins>
     </pluginManagement>
   </build>
-
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo.webstart</groupId>
-        <artifactId>webstart-maven-plugin</artifactId>
-        <version>@project.version@</version>
-      </plugin>
-    </plugins>
-  </reporting>
 
   <dependencies>
     <dependency>

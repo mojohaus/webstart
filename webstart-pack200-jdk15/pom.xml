@@ -9,47 +9,59 @@
 
   <artifactId>webstart-pack200-jdk15</artifactId>
 
-  <name>Pack 200 support for SDK 5.0</name>
-  <developers>
-    <developer>
-      <name>Jerome Lacoste</name>
-      <email>jerome@coffeebreaks.org</email>
-      <organization>CoffeeBreaks</organization>
-      <organizationUrl>http://www.coffeebreaks.org</organizationUrl>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Java Developer</role>
-      </roles>
-    </developer>
-  </developers>
+  <name>MWEBSTART :: Pack 200 support for SDK 5.0</name>
 
   <dependencies>
-    <!--dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency-->
-    <dependency>
+     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>webstart-pack200-anttasks</artifactId>
-      <version>1.3-SNAPSHOT</version>
+      <artifactId>webstart-jarsigner-api</artifactId>
+      <version>${project.version}</version>
     </dependency>
+
+    <!-- tchemit 2011-09-15 : Use this when it will be available on Maven Central Repository -->
+    <!--dependency>
+      <groupId>org.jdesktop.deployment</groupId>
+      <artifactId>deployment-ant-pack200</artifactId>
+      <version>1.0</version>
+    </dependency-->
     <dependency>
       <groupId>ant</groupId>
       <artifactId>ant</artifactId>
     </dependency>
   </dependencies>
 
-  <!--reporting>
+  <build>
     <plugins>
+      <!-- expose new plexus components -->
       <plugin>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.0</version>
-         <configuration>
-            <checkoutDirectoryName>pack200-jdk15</checkoutDirectoryName>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>create-component-descriptor</id>
+            <goals>
+              <goal>descriptor</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
+          <configuration>
+            <signature>
+              <groupId>org.codehaus.mojo.signature</groupId>
+              <artifactId>java15</artifactId>
+              <version>1.0</version>
+            </signature>
           </configuration>
         </plugin>
-    </plugins>
-  </reporting-->
+      </plugins>
+    </pluginManagement>
+  </build>
+
 </project>
