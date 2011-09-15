@@ -1,5 +1,5 @@
 /*
- * $Id: Pack200Task.java,v 1.2 2005/11/17 05:30:03 evickroy Exp $
+ * $Id$
  *
  * Copyright 2004 Sun Microsystems, Inc., 4150 Network Circle,
  * Santa Clara, California 95054, U.S.A. All rights reserved.

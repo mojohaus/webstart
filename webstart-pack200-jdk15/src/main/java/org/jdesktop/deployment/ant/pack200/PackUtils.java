@@ -1,5 +1,5 @@
 /*
- * $Id: PackUtils.java,v 1.5 2010-09-01 16:25:58 smanux Exp $
+ * $Id$
  *
  * Copyright 2004 Sun Microsystems, Inc., 4150 Network Circle,
  * Santa Clara, California 95054, U.S.A. All rights reserved.
@@ -36,7 +36,7 @@ import java.util.zip.GZIPOutputStream;
  * Utility methods for packing and unpacking jar files.
  *
  * @author Emmanuel Bourg
- * @version $Revision: 1.5 $, $Date: 2010-09-01 16:25:58 $
+ * @version $Revision$, $Date$
  */
 public class PackUtils
 {
