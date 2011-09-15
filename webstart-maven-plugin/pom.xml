@@ -1,14 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.codehaus.mojo.webstart</groupId>
     <artifactId>webstart</artifactId>
-    <version>1.0-beta-2-SNAPSHOT</version>
+    <version>1.0-beta-2</version>
   </parent>
 
   <artifactId>webstart-maven-plugin</artifactId>
-  <version>1.0-beta-2-SNAPSHOT</version>
+  <version>1.0-beta-2</version>
   <packaging>maven-plugin</packaging>
   <name>MWEBSTART :: Webstart Maven Plugin</name>
   <description>Maven plugin that supports webstart application development. Helps generate JNLP files and supports the
@@ -109,7 +108,7 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>webstart-jnlp-servlet</artifactId>
-      <version>1.0-6.0.02_ea_b02.2-SNAPSHOT</version>
+      <version>1.0-6.0.02_ea_b02.2</version>
       <scope>test</scope>
     </dependency>
 
@@ -157,9 +156,9 @@
               <tasks>
                 <copy todir="${project.build.directory}/site/examples/">
                   <fileset dir="${basedir}/src/main/resources">
-                    <include name="**/*.vm"/>
+                    <include name="**/*.vm" />
                   </fileset>
-                  <mapper type="flatten"/>
+                  <mapper type="flatten" />
                 </copy>
               </tasks>
             </configuration>
