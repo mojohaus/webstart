@@ -1,1 +1,1 @@
-clean org.codehaus.mojo.webstart:webstart-maven-plugin:jnlp-inline
+clean org.codehaus.mojo:webstart-maven-plugin:jnlp-inline

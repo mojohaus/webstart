@@ -116,7 +116,7 @@
   <reporting>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo.webstart</groupId>
+        <groupId>org.codehaus.mojo</groupId>
         <artifactId>webstart-maven-plugin</artifactId>
         <version>@project.version@</version>
       </plugin>

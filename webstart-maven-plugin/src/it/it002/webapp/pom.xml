@@ -28,7 +28,7 @@
       <groupId>org.codehaus.mojo.webstart</groupId>
       <!--groupId>com.sun.java.jnlp</groupId-->
       <artifactId>webstart-jnlp-servlet</artifactId>
-      <version>1.0-6.0.02_ea_b02.2-SNAPSHOT</version>
+      <version>@project.version@</version>
       <scope>runtime</scope>
     </dependency>
     
@@ -43,7 +43,7 @@
   <build>
     <plugins>
         <plugin>
-            <groupId>org.codehaus.mojo.webstart</groupId>
+            <groupId>org.codehaus.mojo</groupId>
             <artifactId>webstart-maven-plugin</artifactId>
             <version>@project.version@</version>
             <executions>

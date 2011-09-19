@@ -6,6 +6,7 @@
     <version>1.0-beta-3-SNAPSHOT</version>
   </parent>
 
+  <groupId>org.codehaus.mojo</groupId>
   <artifactId>webstart-maven-plugin</artifactId>
   <version>1.0-beta-3-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
@@ -38,7 +39,7 @@
   <dependencies>
 
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>org.codehaus.mojo.webstart</groupId>
       <artifactId>webstart-jarsigner-api</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -106,9 +107,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>org.codehaus.mojo.webstart</groupId>
       <artifactId>webstart-jnlp-servlet</artifactId>
-      <version>1.0-7.0.02_ea_b02.2-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -203,7 +204,7 @@
       </activation>
       <dependencies>
         <dependency>
-          <groupId>${project.groupId}</groupId>
+          <groupId>org.codehaus.mojo.webstart</groupId>
           <artifactId>webstart-pack200-jdk15</artifactId>
           <version>${project.version}</version>
         </dependency>
@@ -216,7 +217,7 @@
       </activation>
       <dependencies>
         <dependency>
-          <groupId>${project.groupId}</groupId>
+          <groupId>org.codehaus.mojo.webstart</groupId>
           <artifactId>webstart-pack200-jdk15</artifactId>
           <version>${project.version}</version>
         </dependency>
@@ -229,7 +230,7 @@
       </activation>
       <dependencies>
         <dependency>
-          <groupId>${project.groupId}</groupId>
+          <groupId>org.codehaus.mojo.webstart</groupId>
           <artifactId>webstart-pack200-jdk15</artifactId>
           <version>${project.version}</version>
         </dependency>
