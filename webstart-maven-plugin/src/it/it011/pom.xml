@@ -108,7 +108,7 @@
           <artifactId>webstart-maven-plugin</artifactId>
           <version>@project.version@</version>
         </plugin>
-        
+
       </plugins>
     </pluginManagement>
   </build>
