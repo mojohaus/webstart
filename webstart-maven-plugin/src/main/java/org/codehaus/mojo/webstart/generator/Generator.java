@@ -88,7 +88,15 @@ public class Generator
         {
             StringBuffer buffer = new StringBuffer( 100 * artifacts.size() );
             buffer.append( "\n" );
-
+            if (config.isPack200()) {
+                /*
+                 * http://jira.codehaus.org/browse/MWEBSTART-174
+                 *
+                 * If we're going to use Pack200, we should specify jnlp.packEnabled
+                 *
+                 */
+                buffer.append( "<property name=\"jnlp.packEnabled\" value=\"true\" />\n" );
+            }
             String jarLibPath = null;
             if ( config.getLibPath() != null )
             {
