@@ -9,7 +9,8 @@
   <version>1.0</version>
   <packaging>pom</packaging>
   <name>Webstart it004</name>
-  <description>Test Case for MWEBSTART-74. Make sure that not enabling signing creates valid jnlp archives.</description>
+  <description>Test Case for MWEBSTART-74. Make sure that not enabling signing creates valid jnlp archives.
+  </description>
 
   <organization>
     <name>CoffeeBreaks</name>

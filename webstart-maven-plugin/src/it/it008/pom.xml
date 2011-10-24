@@ -9,7 +9,8 @@
   <version>1.0</version>
   <packaging>pom</packaging>
   <name>Webstart it008</name>
-  <description>Test Case for MWEBSTART-86. jnlpservlet plugin work out of the box without jnlp template file.</description>
+  <description>Test Case for MWEBSTART-86. jnlpservlet plugin work out of the box without jnlp template file.
+  </description>
 
   <organization>
     <name>CoffeeBreaks</name>

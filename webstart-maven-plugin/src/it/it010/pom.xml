@@ -64,23 +64,23 @@
 
           <verbose>false</verbose>
           <jnlpExtensions>
-              <jnlpExtension>
-                <name>sun</name>
-                <title>Sun MicroSystems</title>
-                <vendor>Sun MicroSystems, Inc.</vendor>
-                <includes>
-                  <include>javax.help:javahelp</include>
-                </includes>
-              </jnlpExtension>
-              <jnlpExtension>
-                <name>jxlayer</name>
-                <title>Swing labs JXLayer</title>
-                <vendor>Swing Labs</vendor>
-                <includes>
-                  <include>org.swinglabs:jxlayer</include>
-                </includes>
-              </jnlpExtension>
-            </jnlpExtensions>
+            <jnlpExtension>
+              <name>sun</name>
+              <title>Sun MicroSystems</title>
+              <vendor>Sun MicroSystems, Inc.</vendor>
+              <includes>
+                <include>javax.help:javahelp</include>
+              </includes>
+            </jnlpExtension>
+            <jnlpExtension>
+              <name>jxlayer</name>
+              <title>Swing labs JXLayer</title>
+              <vendor>Swing Labs</vendor>
+              <includes>
+                <include>org.swinglabs:jxlayer</include>
+              </includes>
+            </jnlpExtension>
+          </jnlpExtensions>
         </configuration>
       </plugin>
     </plugins>
@@ -97,7 +97,7 @@
       <artifactId>commons-cli</artifactId>
       <version>1.1</version>
     </dependency>
-    
+
     <dependency>
       <groupId>javax.help</groupId>
       <artifactId>javahelp</artifactId>
