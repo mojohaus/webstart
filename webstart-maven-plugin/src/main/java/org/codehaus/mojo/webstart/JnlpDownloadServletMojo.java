@@ -56,6 +56,8 @@ public class JnlpDownloadServletMojo
 {
 
     /**
+     * Maven project.
+     *
      * @parameter default-value="${project}"
      * @required
      * @readonly
@@ -101,11 +103,11 @@ public class JnlpDownloadServletMojo
     private List/*JarResource*/ commonJarResources;
 
     /**
-     * Creates a new uninitialized {@code JnlpDownloadServletMojo}.
+     * {@inheritDoc}
      */
-    public JnlpDownloadServletMojo()
+    public MavenProject getProject()
     {
-        // do nothing
+        return this.project;
     }
 
     /**
@@ -351,6 +353,12 @@ public class JnlpDownloadServletMojo
 
     }
 
+    /**
+     * Checks mandatory files of the given jar resource (says groupId, artificatId or version).
+     *
+     * @param jarResource jar resource to check
+     * @throws MojoExecutionException if one of the mandatory field is missing
+     */
     private void checkMandatoryJarResourceFields( JarResource jarResource )
         throws MojoExecutionException
     {
@@ -367,7 +375,7 @@ public class JnlpDownloadServletMojo
     /**
      * Confirms that each jnlpFile element is configured with a unique JNLP file name.
      *
-     * @throws MojoExecutionException
+     * @throws MojoExecutionException if the config is invalid.
      */
     private void checkForUniqueJnlpFilenames()
         throws MojoExecutionException
@@ -396,7 +404,8 @@ public class JnlpDownloadServletMojo
      * <p/>
      * Transitive dependencies are added to the list specified as parameter. TODO fix that.
      *
-     * @throws MojoExecutionException
+     * @param jarResources list of jar resources to retrieve
+     * @throws MojoExecutionException if something bas occurs while retrieving resources
      */
     private void retrieveJarResources( List jarResources )
         throws MojoExecutionException
@@ -466,6 +475,12 @@ public class JnlpDownloadServletMojo
 
     }
 
+    /**
+     * Creates from the given jar resource the underlying artifact.
+     *
+     * @param jarResource the jar resource
+     * @return the created artifact from the given jar resource
+     */
     private Artifact createArtifact( JarResource jarResource )
     {
 
@@ -488,9 +503,9 @@ public class JnlpDownloadServletMojo
      * If the given jarResource is configured with a main class, the underlying artifact
      * is checked to see if it actually contains the specified class.
      *
-     * @param jarResource
+     * @param jarResource the jar resources to test
      * @throws IllegalStateException  if the jarResource's underlying artifact has not yet been resolved.
-     * @throws MojoExecutionException
+     * @throws MojoExecutionException if could not chek that the jar resource with a main class has really it
      */
     private void checkForMainClass( JarResource jarResource )
         throws MojoExecutionException
@@ -650,7 +665,7 @@ public class JnlpDownloadServletMojo
      * Generates a version.xml file for all the jarResources configured either in jnlpFile elements
      * or in the commonJarResources element.
      *
-     * @throws MojoExecutionException
+     * @throws MojoExecutionException if could not generate the xml version file
      */
     private void generateVersionXml()
         throws MojoExecutionException
@@ -674,14 +689,6 @@ public class JnlpDownloadServletMojo
         VersionXmlGenerator generator = new VersionXmlGenerator();
         generator.generate( getLibDirectory(), jarResources );
 
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public MavenProject getProject()
-    {
-        return this.project;
     }
 
     /**
@@ -710,6 +717,7 @@ public class JnlpDownloadServletMojo
 
     /**
      * Copies the contents of the working directory to the output directory.
+     * @throws MojoExecutionException if could not copy files
      */
     private void copyWorkingDirToOutputDir()
         throws MojoExecutionException
