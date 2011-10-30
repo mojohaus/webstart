@@ -27,7 +27,6 @@ import org.apache.maven.artifact.resolver.filter.ExcludesArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.PluginManager;
-import org.apache.maven.plugin.jar.JarSignVerifyMojo;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.settings.Settings;
 import org.codehaus.mojo.webstart.generator.ExtensionGenerator;
@@ -341,7 +340,6 @@ public abstract class AbstractJnlpMojo
             getLog().debug( "An error occurred during the task: " + sw.toString() );
             */
         }
-
     }
 
     public List getJnlpExtensions()
@@ -352,6 +350,57 @@ public abstract class AbstractJnlpMojo
     public boolean hasJnlpExtensions()
     {
         return jnlpExtensions != null && !jnlpExtensions.isEmpty();
+    }
+
+    public JnlpConfig getJnlp()
+    {
+        return jnlp;
+    }
+
+    public List getPackagedJnlpArtifacts()
+    {
+        return packagedJnlpArtifacts;
+    }
+
+    public Map getExtensionsJnlpArtifacts()
+    {
+        return extensionsJnlpArtifacts;
+    }
+
+    public Dependencies getDependencies()
+    {
+        return this.dependencies;
+    }
+
+    public boolean isArtifactWithMainClass( Artifact artifact )
+    {
+        final boolean b = artifactWithMainClass.equals( artifact );
+        getLog().debug( "compare " + artifactWithMainClass + " with " + artifact + ": " + b );
+        return b;
+    }
+
+    /**
+     * Returns the flag that indicates whether or not a version attribute
+     * should be output in each jar resource element in the generated
+     * JNLP file. The default is false.
+     *
+     * @return Returns the value of the {@code outputJarVersions} property.
+     */
+    public boolean isOutputJarVersions()
+    {
+        return this.outputJarVersions;
+    }
+
+    /**
+     * Sets the flag that indicates whether or not a version attribute
+     * should be output in each jar resource element in the generated
+     * JNLP file. The default is false.
+     *
+     * @param outputJarVersions
+     */
+    public void setOutputJarVersions( boolean outputJarVersions )
+    {
+        this.outputJarVersions = outputJarVersions;
     }
 
     /**
@@ -391,6 +440,8 @@ public abstract class AbstractJnlpMojo
     }
 
     /**
+     * @param patterns
+     * @param artifacts
      * @return true if at least one of the pattern in the list matches no artifact, false otherwise
      */
     private boolean checkDependencies( List patterns, Collection artifacts )
@@ -409,6 +460,8 @@ public abstract class AbstractJnlpMojo
     }
 
     /**
+     * @param pattern
+     * @param artifacts
      * @return true if filter matches no artifact, false otherwise *
      */
     private boolean ensurePatternMatchesAtLeastOneArtifact( String pattern, Collection artifacts )
@@ -547,7 +600,7 @@ public abstract class AbstractJnlpMojo
         }
     }
 
-    void generateJnlpFile( File outputDirectory )
+    private void generateJnlpFile( File outputDirectory )
         throws MojoExecutionException
     {
         if ( jnlp.getOutputFile() == null || jnlp.getOutputFile().length() == 0 )
@@ -622,56 +675,6 @@ public abstract class AbstractJnlpMojo
         }
     }
 
-    private GeneratorExtraConfig getGeneratorExtraConfig()
-    {
-        return new GeneratorExtraConfig()
-        {
-            public String getJnlpSpec()
-            {
-                // shouldn't we automatically identify the spec based on the features used in the spec?
-                // also detect conflicts. If user specified 1.0 but uses a 1.5 feature we should fail in checkInput().
-                if ( jnlp.getSpec() != null )
-                {
-                    return jnlp.getSpec();
-                }
-                return "1.0+";
-            }
-
-            public String getOfflineAllowed()
-            {
-                if ( jnlp.getOfflineAllowed() != null )
-                {
-                    return jnlp.getOfflineAllowed();
-                }
-                return "false";
-            }
-
-            public String getAllPermissions()
-            {
-                if ( jnlp.getAllPermissions() != null )
-                {
-                    return jnlp.getAllPermissions();
-                }
-                return "true";
-            }
-
-            public String getJ2seVersion()
-            {
-                if ( jnlp.getJ2seVersion() != null )
-                {
-                    return jnlp.getJ2seVersion();
-                }
-                return "1.5+";
-            }
-
-            public String getJnlpCodeBase()
-            {
-                return getCodebase();
-            }
-
-        };
-    }
-
     private void checkInput()
         throws MojoExecutionException
     {
@@ -704,66 +707,7 @@ public abstract class AbstractJnlpMojo
         */
     }
 
-    public JnlpConfig getJnlp()
-    {
-        return jnlp;
-    }
-
-    public List getPackagedJnlpArtifacts()
-    {
-        return packagedJnlpArtifacts;
-    }
-
-    public Map getExtensionsJnlpArtifacts()
-    {
-        return extensionsJnlpArtifacts;
-    }
-
-    Dependencies getDependencies()
-    {
-        return this.dependencies;
-    }
-
-    /*
-    public Artifact getArtifactWithMainClass() {
-        return artifactWithMainClass;
-    }
-    */
-
-    public boolean isArtifactWithMainClass( Artifact artifact )
-    {
-        final boolean b = artifactWithMainClass.equals( artifact );
-        getLog().debug( "compare " + artifactWithMainClass + " with " + artifact + ": " + b );
-        return b;
-    }
-
-    // helper methods
-
-    /**
-     * Returns the flag that indicates whether or not a version attribute
-     * should be output in each jar resource element in the generated
-     * JNLP file. The default is false.
-     *
-     * @return Returns the value of the {@code outputJarVersions} property.
-     */
-    public boolean isOutputJarVersions()
-    {
-        return this.outputJarVersions;
-    }
-
-    /**
-     * Sets the flag that indicates whether or not a version attribute
-     * should be output in each jar resource element in the generated
-     * JNLP file. The default is false.
-     *
-     * @param outputJarVersions
-     */
-    public void setOutputJarVersions( boolean outputJarVersions )
-    {
-        this.outputJarVersions = outputJarVersions;
-    }
-
-    void checkExtension( JnlpExtension extension )
+    private void checkExtension( JnlpExtension extension )
         throws MojoExecutionException
     {
         if ( StringUtils.isEmpty( extension.getName() ) )
@@ -793,7 +737,7 @@ public abstract class AbstractJnlpMojo
      *
      * @throws MojoExecutionException
      */
-    protected void prepareExtensions()
+    private void prepareExtensions()
         throws MojoExecutionException
     {
         List includes = new ArrayList();
@@ -842,16 +786,14 @@ public abstract class AbstractJnlpMojo
      * extension with the same signer.
      *
      * @throws IOException
+     * @throws org.apache.maven.plugin.MojoExecutionException
      */
     private void processExtensionsDependencies()
-        throws IOException
+        throws IOException, MojoExecutionException
     {
 
         Collection artifacts =
             isExcludeTransitive() ? getProject().getDependencyArtifacts() : getProject().getArtifacts();
-
-        JarSignVerifyMojo verifyMojo = setupVerifyMojo();
-        verifyMojo.setVerbose( isVerbose() );
 
         for ( Iterator itr = jnlpExtensions.iterator(); itr.hasNext(); )
         {
@@ -865,14 +807,14 @@ public abstract class AbstractJnlpMojo
                 Artifact artifact = (Artifact) it.next();
                 if ( filter.include( artifact ) )
                 {
-                    processExtensionDependency( extension, artifact, verifyMojo );
+                    processExtensionDependency( extension, artifact );
                 }
             }
         }
     }
 
-    private void processExtensionDependency( JnlpExtension extension, Artifact artifact, JarSignVerifyMojo verifyMojo )
-        throws IOException
+    private void processExtensionDependency( JnlpExtension extension, Artifact artifact )
+        throws IOException, MojoExecutionException
     {
         // TODO: scope handler
         // Include runtime and compile time libraries
@@ -901,14 +843,8 @@ public abstract class AbstractJnlpMojo
                 }
 
                 // check jar is signed
-                verifyMojo.setJarPath( toCopy );
-                try
-                {
-                    verifyMojo.execute();
-
-                }
-                catch ( MojoExecutionException e )
-                {
+                boolean jarSigned = isJarSigned( toCopy );
+                if (!jarSigned) {
                     throw new IllegalStateException(
                         "artifact " + artifact + " must be signed as part of an extension.." );
                 }
@@ -948,7 +884,7 @@ public abstract class AbstractJnlpMojo
         }
     }
 
-    void generateJnlpExtensionsFile( File outputDirectory )
+    private void generateJnlpExtensionsFile( File outputDirectory )
         throws MojoExecutionException
     {
         for ( Iterator itr = jnlpExtensions.iterator(); itr.hasNext(); )
@@ -957,7 +893,7 @@ public abstract class AbstractJnlpMojo
         }
     }
 
-    void generateJnlpExtensionFile( File outputDirectory, JnlpExtension extension )
+    private void generateJnlpExtensionFile( File outputDirectory, JnlpExtension extension )
         throws MojoExecutionException
     {
 
@@ -1017,6 +953,56 @@ public abstract class AbstractJnlpMojo
         }
     }
 
+    private GeneratorExtraConfig getGeneratorExtraConfig()
+    {
+        return new GeneratorExtraConfig()
+        {
+            public String getJnlpSpec()
+            {
+                // shouldn't we automatically identify the spec based on the features used in the spec?
+                // also detect conflicts. If user specified 1.0 but uses a 1.5 feature we should fail in checkInput().
+                if ( jnlp.getSpec() != null )
+                {
+                    return jnlp.getSpec();
+                }
+                return "1.0+";
+            }
+
+            public String getOfflineAllowed()
+            {
+                if ( jnlp.getOfflineAllowed() != null )
+                {
+                    return jnlp.getOfflineAllowed();
+                }
+                return "false";
+            }
+
+            public String getAllPermissions()
+            {
+                if ( jnlp.getAllPermissions() != null )
+                {
+                    return jnlp.getAllPermissions();
+                }
+                return "true";
+            }
+
+            public String getJ2seVersion()
+            {
+                if ( jnlp.getJ2seVersion() != null )
+                {
+                    return jnlp.getJ2seVersion();
+                }
+                return "1.5+";
+            }
+
+            public String getJnlpCodeBase()
+            {
+                return getCodebase();
+            }
+
+        };
+    }
+    
     private GeneratorExtraConfig getExtensionGeneratorExtraConfig( final JnlpExtension extension )
     {
         return new GeneratorExtraConfig()

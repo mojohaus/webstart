@@ -16,8 +16,6 @@ package org.codehaus.mojo.webstart;
  * limitations under the License.
  */
 
-import java.io.File;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
@@ -26,12 +24,10 @@ import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderConsoleLogger;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.jar.JarSignMojo;
-import org.apache.maven.plugin.jar.JarSignVerifyMojo;
-import org.codehaus.mojo.keytool.GenkeyMojo;
 import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.util.FileUtils;
+
+import java.io.File;
 
 /**
  * This is more an integration test as we exercise both the signing and unsigning operations
@@ -44,9 +40,19 @@ public class JarUnsignMojoTest
     extends PlexusTestCase
 {
     private JarUnsignMojo mojo;
+
     private File tempdir;
+
     private JarSignMojoConfig sign;
+
     private MavenEmbedder embedder;
+
+    /**
+     * JarSigner tool.
+     *
+     * @plexus.requirement role="org.apache.maven.shared.jarsigner.JarSigner"
+     */
+    private SignTool signTool;
 
     public void setUp()
         throws Exception
@@ -59,7 +65,8 @@ public class JarUnsignMojoTest
         embedder.setLogger( new MavenEmbedderConsoleLogger() );
         embedder.start();
 
-        tempdir = new File( System.getProperty( "java.io.tmpdir" ) );
+        tempdir = new File( System.getProperty( "java.io.tmpdir" ) + File.separator + System.nanoTime() );
+        FileUtils.mkdir( tempdir.getAbsolutePath() );
 
         File unsignTempDir = new File( tempdir, "unsign" );
 
@@ -69,12 +76,12 @@ public class JarUnsignMojoTest
         mojo.setTempDir( unsignTempDir );
         mojo.setVerbose( false );
 
-        ArchiverManager archiverManager = (ArchiverManager) lookup( ArchiverManager.ROLE );
-        mojo.setArchiverManager( archiverManager );
+        signTool = (SignTool) lookup( SignTool.ROLE );
+        mojo.setSignTool( signTool );
 
         File keystore = new File( tempdir, "keystore" );
 
-        keystore.delete();
+//        keystore.delete();
 
         sign = new JarSignMojoConfig();
         sign.setAlias( "test" );
@@ -90,24 +97,30 @@ public class JarUnsignMojoTest
         sign.setDnameO( "O" );
         sign.setDnameC( "C" );
 
-        genKeyStore();
+        JarSignMojoConfig.KeystoreConfig keystoreConfig = new JarSignMojoConfig.KeystoreConfig();
+        keystoreConfig.setDelete( true );
+        keystoreConfig.setGen( true );
+        sign.setKeystoreConfig( keystoreConfig );
+
+        sign.init( mojo.getLog(), tempdir, false );
+
+//        genKeyStore();
     }
 
     public void tearDown()
         throws Exception
     {
         mojo = null;
+        signTool = null;
         super.tearDown();
     }
 
-    /**
-     */
     public void testAddThenRemoveSignatureCheckUsingJarSignVerifyMojo()
         throws Exception
     {
         File unsignedJar = getUnsignedJarFile();
 
-        ensureJarSignedOrNot( unsignedJar, false, "initial jar must be unsigned" );  
+        ensureJarSignedOrNot( unsignedJar, false, "initial jar must be unsigned" );
 
         FileUtils.copyFileToDirectory( unsignedJar, tempdir );
 
@@ -115,7 +128,7 @@ public class JarUnsignMojoTest
 
         signJar( copiedJar );
 
-        ensureJarSignedOrNot( copiedJar, true, "now jar has been successfully signed" );  
+        ensureJarSignedOrNot( copiedJar, true, "now jar has been successfully signed" );
 
         mojo.setJarPath( copiedJar );
 
@@ -128,68 +141,72 @@ public class JarUnsignMojoTest
         throws Exception
     {
         ArtifactRepository localRepository = embedder.getLocalRepository();
-        Artifact junit = new DefaultArtifact( "junit", "junit", VersionRange.createFromVersion( "3.8.1" ), "test",
-                                              "jar", "", new DefaultArtifactHandler( "" ) );
+        Artifact junit =
+            new DefaultArtifact( "junit", "junit", VersionRange.createFromVersion( "3.8.1" ), "test", "jar", "",
+                                 new DefaultArtifactHandler( "" ) );
 
         return new File( localRepository.getBasedir() + "/" + localRepository.pathOf( junit ) + ".jar" );
     }
 
-    private void genKeyStore()
-        throws MojoExecutionException
-    {
-        GenkeyMojo genKeystore = new GenkeyMojo();
-        genKeystore.setAlias( sign.getAlias() );
-        genKeystore.setDname( sign.getDname() );
-        genKeystore.setKeyalg( sign.getKeyalg() );
-        genKeystore.setKeypass( sign.getKeypass() );
-        genKeystore.setKeysize( sign.getKeysize() );
-        genKeystore.setKeystore( sign.getKeystore() );
-        genKeystore.setSigalg( sign.getSigalg() );
-        genKeystore.setStorepass( sign.getStorepass() );
-        genKeystore.setStoretype( sign.getStoretype() );
-        genKeystore.setValidity( sign.getValidity() );
-        genKeystore.setVerbose( false );
-        genKeystore.setWorkingDir( tempdir );
-
-        genKeystore.execute();
-    }
+//    private void genKeyStore()
+//        throws MojoExecutionException
+//    {
+//        GenkeyMojo genKeystore = new GenkeyMojo();
+//        genKeystore.setAlias( sign.getAlias() );
+//        genKeystore.setDname( sign.getDname() );
+//        genKeystore.setKeyalg( sign.getKeyalg() );
+//        genKeystore.setKeypass( sign.getKeypass() );
+//        genKeystore.setKeysize( sign.getKeysize() );
+//        genKeystore.setKeystore( sign.getKeystore() );
+//        genKeystore.setSigalg( sign.getSigalg() );
+//        genKeystore.setStorepass( sign.getStorepass() );
+//        genKeystore.setStoretype( sign.getStoretype() );
+//        genKeystore.setValidity( sign.getValidity() );
+//        genKeystore.setVerbose( false );
+//        genKeystore.setWorkingDir( temisJarSignedpdir );
+//
+//        genKeystore.execute();
+//    }
 
 
     private void signJar( File jarToSign )
         throws MojoExecutionException
     {
-        JarSignMojo signJar = new JarSignMojo();
-        signJar.setAlias( sign.getAlias() );
-        signJar.setBasedir( tempdir );
-        signJar.setKeypass( sign.getKeypass() );
-        signJar.setKeystore( sign.getKeystore() );
-        // signJar.setLog( getLog() );
-        signJar.setSigFile( sign.getSigfile() );
-        signJar.setStorepass( sign.getStorepass() );
-        signJar.setType( sign.getStoretype() );
-        signJar.setVerbose( false );
-        signJar.setWorkingDir( tempdir );
-        signJar.setVerify( sign.getVerify() );
 
-        signJar.setJarPath( jarToSign );
-        signJar.setSignedJar( null );
-        signJar.execute();
+        signTool.sign( sign, jarToSign, null );
+//        JarSignMojo signJar = new JarSignMojo();
+//        signJar.setAlias( sign.getAlias() );
+//        signJar.setBasedir( tempdir );
+//        signJar.setKeypass( sign.getKeypass() );
+//        signJar.setKeystore( sign.getKeystore() );
+//        // signJar.setLog( getLog() );
+//        signJar.setSigFile( sign.getSigfile() );
+//        signJar.setStorepass( sign.getStorepass() );
+//        signJar.setType( sign.getStoretype() );
+//        signJar.setVerbose( false );
+//        signJar.setWorkingDir( tempdir );
+//        signJar.setVerify( sign.getVerify() );
+//
+//        signJar.setJarPath( jarToSign );
+//        signJar.setSignedJar( null );
+//        signJar.execute();
     }
 
     private void ensureJarSignedOrNot( File jarFile, boolean signed, String msg )
         throws MojoExecutionException
     {
-        JarSignVerifyMojo verifyMojo = new JarSignVerifyMojo();
+//        JarSignVerifyMojo verifyMojo = new JarSignVerifyMojo();
 
-        assertTrue( "jar file exists",  jarFile.exists() );
+        assertTrue( "jar file exists", jarFile.exists() );
+        boolean isSigned = signTool.isJarSigned( sign, jarFile );
+        assertEquals( msg, signed, isSigned );
+//        verifyMojo.setWorkingDir( tempdir );
+//        verifyMojo.setBasedir( tempdir );
+//        verifyMojo.setJarPath( jarFile );
+//        verifyMojo.setVerbose( false );
+//        verifyMojo.setErrorWhenNotSigned( false );
+//        verifyMojo.execute();
 
-        verifyMojo.setWorkingDir( tempdir );
-        verifyMojo.setBasedir( tempdir );
-        verifyMojo.setJarPath( jarFile );
-        verifyMojo.setVerbose( false );
-        verifyMojo.setErrorWhenNotSigned( false );
-        verifyMojo.execute();
-
-        assertEquals( msg, signed, verifyMojo.isSigned() );
+//        assertEquals( msg, signed, verifyMojo.isSigned() );
     }
 }

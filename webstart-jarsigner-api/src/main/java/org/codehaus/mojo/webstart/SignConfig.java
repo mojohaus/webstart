@@ -20,8 +20,9 @@ package org.codehaus.mojo.webstart;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.shared.jarsigner.JarSignerRequest;
+import org.apache.maven.shared.jarsigner.JarSignerVerifyRequest;
 
 import java.io.File;
 
@@ -35,27 +36,41 @@ public interface SignConfig
 {
 
     /**
-     * Returns a fully configured version of a Mojo ready to sign jars.
+     * Gets the verbose state of the configuration.
      *
-     * @return
-     * @throws MojoExecutionException
-     * @throws MojoFailureException
+     * @return {@code true} if configuration state is on, {@code false} otherwise.
      */
-    JarSignerMojo getJarSignerMojo()
-        throws MojoExecutionException, MojoFailureException;
-
+    boolean isVerbose();
 
     /**
-     * Called before any Jars get signed. This method allows you to
-     * create any keys or perform any initialisation that the
+     * Called before any Jars get signed or verified.
+     * <p/>
+     * This method allows you to create any keys or perform any initialisation that the
      * method of signature that you're implementing requires.
      *
-     * @param log
-     * @param workingDirectory
-     * @param verbose
-     * @throws MojoExecutionException
-     * @throws MojoFailureException
+     * @param log              logger injected from the mojos
+     * @param workingDirectory working directory
+     * @param verbose          verbose flag coming from the mojo configuration
+     * @throws MojoExecutionException if something wrong occurs while init (mainly when preparing keys)
      */
     void init( Log log, File workingDirectory, boolean verbose )
-        throws MojoExecutionException, MojoFailureException;
+        throws MojoExecutionException;
+
+    /**
+     * Creates a jarsigner request to do a sign operation.
+     *
+     * @param jarToSign the location of the jar to sign
+     * @param signedJar the optional location of the signed jar to produce (if not set, will use the original location)
+     * @return the jarsigner request
+     */
+    JarSignerRequest createSignRequest( File jarToSign, File signedJar );
+
+    /**
+     * Creates a jarsigner request to do a verify operation.
+     *
+     * @param jarFile the location of the jar to sign
+     * @param certs   flag to show certificats details
+     * @return the jarsigner request
+     */
+    JarSignerVerifyRequest createVerifyRequest( File jarFile, boolean certs );
 }

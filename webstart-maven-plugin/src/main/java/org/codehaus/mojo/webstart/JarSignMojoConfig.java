@@ -20,8 +20,10 @@ package org.codehaus.mojo.webstart;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.shared.jarsigner.JarSignerRequest;
+import org.apache.maven.shared.jarsigner.JarSignerSignRequest;
+import org.apache.maven.shared.jarsigner.JarSignerVerifyRequest;
 import org.codehaus.mojo.keytool.GenkeyMojo;
 
 import java.io.File;
@@ -38,84 +40,11 @@ public class JarSignMojoConfig
     implements SignConfig
 {
 
-    protected Log log;
+    private Log log;
 
-    protected File workDirectory;
+    private File workDirectory;
 
-    protected boolean verbose;
-
-    /**
-     * Returns a fully configured version of a Mojo ready to sign jars.
-     * You will need to attach set the MavenProject is you don't sign in place.
-     *
-     * @return
-     */
-    public JarSignerMojo getJarSignerMojo()
-    {
-        JarSignMojo2 signJar = new JarSignMojo2();
-
-        signJar.setAlias( getAlias() );
-        signJar.setKeypass( getKeypass() );
-        signJar.setKeystore( getKeystore() );
-        signJar.setSkipAttachSignedArtifact( true );
-        signJar.setSigFile( getSigfile() );
-        signJar.setStorepass( getStorepass() );
-        signJar.setType( getStoretype() );
-        signJar.setVerify( getVerify() );
-        signJar.setWorkingDir( workDirectory );
-        signJar.setVerbose( verbose );
-        signJar.setLog( log );
-
-        return signJar;
-    }
-
-    public void init( Log log, File workDirectory, boolean verbose )
-        throws MojoExecutionException, MojoFailureException
-    {
-        this.log = log;
-        this.workDirectory = workDirectory;
-        this.verbose = verbose;
-
-        if ( keystoreConfig != null && keystoreConfig.isGen() )
-        {
-            if ( keystoreConfig.isDelete() )
-            {
-                deleteKeyStore();
-            }
-            genKeyStore();
-        }
-    }
-
-    /**
-     * Keystore configuration
-     */
-    public static class KeystoreConfig
-    {
-        private boolean delete;
-
-        private boolean gen;
-
-        public boolean isDelete()
-        {
-            return delete;
-        }
-
-        public void setDelete( boolean delete )
-        {
-            this.delete = delete;
-        }
-
-        public boolean isGen()
-        {
-            return gen;
-        }
-
-        public void setGen( boolean gen )
-        {
-            this.gen = gen;
-        }
-    }
-
+    private boolean verbose;
 
     private KeystoreConfig keystoreConfig;
 
@@ -187,6 +116,91 @@ public class JarSignMojoConfig
      * Whether we want to auto-verify the signed jars.
      */
     private boolean verify;
+
+    /**
+     * Optinal max memory to use.
+     */
+    private String maxMemory;
+
+    /**
+     * Keystore configuration
+     */
+    public static class KeystoreConfig
+    {
+        private boolean delete;
+
+        private boolean gen;
+
+        public boolean isDelete()
+        {
+            return delete;
+        }
+
+        public void setDelete( boolean delete )
+        {
+            this.delete = delete;
+        }
+
+        public boolean isGen()
+        {
+            return gen;
+        }
+
+        public void setGen( boolean gen )
+        {
+            this.gen = gen;
+        }
+    }
+
+    public void init( Log log, File workDirectory, boolean verbose )
+        throws MojoExecutionException
+    {
+        this.log = log;
+        this.workDirectory = workDirectory;
+        this.verbose = verbose;
+
+        if ( keystoreConfig != null && keystoreConfig.isGen() )
+        {
+            if ( keystoreConfig.isDelete() )
+            {
+                deleteKeyStore();
+            }
+            genKeyStore();
+        }
+    }
+
+    public JarSignerRequest createSignRequest( File jarToSign, File signedJar )
+    {
+        JarSignerSignRequest request = new JarSignerSignRequest();
+        request.setAlias( getAlias() );
+        request.setKeypass( getKeypass() );
+        request.setKeystore( getKeystore() );
+        request.setSigfile( getSigfile() );
+        request.setStorepass( getStorepass() );
+        request.setStoretype( getStoretype() );
+        request.setWorkingDirectory( workDirectory );
+        request.setMaxMemory( getMaxMemory() );
+        request.setVerbose( verbose );
+        request.setArchive( jarToSign );
+        request.setSignedjar( signedJar );
+        return request;
+    }
+
+    public JarSignerVerifyRequest createVerifyRequest( File jarFile, boolean certs )
+    {
+        JarSignerVerifyRequest request = new JarSignerVerifyRequest();
+        request.setCerts( certs );
+        request.setWorkingDirectory( workDirectory );
+        request.setMaxMemory( getMaxMemory() );
+        request.setVerbose( verbose );
+        request.setArchive( jarFile );
+        return request;
+    }
+
+    public boolean isVerbose()
+    {
+        return verbose;
+    }
 
     public void setKeystoreConfig( KeystoreConfig keystoreConfig )
     {
@@ -361,6 +375,11 @@ public class JarSignMojoConfig
     public boolean getVerify()
     {
         return verify;
+    }
+
+    public String getMaxMemory()
+    {
+        return maxMemory;
     }
 
     public String getDname()

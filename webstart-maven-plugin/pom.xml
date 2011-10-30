@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.codehaus.mojo.webstart</groupId>
@@ -64,10 +65,19 @@
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-settings</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-jar-plugin</artifactId>
+    <!--dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-archiver</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-archiver</artifactId>
+    </dependency-->
+    <dependency>
+      <groupId>org.apache.maven.shared</groupId>
+      <artifactId>maven-jarsigner</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.maven.reporting</groupId>
       <artifactId>maven-reporting-api</artifactId>
@@ -157,9 +167,9 @@
               <tasks>
                 <copy todir="${project.build.directory}/site/examples/">
                   <fileset dir="${basedir}/src/main/resources">
-                    <include name="**/*.vm" />
+                    <include name="**/*.vm"/>
                   </fileset>
-                  <mapper type="flatten" />
+                  <mapper type="flatten"/>
                 </copy>
               </tasks>
             </configuration>

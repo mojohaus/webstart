@@ -27,9 +27,7 @@ import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.jar.JarSignVerifyMojo;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -61,6 +59,8 @@ public abstract class AbstractBaseJnlpMojo
      */
     private static final String UNPROCESSED_PREFIX = "unprocessed_";
 
+    public static final String JAR_SUFFIX = ".jar";
+
     /**
      * Artifact resolver, needed to download source jars for inclusion in classpath.
      *
@@ -69,6 +69,15 @@ public abstract class AbstractBaseJnlpMojo
      * @readonly
      */
     private ArtifactResolver artifactResolver;
+
+    /**
+     * JarSigner tool.
+     *
+     * @component role="org.codehaus.mojo.webstart.SignTool"
+     * @required
+     * @readonly
+     */
+    private SignTool signTool;
 
     /**
      * Artifact factory, needed to download source jars for inclusion in classpath.
@@ -225,18 +234,18 @@ public abstract class AbstractBaseJnlpMojo
      */
     private boolean canUnsign;
 
-    /**
-     * To look up Archiver/UnArchiver implementations
-     *
-     * @component
-     * @required
-     */
-    protected ArchiverManager archiverManager;
+//    /**
+//     * To look up Archiver/UnArchiver implementations
+//     *
+//     * @component
+//     * @required
+//     */
+//    protected ArchiverManager archiverManager;
 
     /**
      * All available pack200 tools.
      * <p/>
-     * We use a plexusi list injection instead of a direct component injection since for a jre 1.4, we will at the
+     * We use a plexus list injection instead of a direct component injection since for a jre 1.4, we will at the
      * moment have no implementation of this tool.
      * <p/>
      * Later in the execute of mojo, we will check if at least one implementation is available if required.
@@ -256,10 +265,9 @@ public abstract class AbstractBaseJnlpMojo
         {
             public boolean accept( File pathname )
             {
-                return pathname.isFile() && pathname.getName().endsWith( ".jar" ) &&
+                return pathname.isFile() && pathname.getName().endsWith( JAR_SUFFIX ) &&
                     !pathname.getName().startsWith( UNPROCESSED_PREFIX );
             }
-
         };
 
         unprocessedJarFileFilter = new FileFilter()
@@ -267,12 +275,39 @@ public abstract class AbstractBaseJnlpMojo
             public boolean accept( File pathname )
             {
                 return pathname.isFile() && pathname.getName().startsWith( UNPROCESSED_PREFIX ) &&
-                    pathname.getName().endsWith( ".jar" );
+                    pathname.getName().endsWith( JAR_SUFFIX );
             }
-
         };
 
         unprocessedPack200FileFilter = new UnprocessedPack200FileFilter();
+    }
+
+    public abstract MavenProject getProject();
+
+    /**
+     * Returns the library path. This is ths subpath within the working directory, where the libraries are placed.
+     * If the path is not configured it is <code>null</code>.
+     *
+     * @return the library path or <code>null</code> if not configured.
+     */
+    public String getLibPath()
+    {
+        if ( ( libPath == null ) || ( libPath.trim().length() == 0 ) )
+        {
+            return null;
+        }
+        return libPath;
+    }
+
+    /**
+     * Returns the flag that indicates whether or not jar resources
+     * will be compressed using pack200.
+     *
+     * @return Returns the value of the pack200 field.
+     */
+    public boolean isPack200()
+    {
+        return pack200;
     }
 
     protected void makeWorkingDirIfNecessary()
@@ -291,8 +326,6 @@ public abstract class AbstractBaseJnlpMojo
         }
 
     }
-
-    public abstract MavenProject getProject();
 
     /**
      * Returns the working directory. This is the directory in which files and resources
@@ -317,21 +350,6 @@ public abstract class AbstractBaseJnlpMojo
             return new File( getWorkDirectory(), getLibPath() );
         }
         return getWorkDirectory();
-    }
-
-    /**
-     * Returns the library path. This is ths subpath within the working directory, where the libraries are placed.
-     * If the path is not configured it is <code>null</code>.
-     *
-     * @return the library path or <code>null</code> if not configured.
-     */
-    public String getLibPath()
-    {
-        if ( ( libPath == null ) || ( libPath.trim().length() == 0 ) )
-        {
-            return null;
-        }
-        return libPath;
     }
 
     /**
@@ -407,17 +425,6 @@ public abstract class AbstractBaseJnlpMojo
     }
 
     /**
-     * Returns the flag that indicates whether or not jar resources
-     * will be compressed using pack200.
-     *
-     * @return Returns the value of the pack200 field.
-     */
-    public boolean isPack200()
-    {
-        return pack200;
-    }
-
-    /**
      * Returns jar signing configuration element.
      *
      * @return Returns the value of the sign field.
@@ -432,7 +439,7 @@ public abstract class AbstractBaseJnlpMojo
      *
      * @return Returns the value of codebase field.
      */
-    public String getCodebase()
+    protected String getCodebase()
     {
         return codebase;
     }
@@ -499,7 +506,7 @@ public abstract class AbstractBaseJnlpMojo
         return attachArchive;
     }
 
-    public boolean isCanUnsign()
+    protected boolean isCanUnsign()
     {
         return canUnsign;
     }
@@ -572,60 +579,13 @@ public abstract class AbstractBaseJnlpMojo
         }
     }
 
-    private static String concat( String[] array, String delim )
-    {
-        StringBuffer buffer = new StringBuffer();
-        for ( int i = 0; i < array.length; i++ )
-        {
-            if ( i > 0 )
-            {
-                buffer.append( delim );
-            }
-            String s = array[i];
-            buffer.append( s ).append( delim );
-        }
-        return buffer.toString();
-    }
-
-    private void copyDirectoryStructure( File sourceDirectory, File destinationDirectory, String includes,
-                                         String excludes )
-        throws IOException
-    {
-        if ( !sourceDirectory.exists() )
-        {
-            return;
-        }
-
-        List files = FileUtils.getFiles( sourceDirectory, includes, excludes );
-
-        for ( Iterator i = files.iterator(); i.hasNext(); )
-        {
-            File file = (File) i.next();
-
-            getLog().debug( "Copying " + file + " to " + destinationDirectory );
-
-            String path = file.getAbsolutePath().substring( sourceDirectory.getAbsolutePath().length() + 1 );
-
-            File destDir = new File( destinationDirectory, path );
-
-            getLog().debug( "Copying " + file + " to " + destDir );
-
-            if ( file.isDirectory() )
-            {
-                destDir.mkdirs();
-            }
-            else
-            {
-                FileUtils.copyFileToDirectory( file, destDir.getParentFile() );
-            }
-        }
-    }
-
     /**
      * Conditionally copy the file into the target directory.
      * The operation is not performed when the target file exists and is up to date.
      * The target file name is taken from the <code>sourceFile</code> name.
      *
+     * @param sourceFile
+     * @param targetDirectory
      * @return <code>true</code> when the file was copied, <code>false</code> otherwise.
      * @throws IllegalArgumentException if sourceFile is <code>null</code> or
      *                                  <code>sourceFile.getName()</code> is <code>null</code>
@@ -658,7 +618,6 @@ public abstract class AbstractBaseJnlpMojo
         return shouldCopy;
     }
 
-
     /**
      * Conditionally copy the jar file into the target directory.
      * The operation is not performed when a signed target file exists and is up to date.
@@ -666,6 +625,8 @@ public abstract class AbstractBaseJnlpMojo
      * The unsigned target file name is taken from the <code>sourceFile</code> name prefixed with UNPROCESSED_PREFIX.
      * TODO this is confusing if the sourceFile is already signed. By unsigned we really mean 'unsignedbyus'
      *
+     * @param sourceFile
+     * @param targetDirectory
      * @return <code>true</code> when the file was copied, <code>false</code> otherwise.
      * @throws IllegalArgumentException if sourceFile is <code>null</code> or
      *                                  <code>sourceFile.getName()</code> is <code>null</code>
@@ -703,8 +664,14 @@ public abstract class AbstractBaseJnlpMojo
         return shouldCopy;
     }
 
+
     /**
      * If sign is enabled, sign the jars, otherwise rename them into final jars
+     *
+     * @throws org.apache.maven.plugin.MojoExecutionException
+     *
+     * @throws org.apache.maven.plugin.MojoFailureException
+     *
      */
     protected void signOrRenameJars()
         throws MojoExecutionException, MojoFailureException
@@ -748,151 +715,14 @@ public abstract class AbstractBaseJnlpMojo
         }
     }
 
-    private int makeUnprocessedFilesFinal( File directory, FileFilter fileFilter )
-        throws MojoExecutionException
-    {
-        File[] jarFiles = directory.listFiles( fileFilter );
-
-        if ( getLog().isDebugEnabled() )
-        {
-            getLog().debug(
-                "makeUnprocessedFilesFinal in " + directory + " found " + jarFiles.length + " file(s) to rename" );
-        }
-
-        if ( jarFiles.length == 0 )
-        {
-            return 0;
-        }
-
-        for ( int i = 0; i < jarFiles.length; i++ )
-        {
-            String unprocessedJarFileName = jarFiles[i].getName();
-            if ( !unprocessedJarFileName.startsWith( UNPROCESSED_PREFIX ) )
-            {
-                throw new IllegalStateException(
-                    "We are about to sign an non " + UNPROCESSED_PREFIX + " file with path: " +
-                        jarFiles[i].getAbsolutePath() );
-            }
-            File finalJar =
-                new File( jarFiles[i].getParent(), unprocessedJarFileName.substring( UNPROCESSED_PREFIX.length() ) );
-            if ( finalJar.exists() )
-            {
-                boolean deleted = finalJar.delete();
-                if ( !deleted )
-                {
-                    throw new IllegalStateException(
-                        "Couldn't delete obsolete final jar: " + finalJar.getAbsolutePath() );
-                }
-            }
-            boolean renamed = jarFiles[i].renameTo( finalJar );
-            if ( !renamed )
-            {
-                throw new IllegalStateException( "Couldn't rename into final jar: " + finalJar.getAbsolutePath() );
-            }
-        }
-        return jarFiles.length;
-    }
-
-    /**
-     * @return the number of deleted files
-     */
-    private int deleteFiles( File directory, FileFilter fileFilter )
-        throws MojoExecutionException
-    {
-        File[] files = directory.listFiles( fileFilter );
-
-        if ( getLog().isDebugEnabled() )
-        {
-            getLog().debug( "deleteFiles in " + directory + " found " + files.length + " file(s) to delete" );
-        }
-
-        if ( files.length == 0 )
-        {
-            return 0;
-        }
-
-        for ( int i = 0; i < files.length; i++ )
-        {
-            boolean deleted = files[i].delete();
-            if ( !deleted )
-            {
-                throw new IllegalStateException( "Couldn't delete file: " + files[i].getAbsolutePath() );
-            }
-        }
-        return files.length;
-    }
-
-    /**
-     * @return the number of signed jars
-     */
-    private int signJars( File directory, FileFilter fileFilter )
-        throws MojoExecutionException, MojoFailureException
-    {
-
-        File[] jarFiles = directory.listFiles( fileFilter );
-
-        if ( getLog().isDebugEnabled() )
-        {
-            getLog().debug( "signJars in " + directory + " found " + jarFiles.length + " jar(s) to sign" );
-        }
-
-        if ( jarFiles.length == 0 )
-        {
-            return 0;
-        }
-
-        JarSignerMojo jarSigner = getSign().getJarSignerMojo();
-
-        for ( int i = 0; i < jarFiles.length; i++ )
-        {
-            String unprocessedJarFileName = jarFiles[i].getName();
-            if ( !unprocessedJarFileName.startsWith( UNPROCESSED_PREFIX ) )
-            {
-                throw new IllegalStateException(
-                    "We are about to sign an non " + UNPROCESSED_PREFIX + " file with path: " +
-                        jarFiles[i].getAbsolutePath() );
-            }
-            jarSigner.setJarPath( jarFiles[i] );
-
-            File signedJar =
-                new File( jarFiles[i].getParent(), unprocessedJarFileName.substring( UNPROCESSED_PREFIX.length() ) );
-
-            jarSigner.setSignedJar( signedJar );
-
-            if ( signedJar.exists() )
-            {
-                if ( !signedJar.delete() )
-                {
-                    throw new IllegalStateException(
-                        "Couldn't delete obsolete signed jar: " + signedJar.getAbsolutePath() );
-                }
-            }
-            jarSigner.execute();
-            getLog().debug( "lastModified signedJar:" + signedJar.lastModified() + " unprocessed signed Jar:" +
-                                jarFiles[i].lastModified() );
-
-            // remove unprocessed files
-            // TODO wouldn't have to do that if we copied the unprocessed jar files in a temporary area
-            if ( !jarFiles[i].delete() )
-            {
-                throw new IllegalStateException(
-                    "Couldn't delete obsolete unprocessed jar: " + jarFiles[i].getAbsolutePath() );
-            }
-        }
-
-        return jarFiles.length;
-    }
-
     protected URL findDefaultJnlpTemplateURL()
     {
-        URL url = this.getClass().getClassLoader().getResource( "default-jnlp-template.vm" );
-        return url;
+        return getClass().getClassLoader().getResource( "default-jnlp-template.vm" );
     }
 
     protected URL findDefaultJnlpExtensionTemplateURL()
     {
-        URL url = this.getClass().getClassLoader().getResource( "default-jnlp-extension-template.vm" );
-        return url;
+        return getClass().getClassLoader().getResource( "default-jnlp-extension-template.vm" );
     }
 
     protected URL getWebstartJarURL()
@@ -920,128 +750,13 @@ public abstract class AbstractBaseJnlpMojo
         return url.substring( 0, url.indexOf( "!" ) + 2 );
     }
 
-    /**
-     * Removes the signature of the files in the specified directory which satisfy the
-     * specified filter.
-     *
-     * @return the number of unsigned jars
-     */
-    protected int removeExistingSignatures( File workDirectory, FileFilter updatedJarFileFilter )
+    protected boolean isJarSigned( File jarFile )
         throws MojoExecutionException
     {
-        verboseLog( "Start removing existing signatures" );
-        // cleanup tempDir if exists
-        File tempDir = new File( workDirectory, "temp_extracted_jars" );
-        removeDirectory( tempDir );
 
-        // recreate temp dir
-        if ( !tempDir.mkdirs() )
-        {
-            throw new MojoExecutionException( "Error creating temporary directory: " + tempDir );
-        }
-
-        // process jars
-        File[] jarFiles = workDirectory.listFiles( updatedJarFileFilter );
-
-        boolean canUnsign = isCanUnsign();
-
-        for ( int i = 0; i < jarFiles.length; i++ )
-        {
-            if ( isJarSigned( jarFiles[i] ) )
-            {
-                if ( !canUnsign )
-                {
-                    throw new MojoExecutionException(
-                        "neverUnsignAlreadySignedJar is set to true and a jar file [" + jarFiles[i] +
-                            " was asked to be unsign,\n please prefer use in this case an extension for " +
-                            "signed jars or not set to true the neverUnsignAlreadySignedJar parameter, Make " +
-                            "your choice:)" );
-                }
-                verboseLog( "remove signature from : " + jarFiles[i] );
-                unsignJarFile( jarFiles[i], tempDir );
-            }
-            else
-            {
-                verboseLog( "not signed : " + jarFiles[i] );
-            }
-        }
-
-        // cleanup tempDir
-        removeDirectory( tempDir );
-
-        return jarFiles.length; // FIXME this is wrong. Not all jars are signed.
+        return signTool.isJarSigned( getSign(), jarFile );
     }
 
-    private boolean isJarSigned( File jarFile )
-    {
-        JarSignVerifyMojo verifyMojo = setupVerifyMojo();
-        verifyMojo.setJarPath( jarFile );
-        try
-        {
-            verifyMojo.execute();
-            return true;
-        }
-        catch ( MojoExecutionException e )
-        {
-            return false;
-        }
-    }
-
-    private void unsignJarFile( File jarFile, File tempDir )
-        throws MojoExecutionException
-    {
-        JarUnsignMojo unsignJar = new JarUnsignMojo();
-        unsignJar.setTempDir( tempDir );
-        unsignJar.setVerbose( isVerbose() );
-        unsignJar.setArchiverManager( archiverManager );
-        unsignJar.setJarPath( jarFile );
-        unsignJar.execute();
-    }
-
-    /**
-     * Returns a configured instance of the JarSignVerifyMojo to test whether a
-     * jar is already signed. The Mojo throws an exception to indicate that a
-     * jar is not signed yet.
-     *
-     * @return a configured instance of the JarSignVerifyMojo.
-     */
-    protected JarSignVerifyMojo setupVerifyMojo()
-    {
-        JarSignVerifyMojo verifyMojo = new JarSignVerifyMojo();
-        verifyMojo.setErrorWhenNotSigned( true );
-        verifyMojo.setWorkingDir( getWorkDirectory() );
-        return verifyMojo;
-    }
-
-    /**
-     * This is to try to workaround an issue with setting setLastModified.
-     * See MWEBSTART-28. May be removed later on if that doesn't help.
-     */
-    /*
-    private boolean setLastModified( File file, long timestamp )
-    {
-        boolean result;
-        int nbretries = 3;
-
-        while ( ! (result = file.setLastModified( timestamp )) && ( nbretries-- > 0 ) )
-        {
-            getLog().warn("failure to change last modified timestamp... retrying ... " 
-                    + "See MWEBSTART-28. (especially if you're on NFS).");
-
-            try
-            {
-                Thread.sleep( 4000 );
-            }
-            catch (InterruptedException ignore) {
-                //TODO should not be ignoring, because this class doesn't control the Thread policy
-            }
-
-        }
-
-        return result;
-
-    }
-    */
     protected void packJars()
     {
 
@@ -1100,7 +815,7 @@ public abstract class AbstractBaseJnlpMojo
             }
             catch ( NoClassDefFoundError e )
             {
-                // undocumented in SDK 5.0. is this due to the ClassLoader lazy loading the Method 
+                // undocumented in SDK 5.0. is this due to the ClassLoader lazy loading the Method
                 // thus making this a case tackled by the JVM Spec (Ref 5.3.5)!
                 // Reported as Incident 633981 to Sun just in case ...
                 getLog().warn( "Something failed while checking if the main class contains the main() method. " +
@@ -1120,22 +835,6 @@ public abstract class AbstractBaseJnlpMojo
     }
 
     /**
-     * anonymous to inner to work-around qdox 1.6.1 bug (MPLUGIN-26)
-     */
-    private static class UnprocessedPack200FileFilter
-        implements FileFilter
-    {
-        public boolean accept( File pathname )
-        {
-            return pathname.isFile() && pathname.getName().startsWith( UNPROCESSED_PREFIX ) &&
-                ( pathname.getName().endsWith( ".jar.pack.gz" ) || pathname.getName().endsWith( ".jar.pack" ) );
-        }
-
-    }
-
-    ;
-
-    /**
      * @return true if already signed jars should be unsigned prior to signing
      *         with own key.
      */
@@ -1147,6 +846,290 @@ public abstract class AbstractBaseJnlpMojo
     protected Pack200Tool getPack200Tool()
     {
         return (Pack200Tool) pack200Tools.get( 0 );
+    }
+
+    /**
+     * Log as info when verbose or info is enabled, as debug otherwise.
+     *
+     * @param msg the message to display
+     */
+    protected void verboseLog( String msg )
+    {
+        infoOrDebug( isVerbose() || getLog().isInfoEnabled(), msg );
+    }
+
+    private static String concat( String[] array, String delim )
+    {
+        StringBuffer buffer = new StringBuffer();
+        for ( int i = 0; i < array.length; i++ )
+        {
+            if ( i > 0 )
+            {
+                buffer.append( delim );
+            }
+            String s = array[i];
+            buffer.append( s ).append( delim );
+        }
+        return buffer.toString();
+    }
+
+    private void copyDirectoryStructure( File sourceDirectory, File destinationDirectory, String includes,
+                                         String excludes )
+        throws IOException
+    {
+        if ( !sourceDirectory.exists() )
+        {
+            return;
+        }
+
+        List files = FileUtils.getFiles( sourceDirectory, includes, excludes );
+
+        for ( Iterator i = files.iterator(); i.hasNext(); )
+        {
+            File file = (File) i.next();
+
+            getLog().debug( "Copying " + file + " to " + destinationDirectory );
+
+            String path = file.getAbsolutePath().substring( sourceDirectory.getAbsolutePath().length() + 1 );
+
+            File destDir = new File( destinationDirectory, path );
+
+            getLog().debug( "Copying " + file + " to " + destDir );
+
+            if ( file.isDirectory() )
+            {
+                destDir.mkdirs();
+            }
+            else
+            {
+                FileUtils.copyFileToDirectory( file, destDir.getParentFile() );
+            }
+        }
+    }
+
+    private int makeUnprocessedFilesFinal( File directory, FileFilter fileFilter )
+        throws MojoExecutionException
+    {
+        File[] jarFiles = directory.listFiles( fileFilter );
+
+        if ( getLog().isDebugEnabled() )
+        {
+            getLog().debug(
+                "makeUnprocessedFilesFinal in " + directory + " found " + jarFiles.length + " file(s) to rename" );
+        }
+
+        if ( jarFiles.length == 0 )
+        {
+            return 0;
+        }
+
+        for ( int i = 0; i < jarFiles.length; i++ )
+        {
+            String unprocessedJarFileName = jarFiles[i].getName();
+            if ( !unprocessedJarFileName.startsWith( UNPROCESSED_PREFIX ) )
+            {
+                throw new IllegalStateException(
+                    "We are about to sign an non " + UNPROCESSED_PREFIX + " file with path: " +
+                        jarFiles[i].getAbsolutePath() );
+            }
+            File finalJar =
+                new File( jarFiles[i].getParent(), unprocessedJarFileName.substring( UNPROCESSED_PREFIX.length() ) );
+            if ( finalJar.exists() )
+            {
+                boolean deleted = finalJar.delete();
+                if ( !deleted )
+                {
+                    throw new IllegalStateException(
+                        "Couldn't delete obsolete final jar: " + finalJar.getAbsolutePath() );
+                }
+            }
+            boolean renamed = jarFiles[i].renameTo( finalJar );
+            if ( !renamed )
+            {
+                throw new IllegalStateException( "Couldn't rename into final jar: " + finalJar.getAbsolutePath() );
+            }
+        }
+        return jarFiles.length;
+    }
+
+    /**
+     * @param directory
+     * @param fileFilter
+     * @return the number of deleted files
+     * @throws org.apache.maven.plugin.MojoExecutionException
+     *
+     */
+    private int deleteFiles( File directory, FileFilter fileFilter )
+        throws MojoExecutionException
+    {
+        File[] files = directory.listFiles( fileFilter );
+
+        if ( getLog().isDebugEnabled() )
+        {
+            getLog().debug( "deleteFiles in " + directory + " found " + files.length + " file(s) to delete" );
+        }
+
+        if ( files.length == 0 )
+        {
+            return 0;
+        }
+
+        for ( int i = 0; i < files.length; i++ )
+        {
+            boolean deleted = files[i].delete();
+            if ( !deleted )
+            {
+                throw new IllegalStateException( "Couldn't delete file: " + files[i].getAbsolutePath() );
+            }
+        }
+        return files.length;
+    }
+
+    /**
+     * @param directory
+     * @param fileFilter
+     * @return the number of signed jars
+     * @throws org.apache.maven.plugin.MojoExecutionException
+     *
+     * @throws org.apache.maven.plugin.MojoFailureException
+     *
+     */
+    private int signJars( File directory, FileFilter fileFilter )
+        throws MojoExecutionException, MojoFailureException
+    {
+
+        File[] jarFiles = directory.listFiles( fileFilter );
+
+        if ( getLog().isDebugEnabled() )
+        {
+            getLog().debug( "signJars in " + directory + " found " + jarFiles.length + " jar(s) to sign" );
+        }
+
+        if ( jarFiles.length == 0 )
+        {
+            return 0;
+        }
+
+        for ( int i = 0; i < jarFiles.length; i++ )
+        {
+            String unprocessedJarFileName = jarFiles[i].getName();
+            if ( !unprocessedJarFileName.startsWith( UNPROCESSED_PREFIX ) )
+            {
+                throw new IllegalStateException(
+                    "We are about to sign an non " + UNPROCESSED_PREFIX + " file with path: " +
+                        jarFiles[i].getAbsolutePath() );
+            }
+
+            File signedJar =
+                new File( jarFiles[i].getParent(), unprocessedJarFileName.substring( UNPROCESSED_PREFIX.length() ) );
+
+            if ( signedJar.exists() )
+            {
+                if ( !signedJar.delete() )
+                {
+                    throw new IllegalStateException(
+                        "Couldn't delete obsolete signed jar: " + signedJar.getAbsolutePath() );
+                }
+            }
+
+            signTool.sign( getSign(), jarFiles[i], signedJar );
+
+            getLog().debug( "lastModified signedJar:" + signedJar.lastModified() + " unprocessed signed Jar:" +
+                                jarFiles[i].lastModified() );
+
+            // remove unprocessed files
+            // TODO wouldn't have to do that if we copied the unprocessed jar files in a temporary area
+            if ( !jarFiles[i].delete() )
+            {
+                throw new IllegalStateException(
+                    "Couldn't delete obsolete unprocessed jar: " + jarFiles[i].getAbsolutePath() );
+            }
+        }
+
+        return jarFiles.length;
+    }
+
+    /**
+     * Removes the signature of the files in the specified directory which satisfy the
+     * specified filter.
+     *
+     * @param workDirectory
+     * @param updatedJarFileFilter
+     * @return the number of unsigned jars
+     * @throws org.apache.maven.plugin.MojoExecutionException
+     *
+     */
+    private int removeExistingSignatures( File workDirectory, FileFilter updatedJarFileFilter )
+        throws MojoExecutionException
+    {
+        verboseLog( "Start removing existing signatures" );
+        // cleanup tempDir if exists
+        File tempDir = new File( workDirectory, "temp_extracted_jars" );
+        removeDirectory( tempDir );
+
+        // recreate temp dir
+        if ( !tempDir.mkdirs() )
+        {
+            throw new MojoExecutionException( "Error creating temporary directory: " + tempDir );
+        }
+
+        // process jars
+        File[] jarFiles = workDirectory.listFiles( updatedJarFileFilter );
+
+        boolean canUnsign = isCanUnsign();
+
+        for ( int i = 0; i < jarFiles.length; i++ )
+        {
+            if ( isJarSigned( jarFiles[i] ) )
+            {
+                if ( !canUnsign )
+                {
+                    throw new MojoExecutionException(
+                        "neverUnsignAlreadySignedJar is set to true and a jar file [" + jarFiles[i] +
+                            " was asked to be unsign,\n please prefer use in this case an extension for " +
+                            "signed jars or not set to true the neverUnsignAlreadySignedJar parameter, Make " +
+                            "your choice:)" );
+                }
+                verboseLog( "remove signature from : " + jarFiles[i] );
+                unsignJarFile( jarFiles[i], tempDir );
+            }
+            else
+            {
+                verboseLog( "not signed : " + jarFiles[i] );
+            }
+        }
+
+        // cleanup tempDir
+        removeDirectory( tempDir );
+
+        return jarFiles.length; // FIXME this is wrong. Not all jars are signed.
+    }
+
+    private void unsignJarFile( File jarFile, File tempDir )
+        throws MojoExecutionException
+    {
+        signTool.unsign( jarFile, tempDir, isVerbose() );
+//        JarUnsignMojo unsignJar = new JarUnsignMojo();
+//        unsignJar.setTempDir( tempDir );
+//        unsignJar.setVerbose( isVerbose() );
+//        unsignJar.setArchiverManager( archiverManager );
+//        unsignJar.setJarPath( jarFile );
+//        unsignJar.execute();
+    }
+
+    /**
+     * anonymous to inner to work-around qdox 1.6.1 bug (MPLUGIN-26)
+     */
+    private static class UnprocessedPack200FileFilter
+        implements FileFilter
+    {
+
+        public boolean accept( File pathname )
+        {
+            return pathname.isFile() && pathname.getName().startsWith( UNPROCESSED_PREFIX ) &&
+                ( pathname.getName().endsWith( ".jar.pack.gz" ) || pathname.getName().endsWith( ".jar.pack" ) );
+        }
+
     }
 
     /**
@@ -1163,21 +1146,23 @@ public abstract class AbstractBaseJnlpMojo
             if ( dir.exists() && dir.isDirectory() )
             {
                 getLog().info( "Deleting directory " + dir.getAbsolutePath() );
-                Utils.removeDir( dir );
+                try
+                {
+                    FileUtils.deleteDirectory( dir );
+                }
+                catch ( IOException e )
+                {
+                    throw new MojoExecutionException( "Could not delete directory " + dir, e );
+                }
             }
         }
     }
 
     /**
-     * Log as info when verbose or info is enabled, as debug otherwise.
-     */
-    protected void verboseLog( String msg )
-    {
-        infoOrDebug( isVerbose() || getLog().isInfoEnabled(), msg );
-    }
-
-    /**
      * if info is true, log as info(), otherwise as debug()
+     *
+     * @param info flag to display log as info if setted to {@code true}.
+     * @param msg  the message to display
      */
     private void infoOrDebug( boolean info, String msg )
     {
