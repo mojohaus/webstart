@@ -38,10 +38,20 @@ public interface SignTool
     String ROLE = SignTool.class.getName();
 
     /**
+     * Generate a key store using keytool.
+     *
+     * @param config       sign configuration
+     * @param keystoreFile location of the keystore to generate
+     * @throws MojoExecutionException if something wrong occurs
+     */
+    void generateKey( SignConfig config, File keystoreFile )
+        throws MojoExecutionException;
+
+    /**
      * Sign a jar using jarsigner.
      *
      * @param config    sign configuration
-     * @param jarFile location of the jar to sign
+     * @param jarFile   location of the jar to sign
      * @param signedJar optional location of the signed jar to produce (if not set, will use the original location)
      * @throws MojoExecutionException if something wrong occurs
      */
@@ -57,7 +67,7 @@ public interface SignTool
      * @throws MojoExecutionException if something wrong occurs
      */
     void verify( SignConfig config, File jarFile, boolean certs )
-    throws MojoExecutionException;
+        throws MojoExecutionException;
 
     /**
      * Tests if the given jar is signed.
@@ -68,16 +78,24 @@ public interface SignTool
      * @throws MojoExecutionException if something wrong occurs
      */
     boolean isJarSigned( SignConfig config, File jarFile )
-    throws MojoExecutionException;
+        throws MojoExecutionException;
 
     /**
      * Unsign a jar.
      *
-     * @param jarFile location of the jar to unsign
+     * @param jarFile       location of the jar to unsign
      * @param tempDirectory temp directory where to unzip the jar
-     * @param verbose flag to display verbose logs
+     * @param verbose       flag to display verbose logs
      * @throws MojoExecutionException if something wrong occurs
      */
-    void unsign( File jarFile , File tempDirectory, boolean verbose)
+    void unsign( File jarFile, File tempDirectory, boolean verbose )
         throws MojoExecutionException;
+
+    /**
+     * Delete an existing key store
+     *
+     * @param keystore the keystore to delete
+     * @param verbose  flag to display verbose logs
+     */
+    void deleteKeyStore( File keystore, boolean verbose );
 }

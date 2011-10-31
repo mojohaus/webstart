@@ -142,13 +142,6 @@ public abstract class AbstractJnlpMojo
     private String keystore;
 
     /**
-     * Xxx
-     *
-     * @parameter default-value="false"
-     */
-    // private boolean usejnlpservlet;
-
-    /**
      * @parameter default-value="${basedir}"
      * @required
      * @readonly
@@ -209,7 +202,7 @@ public abstract class AbstractJnlpMojo
 //            throw  new MojoExecutionException(
 //                "neverUnsignAlreadySignedJar and unsignAlreadySignedJars are not compatible!" );
 //        }
-        
+
         boolean withExtensions = hasJnlpExtensions();
 
         if ( withExtensions )
@@ -219,7 +212,7 @@ public abstract class AbstractJnlpMojo
         }
 
         checkInput();
-        
+
         findDefaultJnlpTemplateURL();
 
         getLog().debug( "using work directory " + getWorkDirectory() );
@@ -330,15 +323,6 @@ public abstract class AbstractJnlpMojo
         catch ( Exception e )
         {
             throw new MojoExecutionException( "Failure to run the plugin: ", e );
-            /*
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter( sw, true );
-            e.printStackTrace( pw );
-            pw.flush();
-            sw.flush();
-
-            getLog().debug( "An error occurred during the task: " + sw.toString() );
-            */
         }
     }
 
@@ -396,7 +380,7 @@ public abstract class AbstractJnlpMojo
      * should be output in each jar resource element in the generated
      * JNLP file. The default is false.
      *
-     * @param outputJarVersions
+     * @param outputJarVersions new value of the {@link #outputJarVersions} field
      */
     public void setOutputJarVersions( boolean outputJarVersions )
     {
@@ -440,8 +424,8 @@ public abstract class AbstractJnlpMojo
     }
 
     /**
-     * @param patterns
-     * @param artifacts
+     * @param patterns  list of patterns to test over artifacts
+     * @param artifacts collection of artifacts to check
      * @return true if at least one of the pattern in the list matches no artifact, false otherwise
      */
     private boolean checkDependencies( List patterns, Collection artifacts )
@@ -460,8 +444,8 @@ public abstract class AbstractJnlpMojo
     }
 
     /**
-     * @param pattern
-     * @param artifacts
+     * @param pattern   pattern to test over artifacts
+     * @param artifacts collection of artifacts to check
      * @return true if filter matches no artifact, false otherwise *
      */
     private boolean ensurePatternMatchesAtLeastOneArtifact( String pattern, Collection artifacts )
@@ -494,7 +478,7 @@ public abstract class AbstractJnlpMojo
      * Iterate through all the top level and transitive dependencies declared in the project and
      * collect all the runtime scope dependencies for inclusion in the .zip and signing.
      *
-     * @throws IOException
+     * @throws IOException if could not process dependencies
      */
     private void processDependencies()
         throws IOException
@@ -686,7 +670,6 @@ public abstract class AbstractJnlpMojo
         getLog().debug( "pack200 " + isPack200() );
         getLog().debug( "project " + this.getProject() );
         getLog().debug( "zipArchiver " + this.zipArchiver );
-        // getLog().debug( "usejnlpservlet " + this.usejnlpservlet );
         getLog().debug( "verifyjar " + isVerifyjar() );
         getLog().debug( "verbose " + isVerbose() );
 
@@ -735,7 +718,7 @@ public abstract class AbstractJnlpMojo
      * <p/>
      * Copy all includes of all extensions as to be excluded.
      *
-     * @throws MojoExecutionException
+     * @throws MojoExecutionException if could not prepare extensions
      */
     private void prepareExtensions()
         throws MojoExecutionException
@@ -786,7 +769,7 @@ public abstract class AbstractJnlpMojo
      * extension with the same signer.
      *
      * @throws IOException
-     * @throws org.apache.maven.plugin.MojoExecutionException
+     * @throws MojoExecutionException
      */
     private void processExtensionsDependencies()
         throws IOException, MojoExecutionException
@@ -844,7 +827,8 @@ public abstract class AbstractJnlpMojo
 
                 // check jar is signed
                 boolean jarSigned = isJarSigned( toCopy );
-                if (!jarSigned) {
+                if ( !jarSigned )
+                {
                     throw new IllegalStateException(
                         "artifact " + artifact + " must be signed as part of an extension.." );
                 }
@@ -1002,7 +986,7 @@ public abstract class AbstractJnlpMojo
 
         };
     }
-    
+
     private GeneratorExtraConfig getExtensionGeneratorExtraConfig( final JnlpExtension extension )
     {
         return new GeneratorExtraConfig()

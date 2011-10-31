@@ -13,14 +13,19 @@
   <inceptionYear>2007</inceptionYear>
 
   <dependencies>
-    <dependency>
+    <!--dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-    </dependency>
+    </dependency-->
 
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
       <artifactId>maven-jarsigner</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>keytool-maven-plugin</artifactId>
     </dependency>
 
     <dependency>

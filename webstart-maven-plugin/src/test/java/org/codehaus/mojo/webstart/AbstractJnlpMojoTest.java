@@ -16,13 +16,6 @@ package org.codehaus.mojo.webstart;
  * limitations under the License.
  */
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.ArtifactRepositoryFactory;
 import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
@@ -35,6 +28,10 @@ import org.apache.maven.profiles.ProfileManager;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
@@ -42,29 +39,9 @@ import org.apache.maven.project.MavenProjectBuilder;
 public class AbstractJnlpMojoTest
     extends AbstractMojoTestCase
 {
-    public static void main( String[] args )
-    {
-        junit.textui.TestRunner.run( suite() );
-    }
 
-    public static Test suite()
-    {
-        TestSuite suite = new TestSuite( AbstractJnlpMojoTest.class );
-
-        return suite;
-    }
-  
-    /*
-    public void setUp()
-    {
-    }
-  
-    public void tearDown()
-    {
-    }
-    */
-
-    public void testFailWhenSomeDependenciesDoNotExist() throws Exception
+    public void testFailWhenSomeDependenciesDoNotExist()
+        throws Exception
     {
         JnlpInlineMojo mojo = new JnlpInlineMojo();
 
@@ -88,7 +65,7 @@ public class AbstractJnlpMojoTest
         assertTrue( "dependencies not null", mojo.getDependencies() != null );
         assertEquals( "2 includes", 2, mojo.getDependencies().getIncludes().size() );
         assertEquals( "2 excludes", 2, mojo.getDependencies().getExcludes().size() );
-        
+
         try
         {
             mojo.checkDependencies();
@@ -99,7 +76,8 @@ public class AbstractJnlpMojoTest
         }
     }
 
-    public void testAllDependenciesExist() throws Exception
+    public void testAllDependenciesExist()
+        throws Exception
     {
         JnlpInlineMojo mojo = new JnlpInlineMojo();
 
@@ -118,7 +96,7 @@ public class AbstractJnlpMojoTest
         assertTrue( "dependencies not null", mojo.getDependencies() != null );
         assertNull( "no include", mojo.getDependencies().getIncludes() );
         assertEquals( "1 exclude", 1, mojo.getDependencies().getExcludes().size() );
-        
+
         mojo.checkDependencies();
     }
 
@@ -135,15 +113,16 @@ public class AbstractJnlpMojoTest
 
         String localRepoUrl = "file://" + System.getProperty( "user.home" ) + "/.m2/repository";
 
-        ArtifactRepository localRepository = artifactRepositoryFactory.createArtifactRepository( "local", localRepoUrl, new DefaultRepositoryLayout(), policy, policy );
+        ArtifactRepository localRepository =
+            artifactRepositoryFactory.createArtifactRepository( "local", localRepoUrl, new DefaultRepositoryLayout(),
+                                                                policy, policy );
 
         ProfileManager profileManager = new DefaultProfileManager( getContainer() );
 
-        MavenProject project = projectBuilder.buildWithDependencies( pomFile,
-                                                                     localRepository, profileManager );
+        MavenProject project = projectBuilder.buildWithDependencies( pomFile, localRepository, profileManager );
 
         //this gets the classes for these tests of this mojo (exec plugin) onto the project classpath for the test
-        project.getBuild().setOutputDirectory( new File("target/test-classes").getAbsolutePath() );
+        project.getBuild().setOutputDirectory( new File( "target/test-classes" ).getAbsolutePath() );
         setVariableValueToObject( mojo, "project", project );
     }
 }

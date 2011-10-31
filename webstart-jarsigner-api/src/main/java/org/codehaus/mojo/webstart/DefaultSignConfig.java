@@ -20,32 +20,35 @@ package org.codehaus.mojo.webstart;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.shared.jarsigner.JarSignerRequest;
 import org.apache.maven.shared.jarsigner.JarSignerSignRequest;
 import org.apache.maven.shared.jarsigner.JarSignerVerifyRequest;
-import org.codehaus.mojo.keytool.GenkeyMojo;
+import org.codehaus.mojo.shared.keytool.KeyToolGenKeyRequest;
 
 import java.io.File;
 
 /**
- * Bean that represents the JarSigner configuration.
- * <p/>
- * Specific to the JarSignMojo
+ * Default implementation of the {@link SignConfig}.
  *
- * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
- * @version $Id$
+ * @author tchemit <chemit@codelutin.com>
+ * @since 1.0-beta-3
  */
-public class JarSignMojoConfig
+public class DefaultSignConfig
     implements SignConfig
 {
-
-    private Log log;
-
+    /**
+     *
+     */
     private File workDirectory;
 
+    /**
+     *
+     */
     private boolean verbose;
 
+    /**
+     *
+     */
     private KeystoreConfig keystoreConfig;
 
     /**
@@ -122,50 +125,22 @@ public class JarSignMojoConfig
      */
     private String maxMemory;
 
-    /**
-     * Keystore configuration
-     */
-    public static class KeystoreConfig
-    {
-        private boolean delete;
-
-        private boolean gen;
-
-        public boolean isDelete()
-        {
-            return delete;
-        }
-
-        public void setDelete( boolean delete )
-        {
-            this.delete = delete;
-        }
-
-        public boolean isGen()
-        {
-            return gen;
-        }
-
-        public void setGen( boolean gen )
-        {
-            this.gen = gen;
-        }
-    }
-
-    public void init( Log log, File workDirectory, boolean verbose )
+    public void init( File workDirectory, boolean verbose, SignTool signTool )
         throws MojoExecutionException
     {
-        this.log = log;
         this.workDirectory = workDirectory;
-        this.verbose = verbose;
+        setVerbose( verbose );
 
         if ( keystoreConfig != null && keystoreConfig.isGen() )
         {
+            File keystoreFile = new File( getKeystore() );
+
             if ( keystoreConfig.isDelete() )
             {
-                deleteKeyStore();
+                signTool.deleteKeyStore( keystoreFile, isVerbose() );
             }
-            genKeyStore();
+
+            signTool.generateKey( this, keystoreFile );
         }
     }
 
@@ -180,7 +155,7 @@ public class JarSignMojoConfig
         request.setStoretype( getStoretype() );
         request.setWorkingDirectory( workDirectory );
         request.setMaxMemory( getMaxMemory() );
-        request.setVerbose( verbose );
+        request.setVerbose( isVerbose() );
         request.setArchive( jarToSign );
         request.setSignedjar( signedJar );
         return request;
@@ -192,14 +167,47 @@ public class JarSignMojoConfig
         request.setCerts( certs );
         request.setWorkingDirectory( workDirectory );
         request.setMaxMemory( getMaxMemory() );
-        request.setVerbose( verbose );
+        request.setVerbose( isVerbose() );
         request.setArchive( jarFile );
+        return request;
+    }
+
+    public KeyToolGenKeyRequest createKeyGenRequest( File keystoreFile )
+    {
+        KeyToolGenKeyRequest request = new KeyToolGenKeyRequest();
+        request.setAlias( getAlias() );
+        request.setDname( getDname() );
+        request.setKeyalg( getKeyalg() );
+        request.setKeypass( getKeypass() );
+        request.setKeysize( getKeysize() );
+        request.setKeystore( getKeystore() );
+        request.setSigalg( getSigalg() );
+        request.setStorepass( getStorepass() );
+        request.setStoretype( getStoretype() );
+        request.setValidity( getValidity() );
+        request.setVerbose( isVerbose() );
+        request.setWorkingDirectory( workDirectory );
         return request;
     }
 
     public boolean isVerbose()
     {
         return verbose;
+    }
+
+    public void setWorkDirectory( File workDirectory )
+    {
+        this.workDirectory = workDirectory;
+    }
+
+    public void setVerbose( boolean verbose )
+    {
+        this.verbose = verbose;
+    }
+
+    public void setMaxMemory( String maxMemory )
+    {
+        this.maxMemory = maxMemory;
     }
 
     public void setKeystoreConfig( KeystoreConfig keystoreConfig )
@@ -409,63 +417,4 @@ public class JarSignMojoConfig
         }
     }
 
-    /**
-     * Used by init()
-     *
-     * @throws MojoExecutionException
-     */
-    private void genKeyStore()
-        throws MojoExecutionException
-    {
-        GenkeyMojo genKeystore = new GenkeyMojo();
-        genKeystore.setAlias( getAlias() );
-        genKeystore.setDname( getDname() );
-        genKeystore.setKeyalg( getKeyalg() );
-        genKeystore.setKeypass( getKeypass() );
-        genKeystore.setKeysize( getKeysize() );
-        genKeystore.setKeystore( getKeystore() );
-        genKeystore.setSigalg( getSigalg() );
-        genKeystore.setStorepass( getStorepass() );
-        genKeystore.setStoretype( getStoretype() );
-        genKeystore.setValidity( getValidity() );
-        genKeystore.setVerbose( verbose );
-        genKeystore.setWorkingDir( workDirectory );
-        genKeystore.setLog( log );
-
-        genKeystore.execute();
-    }
-
-    private void deleteKeyStore()
-    {
-        File keyStore = null;
-        if ( getKeystore() != null )
-        {
-            keyStore = new File( getKeystore() );
-        }
-        else
-        {
-            // FIXME decide if we really want this.
-            // keyStore = new File( System.getProperty( "user.home") + File.separator + ".keystore" );
-        }
-
-        if ( keyStore == null )
-        {
-            return;
-        }
-        if ( keyStore.exists() )
-        {
-            if ( keyStore.delete() )
-            {
-                log.debug( "deleted keystore from: " + keyStore.getAbsolutePath() );
-            }
-            else
-            {
-                log.warn( "Couldn't delete keystore from: " + keyStore.getAbsolutePath() );
-            }
-        }
-        else
-        {
-            log.debug( "Skipping deletion of non existing keystore: " + keyStore.getAbsolutePath() );
-        }
-    }
 }

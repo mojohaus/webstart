@@ -26,7 +26,6 @@ import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
@@ -146,7 +145,7 @@ public abstract class AbstractBaseJnlpMojo
     /**
      * The Sign Config
      *
-     * @parameter implementation="org.codehaus.mojo.webstart.JarSignMojoConfig"
+     * @parameter implementation="org.codehaus.mojo.webstart.DefaultSignConfig"
      */
     private SignConfig sign;
 
@@ -234,14 +233,6 @@ public abstract class AbstractBaseJnlpMojo
      */
     private boolean canUnsign;
 
-//    /**
-//     * To look up Archiver/UnArchiver implementations
-//     *
-//     * @component
-//     * @required
-//     */
-//    protected ArchiverManager archiverManager;
-
     /**
      * All available pack200 tools.
      * <p/>
@@ -292,7 +283,7 @@ public abstract class AbstractBaseJnlpMojo
      */
     public String getLibPath()
     {
-        if ( ( libPath == null ) || ( libPath.trim().length() == 0 ) )
+        if ( libPath == null || libPath.trim().length() == 0 )
         {
             return null;
         }
@@ -525,7 +516,7 @@ public abstract class AbstractBaseJnlpMojo
     /**
      * Confirms that if Pack200 is enabled, the MOJO is being executed in at least a Java 1.5 JVM.
      *
-     * @throws MojoExecutionException
+     * @throws MojoExecutionException if can not foind pack200 tool or jdk is before 5.0
      */
     protected void checkPack200()
         throws MojoExecutionException
@@ -584,8 +575,8 @@ public abstract class AbstractBaseJnlpMojo
      * The operation is not performed when the target file exists and is up to date.
      * The target file name is taken from the <code>sourceFile</code> name.
      *
-     * @param sourceFile
-     * @param targetDirectory
+     * @param sourceFile      source file to copy
+     * @param targetDirectory location of the target directory where to copy file
      * @return <code>true</code> when the file was copied, <code>false</code> otherwise.
      * @throws IllegalArgumentException if sourceFile is <code>null</code> or
      *                                  <code>sourceFile.getName()</code> is <code>null</code>
@@ -625,8 +616,8 @@ public abstract class AbstractBaseJnlpMojo
      * The unsigned target file name is taken from the <code>sourceFile</code> name prefixed with UNPROCESSED_PREFIX.
      * TODO this is confusing if the sourceFile is already signed. By unsigned we really mean 'unsignedbyus'
      *
-     * @param sourceFile
-     * @param targetDirectory
+     * @param sourceFile      source file to copy
+     * @param targetDirectory location of the target directory where to copy file
      * @return <code>true</code> when the file was copied, <code>false</code> otherwise.
      * @throws IllegalArgumentException if sourceFile is <code>null</code> or
      *                                  <code>sourceFile.getName()</code> is <code>null</code>
@@ -668,18 +659,15 @@ public abstract class AbstractBaseJnlpMojo
     /**
      * If sign is enabled, sign the jars, otherwise rename them into final jars
      *
-     * @throws org.apache.maven.plugin.MojoExecutionException
-     *
-     * @throws org.apache.maven.plugin.MojoFailureException
-     *
+     * @throws MojoExecutionException if can not sign or rename jars
      */
     protected void signOrRenameJars()
-        throws MojoExecutionException, MojoFailureException
+        throws MojoExecutionException
     {
 
         if ( getSign() != null )
         {
-            getSign().init( getLog(), getWorkDirectory(), isVerbose() );
+            getSign().init( getWorkDirectory(), isVerbose(), signTool );
 
             if ( unsignAlreadySignedJars() )
             {
@@ -769,12 +757,12 @@ public abstract class AbstractBaseJnlpMojo
     }
 
     /**
-     * TODO finish comment
+     * Tests if the given fully qualified name exists in the given artifact.
      *
-     * @param artifact
-     * @param mainClass
-     * @return
-     * @throws MalformedURLException
+     * @param artifact  artifact to test
+     * @param mainClass the fully qualified name to find in artifact
+     * @return {@code true} if given artifact contains the given fqn, {@code false} otherwise
+     * @throws MalformedURLException if artifact file url is mal formed
      */
     protected boolean artifactContainsClass( Artifact artifact, final String mainClass )
         throws MalformedURLException
@@ -953,11 +941,10 @@ public abstract class AbstractBaseJnlpMojo
     }
 
     /**
-     * @param directory
-     * @param fileFilter
+     * @param directory  location of directory where to delete some files
+     * @param fileFilter filter to select files to delete
      * @return the number of deleted files
-     * @throws org.apache.maven.plugin.MojoExecutionException
-     *
+     * @throws MojoExecutionException if could not delete files
      */
     private int deleteFiles( File directory, FileFilter fileFilter )
         throws MojoExecutionException
@@ -986,16 +973,13 @@ public abstract class AbstractBaseJnlpMojo
     }
 
     /**
-     * @param directory
-     * @param fileFilter
+     * @param directory  location of directory where to sign jars
+     * @param fileFilter filter to select jars to sign
      * @return the number of signed jars
-     * @throws org.apache.maven.plugin.MojoExecutionException
-     *
-     * @throws org.apache.maven.plugin.MojoFailureException
-     *
+     * @throws MojoExecutionException if can not sign jars
      */
     private int signJars( File directory, FileFilter fileFilter )
-        throws MojoExecutionException, MojoFailureException
+        throws MojoExecutionException
     {
 
         File[] jarFiles = directory.listFiles( fileFilter );
@@ -1053,11 +1037,10 @@ public abstract class AbstractBaseJnlpMojo
      * Removes the signature of the files in the specified directory which satisfy the
      * specified filter.
      *
-     * @param workDirectory
-     * @param updatedJarFileFilter
+     * @param workDirectory        working directory used to unsign jars
+     * @param updatedJarFileFilter filter used to select jars to unsign
      * @return the number of unsigned jars
-     * @throws org.apache.maven.plugin.MojoExecutionException
-     *
+     * @throws MojoExecutionException if could not remove signatures
      */
     private int removeExistingSignatures( File workDirectory, FileFilter updatedJarFileFilter )
         throws MojoExecutionException
@@ -1136,7 +1119,7 @@ public abstract class AbstractBaseJnlpMojo
      * Delete the specified directory.
      *
      * @param dir the directory to delete
-     * @throws MojoExecutionException
+     * @throws MojoExecutionException if could not delete directory
      */
     private void removeDirectory( File dir )
         throws MojoExecutionException

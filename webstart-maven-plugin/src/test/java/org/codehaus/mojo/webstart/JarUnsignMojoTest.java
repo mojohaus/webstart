@@ -43,7 +43,7 @@ public class JarUnsignMojoTest
 
     private File tempdir;
 
-    private JarSignMojoConfig sign;
+    private SignConfig sign;
 
     private MavenEmbedder embedder;
 
@@ -81,9 +81,7 @@ public class JarUnsignMojoTest
 
         File keystore = new File( tempdir, "keystore" );
 
-//        keystore.delete();
-
-        sign = new JarSignMojoConfig();
+        sign = new DefaultSignConfig();
         sign.setAlias( "test" );
         sign.setKeypass( "123456" );
         sign.setKeystore( keystore.getAbsolutePath() );
@@ -97,14 +95,12 @@ public class JarUnsignMojoTest
         sign.setDnameO( "O" );
         sign.setDnameC( "C" );
 
-        JarSignMojoConfig.KeystoreConfig keystoreConfig = new JarSignMojoConfig.KeystoreConfig();
+        KeystoreConfig keystoreConfig = new KeystoreConfig();
         keystoreConfig.setDelete( true );
         keystoreConfig.setGen( true );
         sign.setKeystoreConfig( keystoreConfig );
 
-        sign.init( mojo.getLog(), tempdir, false );
-
-//        genKeyStore();
+        sign.init( tempdir, false, signTool );
     }
 
     public void tearDown()
@@ -148,65 +144,18 @@ public class JarUnsignMojoTest
         return new File( localRepository.getBasedir() + "/" + localRepository.pathOf( junit ) + ".jar" );
     }
 
-//    private void genKeyStore()
-//        throws MojoExecutionException
-//    {
-//        GenkeyMojo genKeystore = new GenkeyMojo();
-//        genKeystore.setAlias( sign.getAlias() );
-//        genKeystore.setDname( sign.getDname() );
-//        genKeystore.setKeyalg( sign.getKeyalg() );
-//        genKeystore.setKeypass( sign.getKeypass() );
-//        genKeystore.setKeysize( sign.getKeysize() );
-//        genKeystore.setKeystore( sign.getKeystore() );
-//        genKeystore.setSigalg( sign.getSigalg() );
-//        genKeystore.setStorepass( sign.getStorepass() );
-//        genKeystore.setStoretype( sign.getStoretype() );
-//        genKeystore.setValidity( sign.getValidity() );
-//        genKeystore.setVerbose( false );
-//        genKeystore.setWorkingDir( temisJarSignedpdir );
-//
-//        genKeystore.execute();
-//    }
-
-
     private void signJar( File jarToSign )
         throws MojoExecutionException
     {
 
         signTool.sign( sign, jarToSign, null );
-//        JarSignMojo signJar = new JarSignMojo();
-//        signJar.setAlias( sign.getAlias() );
-//        signJar.setBasedir( tempdir );
-//        signJar.setKeypass( sign.getKeypass() );
-//        signJar.setKeystore( sign.getKeystore() );
-//        // signJar.setLog( getLog() );
-//        signJar.setSigFile( sign.getSigfile() );
-//        signJar.setStorepass( sign.getStorepass() );
-//        signJar.setType( sign.getStoretype() );
-//        signJar.setVerbose( false );
-//        signJar.setWorkingDir( tempdir );
-//        signJar.setVerify( sign.getVerify() );
-//
-//        signJar.setJarPath( jarToSign );
-//        signJar.setSignedJar( null );
-//        signJar.execute();
     }
 
     private void ensureJarSignedOrNot( File jarFile, boolean signed, String msg )
         throws MojoExecutionException
     {
-//        JarSignVerifyMojo verifyMojo = new JarSignVerifyMojo();
-
         assertTrue( "jar file exists", jarFile.exists() );
         boolean isSigned = signTool.isJarSigned( sign, jarFile );
         assertEquals( msg, signed, isSigned );
-//        verifyMojo.setWorkingDir( tempdir );
-//        verifyMojo.setBasedir( tempdir );
-//        verifyMojo.setJarPath( jarFile );
-//        verifyMojo.setVerbose( false );
-//        verifyMojo.setErrorWhenNotSigned( false );
-//        verifyMojo.execute();
-
-//        assertEquals( msg, signed, verifyMojo.isSigned() );
     }
 }

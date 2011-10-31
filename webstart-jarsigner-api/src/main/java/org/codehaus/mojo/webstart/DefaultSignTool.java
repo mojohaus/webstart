@@ -21,6 +21,10 @@ package org.codehaus.mojo.webstart;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.shared.jarsigner.*;
+import org.codehaus.mojo.shared.keytool.KeyTool;
+import org.codehaus.mojo.shared.keytool.KeyToolException;
+import org.codehaus.mojo.shared.keytool.KeyToolGenKeyRequest;
+import org.codehaus.mojo.shared.keytool.KeyToolResult;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
@@ -62,6 +66,13 @@ public class DefaultSignTool
     private JarSigner jarSigner;
 
     /**
+     * The component to invoke keyTool command.
+     *
+     * @plexus.requirement role="org.codehaus.mojo.shared.keytool.KeyTool"
+     */
+    private KeyTool keyTool;
+
+    /**
      * To look up Archiver/UnArchiver implementations
      *
      * @plexus.requirement role="org.codehaus.plexus.archiver.manager.ArchiverManager"
@@ -82,6 +93,27 @@ public class DefaultSignTool
             return extToRemove.contains( extension );
         }
     };
+
+    public void generateKey( SignConfig config, File keystoreFile )
+        throws MojoExecutionException
+    {
+        KeyToolGenKeyRequest request = config.createKeyGenRequest( keystoreFile );
+
+        try
+        {
+            KeyToolResult result = keyTool.execute( request );
+
+            CommandLineException exception = result.getExecutionException();
+            if ( exception != null )
+            {
+                throw new MojoExecutionException( "Could not sign jar " + keystoreFile, exception );
+            }
+        }
+        catch ( KeyToolException e )
+        {
+            throw new MojoExecutionException( "Could not find keytool", e );
+        }
+    }
 
     public void sign( SignConfig config, File jarFile, File signedJar )
         throws MojoExecutionException
@@ -241,6 +273,25 @@ public class DefaultSignTool
         catch ( IOException ex )
         {
             throw new MojoExecutionException( "Error cleaning up temporary directory file: " + tempDir, ex );
+        }
+    }
+
+    public void deleteKeyStore( File keystore, boolean verbose )
+    {
+        if ( keystore.exists() )
+        {
+            if ( keystore.delete() )
+            {
+                infoOrDebug( verbose, "deleted keystore from: " + keystore.getAbsolutePath() );
+            }
+            else
+            {
+                getLogger().warn( "Couldn't delete keystore from: " + keystore.getAbsolutePath() );
+            }
+        }
+        else
+        {
+            infoOrDebug( verbose, "Skipping deletion of non existing keystore: " + keystore.getAbsolutePath() );
         }
     }
 
