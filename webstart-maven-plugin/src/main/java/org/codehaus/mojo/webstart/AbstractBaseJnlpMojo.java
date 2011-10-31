@@ -27,6 +27,8 @@ import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mojo.webstart.sign.SignConfig;
+import org.codehaus.mojo.webstart.sign.SignTool;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -72,7 +74,7 @@ public abstract class AbstractBaseJnlpMojo
     /**
      * JarSigner tool.
      *
-     * @component role="org.codehaus.mojo.webstart.SignTool"
+     * @component role="org.codehaus.mojo.webstart.sign.SignTool"
      * @required
      * @readonly
      */
@@ -145,7 +147,7 @@ public abstract class AbstractBaseJnlpMojo
     /**
      * The Sign Config
      *
-     * @parameter implementation="org.codehaus.mojo.webstart.DefaultSignConfig"
+     * @parameter implementation="org.codehaus.mojo.webstart.sign.DefaultSignConfig"
      */
     private SignConfig sign;
 

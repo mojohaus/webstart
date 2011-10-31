@@ -1,4 +1,4 @@
-package org.codehaus.mojo.webstart;
+package org.codehaus.mojo.webstart.sign;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -222,7 +222,7 @@ public class DefaultSignTool
         File metaInf = new File( tempDir, "META-INF" );
         if ( !metaInf.isDirectory() )
         {
-            verboseLog( verbose, "META-INT dir not found : nothing to do for file: " + jarFile.getAbsolutePath() );
+            verboseLog( verbose, "META-INF dir not found : nothing to do for file: " + jarFile.getAbsolutePath() );
             return;
         }
 

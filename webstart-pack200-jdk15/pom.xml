@@ -13,7 +13,7 @@
   <dependencies>
      <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>webstart-jarsigner-api</artifactId>
+      <artifactId>webstart-pack200-api</artifactId>
       <version>${project.version}</version>
     </dependency>
 

@@ -24,6 +24,10 @@ import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderConsoleLogger;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.codehaus.mojo.webstart.sign.DefaultSignConfig;
+import org.codehaus.mojo.webstart.sign.KeystoreConfig;
+import org.codehaus.mojo.webstart.sign.SignConfig;
+import org.codehaus.mojo.webstart.sign.SignTool;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.util.FileUtils;
 

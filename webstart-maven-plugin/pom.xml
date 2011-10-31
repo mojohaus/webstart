@@ -41,10 +41,14 @@
 
     <dependency>
       <groupId>org.codehaus.mojo.webstart</groupId>
-      <artifactId>webstart-jarsigner-api</artifactId>
+      <artifactId>webstart-pack200-api</artifactId>
       <version>${project.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact</artifactId>
@@ -65,18 +69,6 @@
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-settings</artifactId>
     </dependency>
-    <!--dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-archiver</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-archiver</artifactId>
-    </dependency-->
-    <dependency>
-      <groupId>org.apache.maven.shared</groupId>
-      <artifactId>maven-jarsigner</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.apache.maven.reporting</groupId>
@@ -86,24 +78,53 @@
       <groupId>org.apache.maven.reporting</groupId>
       <artifactId>maven-reporting-impl</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.maven.doxia</groupId>
+      <artifactId>doxia-site-renderer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.doxia</groupId>
+      <artifactId>doxia-sink-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.shared</groupId>
+      <artifactId>maven-jarsigner</artifactId>
+    </dependency>
 
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-archiver</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>org.codehaus.mojo</groupId>
-      <artifactId>keytool-maven-plugin</artifactId>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.codehaus.mojo.shared</groupId>
+      <artifactId>mojo-keytool</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>velocity</groupId>
       <artifactId>velocity</artifactId>
     </dependency>
 
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
     </dependency>
 
     <dependency>
@@ -116,6 +137,7 @@
       <artifactId>xmlunit</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.codehaus.mojo.webstart</groupId>
       <artifactId>webstart-jnlp-servlet</artifactId>
@@ -152,6 +174,19 @@
         <artifactId>maven-plugin-plugin</artifactId>
       </plugin>
 
+      <!-- expose new plexus components -->
+      <plugin>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>create-component-descriptor</id>
+            <goals>
+              <goal>descriptor</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
@@ -217,6 +252,7 @@
           <groupId>org.codehaus.mojo.webstart</groupId>
           <artifactId>webstart-pack200-jdk15</artifactId>
           <version>${project.version}</version>
+          <scope>runtime</scope>
         </dependency>
       </dependencies>
     </profile>
@@ -230,6 +266,7 @@
           <groupId>org.codehaus.mojo.webstart</groupId>
           <artifactId>webstart-pack200-jdk15</artifactId>
           <version>${project.version}</version>
+          <scope>runtime</scope>
         </dependency>
       </dependencies>
     </profile>
@@ -243,6 +280,7 @@
           <groupId>org.codehaus.mojo.webstart</groupId>
           <artifactId>webstart-pack200-jdk15</artifactId>
           <version>${project.version}</version>
+          <scope>runtime</scope>
         </dependency>
       </dependencies>
     </profile>

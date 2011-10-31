@@ -18,7 +18,7 @@ package org.codehaus.mojo.webstart.test.mysigner;
 
 import org.apache.maven.plugin.logging.Log;
 
-import org.codehaus.mojo.webstart.SignConfig;
+import org.codehaus.mojo.webstart.sign.SignConfig;
 
 import org.codehaus.mojo.webstart.JarSignerMojo;
 /*
@@ -68,7 +68,8 @@ import java.io.File;
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
  */
-public class MyJarSignMojoConfig implements SignConfig {
+public class MyJarSignMojoConfig implements SignConfig
+{
     
     /**
      * Returns a fully configured version of a Mojo ready to sign jars.

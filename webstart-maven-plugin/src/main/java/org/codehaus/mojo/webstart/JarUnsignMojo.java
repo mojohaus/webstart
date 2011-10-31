@@ -21,6 +21,7 @@ package org.codehaus.mojo.webstart;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.codehaus.mojo.webstart.sign.SignTool;
 
 import java.io.File;
 
@@ -73,7 +74,7 @@ public class JarUnsignMojo
     /**
      * JarSigner tool.
      *
-     * @component role="org.codehaus.mojo.webstart.SignTool"
+     * @component role="org.codehaus.mojo.webstart.sign.SignTool"
      * @required
      * @readonly
      */
