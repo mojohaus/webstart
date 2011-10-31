@@ -260,8 +260,9 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
             <configuration>
-              <cloneAllFiles>true</cloneAllFiles>
               <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+              <settingsFile>src/it/settings.xml</settingsFile>
+              <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
               <postBuildHookScript>validate.groovy</postBuildHookScript>
             </configuration>
             <executions>
