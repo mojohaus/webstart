@@ -362,4 +362,15 @@
     </pluginManagement>
   </build>
 
+  <repositories>
+    <repository>
+      <id>apache.maven.org</id>
+      <name>Maven Central Development Repository</name>
+      <url>https://repository.apache.org/content/groups/snapshots-group/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
+
 </project>
