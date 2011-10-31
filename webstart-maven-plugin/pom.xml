@@ -250,7 +250,7 @@
       <dependencies>
         <dependency>
           <groupId>org.codehaus.mojo.webstart</groupId>
-          <artifactId>webstart-pack200-jdk15</artifactId>
+          <artifactId>webstart-pack200-impl</artifactId>
           <version>${project.version}</version>
           <scope>runtime</scope>
         </dependency>
@@ -264,7 +264,7 @@
       <dependencies>
         <dependency>
           <groupId>org.codehaus.mojo.webstart</groupId>
-          <artifactId>webstart-pack200-jdk15</artifactId>
+          <artifactId>webstart-pack200-impl</artifactId>
           <version>${project.version}</version>
           <scope>runtime</scope>
         </dependency>
@@ -278,7 +278,7 @@
       <dependencies>
         <dependency>
           <groupId>org.codehaus.mojo.webstart</groupId>
-          <artifactId>webstart-pack200-jdk15</artifactId>
+          <artifactId>webstart-pack200-impl</artifactId>
           <version>${project.version}</version>
           <scope>runtime</scope>
         </dependency>

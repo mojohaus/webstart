@@ -84,11 +84,8 @@
 
   <modules>
     <module>webstart-pack200-api</module>
-    <!--<module>webstart-jarsigner-api</module>-->
     <module>webstart-maven-plugin</module>
-    <!--<module>webstart-pack200-anttasks</module>-->
     <module>webstart-jnlp-servlet</module>
-    <!--<module>webstart-pack200-jdk14</module>-->
   </modules>
 
   <properties>
@@ -103,7 +100,7 @@
       </activation>
 
       <modules>
-        <module>webstart-pack200-jdk15</module>
+        <module>webstart-pack200-impl</module>
       </modules>
     </profile>
 
@@ -114,7 +111,7 @@
       </activation>
 
       <modules>
-        <module>webstart-pack200-jdk15</module>
+        <module>webstart-pack200-impl</module>
       </modules>
     </profile>
 
@@ -125,7 +122,7 @@
       </activation>
 
       <modules>
-        <module>webstart-pack200-jdk15</module>
+        <module>webstart-pack200-impl</module>
       </modules>
     </profile>
 

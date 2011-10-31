@@ -6,9 +6,9 @@
     <version>1.0-beta-3-SNAPSHOT</version>
   </parent>
 
-  <artifactId>webstart-pack200-jdk15</artifactId>
+  <artifactId>webstart-pack200-impl</artifactId>
 
-  <name>MWEBSTART :: Pack 200 support for SDK 5.0</name>
+  <name>MWEBSTART :: Pack 200 implementation</name>
 
   <dependencies>
      <dependency>
