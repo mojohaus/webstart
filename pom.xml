@@ -126,39 +126,6 @@
       </modules>
     </profile>
 
-    <profile>
-      <id>analyze-dependencies</id>
-      <activation>
-        <property>
-          <name>performRelease</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <build>
-        <defaultGoal>verify</defaultGoal>
-        <plugins>
-          <plugin>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <inherited>true</inherited>
-            <executions>
-              <execution>
-                <id>analyze</id>
-                <goals>
-                  <goal>analyze-only</goal>
-                </goals>
-                <configuration>
-                  <verbose>true</verbose>
-                  <failOnWarning>true</failOnWarning>
-                  <ignoreNonCompile>true</ignoreNonCompile>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-
   </profiles>
 
   <dependencyManagement>
@@ -192,10 +159,6 @@
             <groupId>plexus</groupId>
             <artifactId>plexus-utils</artifactId>
           </exclusion>
-          <exclusion>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-http-lightweight</artifactId>
-          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
@@ -208,12 +171,6 @@
             <artifactId>wagon-ssh-external</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-archiver</artifactId>
-        <version>2.4.1</version>
       </dependency>
 
       <dependency>
@@ -238,16 +195,7 @@
           </exclusion>
         </exclusions>
       </dependency>
-      <dependency>
-        <groupId>org.apache.maven.doxia</groupId>
-        <artifactId>doxia-site-renderer</artifactId>
-        <version>1.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.doxia</groupId>
-        <artifactId>doxia-sink-api</artifactId>
-        <version>1.0</version>
-      </dependency>
+      
       <dependency>
         <groupId>org.apache.maven.shared</groupId>
         <artifactId>maven-jarsigner</artifactId>
@@ -293,7 +241,6 @@
         <version>1.7.0</version>
       </dependency>
 
-
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
@@ -317,37 +264,19 @@
         <artifactId>commons-lang</artifactId>
         <version>2.6</version>
       </dependency>
-      <dependency>
-        <groupId>xml-apis</groupId>
-        <artifactId>xml-apis</artifactId>
-        <version>1.0.b2</version>
-      </dependency>
+     
       <dependency>
         <groupId>velocity</groupId>
         <artifactId>velocity</artifactId>
         <version>1.5</version>
-        <scope>provided</scope>
       </dependency>
-      <dependency>
-        <groupId>org.apache.velocity</groupId>
-        <artifactId>velocity</artifactId>
-        <version>1.7</version>
-        <exclusions>
-          <exclusion>
-            <groupId>velocity</groupId>
-            <artifactId>velocity</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-
+      
       <dependency>
         <groupId>org.apache.maven.shared</groupId>
         <artifactId>maven-plugin-testing-harness</artifactId>
         <version>1.1</version>
         <scope>test</scope>
       </dependency>
-
 
       <dependency>
         <groupId>org.codehaus.plexus</groupId>

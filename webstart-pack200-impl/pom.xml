@@ -8,7 +8,7 @@
 
   <artifactId>webstart-pack200-impl</artifactId>
 
-  <name>MWEBSTART :: Pack 200 implementation</name>
+  <name>MWEBSTART :: Pack200 implementation</name>
 
   <dependencies>
      <dependency>
