@@ -31,7 +31,7 @@ public class SignConfigTest
 
     public void testGetDname()
     {
-        SignConfig signConfig = new DefaultSignConfig();
+        DefaultSignConfig signConfig = new DefaultSignConfig();
         signConfig.setDnameCn( "www.example.com" );
         signConfig.setDnameOu( "None" );
         signConfig.setDnameL( "Seattle" );
@@ -44,13 +44,24 @@ public class SignConfigTest
 
     public void testGetDnameMissing()
     {
-        SignConfig signConfig = new DefaultSignConfig();
+        DefaultSignConfig signConfig = new DefaultSignConfig();
         signConfig.setDnameCn( "www.example.com" );
-        //signConfig.setDnameOu( "None" );
         signConfig.setDnameL( "Seattle" );
-        //signConfig.setDnameSt( "Washington" );
         signConfig.setDnameO( "ExampleOrg" );
         signConfig.setDnameC( "US" );
         assertEquals( "CN=www.example.com, L=Seattle, O=ExampleOrg, C=US", signConfig.getDname() );
+    }
+
+    public void testGetDnameWithCommaInOrganization()
+    {
+        DefaultSignConfig signConfig = new DefaultSignConfig();
+        signConfig.setDnameCn( "www.example.com" );
+        signConfig.setDnameOu( "None" );
+        signConfig.setDnameL( "Seattle" );
+        signConfig.setDnameSt( "Washington" );
+        signConfig.setDnameO( "Some Company, Inc." );
+        signConfig.setDnameC( "US" );
+        assertEquals( "CN=www.example.com, OU=None, L=Seattle, ST=Washington, O=Some Company\\, Inc., C=US",
+                      signConfig.getDname() );
     }
 }

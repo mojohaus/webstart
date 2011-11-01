@@ -82,8 +82,6 @@ public interface SignConfig
      */
     KeyToolGenKeyRequest createKeyGenRequest( File keystoreFile );
 
-    String getDname();
-
     void setAlias( String alias );
 
     void setDnameCn( String dnameCn );

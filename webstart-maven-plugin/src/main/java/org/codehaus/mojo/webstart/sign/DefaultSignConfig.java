@@ -412,8 +412,9 @@ public class DefaultSignConfig
             {
                 buffer.append( ", " );
             }
+            // http://jira.codehaus.org/browse/MWEBSTART-112 : have commas in parts of dName (but them must be espace)
             buffer.append( prefix ).append( "=" );
-            buffer.append( property );
+            buffer.append(property.replaceAll(",", "\\\\,"));
         }
     }
 
