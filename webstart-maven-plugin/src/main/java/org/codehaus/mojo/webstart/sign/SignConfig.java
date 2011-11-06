@@ -22,7 +22,7 @@ package org.codehaus.mojo.webstart.sign;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.shared.jarsigner.JarSignerRequest;
 import org.apache.maven.shared.jarsigner.JarSignerVerifyRequest;
-import org.codehaus.mojo.shared.keytool.KeyToolGenKeyRequest;
+import org.codehaus.mojo.shared.keytool.requests.KeyToolGenerateKeyPairRequest;
 
 import java.io.File;
 
@@ -80,7 +80,7 @@ public interface SignConfig
      * @param keystoreFile the location of the key store file to generate
      * @return the keytool request
      */
-    KeyToolGenKeyRequest createKeyGenRequest( File keystoreFile );
+    KeyToolGenerateKeyPairRequest createKeyGenRequest( File keystoreFile );
 
     void setAlias( String alias );
 

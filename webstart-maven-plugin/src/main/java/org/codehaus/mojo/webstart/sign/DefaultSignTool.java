@@ -23,7 +23,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.shared.jarsigner.*;
 import org.codehaus.mojo.shared.keytool.KeyTool;
 import org.codehaus.mojo.shared.keytool.KeyToolException;
-import org.codehaus.mojo.shared.keytool.KeyToolGenKeyRequest;
+import org.codehaus.mojo.shared.keytool.requests.KeyToolGenerateKeyPairRequest;
 import org.codehaus.mojo.shared.keytool.KeyToolResult;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnArchiver;
@@ -97,7 +97,7 @@ public class DefaultSignTool
     public void generateKey( SignConfig config, File keystoreFile )
         throws MojoExecutionException
     {
-        KeyToolGenKeyRequest request = config.createKeyGenRequest( keystoreFile );
+        KeyToolGenerateKeyPairRequest request = config.createKeyGenRequest( keystoreFile );
 
         try
         {

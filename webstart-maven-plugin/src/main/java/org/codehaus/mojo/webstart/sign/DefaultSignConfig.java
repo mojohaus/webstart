@@ -23,7 +23,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.shared.jarsigner.JarSignerRequest;
 import org.apache.maven.shared.jarsigner.JarSignerSignRequest;
 import org.apache.maven.shared.jarsigner.JarSignerVerifyRequest;
-import org.codehaus.mojo.shared.keytool.KeyToolGenKeyRequest;
+import org.codehaus.mojo.shared.keytool.requests.KeyToolGenerateKeyPairRequest;
 
 import java.io.File;
 
@@ -172,9 +172,9 @@ public class DefaultSignConfig
         return request;
     }
 
-    public KeyToolGenKeyRequest createKeyGenRequest( File keystoreFile )
+    public KeyToolGenerateKeyPairRequest createKeyGenRequest( File keystoreFile )
     {
-        KeyToolGenKeyRequest request = new KeyToolGenKeyRequest();
+        KeyToolGenerateKeyPairRequest request = new KeyToolGenerateKeyPairRequest();
         request.setAlias( getAlias() );
         request.setDname( getDname() );
         request.setKeyalg( getKeyalg() );
