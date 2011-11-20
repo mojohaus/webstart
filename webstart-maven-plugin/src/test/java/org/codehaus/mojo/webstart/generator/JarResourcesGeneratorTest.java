@@ -58,7 +58,8 @@ public class JarResourcesGeneratorTest extends TestCase
                                                                      jarResources,
                                                                      mainClass,
                                                                      "jar:file:/tmp/path/to/webstart-plugin.jar",
-                                                                     null);
+                                                                     null,
+                                                                     "utf-8");
         
         //The list of jarResources is empty so the output text should be an empty string
         assertEquals("", generator.getDependenciesText());
@@ -91,7 +92,8 @@ public class JarResourcesGeneratorTest extends TestCase
                                                                      jarResources,
                                                                      mainClass,
                                                                      "jar:file:/tmp/path/to/webstart-plugin.jar",
-                                                                     "myLib");
+                                                                     "myLib",
+                                                                     "utf-8");
 
         String expectedText2 = "\n<jar href=\"myLib/href1\" version=\"1.1\" main=\"true\"/>\n"
                              + "<jar href=\"myLib/href2\" version=\"1.2\"/>\n"

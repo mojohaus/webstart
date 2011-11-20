@@ -56,10 +56,11 @@ public class JarResourcesGenerator
      */
     public JarResourcesGenerator( MavenProject mavenProject, File resourceLoaderPath,
                                   String defaultTemplateResourceName, File outputFile, String templateFile,
-                                  Collection jarResources, String mainClass, String webstartJarURL, String libPath )
+                                  Collection jarResources, String mainClass, String webstartJarURL, String libPath,
+                                  String encoding)
     {
         super( mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, templateFile, mainClass,
-               webstartJarURL );
+               webstartJarURL, encoding );
         this.jarResources = jarResources;
         this.libPath = libPath;
     }

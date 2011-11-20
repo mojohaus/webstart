@@ -46,12 +46,16 @@ import java.util.Iterator;
 public class VersionXmlGenerator
 {
 
+    private final String encoding;
+
     /**
      * Creates a new {@code VersionXmlGenerator}.
+     *
+     * @param encoding encoding used to write version.xml file
      */
-    public VersionXmlGenerator()
+    public VersionXmlGenerator( String encoding )
     {
-        //do nothing
+        this.encoding = encoding;
     }
 
     /**
@@ -78,7 +82,7 @@ public class VersionXmlGenerator
         try
         {
             File versionXmlFile = new File( outputDir, "version.xml" );
-            writer = new BufferedWriter( WriterFactory.newXmlWriter( versionXmlFile ) );
+            writer = new BufferedWriter( WriterFactory.newWriter( versionXmlFile, encoding ) );
 
             generateXml( writer, jarResources );
 

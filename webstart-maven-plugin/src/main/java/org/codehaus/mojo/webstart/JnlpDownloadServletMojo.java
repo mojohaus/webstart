@@ -612,7 +612,7 @@ public class JnlpDownloadServletMojo
         JarResourcesGenerator jnlpGenerator =
             new JarResourcesGenerator( getProject(), getTemplateDirectory(), "default-jnlp-servlet-template.vm",
                                        jnlpOutputFile, jnlpFile.getTemplateFilename(), jarResources,
-                                       jnlpFile.getMainClass(), getWebstartJarURLForVelocity(), libPath );
+                                       jnlpFile.getMainClass(), getWebstartJarURLForVelocity(), libPath, getEncoding() );
 
         jnlpGenerator.setExtraConfig( getGeneratorExtraConfig() );
 
@@ -686,7 +686,7 @@ public class JnlpDownloadServletMojo
             jarResources.addAll( this.commonJarResources );
         }
 
-        VersionXmlGenerator generator = new VersionXmlGenerator();
+        VersionXmlGenerator generator = new VersionXmlGenerator( getEncoding() );
         generator.generate( getLibDirectory(), jarResources );
 
     }

@@ -56,6 +56,8 @@ public abstract class AbstractGenerator
     private final File outputFile;
 
     private final String mainClass;
+    
+    private final String encoding;
 
     private GeneratorExtraConfig extraConfig;
 
@@ -71,7 +73,7 @@ public abstract class AbstractGenerator
      */
     protected AbstractGenerator( MavenProject mavenProject, File resourceLoaderPath, String defaultTemplateResourceName,
                                  File outputFile, String inputFileTemplatePath, String mainClass,
-                                 String webstartJarURL )
+                                 String webstartJarURL, String encoding )
     {
 
         if ( mavenProject == null )
@@ -97,6 +99,7 @@ public abstract class AbstractGenerator
         this.outputFile = outputFile;
         this.mainClass = mainClass;
         this.mavenProject = mavenProject;
+        this.encoding= encoding;
 
         Properties props = new Properties();
 
@@ -140,7 +143,7 @@ public abstract class AbstractGenerator
 
         try
         {
-            this.velocityTemplate = engine.getTemplate( inputFileTemplatePath );
+            this.velocityTemplate = engine.getTemplate( inputFileTemplatePath, encoding );
         }
         catch ( Exception e )
         {
@@ -182,7 +185,7 @@ public abstract class AbstractGenerator
     {
         VelocityContext context = createAndPopulateContext();
 
-        Writer writer = WriterFactory.newXmlWriter( outputFile );
+        Writer writer = WriterFactory.newWriter( outputFile, encoding );
 
         try
         {
@@ -245,6 +248,9 @@ public abstract class AbstractGenerator
 
         context.put( "outputFile", outputFile.getName() );
         context.put( "mainClass", this.mainClass );
+        context.put( "encoding", encoding );
+        context.put( "input.encoding", encoding );
+        context.put( "output.encoding", encoding );
 
         // TODO make this more extensible
         context.put( "allPermissions", Boolean.valueOf( BooleanUtils.toBoolean( extraConfig.getAllPermissions() ) ) );

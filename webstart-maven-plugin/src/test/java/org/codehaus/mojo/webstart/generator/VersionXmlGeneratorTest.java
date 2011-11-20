@@ -90,7 +90,7 @@ public class VersionXmlGeneratorTest extends TestCase
         
         try 
         {
-            new VersionXmlGenerator().generate( null, new ArrayList() );
+            new VersionXmlGenerator( "utf-8" ).generate( null, new ArrayList() );
             Assert.fail( "Should have thrown an IllegalArgumentException");
         }
         catch (IllegalArgumentException e)
@@ -104,7 +104,7 @@ public class VersionXmlGeneratorTest extends TestCase
     {
         
         List jarResources = new ArrayList();
-        new VersionXmlGenerator().generate( this.outputDir, jarResources );
+        new VersionXmlGenerator( "utf-8" ).generate( this.outputDir, jarResources );
         
         Assert.assertTrue( "Assert expectedFile exists", this.expectedFile.exists() );
         
@@ -165,7 +165,7 @@ public class VersionXmlGeneratorTest extends TestCase
                    .append( "  </resource>" )
                    .append( "</jnlp-versions>" );
 
-        new VersionXmlGenerator().generate( this.outputDir, jarResources );
+        new VersionXmlGenerator( "utf-8" ).generate( this.outputDir, jarResources );
         
         String actualXml = readFileContents( this.expectedFile );
         

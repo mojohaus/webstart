@@ -631,7 +631,8 @@ public abstract class AbstractJnlpMojo
 
         Generator jnlpGenerator =
             new Generator( this.getProject(), this, "default-jnlp-template.vm", templateDirectory, jnlpOutputFile,
-                           templateFileName, this.getJnlp().getMainClass(), getWebstartJarURLForVelocity() );
+                           templateFileName, this.getJnlp().getMainClass(), getWebstartJarURLForVelocity() ,
+                           getEncoding());
 
         jnlpGenerator.setExtraConfig( getGeneratorExtraConfig() );
 
@@ -922,7 +923,7 @@ public abstract class AbstractJnlpMojo
         ExtensionGenerator jnlpGenerator =
             new ExtensionGenerator( this.getProject(), this, extension, "default-jnlp-extension-template.vm",
                                     templateDirectory, jnlpOutputFile, templateFileName, this.getJnlp().getMainClass(),
-                                    getWebstartJarURLForVelocity() );
+                                    getWebstartJarURLForVelocity(), getEncoding() );
 
         jnlpGenerator.setExtraConfig( getExtensionGeneratorExtraConfig( extension ) );
 

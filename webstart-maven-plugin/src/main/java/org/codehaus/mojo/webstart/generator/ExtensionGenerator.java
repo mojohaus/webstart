@@ -51,11 +51,12 @@ public class ExtensionGenerator
      */
     public ExtensionGenerator( MavenProject mavenProject, AbstractJnlpMojo task, JnlpExtension extension,
                                String defaultTemplateResourceName, File resourceLoaderPath, File outputFile,
-                               String inputFileTemplatePath, String mainClass, String webstartJarURL )
+                               String inputFileTemplatePath, String mainClass, String webstartJarURL,
+                               String encoding)
     {
 
         super( mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, inputFileTemplatePath,
-               mainClass, webstartJarURL );
+               mainClass, webstartJarURL, encoding);
 
         this.config = task;
         this.extension = extension;

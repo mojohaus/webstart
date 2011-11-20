@@ -19,6 +19,7 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -203,6 +204,16 @@ public abstract class AbstractBaseJnlpMojo
      * @since 1.0-beta-2
      */
     private String codebase;
+
+    /**
+     * Encoding used to read and write jnlp files.
+     *
+     * <strong>Note:</strong> If this property is not defined, then will use a default value {@code utf-8}.
+     *
+     * @parameter expression="${jnlp.encoding}" default-value="${project.build.sourceEncoding}"
+     * @since 1.0-beta-2
+     */
+    private String encoding;
 
     private final List modifiedJnlpArtifacts = new ArrayList();
 
@@ -513,6 +524,19 @@ public abstract class AbstractBaseJnlpMojo
     protected List getModifiedJnlpArtifacts()
     {
         return modifiedJnlpArtifacts;
+    }
+
+    /**
+     * @return the mojo encoding to use to write files.
+     */
+    public String getEncoding()
+    {
+        if ( StringUtils.isEmpty( encoding ) )
+        {
+            encoding = "utf-8";
+            getLog().warn( "No encoding defined, will use the default one : " + encoding );
+        }
+        return encoding;
     }
 
     /**

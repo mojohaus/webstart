@@ -3,7 +3,7 @@
   <parent>
     <artifactId>mojo-parent</artifactId>
     <groupId>org.codehaus.mojo</groupId>
-    <version>28</version>
+    <version>29</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.codehaus.mojo.webstart</groupId>
@@ -18,6 +18,10 @@
     <system>jira</system>
     <url>http://jira.codehaus.org/browse/MWEBSTART</url>
   </issueManagement>
+  <ciManagement>
+    <system>bamboo</system>
+    <url>http://bamboo.ci.codehaus.org/browse/MOJO-MWEBSTART</url>
+  </ciManagement>
 
   <inceptionYear>2005</inceptionYear>
 

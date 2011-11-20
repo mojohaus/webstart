@@ -49,10 +49,10 @@ public class Generator
      */
     public Generator( MavenProject mavenProject, AbstractJnlpMojo task, String defaultTemplateResourceName,
                       File resourceLoaderPath, File outputFile, String inputFileTemplatePath, String mainClass,
-                      String webstartJarURL )
+                      String webstartJarURL, String encoding )
     {
         super( mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, inputFileTemplatePath,
-               mainClass, webstartJarURL );
+               mainClass, webstartJarURL, encoding );
 
         this.config = task;
     }
