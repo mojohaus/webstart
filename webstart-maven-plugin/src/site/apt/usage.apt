@@ -49,13 +49,13 @@ Usage
 
   General Information about the goals.
 
-  * {{{jnlp-mojo.html}webstart:jnlp}}, {{{jnlp-inline-mojo.html}webstart:jnlp-inline}} and {{{jnlp-single-mojo.html}webstart:jnlp-single}} all help package a JNLP application as a ZIP file (useful for standalone static deployments or to further bundle them in WAR files). Pick the right goal depending on your use case: multi-module, command line, etc... Be sure to read the {{{plugin-info.html}plugin documentation}} to decide which goal suit you best.
+  * {{{jnlp-mojo.html}webstart:jnlp}}, {{{./jnlp-inline-mojo.html}webstart:jnlp-inline}} and {{{./jnlp-single-mojo.html}webstart:jnlp-single}} all help package a JNLP application as a ZIP file (useful for standalone static deployments or to further bundle them in WAR files). Pick the right goal depending on your use case: multi-module, command line, etc... Be sure to read the {{{plugin-info.html}plugin documentation}} to decide which goal suit you best.
 
-  * {{{jnlp-download-servlet-mojo.html}webstart:jnlp-download-servlet}} helps to package a JNLP application to be deployed by Sun's JnlpDownloadServlet
+  * {{{./jnlp-download-servlet-mojo.html}webstart:jnlp-download-servlet}} helps to package a JNLP application to be deployed by Sun's JnlpDownloadServlet
 
-  * {{{unsign-mojo.html}webstart:unsign}} unsign a JAR. This goal is primarily used internally by the JNLP goals described above. This goal is available in the {{{http://maven.apache.org/plugins/maven-jarsigner-plugin/}Maven Jarsigner Plugin}}, as is the sign JAR functionality.
+  * {{{./unsign-mojo.html}webstart:unsign}} unsign a JAR. This goal is primarily used internally by the JNLP goals described above. This goal is available in the {{{http://maven.apache.org/plugins/maven-jarsigner-plugin/}Maven Jarsigner Plugin}}, as is the sign JAR functionality.
 
-  * {{{report-mojo.html}webstart:report}} Creates a JNLP site report.
+  * {{{./report-mojo.html}webstart:report}} Creates a JNLP site report.
 
 
 * How to build a JNLP ZIP bundle
@@ -80,7 +80,7 @@ mvn install webstart:jnlp
 
 * How to build a JNLP ZIP bundle ready for Sun's Download Servlet
 
-  Package your module as WAR, add the appropriate dependency to Sun's Download Servlet (see {{{jnlp101.html}JNLP 101}}), and attach the <<<jnlp-download-servlet>>> goal to a phase prior to the <<<package>>> phase. Then do:
+  Package your module as WAR, add the appropriate dependency to Sun's Download Servlet (see {{{./jnlp101.html}JNLP 101}}), and attach the <<<jnlp-download-servlet>>> goal to a phase prior to the <<<package>>> phase. Then do:
 
 -------------------------------
 mvn package

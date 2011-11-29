@@ -43,15 +43,15 @@ Webstart Maven Plugin
 
 * Long time users: upgrading from older releases
 
-  Settings are <<incompatible with 1.0-alpha-1>> ! See the {{{upgrade.html}upgrade documentation}}.
+  Settings are <<incompatible with 1.0-alpha-1>> ! See the {{{./upgrade.html}upgrade documentation}}.
 
 * New users: getting started
 
-  Read the {{{cookbook.html}cookbook recipe}}.
+  Read the {{{./cookbook.html}cookbook recipe}}.
 
 * Usage
 
-  Instructions on how to use the Webstart Maven Plugin can be found on the {{{usage.html}usage page}}.
+  Instructions on how to use the Webstart Maven Plugin can be found on the {{{./usage.html}usage page}}.
 
 * Examples
 
