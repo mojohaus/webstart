@@ -10,7 +10,7 @@
   <artifactId>webstart</artifactId>
   <packaging>pom</packaging>
   <version>1.0-beta-3-SNAPSHOT</version>
-  <name>MWEBSTART :: Webstart Maven Plugin Parent</name>
+  <name>MWEBSTART :: Project</name>
   <description>Webstart Maven Plugin and related modules</description>
   <url>http://mojo.codehaus.org/webstart</url>
 
@@ -94,6 +94,7 @@
 
   <properties>
     <mavenVersion>2.0.6</mavenVersion>
+    <keytoolVersion>1.1-SNAPSHOT</keytoolVersion>
   </properties>
 
   <profiles>
@@ -234,9 +235,15 @@
       </dependency>
 
       <dependency>
-        <groupId>org.codehaus.mojo.shared</groupId>
-        <artifactId>mojo-keytool</artifactId>
-        <version>1.0-alpha-1-SNAPSHOT</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>keytool-api-1.5</artifactId>
+        <version>${keytoolVersion}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>keytool-api-1.6</artifactId>
+        <version>${keytoolVersion}</version>
       </dependency>
 
       <dependency>

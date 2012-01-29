@@ -97,10 +97,6 @@
       <artifactId>plexus-container-default</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.codehaus.mojo.shared</groupId>
-      <artifactId>mojo-keytool</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.apache.velocity</groupId>
@@ -237,6 +233,10 @@
           <version>${project.version}</version>
           <scope>runtime</scope>
         </dependency>
+        <dependency>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>keytool-api-1.6</artifactId>
+        </dependency>
       </dependencies>
     </profile>
     <profile>
@@ -251,6 +251,10 @@
           <version>${project.version}</version>
           <scope>runtime</scope>
         </dependency>
+        <dependency>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>keytool-api-1.6</artifactId>
+        </dependency>
       </dependencies>
     </profile>
     <profile>
@@ -264,6 +268,10 @@
           <artifactId>webstart-pack200-impl</artifactId>
           <version>${project.version}</version>
           <scope>runtime</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>keytool-api-1.5</artifactId>
         </dependency>
       </dependencies>
     </profile>

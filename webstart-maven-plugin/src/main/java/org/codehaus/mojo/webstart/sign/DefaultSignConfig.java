@@ -23,7 +23,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.shared.jarsigner.JarSignerRequest;
 import org.apache.maven.shared.jarsigner.JarSignerSignRequest;
 import org.apache.maven.shared.jarsigner.JarSignerVerifyRequest;
-import org.codehaus.mojo.shared.keytool.requests.KeyToolGenerateKeyPairRequest;
+import org.codehaus.mojo.keytool.requests.KeyToolGenerateKeyPairRequest;
 
 import java.io.File;
 

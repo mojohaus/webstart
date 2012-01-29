@@ -20,11 +20,15 @@ package org.codehaus.mojo.webstart.sign;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.shared.jarsigner.*;
-import org.codehaus.mojo.shared.keytool.KeyTool;
-import org.codehaus.mojo.shared.keytool.KeyToolException;
-import org.codehaus.mojo.shared.keytool.requests.KeyToolGenerateKeyPairRequest;
-import org.codehaus.mojo.shared.keytool.KeyToolResult;
+import org.apache.maven.shared.jarsigner.JarSigner;
+import org.apache.maven.shared.jarsigner.JarSignerException;
+import org.apache.maven.shared.jarsigner.JarSignerRequest;
+import org.apache.maven.shared.jarsigner.JarSignerResult;
+import org.apache.maven.shared.jarsigner.JarSignerVerifyRequest;
+import org.codehaus.mojo.keytool.KeyTool;
+import org.codehaus.mojo.keytool.KeyToolException;
+import org.codehaus.mojo.keytool.KeyToolResult;
+import org.codehaus.mojo.keytool.requests.KeyToolGenerateKeyPairRequest;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
@@ -68,7 +72,7 @@ public class DefaultSignTool
     /**
      * The component to invoke keyTool command.
      *
-     * @plexus.requirement role="org.codehaus.mojo.shared.keytool.KeyTool"
+     * @plexus.requirement role="org.codehaus.mojo.keytool.KeyTool"
      */
     private KeyTool keyTool;
 
