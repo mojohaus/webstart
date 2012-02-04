@@ -11,3 +11,8 @@ Webstart Maven Plugin
 
   This set of modules provide functionality related to the {{{./webstart-maven-plugin}Webstart Maven Plugin}}.
 
+* Note since version 1.0-beta-3
+
+  The groupId of the plugin has been changed from
+  <<org.codehaus.mojo.webstart>> to <<org.codehaus.mojo>>. Please fix this in
+  your pom before using the 1.0-beta-3 (or later versions).

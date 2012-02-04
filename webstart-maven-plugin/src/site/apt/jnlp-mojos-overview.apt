@@ -109,7 +109,7 @@ $explicitTimestampUTC   explicit timestamp in UTC time zone, for example "TS: 20
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo.webstart</groupId>
+        <groupId>org.codehaus.mojo</groupId>
         <artifactId>webstart-maven-plugin</artifactId>
         <executions>
           <execution>
@@ -246,7 +246,7 @@ $explicitTimestampUTC   explicit timestamp in UTC time zone, for example "TS: 20
 
   <dependencies>
     <dependency>
-      <groupId>org.codehaus.mojo.webstart</groupId>
+      <groupId>org.codehaus.mojo</groupId>
       <!--groupId>com.sun.java.jnlp</groupId-->
       <artifactId>webstart-jnlp-servlet</artifactId>
       <version>1.0-6.0-02_ea_b02-SNAPSHOT</version>
@@ -264,7 +264,7 @@ $explicitTimestampUTC   explicit timestamp in UTC time zone, for example "TS: 20
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo.webstart</groupId>
+        <groupId>org.codehaus.mojo</groupId>
         <artifactId>webstart-maven-plugin</artifactId>
         <version>testing</version>
         <executions>

@@ -19,7 +19,7 @@
     <dependencies>
 
       <dependency>
-        <groupId>org.codehaus.mojo.webstart</groupId>
+        <groupId>org.codehaus.mojo</groupId>
         <!--groupId>com.sun.java.jnlp</groupId-->
         <artifactId>webstart-jnlp-servlet</artifactId>
         <version>@project.version@</version>

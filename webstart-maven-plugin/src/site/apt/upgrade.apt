@@ -14,6 +14,28 @@ Upgrade from a previous version
 
   <<Note:>> we may further change the POM configuration, especially if we fix {{{http://jira.codehaus.org/browse/MWEBSTART-58} MWEBSTART-58}}.
 
+* Important changes since 1.0-beta-3
+
+  Changes that affect the use and configuration of the plugin.
+
+** 2012-02-04
+
+  The groupId has been changed. You should replace:
+
+-------------
+      <groupId>org.codehaus.mojo.webstart</groupId>
+      <artifactId>webstart-maven-plugin</artifactId>
+-------------
+
+  with
+
+-------------
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>webstart-maven-plugin</artifactId>
+-------------
+
+  As all mojo plugins are using this groupId, let's do the same.
+
 * Important changes since 1.0-alpha-1
 
   Changes that affect the use and configuration of the plugin.

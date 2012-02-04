@@ -20,6 +20,12 @@ Webstart Maven Plugin
 
   It requires Maven 2 (version 2.0.6 or later) to work correctly.
 
+* Note since version 1.0-beta-3
+
+  The groupId of the plugin has been changed from
+  <<org.codehaus.mojo.webstart>> to <<org.codehaus.mojo>>. Please fix this in
+  your pom before using the 1.0-beta-3 (or later versions).
+
 * Features
 
    * JNLP file generation where information is inserted into a user
@@ -29,7 +35,7 @@ Webstart Maven Plugin
 
       * Possibilities to include/exclude dependencies
 
-   * Key generation (thanks to the {{{http://mojo.codehaus.org/keytool-maven-plugin/}Keytool Maven Plugin}})
+   * Key generation (thanks to the {{{http://mojo.codehaus.org/keytool/keytool-api/}Keytool Api}})
 
    * JAR signing and signing verification
 
