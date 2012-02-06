@@ -95,6 +95,13 @@
   <properties>
     <mavenVersion>2.0.6</mavenVersion>
     <keytoolVersion>1.1</keytoolVersion>
+
+    <!-- release plugin configuration -->
+
+    <!-- all modules shares the same version in our projects -->
+    <autoVersionSubmodules>true</autoVersionSubmodules>
+    <!-- make sure tag name is webstart-XXX -->
+    <tagNameFormat>webstart-@{project.version}</tagNameFormat>
   </properties>
 
   <profiles>
