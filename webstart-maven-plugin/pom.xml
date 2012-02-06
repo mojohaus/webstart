@@ -292,6 +292,7 @@
               <settingsFile>src/it/settings.xml</settingsFile>
               <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
               <postBuildHookScript>validate.groovy</postBuildHookScript>
+              <addTestClassPath>true</addTestClassPath>
             </configuration>
             <executions>
               <execution>
