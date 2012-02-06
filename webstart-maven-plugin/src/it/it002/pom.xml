@@ -19,10 +19,9 @@
     <dependencies>
 
       <dependency>
-        <groupId>org.codehaus.mojo</groupId>
-        <!--groupId>com.sun.java.jnlp</groupId-->
+        <groupId>org.codehaus.mojo.webstart</groupId>
         <artifactId>webstart-jnlp-servlet</artifactId>
-        <version>@project.version@</version>
+        <version>${webstartJnlpServletVersion}</version>
         <scope>runtime</scope>
       </dependency>
 

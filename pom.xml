@@ -87,8 +87,8 @@
 
   <modules>
     <module>webstart-pack200-api</module>
-    <module>webstart-jnlp-servlet</module>
     <module>webstart-maven-plugin</module>
+    <module>webstart-jnlp-servlet</module>
   </modules>
 
   <properties>
