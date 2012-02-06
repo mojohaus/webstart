@@ -10,7 +10,7 @@ Simple JnlpDownloadServlet Example
 
     In this example, we show how to use the plugin to deploy a single JNLP application within a WAR that uses
     the JnlpDownloadServlet. Only the most basic features are described. For a more complex example that includes 
-    multiple JNLP applications in the same WAR, and other more advanced features, see the {{{advanced_jnlp_download_servlet.html}Advanced JnlpDownloadServlet Example}}. 
+    multiple JNLP applications in the same WAR, and other more advanced features, see the {{{./advanced_jnlp_download_servlet.html}Advanced JnlpDownloadServlet Example}}.
 
 *The web.xml
 
