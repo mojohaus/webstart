@@ -12,4 +12,5 @@ Using an external JAR signer
 
   See {{{http://svn.mojo.codehaus.org/browse/mojo/trunk/mojo/webstart/webstart-maven-plugin/src/test/projects/project5}src/test/projects/project5}} as an example on how to use an external JAR signer.
 
+  This was deprecated, since 1.0-beta-2, perharps I did not see the point ?
 ~~ FIXME further describe here and move to an integration test

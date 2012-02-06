@@ -38,7 +38,7 @@ Example WAR Bundle #1
 
     Because the JNLP projects have no knowledge of the webapp project, they don't need
     to be treated any differently from a normal standalone JNLP project as described
-    in the {{{single_webstart_app.html}Single webstart application example}}. Follow the instructions in that example
+    in the {{{./single_webstart_app.html}Single webstart application example}}. Follow the instructions in that example
     to create the <sample-jnlp1> and <sample-jnlp2> projects. They can be deployed
     to any repository that the webapp project will have access to.
         

@@ -30,7 +30,7 @@
       <item name="Advanced" href="examples/advanced_jnlp_download_servlet.html" />
     </item>
     <!--item name="Advanced" collapse="false"-->
-      <item name="Advanced: Pluggable JAR signing" href="examples/pluggable_jar_signing.html" />
+      <!--item name="Advanced: Pluggable JAR signing" href="examples/pluggable_jar_signing.html" /-->
     <!--/item-->
     <item name="More examples" href="examples/more_examples.html" />
   </menu>

@@ -6,7 +6,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.codehaus.mojo</groupId>
-  <artifactId>webstart-parent</artifactId>
+  <artifactId>webstart</artifactId>
   <packaging>pom</packaging>
   <version>1.0-beta-3</version>
   <name>MWEBSTART :: Project</name>
@@ -87,8 +87,8 @@
 
   <modules>
     <module>webstart-pack200-api</module>
-    <module>webstart-jnlp-servlet</module>
     <module>webstart-maven-plugin</module>
+    <module>webstart-jnlp-servlet</module>
   </modules>
 
   <properties>
@@ -99,8 +99,6 @@
 
     <!-- all modules shares the same version in our projects -->
     <autoVersionSubmodules>true</autoVersionSubmodules>
-    <!-- make sure tag name is webstart-XXX -->
-    <tagNameFormat>webstart-@{project.version}</tagNameFormat>
   </properties>
 
   <profiles>

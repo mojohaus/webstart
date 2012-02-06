@@ -1,0 +1,12 @@
+ ------
+ More examples
+ ------
+ Jerome Lacoste
+ ------
+ 2008-09-23
+ ------
+
+More examples
+
+  The plugin comes with several {{{http://svn.codehaus.org/mojo/tags/webstart-${project.version}/webstart-maven-plugin/src/test/projects/}test projects}} and {{{http://svn.codehaus.org/mojo/tags/webstart-${project.version}/webstart-maven-plugin/src/it}integration tests}}.
+

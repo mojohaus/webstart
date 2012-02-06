@@ -16,7 +16,6 @@ Notes to users and contributors
 
   * More generally some work is going to be done to make the JNLP goals configuration more compatible.
 
-
 * Reported missing features
 
    * {{{http://jira.codehaus.org/browse/MWEBSTART-25} A mojo for deploying the bundles to a remote server}}
