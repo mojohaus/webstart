@@ -37,7 +37,12 @@ import org.codehaus.plexus.util.StringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This MOJO is tailored for use within a Maven web application project that uses
@@ -552,7 +557,8 @@ public class JnlpDownloadServletMojo
         ScopeArtifactFilter artifactFilter = new ScopeArtifactFilter( Artifact.SCOPE_RUNTIME );
 
         ArtifactResolutionResult result =
-            getArtifactResolver().resolveTransitively( jarResourceArtifacts, getProject().getArtifact(), null,
+            getArtifactResolver().resolveTransitively( jarResourceArtifacts, getProject().getArtifact(),
+                                                       project.getManagedVersionMap(),
                                                        //managedVersions
                                                        getLocalRepository(), getRemoteRepositories(),
                                                        this.artifactMetadataSource, artifactFilter );
@@ -612,7 +618,8 @@ public class JnlpDownloadServletMojo
         JarResourcesGenerator jnlpGenerator =
             new JarResourcesGenerator( getProject(), getTemplateDirectory(), "default-jnlp-servlet-template.vm",
                                        jnlpOutputFile, jnlpFile.getTemplateFilename(), jarResources,
-                                       jnlpFile.getMainClass(), getWebstartJarURLForVelocity(), libPath, getEncoding() );
+                                       jnlpFile.getMainClass(), getWebstartJarURLForVelocity(), libPath,
+                                       getEncoding() );
 
         jnlpGenerator.setExtraConfig( getGeneratorExtraConfig() );
 
@@ -717,6 +724,7 @@ public class JnlpDownloadServletMojo
 
     /**
      * Copies the contents of the working directory to the output directory.
+     *
      * @throws MojoExecutionException if could not copy files
      */
     private void copyWorkingDirToOutputDir()
