@@ -44,6 +44,24 @@
       </answer>
     </faq>
 
+    <faq id="pack200_and_signed_jars">
+      <question>Can I use the pack200  option with some already signed artifacts?</question>
+      <answer>
+        <p>
+          For technical reason this is not possible unless you owns also the
+          certificate used to signed jar.
+        </p>
+        <p>You could then just unsign all signed jar, but <strong>this is
+        not reccomended,
+        since then you are atesting to the other partys code, and may be
+        violating several agreements.</strong>.</p>
+        <p>
+        For more informations see this thread :
+        https://forums.oracle.com/forums/thread.jspa?threadID=1304857
+        </p>
+      </answer>
+    </faq>
+
   </part>
 
 </faqs>
