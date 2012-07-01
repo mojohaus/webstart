@@ -50,6 +50,9 @@ public class JnlpMojo
      */
     private MavenProject executedProject;
 
+    /**
+     * {@inheritDoc}
+     */
     public MavenProject getProject()
     {
         return executedProject;

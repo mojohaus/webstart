@@ -19,6 +19,7 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.webstart.JarResource;
 import org.codehaus.plexus.util.StringUtils;
@@ -54,12 +55,12 @@ public class JarResourcesGenerator
      * @param mainClass          The fully qualified name of the application's main class.
      * @param libPath            The path where the libraries are placed within the jnlp structure
      */
-    public JarResourcesGenerator( MavenProject mavenProject, File resourceLoaderPath,
+    public JarResourcesGenerator( Log log, MavenProject mavenProject, File resourceLoaderPath,
                                   String defaultTemplateResourceName, File outputFile, String templateFile,
                                   Collection jarResources, String mainClass, String webstartJarURL, String libPath,
-                                  String encoding)
+                                  String encoding )
     {
-        super( mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, templateFile, mainClass,
+        super( log, mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, templateFile, mainClass,
                webstartJarURL, encoding );
         this.jarResources = jarResources;
         this.libPath = libPath;

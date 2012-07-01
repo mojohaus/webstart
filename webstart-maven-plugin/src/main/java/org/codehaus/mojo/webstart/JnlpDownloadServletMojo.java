@@ -615,11 +615,12 @@ public class JnlpDownloadServletMojo
             jarResources.addAll( this.commonJarResources );
         }
 
-        JarResourcesGenerator jnlpGenerator =
-            new JarResourcesGenerator( getProject(), getTemplateDirectory(), "default-jnlp-servlet-template.vm",
-                                       jnlpOutputFile, jnlpFile.getTemplateFilename(), jarResources,
-                                       jnlpFile.getMainClass(), getWebstartJarURLForVelocity(), libPath,
-                                       getEncoding() );
+        JarResourcesGenerator jnlpGenerator = new JarResourcesGenerator( getLog(), getProject(), getTemplateDirectory(),
+                                                                         "default-jnlp-servlet-template.vm",
+                                                                         jnlpOutputFile, jnlpFile.getTemplateFilename(),
+                                                                         jarResources, jnlpFile.getMainClass(),
+                                                                         getWebstartJarURLForVelocity(), libPath,
+                                                                         getEncoding() );
 
         jnlpGenerator.setExtraConfig( getGeneratorExtraConfig() );
 
@@ -639,26 +640,41 @@ public class JnlpDownloadServletMojo
     {
         return new GeneratorExtraConfig()
         {
+            /**
+             * {@inheritDoc}
+             */
             public String getJnlpSpec()
             {
                 return "1.0+";
             }
 
+            /**
+             * {@inheritDoc}
+             */
             public String getOfflineAllowed()
             {
                 return "false";
             }
 
+            /**
+             * {@inheritDoc}
+             */
             public String getAllPermissions()
             {
                 return "true";
             }
 
+            /**
+             * {@inheritDoc}
+             */
             public String getJ2seVersion()
             {
                 return "1.5+";
             }
 
+            /**
+             * {@inheritDoc}
+             */
             public String getJnlpCodeBase()
             {
                 return getCodebase();

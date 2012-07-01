@@ -36,7 +36,12 @@ import org.codehaus.plexus.archiver.zip.ZipArchiver;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
@@ -194,6 +199,9 @@ public abstract class AbstractJnlpMojo
      */
     private boolean outputJarVersions;
 
+    /**
+     * {@inheritDoc}
+     */
     public void execute()
         throws MojoExecutionException
     {
@@ -630,9 +638,8 @@ public abstract class AbstractJnlpMojo
         String templateFileName = jnlp.getInputTemplate();
 
         Generator jnlpGenerator =
-            new Generator( this.getProject(), this, "default-jnlp-template.vm", templateDirectory, jnlpOutputFile,
-                           templateFileName, this.getJnlp().getMainClass(), getWebstartJarURLForVelocity() ,
-                           getEncoding());
+            new Generator( getLog(), getProject(), this, "default-jnlp-template.vm", templateDirectory, jnlpOutputFile,
+                           templateFileName, getJnlp().getMainClass(), getWebstartJarURLForVelocity(), getEncoding() );
 
         jnlpGenerator.setExtraConfig( getGeneratorExtraConfig() );
 
@@ -921,7 +928,7 @@ public abstract class AbstractJnlpMojo
         String templateFileName = extension.getInputTemplate();
 
         ExtensionGenerator jnlpGenerator =
-            new ExtensionGenerator( this.getProject(), this, extension, "default-jnlp-extension-template.vm",
+            new ExtensionGenerator( getLog(), this.getProject(), this, extension, "default-jnlp-extension-template.vm",
                                     templateDirectory, jnlpOutputFile, templateFileName, this.getJnlp().getMainClass(),
                                     getWebstartJarURLForVelocity(), getEncoding() );
 
@@ -942,6 +949,9 @@ public abstract class AbstractJnlpMojo
     {
         return new GeneratorExtraConfig()
         {
+            /**
+             * {@inheritDoc}
+             */
             public String getJnlpSpec()
             {
                 // shouldn't we automatically identify the spec based on the features used in the spec?
@@ -953,6 +963,9 @@ public abstract class AbstractJnlpMojo
                 return "1.0+";
             }
 
+            /**
+             * {@inheritDoc}
+             */
             public String getOfflineAllowed()
             {
                 if ( jnlp.getOfflineAllowed() != null )
@@ -962,6 +975,9 @@ public abstract class AbstractJnlpMojo
                 return "false";
             }
 
+            /**
+             * {@inheritDoc}
+             */
             public String getAllPermissions()
             {
                 if ( jnlp.getAllPermissions() != null )
@@ -971,6 +987,9 @@ public abstract class AbstractJnlpMojo
                 return "true";
             }
 
+            /**
+             * {@inheritDoc}
+             */
             public String getJ2seVersion()
             {
                 if ( jnlp.getJ2seVersion() != null )
@@ -980,6 +999,9 @@ public abstract class AbstractJnlpMojo
                 return "1.5+";
             }
 
+            /**
+             * {@inheritDoc}
+             */
             public String getJnlpCodeBase()
             {
                 return getCodebase();
@@ -992,6 +1014,9 @@ public abstract class AbstractJnlpMojo
     {
         return new GeneratorExtraConfig()
         {
+            /**
+             * {@inheritDoc}
+             */
             public String getJnlpSpec()
             {
                 // shouldn't we automatically identify the spec based on the features used in the spec?
@@ -1003,6 +1028,9 @@ public abstract class AbstractJnlpMojo
                 return "1.0+";
             }
 
+            /**
+             * {@inheritDoc}
+             */
             public String getOfflineAllowed()
             {
                 if ( extension.getOfflineAllowed() != null )
@@ -1012,6 +1040,9 @@ public abstract class AbstractJnlpMojo
                 return "false";
             }
 
+            /**
+             * {@inheritDoc}
+             */
             public String getAllPermissions()
             {
                 if ( extension.getAllPermissions() != null )
@@ -1021,6 +1052,9 @@ public abstract class AbstractJnlpMojo
                 return "true";
             }
 
+            /**
+             * {@inheritDoc}
+             */
             public String getJ2seVersion()
             {
                 if ( extension.getJ2seVersion() != null )
@@ -1030,6 +1064,9 @@ public abstract class AbstractJnlpMojo
                 return "1.5+";
             }
 
+            /**
+             * {@inheritDoc}
+             */
             public String getJnlpCodeBase()
             {
                 return getCodebase();

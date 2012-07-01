@@ -207,7 +207,7 @@ public abstract class AbstractBaseJnlpMojo
 
     /**
      * Encoding used to read and write jnlp files.
-     *
+     * <p/>
      * <strong>Note:</strong> If this property is not defined, then will use a default value {@code utf-8}.
      *
      * @parameter expression="${jnlp.encoding}" default-value="${project.build.sourceEncoding}"
@@ -267,6 +267,9 @@ public abstract class AbstractBaseJnlpMojo
 
         processedJarFileFilter = new FileFilter()
         {
+            /**
+             * {@inheritDoc}
+             */
             public boolean accept( File pathname )
             {
                 return pathname.isFile() && pathname.getName().endsWith( JAR_SUFFIX ) &&
@@ -276,6 +279,9 @@ public abstract class AbstractBaseJnlpMojo
 
         unprocessedJarFileFilter = new FileFilter()
         {
+            /**
+             * {@inheritDoc}
+             */
             public boolean accept( File pathname )
             {
                 return pathname.isFile() && pathname.getName().startsWith( UNPROCESSED_PREFIX ) &&
@@ -768,7 +774,7 @@ public abstract class AbstractBaseJnlpMojo
         throws MojoExecutionException
     {
 
-        return signTool.isJarSigned( getSign(), jarFile );
+        return signTool.isJarSigned( jarFile );
     }
 
     protected void packJars()
@@ -1117,13 +1123,8 @@ public abstract class AbstractBaseJnlpMojo
     private void unsignJarFile( File jarFile, File tempDir )
         throws MojoExecutionException
     {
-        signTool.unsign( jarFile, tempDir, isVerbose() );
-//        JarUnsignMojo unsignJar = new JarUnsignMojo();
-//        unsignJar.setTempDir( tempDir );
-//        unsignJar.setVerbose( isVerbose() );
-//        unsignJar.setArchiverManager( archiverManager );
-//        unsignJar.setJarPath( jarFile );
-//        unsignJar.execute();
+        signTool.unsign( jarFile, isVerbose() );
+//        signTool.unsign( jarFile, tempDir, isVerbose() );
     }
 
     /**
@@ -1133,6 +1134,9 @@ public abstract class AbstractBaseJnlpMojo
         implements FileFilter
     {
 
+        /**
+         * {@inheritDoc}
+         */
         public boolean accept( File pathname )
         {
             return pathname.isFile() && pathname.getName().startsWith( UNPROCESSED_PREFIX ) &&

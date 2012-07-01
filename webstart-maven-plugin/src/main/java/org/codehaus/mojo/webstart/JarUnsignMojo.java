@@ -53,6 +53,7 @@ public class JarUnsignMojo
      *
      * @parameter expression="${tempdir}" default-value="${basedir}"
      * @required
+     * @deprecated since 1.0-beta-4, no more used to unsign jars.
      */
     private File tempDirectory;
 
@@ -89,14 +90,9 @@ public class JarUnsignMojo
             return;
         }
 
-        signTool.unsign( this.jarPath, this.tempDirectory, verbose );
+        signTool.unsign( this.jarPath, verbose );
     }
 
-
-    public void setTempDir( File tempDirectory )
-    {
-        this.tempDirectory = tempDirectory;
-    }
 
     public void setJarPath( File jarPath )
     {

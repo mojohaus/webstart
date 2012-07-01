@@ -24,26 +24,20 @@ import org.apache.maven.shared.jarsigner.JarSigner;
 import org.apache.maven.shared.jarsigner.JarSignerException;
 import org.apache.maven.shared.jarsigner.JarSignerRequest;
 import org.apache.maven.shared.jarsigner.JarSignerResult;
-import org.apache.maven.shared.jarsigner.JarSignerVerifyRequest;
+import org.apache.maven.shared.jarsigner.JarSignerUtil;
 import org.codehaus.mojo.keytool.KeyTool;
 import org.codehaus.mojo.keytool.KeyToolException;
 import org.codehaus.mojo.keytool.KeyToolResult;
 import org.codehaus.mojo.keytool.requests.KeyToolGenerateKeyPairRequest;
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.UnArchiver;
-import org.codehaus.plexus.archiver.jar.JarArchiver;
-import org.codehaus.plexus.archiver.manager.ArchiverManager;
-import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.cli.CommandLineException;
-import org.codehaus.plexus.util.cli.StreamConsumer;
 
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Default implementation of the {@link SignTool}.
@@ -56,11 +50,6 @@ public class DefaultSignTool
     extends AbstractLogEnabled
     implements SignTool
 {
-
-    /**
-     * All extension parts involved in a signature file.
-     */
-    private static final String[] EXT_ARRAY = { "DSA", "RSA", "SF" };
 
     /**
      * The component to invoke jarsigner command.
@@ -77,27 +66,8 @@ public class DefaultSignTool
     private KeyTool keyTool;
 
     /**
-     * To look up Archiver/UnArchiver implementations
-     *
-     * @plexus.requirement role="org.codehaus.plexus.archiver.manager.ArchiverManager"
-     * @required
+     * {@inheritDoc}
      */
-    private ArchiverManager archiverManager;
-
-    /**
-     * Filter to keep only files which extension contains one on the {@link #EXT_ARRAY}.
-     */
-    private FileFilter removeSignatureFileFilter = new FileFilter()
-    {
-        private final List extToRemove = Arrays.asList( EXT_ARRAY );
-
-        public boolean accept( File file )
-        {
-            String extension = FileUtils.getExtension( file.getAbsolutePath() );
-            return extToRemove.contains( extension );
-        }
-    };
-
     public void generateKey( SignConfig config, File keystoreFile )
         throws MojoExecutionException
     {
@@ -119,6 +89,9 @@ public class DefaultSignTool
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void sign( SignConfig config, File jarFile, File signedJar )
         throws MojoExecutionException
     {
@@ -141,6 +114,9 @@ public class DefaultSignTool
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void verify( SignConfig config, File jarFile, boolean certs )
         throws MojoExecutionException
     {
@@ -163,123 +139,58 @@ public class DefaultSignTool
         }
     }
 
-    public boolean isJarSigned( SignConfig config, File jarFile )
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isJarSigned( File jarFile )
         throws MojoExecutionException
     {
-        JarSignerVerifyRequest request = config.createVerifyRequest( jarFile, false );
-
-        LineMatcherStreamConsumer consumer = new LineMatcherStreamConsumer( config.isVerbose(), "jar verified." );
-        request.setSystemOutStreamConsumer( consumer );
         try
         {
-            JarSignerResult result = jarSigner.execute( request );
-
-            CommandLineException exception = result.getExecutionException();
-            if ( exception != null )
-            {
-                throw new MojoExecutionException( "Could not verify jar " + jarFile, exception );
-            }
-
-            return consumer.matched;
+//            return JarSignerUtil.isArchiveSigned( jarFile );
+            return isArchiveSigned( jarFile );
         }
-        catch ( JarSignerException e )
+        catch ( IOException e )
         {
-            throw new MojoExecutionException( "Could not find jarSigner", e );
+            throw new MojoExecutionException( "Could not verifiy that jar is signed or not", e );
         }
+
     }
 
-    public void unsign( File jarFile, File tempDirectory, boolean verbose )
+    /**
+     * {@inheritDoc}
+     */
+    public void unsign( File jarFile, boolean verbose )
         throws MojoExecutionException
     {
 
-        String archiveExt = FileUtils.getExtension( jarFile.getAbsolutePath() ).toLowerCase();
+        if ( isJarSigned( jarFile ) )
+        {
 
-        // create temp dir
-        File tempDir = new File( tempDirectory, jarFile.getName() );
+            // unsign jar
 
-        if ( !tempDir.mkdirs() )
-        {
-            throw new MojoExecutionException( "Error creating temporary directory: " + tempDir );
-        }
-        // FIXME we probably want to be more security conservative here.
-        // it's very easy to guess where the directory will be and possible
-        // to access/change its contents before the file is rejared..
-
-        // extract jar into temporary directory
-        try
-        {
-            UnArchiver unArchiver = this.archiverManager.getUnArchiver( archiveExt );
-            unArchiver.setSourceFile( jarFile );
-            unArchiver.setDestDirectory( tempDir );
-            unArchiver.extract();
-        }
-        catch ( ArchiverException ex )
-        {
-            throw new MojoExecutionException( "Error unpacking file: " + jarFile + "to: " + tempDir, ex );
-        }
-        catch ( NoSuchArchiverException ex )
-        {
-            throw new MojoExecutionException( "Error acquiring unarchiver for extension: " + archiveExt, ex );
-        }
-
-        // create and check META-INF directory
-        File metaInf = new File( tempDir, "META-INF" );
-        if ( !metaInf.isDirectory() )
-        {
-            verboseLog( verbose, "META-INF dir not found : nothing to do for file: " + jarFile.getAbsolutePath() );
-            return;
-        }
-
-        // filter signature files and remove them
-        File[] filesToRemove = metaInf.listFiles( this.removeSignatureFileFilter );
-        if ( filesToRemove.length == 0 )
-        {
-            verboseLog( verbose, "no files match " + Arrays.asList( EXT_ARRAY ) + " : nothing to do for file: " +
-                jarFile.getAbsolutePath() );
-            return;
-        }
-        for ( int i = 0; i < filesToRemove.length; i++ )
-        {
-            if ( !filesToRemove[i].delete() )
+            verboseLog( verbose, "Unsign jar " + jarFile );
+            try
             {
-                throw new MojoExecutionException( "Error removing signature file: " + filesToRemove[i] );
+                JarSignerUtil.unsignArchive( jarFile );
             }
-            verboseLog( verbose, "remove file :" + filesToRemove[i] );
-        }
+            catch ( IOException e )
+            {
 
-        // recreate archive
-        try
+                throw new MojoExecutionException( "Could not find unsign jar " + jarFile, e );
+            }
+        }
+        else
         {
-            JarArchiver jarArchiver = (JarArchiver) this.archiverManager.getArchiver( "jar" );
-            jarArchiver.setUpdateMode( false );
-            jarArchiver.addDirectory( tempDir );
-            jarArchiver.setDestFile( jarFile );
-            jarArchiver.createArchive();
 
-        }
-        catch ( ArchiverException ex )
-        {
-            throw new MojoExecutionException( "Error packing directory: " + tempDir + "to: " + jarFile, ex );
-        }
-        catch ( IOException ex )
-        {
-            throw new MojoExecutionException( "Error packing directory: " + tempDir + "to: " + jarFile, ex );
-        }
-        catch ( NoSuchArchiverException ex )
-        {
-            throw new MojoExecutionException( "Error acquiring archiver for extension: jar", ex );
-        }
-
-        try
-        {
-            FileUtils.deleteDirectory( tempDir );
-        }
-        catch ( IOException ex )
-        {
-            throw new MojoExecutionException( "Error cleaning up temporary directory file: " + tempDir, ex );
+            // not signed jar do nothing
+            verboseLog( verbose, "Jar " + jarFile + " is not signed." );
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void deleteKeyStore( File keystore, boolean verbose )
     {
         if ( keystore.exists() )
@@ -328,35 +239,97 @@ public class DefaultSignTool
         }
     }
 
-    // checks if a consumed line matches
-    private class LineMatcherStreamConsumer
-        implements StreamConsumer
+    // TODO-tchemit-2012-07-01 : Replace this by JarSignerUtil code when using maven-jarsigner 1.1
+
+    /**
+     * Scans an archive for existing signatures.
+     *
+     * @param jarFile The archive to scan, must not be <code>null</code>.
+     * @return <code>true</code>, if the archive contains at least one signature file; <code>false</code>, if the
+     *         archive does not contain any signature files.
+     * @throws IOException if scanning <code>jarFile</code> fails.
+     */
+    public static boolean isArchiveSigned( final File jarFile )
+        throws IOException
     {
-        private String toMatch;
-
-        private boolean matched;
-
-        private boolean verbose;
-
-        LineMatcherStreamConsumer( boolean verbose, String toMatch )
+        if ( jarFile == null )
         {
-            this.toMatch = toMatch;
-            this.verbose = verbose;
+            throw new NullPointerException( "jarFile" );
         }
 
-        public void consumeLine( String line )
-        {
-            matched = matched || toMatch.equals( line );
+        ZipInputStream in = null;
+        boolean suppressExceptionOnClose = true;
 
-            if ( verbose )
+        try
+        {
+            boolean signed = false;
+            in = new ZipInputStream( new BufferedInputStream( new FileInputStream( jarFile ) ) );
+
+            for ( ZipEntry ze = in.getNextEntry(); ze != null; ze = in.getNextEntry() )
             {
-                getLogger().info( line );
+                if ( isSignatureFile( ze.getName() ) )
+                {
+                    signed = true;
+                    break;
+                }
             }
-            else
+
+            suppressExceptionOnClose = false;
+            return signed;
+        }
+        finally
+        {
+            try
             {
-                getLogger().debug( line );
+                if ( in != null )
+                {
+                    in.close();
+                }
+            }
+            catch ( final IOException e )
+            {
+                if ( !suppressExceptionOnClose )
+                {
+                    throw e;
+                }
             }
         }
+    }
+
+    /**
+     * Checks whether the specified JAR file entry denotes a signature-related file, i.e. matches
+     * <code>META-INF/*.SF</code>, <code>META-INF/*.DSA</code> or <code>META-INF/*.RSA</code>.
+     *
+     * @param entryName The name of the JAR file entry to check, must not be <code>null</code>.
+     * @return <code>true</code> if the entry is related to a signature, <code>false</code> otherwise.
+     */
+    private static boolean isSignatureFile( String entryName )
+    {
+        if ( entryName.regionMatches( true, 0, "META-INF", 0, 8 ) )
+        {
+            entryName = entryName.replace( '\\', '/' );
+
+            if ( entryName.indexOf( '/' ) == 8 && entryName.lastIndexOf( '/' ) == 8 )
+            {
+                if ( entryName.regionMatches( true, entryName.length() - 3, ".SF", 0, 3 ) )
+                {
+                    return true;
+                }
+                if ( entryName.regionMatches( true, entryName.length() - 4, ".DSA", 0, 4 ) )
+                {
+                    return true;
+                }
+                if ( entryName.regionMatches( true, entryName.length() - 4, ".RSA", 0, 4 ) )
+                {
+                    return true;
+                }
+                if ( entryName.regionMatches( true, entryName.length() - 3, ".EC", 0, 3 ) )
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

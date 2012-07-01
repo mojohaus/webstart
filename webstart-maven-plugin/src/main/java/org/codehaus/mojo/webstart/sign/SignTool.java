@@ -72,23 +72,23 @@ public interface SignTool
     /**
      * Tests if the given jar is signed.
      *
-     * @param config  sign configuration
      * @param jarFile the jar file to test
      * @return {@code true} if jar file is signed, {@code false} otherwise
      * @throws MojoExecutionException if something wrong occurs
+     * @since 1.0-beta-4
      */
-    boolean isJarSigned( SignConfig config, File jarFile )
+    boolean isJarSigned( File jarFile )
         throws MojoExecutionException;
 
     /**
      * Unsign a jar.
      *
-     * @param jarFile       location of the jar to unsign
-     * @param tempDirectory temp directory where to unzip the jar
-     * @param verbose       flag to display verbose logs
+     * @param jarFile location of the jar to unsign
+     * @param verbose flag to display verbose logs
      * @throws MojoExecutionException if something wrong occurs
+     * @since 1.0-beta-4
      */
-    void unsign( File jarFile, File tempDirectory, boolean verbose )
+    void unsign( File jarFile, boolean verbose )
         throws MojoExecutionException;
 
     /**

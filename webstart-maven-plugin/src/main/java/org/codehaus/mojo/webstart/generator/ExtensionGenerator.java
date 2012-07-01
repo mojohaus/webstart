@@ -17,6 +17,7 @@
 
 package org.codehaus.mojo.webstart.generator;
 
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.velocity.VelocityContext;
 import org.codehaus.mojo.webstart.AbstractJnlpMojo;
@@ -49,19 +50,21 @@ public class ExtensionGenerator
      * @param mainClass
      * @param webstartJarURL
      */
-    public ExtensionGenerator( MavenProject mavenProject, AbstractJnlpMojo task, JnlpExtension extension,
+    public ExtensionGenerator( Log log, MavenProject mavenProject, AbstractJnlpMojo task, JnlpExtension extension,
                                String defaultTemplateResourceName, File resourceLoaderPath, File outputFile,
-                               String inputFileTemplatePath, String mainClass, String webstartJarURL,
-                               String encoding)
+                               String inputFileTemplatePath, String mainClass, String webstartJarURL, String encoding )
     {
 
-        super( mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, inputFileTemplatePath,
-               mainClass, webstartJarURL, encoding);
+        super( log, mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, inputFileTemplatePath,
+               mainClass, webstartJarURL, encoding );
 
         this.config = task;
         this.extension = extension;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected VelocityContext createAndPopulateContext()
     {
         VelocityContext context = super.createAndPopulateContext();

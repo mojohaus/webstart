@@ -108,6 +108,9 @@ public class JnlpReportMojo
      */
     private String codebase;
 
+    /**
+     * {@inheritDoc}
+     */
     public void executeReport( Locale locale )
         throws MavenReportException
     {
@@ -199,31 +202,49 @@ public class JnlpReportMojo
         getSink().close();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getName( Locale locale )
     {
         return getBundle( locale ).getString( "report.jnlp-report.name" );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getDescription( Locale locale )
     {
         return getBundle( locale ).getString( "report.jnlp-report.description" );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected Renderer getSiteRenderer()
     {
         return siteRenderer;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected MavenProject getProject()
     {
         return project;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getOutputName()
     {
         return outputName;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected String getOutputDirectory()
     {
         return outputDirectory.getPath();

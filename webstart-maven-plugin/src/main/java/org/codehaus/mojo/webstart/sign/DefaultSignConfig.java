@@ -125,6 +125,9 @@ public class DefaultSignConfig
      */
     private String maxMemory;
 
+    /**
+     * {@inheritDoc}
+     */
     public void init( File workDirectory, boolean verbose, SignTool signTool )
         throws MojoExecutionException
     {
@@ -144,6 +147,9 @@ public class DefaultSignConfig
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public JarSignerRequest createSignRequest( File jarToSign, File signedJar )
     {
         JarSignerSignRequest request = new JarSignerSignRequest();
@@ -161,6 +167,9 @@ public class DefaultSignConfig
         return request;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public JarSignerVerifyRequest createVerifyRequest( File jarFile, boolean certs )
     {
         JarSignerVerifyRequest request = new JarSignerVerifyRequest();
@@ -172,6 +181,9 @@ public class DefaultSignConfig
         return request;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public KeyToolGenerateKeyPairRequest createKeyGenRequest( File keystoreFile )
     {
         KeyToolGenerateKeyPairRequest request = new KeyToolGenerateKeyPairRequest();
@@ -190,6 +202,9 @@ public class DefaultSignConfig
         return request;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isVerbose()
     {
         return verbose;
@@ -205,96 +220,153 @@ public class DefaultSignConfig
         this.verbose = verbose;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setMaxMemory( String maxMemory )
     {
         this.maxMemory = maxMemory;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setKeystoreConfig( KeystoreConfig keystoreConfig )
     {
         this.keystoreConfig = keystoreConfig;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setKeystore( String keystore )
     {
         this.keystore = keystore;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setKeyalg( String keyalg )
     {
         this.keyalg = keyalg;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setKeysize( String keysize )
     {
         this.keysize = keysize;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setSigalg( String sigalg )
     {
         this.sigalg = sigalg;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setSigfile( String sigfile )
     {
         this.sigfile = sigfile;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setStoretype( String storetype )
     {
         this.storetype = storetype;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setStorepass( String storepass )
     {
         this.storepass = storepass;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setKeypass( String keypass )
     {
         this.keypass = keypass;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setValidity( String validity )
     {
         this.validity = validity;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setDnameCn( String dnameCn )
     {
         this.dnameCn = dnameCn;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setDnameOu( String dnameOu )
     {
         this.dnameOu = dnameOu;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setDnameL( String dnameL )
     {
         this.dnameL = dnameL;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setDnameSt( String dnameSt )
     {
         this.dnameSt = dnameSt;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setDnameO( String dnameO )
     {
         this.dnameO = dnameO;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setDnameC( String dnameC )
     {
         this.dnameC = dnameC;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setAlias( String alias )
     {
         this.alias = alias;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setVerify( boolean verify )
     {
         this.verify = verify;
@@ -414,7 +486,7 @@ public class DefaultSignConfig
             }
             // http://jira.codehaus.org/browse/MWEBSTART-112 : have commas in parts of dName (but them must be espace)
             buffer.append( prefix ).append( "=" );
-            buffer.append(property.replaceAll(",", "\\\\,"));
+            buffer.append( property.replaceAll( ",", "\\\\," ) );
         }
     }
 

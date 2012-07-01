@@ -20,6 +20,7 @@ package org.codehaus.mojo.webstart.generator;
  */
 
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -56,10 +57,12 @@ public abstract class AbstractGenerator
     private final File outputFile;
 
     private final String mainClass;
-    
+
     private final String encoding;
 
     private GeneratorExtraConfig extraConfig;
+
+    private Log log;
 
 
     /**
@@ -71,11 +74,12 @@ public abstract class AbstractGenerator
      * @param mainClass             The text that should replace the $mainClass placeholder in the JNLP template.
      * @throws IllegalArgumentException if any argument is null.
      */
-    protected AbstractGenerator( MavenProject mavenProject, File resourceLoaderPath, String defaultTemplateResourceName,
-                                 File outputFile, String inputFileTemplatePath, String mainClass,
-                                 String webstartJarURL, String encoding )
+    protected AbstractGenerator( Log log, MavenProject mavenProject, File resourceLoaderPath,
+                                 String defaultTemplateResourceName, File outputFile, String inputFileTemplatePath,
+                                 String mainClass, String webstartJarURL, String encoding )
     {
 
+        this.log = log;
         if ( mavenProject == null )
         {
             throw new IllegalArgumentException( "mavenProject must not be null" );
@@ -99,7 +103,7 @@ public abstract class AbstractGenerator
         this.outputFile = outputFile;
         this.mainClass = mainClass;
         this.mavenProject = mavenProject;
-        this.encoding= encoding;
+        this.encoding = encoding;
 
         Properties props = new Properties();
 
@@ -113,16 +117,16 @@ public abstract class AbstractGenerator
 
             if ( !engine.templateExists( inputFileTemplatePath ) )
             {
-                System.out.println( "Warning, template not found. Will probably fail." );
+                log.warn( "Warning, template not found. Will probably fail." );
             }
         }
         else
         {
-            System.out.println( "No template specified Using default one." );
+            log.info( "No template specified Using default one." );
 
             inputFileTemplatePath = defaultTemplateResourceName;
 
-            System.out.println( "***** Webstart JAR URL: " + webstartJarURL );
+            log.debug( "***** Webstart JAR URL: " + webstartJarURL );
 
             props = new Properties();
             props.setProperty( "resource.loader", "jar" );
@@ -136,8 +140,7 @@ public abstract class AbstractGenerator
 
             if ( !engine.templateExists( inputFileTemplatePath ) )
             {
-                System.out.println(
-                    "Inbuilt template not found!! " + defaultTemplateResourceName + " Will probably fail." );
+                log.error( "Inbuilt template not found!! " + defaultTemplateResourceName + " Will probably fail." );
             }
         }
 
@@ -261,7 +264,6 @@ public abstract class AbstractGenerator
         return context;
     }
 
-
     private void addPropertiesToContext( Properties properties, VelocityContext context )
     {
         for ( Iterator iter = properties.keySet().iterator(); iter.hasNext(); )
@@ -281,7 +283,7 @@ public abstract class AbstractGenerator
     private String dateToExplicitTimestamp( Date date )
     {
         DateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ssZ" );
-        return new StringBuffer( "TS: " ).append( df.format( date ) ).toString();
+        return "TS: " + df.format( date );
     }
 
     /**
@@ -294,7 +296,7 @@ public abstract class AbstractGenerator
     {
         DateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
         df.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
-        return new StringBuffer( "TS: " ).append( df.format( date ) ).append( "Z" ).toString();
+        return "TS: " + df.format( date ) + "Z";
     }
 
     /**

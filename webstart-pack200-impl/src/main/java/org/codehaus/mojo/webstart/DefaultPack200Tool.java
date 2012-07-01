@@ -36,6 +36,9 @@ import java.io.FileFilter;
 public class DefaultPack200Tool
     implements Pack200Tool
 {
+    /**
+     * {@inheritDoc}
+     */
     public void packJars( File directory, FileFilter jarFileFilter, boolean gzip )
     {
         // getLog().debug( "packJars for " + directory );
@@ -68,6 +71,9 @@ public class DefaultPack200Tool
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void unpackJars( File directory, FileFilter pack200FileFilter )
     {
         // getLog().debug( "unpackJars for " + directory );

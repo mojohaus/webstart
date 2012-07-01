@@ -58,6 +58,9 @@ public class JarUnsignMojoTest
      */
     private SignTool signTool;
 
+    /**
+     * {@inheritDoc}
+     */
     public void setUp()
         throws Exception
     {
@@ -77,7 +80,6 @@ public class JarUnsignMojoTest
         FileUtils.deleteDirectory( unsignTempDir );
 
         mojo = new JarUnsignMojo();
-        mojo.setTempDir( unsignTempDir );
         mojo.setVerbose( false );
 
         signTool = (SignTool) lookup( SignTool.ROLE );
@@ -107,6 +109,9 @@ public class JarUnsignMojoTest
         sign.init( tempdir, false, signTool );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void tearDown()
         throws Exception
     {
@@ -159,7 +164,7 @@ public class JarUnsignMojoTest
         throws MojoExecutionException
     {
         assertTrue( "jar file exists", jarFile.exists() );
-        boolean isSigned = signTool.isJarSigned( sign, jarFile );
+        boolean isSigned = signTool.isJarSigned( jarFile );
         assertEquals( msg, signed, isSigned );
     }
 }

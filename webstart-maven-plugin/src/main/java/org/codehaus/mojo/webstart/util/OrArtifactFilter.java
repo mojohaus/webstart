@@ -39,6 +39,9 @@ public class OrArtifactFilter
 {
     private final List filters = new ArrayList();
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean include( final Artifact artifact )
     {
         boolean include = false;

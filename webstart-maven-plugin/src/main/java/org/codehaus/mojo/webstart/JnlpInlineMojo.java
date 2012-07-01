@@ -45,6 +45,9 @@ public class JnlpInlineMojo
      */
     private MavenProject project;
 
+    /**
+     * {@inheritDoc}
+     */
     public MavenProject getProject()
     {
         return project;

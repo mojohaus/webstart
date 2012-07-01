@@ -20,6 +20,7 @@ package org.codehaus.mojo.webstart.generator;
  */
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.velocity.VelocityContext;
 import org.codehaus.mojo.webstart.AbstractJnlpMojo;
@@ -47,11 +48,11 @@ public class Generator
      * @param outputFile
      * @param inputFileTemplatePath relative to resourceLoaderPath
      */
-    public Generator( MavenProject mavenProject, AbstractJnlpMojo task, String defaultTemplateResourceName,
+    public Generator( Log log, MavenProject mavenProject, AbstractJnlpMojo task, String defaultTemplateResourceName,
                       File resourceLoaderPath, File outputFile, String inputFileTemplatePath, String mainClass,
                       String webstartJarURL, String encoding )
     {
-        super( mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, inputFileTemplatePath,
+        super( log, mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, inputFileTemplatePath,
                mainClass, webstartJarURL, encoding );
 
         this.config = task;
@@ -88,7 +89,8 @@ public class Generator
         {
             StringBuffer buffer = new StringBuffer( 100 * artifacts.size() );
             buffer.append( "\n" );
-            if (config.isPack200()) {
+            if ( config.isPack200() )
+            {
                 /*
                  * http://jira.codehaus.org/browse/MWEBSTART-174
                  *
