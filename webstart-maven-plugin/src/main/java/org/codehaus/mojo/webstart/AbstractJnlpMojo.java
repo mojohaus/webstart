@@ -307,11 +307,8 @@ public abstract class AbstractJnlpMojo
                 // we should perhaps package as a war when inside a project with war packaging ?
                 File toFile =
                     new File( getProject().getBuild().getDirectory(), getProject().getBuild().getFinalName() + ".zip" );
-                if ( toFile.exists() )
-                {
-                    getLog().debug( "deleting file " + toFile );
-                    toFile.delete();
-                }
+                deleteFile( toFile, "Could not obsolete archive: " );
+
                 zipArchiver.addDirectory( getWorkDirectory() );
                 zipArchiver.setDestFile( toFile );
                 getLog().debug( "about to call createArchive" );

@@ -967,15 +967,9 @@ public abstract class AbstractBaseJnlpMojo
             }
             File finalJar =
                 new File( jarFiles[i].getParent(), unprocessedJarFileName.substring( UNPROCESSED_PREFIX.length() ) );
-            if ( finalJar.exists() )
-            {
-                boolean deleted = finalJar.delete();
-                if ( !deleted )
-                {
-                    throw new IllegalStateException(
-                        "Couldn't delete obsolete final jar: " + finalJar.getAbsolutePath() );
-                }
-            }
+
+            deleteFile( finalJar, "Couldn't delete obsolete final jar: " );
+
             boolean renamed = jarFiles[i].renameTo( finalJar );
             if ( !renamed )
             {
@@ -1008,11 +1002,7 @@ public abstract class AbstractBaseJnlpMojo
 
         for ( int i = 0; i < files.length; i++ )
         {
-            boolean deleted = files[i].delete();
-            if ( !deleted )
-            {
-                throw new IllegalStateException( "Couldn't delete file: " + files[i].getAbsolutePath() );
-            }
+            deleteFile( files[i], "Couldn't delete file: " );
         }
         return files.length;
     }
@@ -1029,10 +1019,7 @@ public abstract class AbstractBaseJnlpMojo
 
         File[] jarFiles = directory.listFiles( fileFilter );
 
-        if ( getLog().isDebugEnabled() )
-        {
-            getLog().debug( "signJars in " + directory + " found " + jarFiles.length + " jar(s) to sign" );
-        }
+        verboseLog( "signJars in " + directory + " found " + jarFiles.length + " jar(s) to sign" );
 
         if ( jarFiles.length == 0 )
         {
@@ -1041,38 +1028,29 @@ public abstract class AbstractBaseJnlpMojo
 
         for ( int i = 0; i < jarFiles.length; i++ )
         {
-            String unprocessedJarFileName = jarFiles[i].getName();
+            File unprocessedJarFile = jarFiles[i];
+            String unprocessedJarFileName = unprocessedJarFile.getName();
             if ( !unprocessedJarFileName.startsWith( UNPROCESSED_PREFIX ) )
             {
                 throw new IllegalStateException(
                     "We are about to sign an non " + UNPROCESSED_PREFIX + " file with path: " +
-                        jarFiles[i].getAbsolutePath() );
+                        unprocessedJarFile );
             }
 
-            File signedJar =
-                new File( jarFiles[i].getParent(), unprocessedJarFileName.substring( UNPROCESSED_PREFIX.length() ) );
+            File signedJar = new File( unprocessedJarFile.getParent(),
+                                       unprocessedJarFileName.substring( UNPROCESSED_PREFIX.length() ) );
 
-            if ( signedJar.exists() )
-            {
-                if ( !signedJar.delete() )
-                {
-                    throw new IllegalStateException(
-                        "Couldn't delete obsolete signed jar: " + signedJar.getAbsolutePath() );
-                }
-            }
+            deleteFile( signedJar, "Couldn't delete obsolete signed jar: " );
 
-            signTool.sign( getSign(), jarFiles[i], signedJar );
+            verboseLog( "Sign " + signedJar );
+            signTool.sign( getSign(), unprocessedJarFile, signedJar );
 
             getLog().debug( "lastModified signedJar:" + signedJar.lastModified() + " unprocessed signed Jar:" +
-                                jarFiles[i].lastModified() );
+                                unprocessedJarFile.lastModified() );
 
             // remove unprocessed files
             // TODO wouldn't have to do that if we copied the unprocessed jar files in a temporary area
-            if ( !jarFiles[i].delete() )
-            {
-                throw new IllegalStateException(
-                    "Couldn't delete obsolete unprocessed jar: " + jarFiles[i].getAbsolutePath() );
-            }
+            deleteFile( unprocessedJarFile, "Couldn't delete obsolete unprocessed jar: " );
         }
 
         return jarFiles.length;
@@ -1199,6 +1177,14 @@ public abstract class AbstractBaseJnlpMojo
         else
         {
             getLog().debug( msg );
+        }
+    }
+
+    protected void deleteFile( File file, String errorMessage )
+    {
+        if ( file.exists() && !file.delete() )
+        {
+            throw new IllegalStateException( errorMessage + file.getAbsolutePath() );
         }
     }
 
