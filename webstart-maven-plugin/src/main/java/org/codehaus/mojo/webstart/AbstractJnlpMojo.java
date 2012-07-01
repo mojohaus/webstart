@@ -597,21 +597,21 @@ public abstract class AbstractJnlpMojo
     private void generateJnlpFile( File outputDirectory )
         throws MojoExecutionException
     {
-        if ( jnlp.getOutputFile() == null || jnlp.getOutputFile().length() == 0 )
+        if ( StringUtils.isBlank( jnlp.getOutputFile() ) )
         {
             getLog().debug( "Jnlp output file name not specified. Using default output file name: launch.jnlp." );
             jnlp.setOutputFile( "launch.jnlp" );
         }
         File jnlpOutputFile = new File( outputDirectory, jnlp.getOutputFile() );
 
-        File templateDirectory = getProject().getBasedir();
+        File templateDirectory = getTemplateDirectory();
 
-        if ( jnlp.getInputTemplateResourcePath() != null && jnlp.getInputTemplateResourcePath().length() > 0 )
+        if ( StringUtils.isNotBlank( jnlp.getInputTemplateResourcePath() ) )
         {
             templateDirectory = new File( jnlp.getInputTemplateResourcePath() );
         }
 
-        if ( jnlp.getInputTemplate() == null || jnlp.getInputTemplate().length() == 0 )
+        if ( StringUtils.isBlank( jnlp.getInputTemplate() ) )
         {
             getLog().debug( "Jnlp template file name not specified. Checking if default output file name exists: " +
                                 DEFAULT_TEMPLATE_LOCATION );
