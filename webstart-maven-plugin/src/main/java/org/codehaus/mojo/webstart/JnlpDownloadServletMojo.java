@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -106,6 +107,13 @@ public class JnlpDownloadServletMojo
      * @parameter
      */
     private List/*JarResource*/ commonJarResources;
+
+    /**
+     * @parameter default-value="${reactorProjects}"
+     * @required
+     * @readonly
+     */
+    private List/*MavenProject*/ reactorProjects;
 
     /**
      * {@inheritDoc}
@@ -416,28 +424,32 @@ public class JnlpDownloadServletMojo
         throws MojoExecutionException
     {
 
-        Set jarResourceArtifacts = new HashSet();
+        Set extraJarResources = new HashSet();
+//        Set jarResourceArtifacts = new HashSet();
 
         try
         {
-            //for each configured JarResource, create and resolve the corresponding artifact and 
+            //for each configured JarResource, create and resolve the corresponding artifact and
             //check it for the mainClass if specified
             for ( Iterator itr = jarResources.iterator(); itr.hasNext(); )
             {
                 JarResource jarResource = (JarResource) itr.next();
                 Artifact artifact = createArtifact( jarResource );
-                getArtifactResolver().resolve( artifact, getRemoteRepositories(), getLocalRepository() );
+//                getArtifactResolver().resolve( artifact, getRemoteRepositories(), getLocalRepository() );
                 jarResource.setArtifact( artifact );
+                extraJarResources.addAll( retrieveAdditionalJarResources( jarResource ) );
+
                 checkForMainClass( jarResource );
-                jarResourceArtifacts.add( artifact );
+//                jarResourceArtifacts.add( artifact );
             }
 
-            if ( !isExcludeTransitive() )
-            {
-
-                retrieveTransitiveDependencies( jarResourceArtifacts, jarResources );
-
-            }
+//            if ( !isExcludeTransitive() )
+//            {
+//
+//                retrieveTransitiveDependencies( jarResourceArtifacts, jarResources );
+//
+//            }
+            jarResources.addAll( extraJarResources );
 
             //for each JarResource, copy its artifact to the lib directory if necessary
             for ( Iterator itr = jarResources.iterator(); itr.hasNext(); )
@@ -458,7 +470,7 @@ public class JnlpDownloadServletMojo
 
                 if ( jarResource.isOutputJarVersion() )
                 {
-                    // Create and set a version-less href for this jarResource 
+                    // Create and set a version-less href for this jarResource
                     String hrefValue = buildHrefValue( artifact );
                     jarResource.setHrefValue( hrefValue );
                 }
@@ -549,50 +561,125 @@ public class JnlpDownloadServletMojo
 
     }
 
-    private void retrieveTransitiveDependencies( Set jarResourceArtifacts, List jarResources )
+    private Set/*JarResource*/ retrieveAdditionalJarResources( JarResource jarResource )
         throws ArtifactResolutionException, ArtifactNotFoundException
     {
+        Set/*JarResource*/ result = new HashSet();
 
-        // this restricts to runtime and compile scope            
-        ScopeArtifactFilter artifactFilter = new ScopeArtifactFilter( Artifact.SCOPE_RUNTIME );
+        Artifact artifact = jarResource.getArtifact();
 
-        ArtifactResolutionResult result =
-            getArtifactResolver().resolveTransitively( jarResourceArtifacts, getProject().getArtifact(),
-                                                       project.getManagedVersionMap(),
-                                                       //managedVersions
-                                                       getLocalRepository(), getRemoteRepositories(),
-                                                       this.artifactMetadataSource, artifactFilter );
-
-        Set transitiveResolvedArtifacts = result.getArtifacts();
-
-        if ( getLog().isDebugEnabled() )
+        for ( Iterator it = reactorProjects.iterator(); it.hasNext(); )
         {
-            getLog().debug( "transitively resolved artifacts = " + transitiveResolvedArtifacts );
-            getLog().debug( "jarResources = " + jarResources );
-            getLog().debug( "jarResourceArtifacts = " + jarResourceArtifacts );
-        }
-
-        //for each transitive dependency, wrap it in a JarResource and add it to the collection of
-        //existing jar resources
-        for ( Iterator itr = transitiveResolvedArtifacts.iterator(); itr.hasNext(); )
-        {
-            Artifact resolvedArtifact = (Artifact) itr.next();
-
-            // this whole double check is ugly as well as this method changing the input variable
-            // we should really improve the way we collect the jarResources
-            if ( !jarResourceArtifacts.contains( resolvedArtifact ) )
+            MavenProject mp = (MavenProject) it.next();
+            Artifact resolvedArtifact = null;
+            if ( mp.getArtifact().equals( artifact ) )
             {
-                JarResource newJarResource = new JarResource( resolvedArtifact );
-                if ( !jarResources.contains( newJarResource ) && newJarResource.getType().equals( "jar" ) )
+
+                // artifact is exactly a sibling project
+                resolvedArtifact = mp.getArtifact();
+            }
+            else
+            {
+                // search in attached artifacts of the sibling project
+                for ( Iterator it2 = mp.getAttachedArtifacts().iterator(); it2.hasNext(); )
                 {
-                    newJarResource.setOutputJarVersion( true );
-                    jarResources.add( newJarResource );
+                    Artifact candidate = (Artifact) it2.next();
+                    if ( candidate.equals( artifact ) )
+                    {
+                        resolvedArtifact = mp.getArtifact();
+                        break;
+                    }
                 }
+            }
+            if ( resolvedArtifact != null )
+            {
+
+                verboseLog( "Jar resource " + jarResource + " found from reactor " + mp );
+                // artifact found from this sibling project
+                jarResource.setArtifact( resolvedArtifact );
+
+                if ( !isExcludeTransitive() )
+                {
+                    for ( Iterator it2 = mp.getArtifacts().iterator(); it2.hasNext(); )
+                    {
+                        JarResource resource = new JarResource( (Artifact) it2.next() );
+                        resource.setOutputJarVersion( true );
+                        result.add( resource );
+                    }
+                }
+                return result;
             }
 
         }
 
+        // Artifact isn't present in reactor so we resolve it from repo.
+
+        getArtifactResolver().resolve( artifact, getRemoteRepositories(), getLocalRepository() );
+
+        if ( !isExcludeTransitive() )
+        {
+            // Artifact isn't present in reactor so we resolve it from repo.
+            ArtifactResolutionResult arr =
+                getArtifactResolver().resolveTransitively( Collections.singleton( artifact ), artifact, null,
+                                                           getLocalRepository(), getRemoteRepositories(),
+                                                           this.artifactMetadataSource,
+                                                           new ScopeArtifactFilter( Artifact.SCOPE_RUNTIME ) );
+            //for each transitive dependency, wrap it in a JarResource and add it to the collection of
+            //existing jar resources
+            for ( Iterator it = arr.getArtifactResolutionNodes().iterator(); it.hasNext(); )
+            {
+                JarResource newJarResource = new JarResource( (Artifact) it.next() );
+                newJarResource.setOutputJarVersion( true );
+                result.add( newJarResource );
+            }
+        }
+        return result;
     }
+
+//    private void retrieveTransitiveDependencies( Set jarResourceArtifacts, List jarResources )
+//        throws ArtifactResolutionException, ArtifactNotFoundException
+//    {
+//
+//        // this restricts to runtime and compile scope
+//        ScopeArtifactFilter artifactFilter = new ScopeArtifactFilter( Artifact.SCOPE_RUNTIME );
+//
+//        ArtifactResolutionResult result =
+//            getArtifactResolver().resolveTransitively( jarResourceArtifacts, getProject().getArtifact(),
+//                                                       project.getManagedVersionMap(),
+//                                                       //managedVersions
+//                                                       getLocalRepository(), getRemoteRepositories(),
+//                                                       this.artifactMetadataSource, artifactFilter );
+//
+//        Set transitiveResolvedArtifacts = result.getArtifacts();
+//
+//        if ( getLog().isDebugEnabled() )
+//        {
+//            getLog().debug( "transitively resolved artifacts = " + transitiveResolvedArtifacts );
+//            getLog().debug( "jarResources = " + jarResources );
+//            getLog().debug( "jarResourceArtifacts = " + jarResourceArtifacts );
+//        }
+//
+//        //for each transitive dependency, wrap it in a JarResource and add it to the collection of
+//        //existing jar resources
+//        for ( Iterator itr = transitiveResolvedArtifacts.iterator(); itr.hasNext(); )
+//        {
+//            Artifact resolvedArtifact = (Artifact) itr.next();
+//
+//            // this whole double check is ugly as well as this method changing the input variable
+//            // we should really improve the way we collect the jarResources
+//            if ( !jarResourceArtifacts.contains( resolvedArtifact ) )
+//            {
+//                JarResource newJarResource = new JarResource( resolvedArtifact );
+//                if ( !jarResources.contains( newJarResource ) && newJarResource.getType().equals( "jar" ) )
+//                {
+//                    newJarResource.setOutputJarVersion( true );
+//                    jarResources.add( newJarResource );
+//                }
+//            }
+//
+//        }
+//
+//    }
 
     private void generateJnlpFile( JnlpFile jnlpFile, String libPath )
         throws MojoExecutionException
