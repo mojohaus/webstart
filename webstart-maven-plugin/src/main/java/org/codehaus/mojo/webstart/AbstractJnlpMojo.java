@@ -560,7 +560,9 @@ public abstract class AbstractJnlpMojo
 
                 packagedJnlpArtifacts.add( artifact );
 
-                if ( jnlp != null && artifactContainsClass( artifact, jnlp.getMainClass() ) )
+                boolean containsMainClass = getArtifactUtil().artifactContainsMainClass( artifact, jnlp );
+
+                if ( containsMainClass )
                 {
                     if ( artifactWithMainClass == null )
                     {

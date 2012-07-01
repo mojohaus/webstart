@@ -21,7 +21,6 @@ package org.codehaus.mojo.webstart;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
@@ -30,13 +29,13 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.webstart.sign.SignConfig;
 import org.codehaus.mojo.webstart.sign.SignTool;
+import org.codehaus.mojo.webstart.util.ArtifactUtil;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -258,6 +257,15 @@ public abstract class AbstractBaseJnlpMojo
      * @since 1.0-beta-2
      */
     private List pack200Tools;
+
+    /**
+     * Artifact helper.
+     *
+     * @component role-hint="default"
+     * @since 1.0-beta-4
+     */
+    private ArtifactUtil artifactUtil;
+
 
     /**
      * Creates a new {@code AbstractBaseJnlpMojo}.
@@ -777,6 +785,11 @@ public abstract class AbstractBaseJnlpMojo
         return signTool.isJarSigned( jarFile );
     }
 
+    protected ArtifactUtil getArtifactUtil()
+    {
+        return artifactUtil;
+    }
+
     protected void packJars()
     {
 
@@ -788,71 +801,71 @@ public abstract class AbstractBaseJnlpMojo
 
     }
 
-    /**
-     * Tests if the given fully qualified name exists in the given artifact.
-     *
-     * @param artifact  artifact to test
-     * @param mainClass the fully qualified name to find in artifact
-     * @return {@code true} if given artifact contains the given fqn, {@code false} otherwise
-     * @throws MalformedURLException if artifact file url is mal formed
-     */
-    protected boolean artifactContainsClass( Artifact artifact, final String mainClass )
-        throws MalformedURLException
-    {
-        boolean containsClass = true;
-
-        // JarArchiver.grabFilesAndDirs()
-        ClassLoader cl = new java.net.URLClassLoader( new URL[]{ artifact.getFile().toURI().toURL() } );
-        Class c = null;
-        try
-        {
-            c = Class.forName( mainClass, false, cl );
-        }
-        catch ( ClassNotFoundException e )
-        {
-            getLog().debug( "artifact " + artifact + " doesn't contain the main class: " + mainClass );
-            containsClass = false;
-        }
-        catch ( Throwable t )
-        {
-            getLog().info( "artifact " + artifact + " seems to contain the main class: " + mainClass +
-                               " but the jar doesn't seem to contain all dependencies " + t.getMessage() );
-        }
-
-        if ( c != null )
-        {
-            getLog().debug( "Checking if the loaded class contains a main method." );
-
-            try
-            {
-                c.getMethod( "main", new Class[]{ String[].class } );
-            }
-            catch ( NoSuchMethodException e )
-            {
-                getLog().warn(
-                    "The specified main class (" + mainClass + ") doesn't seem to contain a main method... " +
-                        "Please check your configuration." + e.getMessage() );
-            }
-            catch ( NoClassDefFoundError e )
-            {
-                // undocumented in SDK 5.0. is this due to the ClassLoader lazy loading the Method
-                // thus making this a case tackled by the JVM Spec (Ref 5.3.5)!
-                // Reported as Incident 633981 to Sun just in case ...
-                getLog().warn( "Something failed while checking if the main class contains the main() method. " +
-                                   "This is probably due to the limited classpath we have provided to the class loader. " +
-                                   "The specified main class (" + mainClass +
-                                   ") found in the jar is *assumed* to contain a main method... " + e.getMessage() );
-            }
-            catch ( Throwable t )
-            {
-                getLog().error( "Unknown error: Couldn't check if the main class has a main method. " +
-                                    "The specified main class (" + mainClass +
-                                    ") found in the jar is *assumed* to contain a main method...", t );
-            }
-        }
-
-        return containsClass;
-    }
+//    /**
+//     * Tests if the given fully qualified name exists in the given artifact.
+//     *
+//     * @param artifact  artifact to test
+//     * @param mainClass the fully qualified name to find in artifact
+//     * @return {@code true} if given artifact contains the given fqn, {@code false} otherwise
+//     * @throws MalformedURLException if artifact file url is mal formed
+//     */
+//    protected boolean artifactContainsClass( Artifact artifact, final String mainClass )
+//        throws MalformedURLException
+//    {
+//        boolean containsClass = true;
+//
+//        // JarArchiver.grabFilesAndDirs()
+//        ClassLoader cl = new java.net.URLClassLoader( new URL[]{ artifact.getFile().toURI().toURL() } );
+//        Class c = null;
+//        try
+//        {
+//            c = Class.forName( mainClass, false, cl );
+//        }
+//        catch ( ClassNotFoundException e )
+//        {
+//            getLog().debug( "artifact " + artifact + " doesn't contain the main class: " + mainClass );
+//            containsClass = false;
+//        }
+//        catch ( Throwable t )
+//        {
+//            getLog().info( "artifact " + artifact + " seems to contain the main class: " + mainClass +
+//                               " but the jar doesn't seem to contain all dependencies " + t.getMessage() );
+//        }
+//
+//        if ( c != null )
+//        {
+//            getLog().debug( "Checking if the loaded class contains a main method." );
+//
+//            try
+//            {
+//                c.getMethod( "main", new Class[]{ String[].class } );
+//            }
+//            catch ( NoSuchMethodException e )
+//            {
+//                getLog().warn(
+//                    "The specified main class (" + mainClass + ") doesn't seem to contain a main method... " +
+//                        "Please check your configuration." + e.getMessage() );
+//            }
+//            catch ( NoClassDefFoundError e )
+//            {
+//                // undocumented in SDK 5.0. is this due to the ClassLoader lazy loading the Method
+//                // thus making this a case tackled by the JVM Spec (Ref 5.3.5)!
+//                // Reported as Incident 633981 to Sun just in case ...
+//                getLog().warn( "Something failed while checking if the main class contains the main() method. " +
+//                                   "This is probably due to the limited classpath we have provided to the class loader. " +
+//                                   "The specified main class (" + mainClass +
+//                                   ") found in the jar is *assumed* to contain a main method... " + e.getMessage() );
+//            }
+//            catch ( Throwable t )
+//            {
+//                getLog().error( "Unknown error: Couldn't check if the main class has a main method. " +
+//                                    "The specified main class (" + mainClass +
+//                                    ") found in the jar is *assumed* to contain a main method...", t );
+//            }
+//        }
+//
+//        return containsClass;
+//    }
 
     /**
      * @return true if already signed jars should be unsigned prior to signing

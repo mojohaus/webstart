@@ -546,7 +546,8 @@ public class JnlpDownloadServletMojo
 
         try
         {
-            if ( !artifactContainsClass( artifact, mainClass ) )
+            boolean containsMainClass = getArtifactUtil().artifactContainsMainClass( artifact, jarResource );
+            if ( !containsMainClass )
             {
                 throw new MojoExecutionException(
                     "The jar specified by the following jarResource does not contain the declared main class:" +
