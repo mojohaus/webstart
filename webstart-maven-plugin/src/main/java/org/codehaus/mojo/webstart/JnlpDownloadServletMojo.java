@@ -465,6 +465,7 @@ public class JnlpDownloadServletMojo
                     {
                         getLog().debug( "Adding " + name + " to modifiedJnlpArtifacts list." );
                     }
+                    verboseLog( "Adding " + name + " to modifiedJnlpArtifacts list." );
                     getModifiedJnlpArtifacts().add( name.substring( 0, name.lastIndexOf( '.' ) ) );
                 }
 
@@ -603,9 +604,13 @@ public class JnlpDownloadServletMojo
                 {
                     for ( Iterator it2 = mp.getArtifacts().iterator(); it2.hasNext(); )
                     {
-                        JarResource resource = new JarResource( (Artifact) it2.next() );
-                        resource.setOutputJarVersion( true );
-                        result.add( resource );
+                        Artifact artifact1 = (Artifact) it2.next();
+                        if ( !"pom".equals( artifact1.getType() ) )
+                        {
+                            JarResource resource = new JarResource( artifact1 );
+                            resource.setOutputJarVersion( true );
+                            result.add( resource );
+                        }
                     }
                 }
                 return result;
