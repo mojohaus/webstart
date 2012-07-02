@@ -40,6 +40,10 @@ import java.io.File;
 public class JarUnsignMojo
     extends AbstractMojo
 {
+    // ----------------------------------------------------------------------
+    // Mojo Parameters
+    // ----------------------------------------------------------------------
+
     /**
      * Set this to <code>true</code> to disable signing.
      * Useful to speed up build process in development environment.
@@ -72,6 +76,10 @@ public class JarUnsignMojo
      */
     private boolean verbose;
 
+    // ----------------------------------------------------------------------
+    // Components
+    // ----------------------------------------------------------------------
+
     /**
      * JarSigner tool.
      *
@@ -81,6 +89,13 @@ public class JarUnsignMojo
      */
     private SignTool signTool;
 
+    // ----------------------------------------------------------------------
+    // Mojo Implementation
+    // ----------------------------------------------------------------------
+
+    /**
+     * {@inheritDoc}
+     */
     public void execute()
         throws MojoExecutionException
     {
@@ -93,6 +108,9 @@ public class JarUnsignMojo
         signTool.unsign( this.jarPath, verbose );
     }
 
+    // ----------------------------------------------------------------------
+    // Public Methods
+    // ----------------------------------------------------------------------
 
     public void setJarPath( File jarPath )
     {

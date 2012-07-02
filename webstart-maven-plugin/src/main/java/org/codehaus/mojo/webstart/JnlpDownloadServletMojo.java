@@ -19,6 +19,7 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
@@ -28,11 +29,11 @@ import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mojo.webstart.generator.GeneratorExtraConfig;
 import org.codehaus.mojo.webstart.generator.JarResourcesGenerator;
+import org.codehaus.mojo.webstart.generator.SimpleGeneratorExtraConfig;
 import org.codehaus.mojo.webstart.generator.VersionXmlGenerator;
+import org.codehaus.mojo.webstart.util.IOUtil;
 import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,6 +62,10 @@ public class JnlpDownloadServletMojo
     extends AbstractBaseJnlpMojo
 {
 
+    // ----------------------------------------------------------------------
+    // Mojo Parameters
+    // ----------------------------------------------------------------------
+
     /**
      * Maven project.
      *
@@ -69,15 +74,6 @@ public class JnlpDownloadServletMojo
      * @readonly
      */
     private MavenProject project;
-
-    /**
-     * The project's artifact metadata source, used to resolve transitive dependencies.
-     *
-     * @component
-     * @required
-     * @readonly
-     */
-    private ArtifactMetadataSource artifactMetadataSource;
 
     /**
      * The name of the directory into which the jnlp file and other
@@ -115,13 +111,22 @@ public class JnlpDownloadServletMojo
      */
     private List/*MavenProject*/ reactorProjects;
 
+    // ----------------------------------------------------------------------
+    // Components
+    // ----------------------------------------------------------------------
+
     /**
-     * {@inheritDoc}
+     * The project's artifact metadata source, used to resolve transitive dependencies.
+     *
+     * @component
+     * @required
+     * @readonly
      */
-    public MavenProject getProject()
-    {
-        return this.project;
-    }
+    private ArtifactMetadataSource artifactMetadataSource;
+
+    // ----------------------------------------------------------------------
+    // Mojo Implementation
+    // ----------------------------------------------------------------------
 
     /**
      * {@inheritDoc}
@@ -132,9 +137,11 @@ public class JnlpDownloadServletMojo
 
         checkConfiguration();
 
+        IOUtil ioUtil = getIoUtil();
+
         try
         {
-            copyResources( getResourcesDirectory(), getWorkDirectory() );
+            ioUtil.copyResources( getResourcesDirectory(), getWorkDirectory() );
         }
         catch ( IOException e )
         {
@@ -162,9 +169,39 @@ public class JnlpDownloadServletMojo
         }
 
         generateVersionXml();
-        copyWorkingDirToOutputDir();
+//        copyWorkingDirToOutputDir();
+
+        File outputDir = new File( getProject().getBuild().getDirectory(),
+                                   getProject().getBuild().getFinalName() + File.separator + this.outputDirectoryName );
+
+        ioUtil.makeDirectoryIfNecessary( outputDir, "Unable to create the output directory for the jnlp bundle: " );
+        try
+        {
+            FileUtils.copyDirectoryStructure( getWorkDirectory(), outputDir );
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException(
+                "An error occurred attempting to copy a file to the JNLP output directory.", e );
+        }
 
     }
+
+    // ----------------------------------------------------------------------
+    // AbstractBaseJnlpMojo implementatio
+    // ----------------------------------------------------------------------
+
+    /**
+     * {@inheritDoc}
+     */
+    public MavenProject getProject()
+    {
+        return this.project;
+    }
+
+    // ----------------------------------------------------------------------
+    // Private methods
+    // ----------------------------------------------------------------------
 
     /**
      * Confirms that all plugin configuration provided by the user
@@ -212,13 +249,13 @@ public class JnlpDownloadServletMojo
         throws MojoExecutionException
     {
 
-        if ( StringUtils.isEmpty( jnlpFile.getOutputFilename() ) )
+        if ( StringUtils.isBlank( jnlpFile.getOutputFilename() ) )
         {
             throw new MojoExecutionException(
                 "Configuration error: An outputFilename must be specified for each jnlpFile element" );
         }
 
-        if ( jnlpFile.getTemplateFilename() == null )
+        if ( StringUtils.isBlank( jnlpFile.getTemplateFilename() ) )
         {
             getLog().info(
                 "No templateFilename found for " + jnlpFile.getOutputFilename() + ". Will use the default template." );
@@ -642,51 +679,6 @@ public class JnlpDownloadServletMojo
         return result;
     }
 
-//    private void retrieveTransitiveDependencies( Set jarResourceArtifacts, List jarResources )
-//        throws ArtifactResolutionException, ArtifactNotFoundException
-//    {
-//
-//        // this restricts to runtime and compile scope
-//        ScopeArtifactFilter artifactFilter = new ScopeArtifactFilter( Artifact.SCOPE_RUNTIME );
-//
-//        ArtifactResolutionResult result =
-//            getArtifactResolver().resolveTransitively( jarResourceArtifacts, getProject().getArtifact(),
-//                                                       project.getManagedVersionMap(),
-//                                                       //managedVersions
-//                                                       getLocalRepository(), getRemoteRepositories(),
-//                                                       this.artifactMetadataSource, artifactFilter );
-//
-//        Set transitiveResolvedArtifacts = result.getArtifacts();
-//
-//        if ( getLog().isDebugEnabled() )
-//        {
-//            getLog().debug( "transitively resolved artifacts = " + transitiveResolvedArtifacts );
-//            getLog().debug( "jarResources = " + jarResources );
-//            getLog().debug( "jarResourceArtifacts = " + jarResourceArtifacts );
-//        }
-//
-//        //for each transitive dependency, wrap it in a JarResource and add it to the collection of
-//        //existing jar resources
-//        for ( Iterator itr = transitiveResolvedArtifacts.iterator(); itr.hasNext(); )
-//        {
-//            Artifact resolvedArtifact = (Artifact) itr.next();
-//
-//            // this whole double check is ugly as well as this method changing the input variable
-//            // we should really improve the way we collect the jarResources
-//            if ( !jarResourceArtifacts.contains( resolvedArtifact ) )
-//            {
-//                JarResource newJarResource = new JarResource( resolvedArtifact );
-//                if ( !jarResources.contains( newJarResource ) && newJarResource.getType().equals( "jar" ) )
-//                {
-//                    newJarResource.setOutputJarVersion( true );
-//                    jarResources.add( newJarResource );
-//                }
-//            }
-//
-//        }
-//
-//    }
-
     private void generateJnlpFile( JnlpFile jnlpFile, String libPath )
         throws MojoExecutionException
     {
@@ -715,7 +707,7 @@ public class JnlpDownloadServletMojo
                                                                          getWebstartJarURLForVelocity(), libPath,
                                                                          getEncoding() );
 
-        jnlpGenerator.setExtraConfig( getGeneratorExtraConfig() );
+        jnlpGenerator.setExtraConfig( new SimpleGeneratorExtraConfig( getCodebase() ) );
 
         try
         {
@@ -728,54 +720,6 @@ public class JnlpDownloadServletMojo
         }
 
     }
-
-    private GeneratorExtraConfig getGeneratorExtraConfig()
-    {
-        return new GeneratorExtraConfig()
-        {
-            /**
-             * {@inheritDoc}
-             */
-            public String getJnlpSpec()
-            {
-                return "1.0+";
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            public String getOfflineAllowed()
-            {
-                return "false";
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            public String getAllPermissions()
-            {
-                return "true";
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            public String getJ2seVersion()
-            {
-                return "1.5+";
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            public String getJnlpCodeBase()
-            {
-                return getCodebase();
-            }
-
-        };
-    }
-
 
     /**
      * Generates a version.xml file for all the jarResources configured either in jnlpFile elements
@@ -831,43 +775,73 @@ public class JnlpDownloadServletMojo
 
     }
 
-    /**
-     * Copies the contents of the working directory to the output directory.
-     *
-     * @throws MojoExecutionException if could not copy files
-     */
-    private void copyWorkingDirToOutputDir()
-        throws MojoExecutionException
-    {
-
-        File outputDir = new File( getProject().getBuild().getDirectory(),
-                                   getProject().getBuild().getFinalName() + File.separator + this.outputDirectoryName );
-
-        if ( !outputDir.exists() )
-        {
-
-            if ( getLog().isInfoEnabled() )
-            {
-                getLog().info( "Creating JNLP output directory: " + outputDir.getAbsolutePath() );
-            }
-
-            if ( !outputDir.mkdirs() )
-            {
-                throw new MojoExecutionException( "Unable to create the output directory for the jnlp bundle" );
-            }
-
-        }
-
-        try
-        {
-            FileUtils.copyDirectoryStructure( getWorkDirectory(), outputDir );
-        }
-        catch ( IOException e )
-        {
-            throw new MojoExecutionException(
-                "An error occurred attempting to copy a file to the JNLP output directory.", e );
-        }
-
-    }
+//    private void retrieveTransitiveDependencies( Set jarResourceArtifacts, List jarResources )
+//        throws ArtifactResolutionException, ArtifactNotFoundException
+//    {
+//
+//        // this restricts to runtime and compile scope
+//        ScopeArtifactFilter artifactFilter = new ScopeArtifactFilter( Artifact.SCOPE_RUNTIME );
+//
+//        ArtifactResolutionResult result =
+//            getArtifactResolver().resolveTransitively( jarResourceArtifacts, getProject().getArtifact(),
+//                                                       project.getManagedVersionMap(),
+//                                                       //managedVersions
+//                                                       getLocalRepository(), getRemoteRepositories(),
+//                                                       this.artifactMetadataSource, artifactFilter );
+//
+//        Set transitiveResolvedArtifacts = result.getArtifacts();
+//
+//        if ( getLog().isDebugEnabled() )
+//        {
+//            getLog().debug( "transitively resolved artifacts = " + transitiveResolvedArtifacts );
+//            getLog().debug( "jarResources = " + jarResources );
+//            getLog().debug( "jarResourceArtifacts = " + jarResourceArtifacts );
+//        }
+//
+//        //for each transitive dependency, wrap it in a JarResource and add it to the collection of
+//        //existing jar resources
+//        for ( Iterator itr = transitiveResolvedArtifacts.iterator(); itr.hasNext(); )
+//        {
+//            Artifact resolvedArtifact = (Artifact) itr.next();
+//
+//            // this whole double check is ugly as well as this method changing the input variable
+//            // we should really improve the way we collect the jarResources
+//            if ( !jarResourceArtifacts.contains( resolvedArtifact ) )
+//            {
+//                JarResource newJarResource = new JarResource( resolvedArtifact );
+//                if ( !jarResources.contains( newJarResource ) && newJarResource.getType().equals( "jar" ) )
+//                {
+//                    newJarResource.setOutputJarVersion( true );
+//                    jarResources.add( newJarResource );
+//                }
+//            }
+//
+//        }
+//
+//    }
+//    /**
+//     * Copies the contents of the working directory to the output directory.
+//     *
+//     * @throws MojoExecutionException if could not copy files
+//     */
+//    private void copyWorkingDirToOutputDir()
+//        throws MojoExecutionException
+//    {
+//
+//        File outputDir = new File( getProject().getBuild().getDirectory(),
+//                                   getProject().getBuild().getFinalName() + File.separator + this.outputDirectoryName );
+//
+//        makeDirectoryIfNecessary( outputDir, "Unable to create the output directory for the jnlp bundle: " );
+//        try
+//        {
+//            FileUtils.copyDirectoryStructure( getWorkDirectory(), outputDir );
+//        }
+//        catch ( IOException e )
+//        {
+//            throw new MojoExecutionException(
+//                "An error occurred attempting to copy a file to the JNLP output directory.", e );
+//        }
+//
+//    }
 
 }

@@ -41,6 +41,10 @@ import org.apache.maven.project.MavenProject;
 public class JnlpMojo
     extends AbstractJnlpMojo
 {
+    // ----------------------------------------------------------------------
+    // Mojo Parameters
+    // ----------------------------------------------------------------------
+
     /**
      * Get the executed project from the forked lifecycle.
      *
@@ -49,6 +53,10 @@ public class JnlpMojo
      * @readonly
      */
     private MavenProject executedProject;
+
+    // ----------------------------------------------------------------------
+    // AbstractBaseJnlpMojo implementatio
+    // ----------------------------------------------------------------------
 
     /**
      * {@inheritDoc}

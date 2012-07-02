@@ -30,8 +30,10 @@ import org.apache.maven.plugin.PluginManager;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.settings.Settings;
 import org.codehaus.mojo.webstart.generator.ExtensionGenerator;
+import org.codehaus.mojo.webstart.generator.ExtensionGeneratorExtraConfig;
 import org.codehaus.mojo.webstart.generator.Generator;
-import org.codehaus.mojo.webstart.generator.GeneratorExtraConfig;
+import org.codehaus.mojo.webstart.generator.JnplGeneratorExtraConfig;
+import org.codehaus.mojo.webstart.util.IOUtil;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 
 import java.io.File;
@@ -46,46 +48,21 @@ import java.util.Map;
 /**
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
- * @todo refactor the common code with javadoc plugin
  * @todo how to propagate the -X argument to enable verbose?
  * @todo initialize the jnlp alias and dname.o from pom.artifactId and pom.organization.name
  */
 public abstract class AbstractJnlpMojo
     extends AbstractBaseJnlpMojo
 {
+    // ----------------------------------------------------------------------
+    // Constants
+    // ----------------------------------------------------------------------
 
     private static final String DEFAULT_TEMPLATE_LOCATION = "src/main/jnlp/template.vm";
 
-    /**
-     * The Zip archiver.
-     *
-     * @component role="org.codehaus.plexus.archiver.Archiver" roleHint="zip"
-     * @required
-     */
-    private ZipArchiver zipArchiver;
-
-    /**
-     * The jnlp configuration element.
-     *
-     * @parameter
-     */
-    private JnlpConfig jnlp;
-
-    /**
-     * [optional] extensions configuration.
-     *
-     * @parameter
-     * @since 1.0-beta-2
-     */
-    private List jnlpExtensions;
-
-    /**
-     * [optional] transitive dependencies filter - if omitted, the plugin will include all transitive dependencies.
-     * Provided and test scope dependencies are always excluded.
-     *
-     * @parameter
-     */
-    private Dependencies dependencies;
+    // ----------------------------------------------------------------------
+    // Mojo Parameters
+    // ----------------------------------------------------------------------
 
     /**
      * Represents the configuration element that specifies which of the current
@@ -135,6 +112,53 @@ public abstract class AbstractJnlpMojo
     }
 
     /**
+     * Flag to create the archive or not.
+     *
+     * @parameter default-value="true"
+     * @since 1.0-beta-2
+     */
+    private boolean makeArchive;
+
+    /**
+     * Flag to attach the archive or not to the project's build.
+     *
+     * @parameter default-value="true"
+     * @since 1.0-beta-2
+     */
+    private boolean attachArchive;
+
+    /**
+     * The path of the archive to generate if {@link #makeArchive} flag is on.
+     *
+     * @parameter default-value="${project.build.directory}/${project.build.finalName}.zip"
+     * @since 1.0-beta-4
+     */
+    private File archive;
+
+    /**
+     * The jnlp configuration element.
+     *
+     * @parameter
+     */
+    private JnlpConfig jnlp;
+
+    /**
+     * [optional] extensions configuration.
+     *
+     * @parameter
+     * @since 1.0-beta-2
+     */
+    private List jnlpExtensions;
+
+    /**
+     * [optional] transitive dependencies filter - if omitted, the plugin will include all transitive dependencies.
+     * Provided and test scope dependencies are always excluded.
+     *
+     * @parameter
+     */
+    private Dependencies dependencies;
+
+    /**
      * A placeholder for an obsoleted configuration element.
      * <p/>
      * This dummy parameter is here to force the plugin configuration to fail in case one
@@ -154,13 +178,6 @@ public abstract class AbstractJnlpMojo
     private File basedir;
 
     /**
-     * The project helper used to attach the artifact produced by this plugin to the project.
-     *
-     * @component
-     */
-    private MavenProjectHelper projectHelper;
-
-    /**
      * The current user system settings for use in Maven. This is used for
      * <br/>
      * plugin manager API calls.
@@ -172,11 +189,43 @@ public abstract class AbstractJnlpMojo
     private Settings settings;
 
     /**
+     * When set to true, this flag indicates that a version attribute should
+     * be output in each of the jar resource elements in the generated
+     * JNLP file.
+     *
+     * @parameter default-value="false"
+     */
+    private boolean outputJarVersions;
+
+    // ----------------------------------------------------------------------
+    // Components
+    // ----------------------------------------------------------------------
+
+    /**
+     * The Zip archiver.
+     *
+     * @component role="org.codehaus.plexus.archiver.Archiver" roleHint="zip"
+     * @required
+     */
+    private ZipArchiver zipArchiver;
+
+    /**
+     * The project helper used to attach the artifact produced by this plugin to the project.
+     *
+     * @component
+     */
+    private MavenProjectHelper projectHelper;
+
+    /**
      * The plugin manager instance used to resolve plugin descriptors.
      *
      * @component role="org.apache.maven.plugin.PluginManager"
      */
     private PluginManager pluginManager;
+
+    // ----------------------------------------------------------------------
+    // Fields
+    // ----------------------------------------------------------------------
 
     /**
      * the artifacts packaged in the webstart app
@@ -190,14 +239,9 @@ public abstract class AbstractJnlpMojo
 
     private Artifact artifactWithMainClass;
 
-    /**
-     * When set to true, this flag indicates that a version attribute should
-     * be output in each of the jar resource elements in the generated
-     * JNLP file.
-     *
-     * @parameter default-value="false"
-     */
-    private boolean outputJarVersions;
+    // ----------------------------------------------------------------------
+    // Mojo Implementation
+    // ----------------------------------------------------------------------
 
     /**
      * {@inheritDoc}
@@ -205,11 +249,6 @@ public abstract class AbstractJnlpMojo
     public void execute()
         throws MojoExecutionException
     {
-
-//        if (isNeverUnsignAlreadySignedJar() && unsignAlreadySignedJars()) {
-//            throw  new MojoExecutionException(
-//                "neverUnsignAlreadySignedJar and unsignAlreadySignedJars are not compatible!" );
-//        }
 
         boolean withExtensions = hasJnlpExtensions();
 
@@ -225,14 +264,19 @@ public abstract class AbstractJnlpMojo
 
         getLog().debug( "using work directory " + getWorkDirectory() );
         getLog().debug( "using library directory " + getLibDirectory() );
+
+        IOUtil ioUtil = getIoUtil();
+
         //
         // prepare layout
         //
-        makeWorkingDirIfNecessary();
+
+        ioUtil.makeDirectoryIfNecessary( getWorkDirectory(), "Could not create work directory: " );
+        ioUtil.makeDirectoryIfNecessary( getLibDirectory(), "Could not create library directory: " );
 
         try
         {
-            copyResources( getResourcesDirectory(), getWorkDirectory() );
+            ioUtil.copyResources( getResourcesDirectory(), getWorkDirectory() );
 
             artifactWithMainClass = null;
 
@@ -255,7 +299,7 @@ public abstract class AbstractJnlpMojo
             /*
             for( Iterator it = getNativeLibs().iterator(); it.hasNext(); ) {
                 Artifact artifact = ;
-                Artifact copiedArtifact = 
+                Artifact copiedArtifact =
 
                 // similar to what we do for jars, except that we must pack them into jar instead of copying.
                 // them
@@ -270,12 +314,12 @@ public abstract class AbstractJnlpMojo
                         jarTask.execute();
 
                         nativeLibJar.setLastModified( nativeLib.lastModified() );
-              
+
                         copiedArtifact = new ....
                     } else {
                         getLog().debug( "Copying native lib " + artifact );
                         copyFileToDirectory( artifact.getFile(), applicationFolder );
-  
+
                         copiedArtifact = artifact;
                     }
                     copiedNativeArtifacts.add( copiedArtifact );
@@ -301,23 +345,27 @@ public abstract class AbstractJnlpMojo
                 generateJnlpExtensionsFile( getWorkDirectory() );
             }
 
-            if ( isMakeArchive() )
+            if ( makeArchive )
             {
                 // package the zip. Note this is very simple. Look at the JarMojo which does more things.
                 // we should perhaps package as a war when inside a project with war packaging ?
-                File toFile =
-                    new File( getProject().getBuild().getDirectory(), getProject().getBuild().getFinalName() + ".zip" );
-                deleteFile( toFile, "Could not obsolete archive: " );
+
+                ioUtil.makeDirectoryIfNecessary( archive.getParentFile(),
+                                                 "Could not create archive parent directory: " );
+
+                ioUtil.deleteFile( archive, "Could not obsolete archive: " );
+
+                verboseLog( "Will create archive at location: " + archive );
 
                 zipArchiver.addDirectory( getWorkDirectory() );
-                zipArchiver.setDestFile( toFile );
+                zipArchiver.setDestFile( archive );
                 getLog().debug( "about to call createArchive" );
                 zipArchiver.createArchive();
 
-                if ( isAttachArchive() )
+                if ( attachArchive )
                 {
                     // maven 2 version 2.0.1 method
-                    projectHelper.attachArtifact( getProject(), "zip", toFile );
+                    projectHelper.attachArtifact( getProject(), "zip", archive );
                 }
             }
         }
@@ -331,6 +379,10 @@ public abstract class AbstractJnlpMojo
         }
     }
 
+    // ----------------------------------------------------------------------
+    // Public methods
+    // ----------------------------------------------------------------------
+
     public List getJnlpExtensions()
     {
         return jnlpExtensions;
@@ -341,11 +393,6 @@ public abstract class AbstractJnlpMojo
         return jnlpExtensions != null && !jnlpExtensions.isEmpty();
     }
 
-    public JnlpConfig getJnlp()
-    {
-        return jnlp;
-    }
-
     public List getPackagedJnlpArtifacts()
     {
         return packagedJnlpArtifacts;
@@ -354,11 +401,6 @@ public abstract class AbstractJnlpMojo
     public Map getExtensionsJnlpArtifacts()
     {
         return extensionsJnlpArtifacts;
-    }
-
-    public Dependencies getDependencies()
-    {
-        return this.dependencies;
     }
 
     public boolean isArtifactWithMainClass( Artifact artifact )
@@ -391,6 +433,24 @@ public abstract class AbstractJnlpMojo
     {
         this.outputJarVersions = outputJarVersions;
     }
+
+    // ----------------------------------------------------------------------
+    // Protected Methods
+    // ----------------------------------------------------------------------
+
+    protected JnlpConfig getJnlp()
+    {
+        return jnlp;
+    }
+
+    protected Dependencies getDependencies()
+    {
+        return this.dependencies;
+    }
+
+    // ----------------------------------------------------------------------
+    // Private Methods
+    // ----------------------------------------------------------------------
 
     /**
      * Detects improper includes/excludes configuration.
@@ -640,7 +700,7 @@ public abstract class AbstractJnlpMojo
             new Generator( getLog(), getProject(), this, "default-jnlp-template.vm", templateDirectory, jnlpOutputFile,
                            templateFileName, getJnlp().getMainClass(), getWebstartJarURLForVelocity(), getEncoding() );
 
-        jnlpGenerator.setExtraConfig( getGeneratorExtraConfig() );
+        jnlpGenerator.setExtraConfig( new JnplGeneratorExtraConfig( jnlp, getCodebase() ) );
 
         try
         {
@@ -840,7 +900,7 @@ public abstract class AbstractJnlpMojo
                         "artifact " + artifact + " must be signed as part of an extension.." );
                 }
 
-                boolean copied = copyFileToDirectoryIfNecessary( toCopy, getLibDirectory() );
+                boolean copied = getIoUtil().copyFileToDirectoryIfNecessary( toCopy, getLibDirectory() );
                 if ( copied )
                 {
                     verboseLog( "copy extension artifact " + toCopy );
@@ -892,12 +952,12 @@ public abstract class AbstractJnlpMojo
 
         File templateDirectory = getProject().getBasedir();
 
-        if ( extension.getInputTemplateResourcePath() != null && extension.getInputTemplateResourcePath().length() > 0 )
+        if ( StringUtils.isNotBlank( extension.getInputTemplateResourcePath() ) )
         {
             templateDirectory = new File( extension.getInputTemplateResourcePath() );
         }
 
-        if ( extension.getInputTemplate() == null || extension.getInputTemplate().length() == 0 )
+        if ( StringUtils.isBlank( extension.getInputTemplate() ) )
         {
             getLog().debug(
                 "Jnlp extension template file name not specified. Checking if default output file name exists: " +
@@ -931,7 +991,7 @@ public abstract class AbstractJnlpMojo
                                     templateDirectory, jnlpOutputFile, templateFileName, this.getJnlp().getMainClass(),
                                     getWebstartJarURLForVelocity(), getEncoding() );
 
-        jnlpGenerator.setExtraConfig( getExtensionGeneratorExtraConfig( extension ) );
+        jnlpGenerator.setExtraConfig( new ExtensionGeneratorExtraConfig( extension, getCodebase() ) );
 
         try
         {
@@ -944,134 +1004,5 @@ public abstract class AbstractJnlpMojo
         }
     }
 
-    private GeneratorExtraConfig getGeneratorExtraConfig()
-    {
-        return new GeneratorExtraConfig()
-        {
-            /**
-             * {@inheritDoc}
-             */
-            public String getJnlpSpec()
-            {
-                // shouldn't we automatically identify the spec based on the features used in the spec?
-                // also detect conflicts. If user specified 1.0 but uses a 1.5 feature we should fail in checkInput().
-                if ( jnlp.getSpec() != null )
-                {
-                    return jnlp.getSpec();
-                }
-                return "1.0+";
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            public String getOfflineAllowed()
-            {
-                if ( jnlp.getOfflineAllowed() != null )
-                {
-                    return jnlp.getOfflineAllowed();
-                }
-                return "false";
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            public String getAllPermissions()
-            {
-                if ( jnlp.getAllPermissions() != null )
-                {
-                    return jnlp.getAllPermissions();
-                }
-                return "true";
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            public String getJ2seVersion()
-            {
-                if ( jnlp.getJ2seVersion() != null )
-                {
-                    return jnlp.getJ2seVersion();
-                }
-                return "1.5+";
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            public String getJnlpCodeBase()
-            {
-                return getCodebase();
-            }
-
-        };
-    }
-
-    private GeneratorExtraConfig getExtensionGeneratorExtraConfig( final JnlpExtension extension )
-    {
-        return new GeneratorExtraConfig()
-        {
-            /**
-             * {@inheritDoc}
-             */
-            public String getJnlpSpec()
-            {
-                // shouldn't we automatically identify the spec based on the features used in the spec?
-                // also detect conflicts. If user specified 1.0 but uses a 1.5 feature we should fail in checkInput().
-                if ( extension.getSpec() != null )
-                {
-                    return extension.getSpec();
-                }
-                return "1.0+";
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            public String getOfflineAllowed()
-            {
-                if ( extension.getOfflineAllowed() != null )
-                {
-                    return extension.getOfflineAllowed();
-                }
-                return "false";
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            public String getAllPermissions()
-            {
-                if ( extension.getAllPermissions() != null )
-                {
-                    return extension.getAllPermissions();
-                }
-                return "true";
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            public String getJ2seVersion()
-            {
-                if ( extension.getJ2seVersion() != null )
-                {
-                    return extension.getJ2seVersion();
-                }
-                return "1.5+";
-            }
-
-            /**
-             * {@inheritDoc}
-             */
-            public String getJnlpCodeBase()
-            {
-                return getCodebase();
-            }
-
-        };
-    }
 }
 

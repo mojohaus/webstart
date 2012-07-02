@@ -38,12 +38,20 @@ import org.apache.maven.project.MavenProject;
 public class JnlpInlineMojo
     extends AbstractJnlpMojo
 {
+    // ----------------------------------------------------------------------
+    // Mojo Parameters
+    // ----------------------------------------------------------------------
+
     /**
      * @parameter default-value="${project}"
      * @required
      * @readonly
      */
     private MavenProject project;
+
+    // ----------------------------------------------------------------------
+    // AbstractBaseJnlpMojo implementatio
+    // ----------------------------------------------------------------------
 
     /**
      * {@inheritDoc}

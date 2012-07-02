@@ -20,7 +20,7 @@
 /*
 Required result :
 
-target/it/MWEBSTART-159/target/
+target/it/MWEBSTART-132/target/
 ├── keystore
 ├── withLibPath
 │   └── jnlp

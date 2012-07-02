@@ -43,21 +43,16 @@ import java.util.ResourceBundle;
 public class JnlpReportMojo
     extends AbstractMavenReport
 {
+    // ----------------------------------------------------------------------
+    // Mojo Parameters
+    // ----------------------------------------------------------------------
+
     /**
      * Location where the site is generated.
      *
      * @parameter default-value="${project.reporting.outputDirectory}"
      */
     private File outputDirectory;
-
-    /**
-     * <i>Maven Internal</i>: The Doxia Site Renderer.
-     *
-     * @component
-     * @required
-     * @readonly
-     */
-    private Renderer siteRenderer;
 
     /**
      * Maven Project
@@ -108,6 +103,23 @@ public class JnlpReportMojo
      */
     private String codebase;
 
+    // ----------------------------------------------------------------------
+    // Components
+    // ----------------------------------------------------------------------
+
+    /**
+     * <i>Maven Internal</i>: The Doxia Site Renderer.
+     *
+     * @component
+     * @required
+     * @readonly
+     */
+    private Renderer siteRenderer;
+
+    // ----------------------------------------------------------------------
+    // MavenReport implementatio
+    // ----------------------------------------------------------------------
+
     /**
      * {@inheritDoc}
      */
@@ -117,6 +129,62 @@ public class JnlpReportMojo
         copyJnlpFiles();
         fillReport( locale );
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getName( Locale locale )
+    {
+        return getBundle( locale ).getString( "report.jnlp-report.name" );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDescription( Locale locale )
+    {
+        return getBundle( locale ).getString( "report.jnlp-report.description" );
+    }
+
+    // ----------------------------------------------------------------------
+    // AbstractMavenReport implementatio
+    // ----------------------------------------------------------------------
+
+    /**
+     * {@inheritDoc}
+     */
+    protected Renderer getSiteRenderer()
+    {
+        return siteRenderer;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected MavenProject getProject()
+    {
+        return project;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getOutputName()
+    {
+        return outputName;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected String getOutputDirectory()
+    {
+        return outputDirectory.getPath();
+    }
+
+    // ----------------------------------------------------------------------
+    // Private methods
+    // ----------------------------------------------------------------------
 
     private void copyJnlpFiles()
         throws MavenReportException
@@ -200,54 +268,6 @@ public class JnlpReportMojo
         getSink().body_();
         getSink().flush();
         getSink().close();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getName( Locale locale )
-    {
-        return getBundle( locale ).getString( "report.jnlp-report.name" );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getDescription( Locale locale )
-    {
-        return getBundle( locale ).getString( "report.jnlp-report.description" );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected Renderer getSiteRenderer()
-    {
-        return siteRenderer;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected MavenProject getProject()
-    {
-        return project;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getOutputName()
-    {
-        return outputName;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected String getOutputDirectory()
-    {
-        return outputDirectory.getPath();
     }
 
     private ResourceBundle getBundle( Locale locale )
