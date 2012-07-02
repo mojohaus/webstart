@@ -718,8 +718,8 @@ public abstract class AbstractBaseJnlpMojo
             {
                 // http://java.sun.com/j2se/1.5.0/docs/guide/deployment/deployment-guide/pack200.html
                 // we need to pack then unpack the files before signing them
-                getPack200Tool().packJars( getLibDirectory(), unprocessedJarFileFilter, isGzip() );
-                getPack200Tool().unpackJars( getLibDirectory(), unprocessedPack200FileFilter );
+                pack200Jars( getLibDirectory(), unprocessedJarFileFilter );
+                unpackJars( getLibDirectory(), unprocessedPack200FileFilter );
                 // As out current Pack200 ant tasks don't give us the ability to use a temporary area for
                 // creating those temporary packing, we have to delete the temporary files.
                 deleteFiles( getLibDirectory(), unprocessedPack200FileFilter );
@@ -740,6 +740,32 @@ public abstract class AbstractBaseJnlpMojo
         else
         {
             makeUnprocessedFilesFinal( getLibDirectory(), unprocessedJarFileFilter );
+        }
+    }
+
+    protected void pack200Jars( File directory, FileFilter filter )
+        throws MojoExecutionException
+    {
+        try
+        {
+            getPack200Tool().packJars( directory, filter, isGzip() );
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException( "Could not pack200 jars: ", e );
+        }
+    }
+
+    private void unpackJars( File directory, FileFilter filter )
+        throws MojoExecutionException
+    {
+        try
+        {
+            getPack200Tool().unpackJars( directory, filter );
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException( "Could not unpack200 jars: ", e );
         }
     }
 
@@ -791,12 +817,13 @@ public abstract class AbstractBaseJnlpMojo
     }
 
     protected void packJars()
+        throws MojoExecutionException
     {
 
         if ( isPack200() )
         {
             getLog().debug( "packing jars" );
-            getPack200Tool().packJars( getLibDirectory(), processedJarFileFilter, isGzip() );
+            pack200Jars( getLibDirectory(), processedJarFileFilter );
         }
 
     }

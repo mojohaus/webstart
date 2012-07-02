@@ -21,6 +21,8 @@ package org.codehaus.mojo.webstart;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * Tool api for pack200 operations.
@@ -39,6 +41,37 @@ public interface Pack200Tool
     String ROLE = Pack200Tool.class.getName();
 
     /**
+     * Pack a jar.
+     *
+     * @param source      the source jar
+     * @param destination the packed jar
+     * @param props       the packing properties
+     * @param gzip        true if the destination file
+     */
+    void pack( File source, File destination, Map props, boolean gzip )
+        throws IOException;
+
+    /**
+     * Repack a jar.
+     *
+     * @param source      the source jar
+     * @param destination the destination jar (may be the same as the source jar)
+     * @param props       the packing properties
+     */
+    void repack( File source, File destination, Map props )
+        throws IOException;
+
+    /**
+     * Unpack a jar.
+     *
+     * @param source      the packed jar
+     * @param destination the unpacked jar
+     * @param props       the packing properties
+     */
+    void unpack( File source, File destination, Map props )
+        throws IOException;
+
+    /**
      * Packs from the given {@code directory}, all files matched by the filter.
      * <p/>
      * If parameter {@code gzip} is setted to {@code true}, then after it gzip packed files.
@@ -47,7 +80,8 @@ public interface Pack200Tool
      * @param jarFileFilter the filter to determin which files to pack
      * @param gzip          flag to gzip files after pack them
      */
-    void packJars( File directory, FileFilter jarFileFilter, boolean gzip );
+    void packJars( File directory, FileFilter jarFileFilter, boolean gzip )
+        throws IOException;
 
     /**
      * UnPacks from the given {@code directory}, all files matched by the filter.
@@ -55,5 +89,6 @@ public interface Pack200Tool
      * @param directory         the location of the directory containing files to unpack
      * @param pack200FileFilter the fileter to determin which files to unpakc
      */
-    void unpackJars( File directory, FileFilter pack200FileFilter );
+    void unpackJars( File directory, FileFilter pack200FileFilter )
+        throws IOException;
 }
