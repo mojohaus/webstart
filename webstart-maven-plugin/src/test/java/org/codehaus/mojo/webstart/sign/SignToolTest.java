@@ -18,6 +18,7 @@ package org.codehaus.mojo.webstart.sign;
  * under the License.
  */
 
+import org.apache.commons.lang.SystemUtils;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -69,8 +70,6 @@ public class SignToolTest
         throws Exception
     {
 
-        SignTool signTool = (SignTool) lookup( SignTool.class.getName() );
-
         // usign an already signed jar but with some signed files with mixed extension case (.Sf, .das)
 
         File signedTarget = new File( "target/SignToolTest/simpleSignedLowerCase.jar" );
@@ -84,6 +83,47 @@ public class SignToolTest
 
         // jar is now unsigned
         assertFalse( signTool.isJarSigned( signedTarget ) );
+    }
+
+    public void testGetKeyStoreFile()
+        throws Exception
+    {
+
+        File tmpDir = SystemUtils.getJavaIoTmpDir();
+
+        File parentDir = new File( tmpDir, "tmp" );
+        File keyStoreFile;
+
+        ClassLoader classLoader = getClassLoader();
+
+        // from classpath with / start
+        keyStoreFile =
+            signTool.getKeyStoreFile( "classpath:/test/myfile.txt", new File( tmpDir, "myfile2.txt" ), classLoader );
+        assertNotNull( keyStoreFile );
+        assertEquals( "myfile2.txt", keyStoreFile.getName() );
+        assertEquals( tmpDir, keyStoreFile.getParentFile() );
+
+        // from classpath
+        keyStoreFile =
+            signTool.getKeyStoreFile( "classpath:test/myfile.txt", new File( tmpDir, "myfile2.txt" ), classLoader );
+        assertNotNull( keyStoreFile );
+        assertEquals( "myfile2.txt", keyStoreFile.getName() );
+        assertEquals( tmpDir, keyStoreFile.getParentFile() );
+
+        // from a direct file (no change)
+        keyStoreFile = signTool.getKeyStoreFile( keyStoreFile.getAbsolutePath(), new File( parentDir, "myfile3.txt" ),
+                                                 classLoader );
+        assertNotNull( keyStoreFile );
+        assertEquals( "myfile2.txt", keyStoreFile.getName() );
+        assertEquals( tmpDir, keyStoreFile.getParentFile() );
+
+        //from a url (from a file)
+        keyStoreFile =
+            signTool.getKeyStoreFile( "file://" + keyStoreFile.getAbsolutePath(), new File( parentDir, "myfile3.txt" ),
+                                      classLoader );
+        assertNotNull( keyStoreFile );
+        assertEquals( "myfile3.txt", keyStoreFile.getName() );
+        assertEquals( parentDir, keyStoreFile.getParentFile() );
     }
 
     protected void copyTestFile( File file, File target )

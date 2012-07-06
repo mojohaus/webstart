@@ -1,0 +1,1 @@
+File to be detected as a keystore by SignToolTest#testGetKeyStoreFile test.

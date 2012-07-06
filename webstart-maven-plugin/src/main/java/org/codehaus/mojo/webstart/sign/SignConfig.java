@@ -51,9 +51,10 @@ public interface SignConfig
      * @param workingDirectory working directory
      * @param verbose          verbose flag coming from the mojo configuration
      * @param signTool         the sign tool used eventually to create or delete key store
+     * @param classLoader      classloader where to find keystore (if not generating a new one)
      * @throws MojoExecutionException if something wrong occurs while init (mainly when preparing keys)
      */
-    void init( File workingDirectory, boolean verbose, SignTool signTool )
+    void init( File workingDirectory, boolean verbose, SignTool signTool, ClassLoader classLoader )
         throws MojoExecutionException;
 
     /**
@@ -99,6 +100,8 @@ public interface SignConfig
     void setKeypass( String keypass );
 
     void setKeystore( String keystore );
+
+    void setWorkingKeystore( File workingKeystore );
 
     void setStorepass( String storepass );
 

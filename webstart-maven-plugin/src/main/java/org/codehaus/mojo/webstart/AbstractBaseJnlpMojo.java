@@ -36,7 +36,9 @@ import org.codehaus.plexus.util.FileUtils;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -194,6 +196,16 @@ public abstract class AbstractBaseJnlpMojo
      * @since 1.0-beta-2
      */
     private boolean canUnsign;
+
+    /**
+     * Compile class-path used to search for the keystore (if keysotre location was prefixed by {@code classpath:}).
+     *
+     * @parameter default-value="${project.compileClasspathElements}"
+     * @required
+     * @readonly
+     * @since 1.0-beta-4
+     */
+    private List compileClassPath;
 
     // ----------------------------------------------------------------------
     // Components
@@ -616,7 +628,15 @@ public abstract class AbstractBaseJnlpMojo
 
         if ( getSign() != null )
         {
-            getSign().init( getWorkDirectory(), isVerbose(), signTool );
+            try
+            {
+                ClassLoader loader = getCompileClassLoader();
+                getSign().init( getWorkDirectory(), isVerbose(), signTool, loader );
+            }
+            catch ( MalformedURLException e )
+            {
+                throw new MojoExecutionException( "Could not create classloader", e );
+            }
 
             if ( unsignAlreadySignedJars() )
             {
@@ -958,6 +978,19 @@ public abstract class AbstractBaseJnlpMojo
         {
             getLog().debug( msg );
         }
+    }
+
+    private ClassLoader getCompileClassLoader()
+        throws MalformedURLException
+    {
+        URL[] urls = new URL[compileClassPath.size()];
+        for ( int i = 0; i < urls.length; i++ )
+        {
+            String spec = compileClassPath.get( i ).toString();
+            URL url = new File( spec ).toURI().toURL();
+            urls[i] = url;
+        }
+        return new URLClassLoader( urls );
     }
 
 //    protected void copyResources( File resourcesDir, File workDirectory )

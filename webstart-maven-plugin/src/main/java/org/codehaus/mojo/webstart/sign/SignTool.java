@@ -22,6 +22,7 @@ package org.codehaus.mojo.webstart.sign;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Tool api for jarsigner operations.
@@ -36,6 +37,22 @@ public interface SignTool
      * Plexus component role.
      */
     String ROLE = SignTool.class.getName();
+
+    /**
+     * Obtain the location of the given keystore.
+     * <p/>
+     * If the keystore is a file then just return it, otherwise if is a resource from class path or a valid url,
+     * then copy the resource to given working keystore location.
+     *
+     * @param keystore        keystore location to find
+     * @param workingKeystore location where to copy keystore if coming from an url or from classpath
+     * @param classLoader     classloader where to find keystore in classpath
+     * @return the file location of the keysotre saved if required in workding directory or {@code null} if could not
+     *         locate keysotre.
+     * @since 1.0-beta-4
+     */
+    public File getKeyStoreFile( String keystore, File workingKeystore, ClassLoader classLoader )
+        throws IOException;
 
     /**
      * Generate a key store using keytool.

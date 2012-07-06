@@ -30,12 +30,17 @@ import org.codehaus.mojo.keytool.KeyToolException;
 import org.codehaus.mojo.keytool.KeyToolResult;
 import org.codehaus.mojo.keytool.requests.KeyToolGenerateKeyPairRequest;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.cli.CommandLineException;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -208,6 +213,83 @@ public class DefaultSignTool
         {
             infoOrDebug( verbose, "Skipping deletion of non existing keystore: " + keystore.getAbsolutePath() );
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public File getKeyStoreFile( String keystore, File workingKeystore, ClassLoader classLoader )
+        throws IOException
+    {
+        File result = new File( keystore );
+
+        if ( !result.exists() )
+        {
+            result = null;
+
+            URL url;
+
+            if ( keystore.startsWith( "classpath:" ) )
+            {
+
+                // detects it in classpath
+                String path = keystore.substring( "classpath:".length() );
+
+                if ( path.startsWith( "/" ) )
+                {
+                    // remove first car
+                    path = path.substring( 1 );
+                }
+                url = classLoader.getResource( path );
+            }
+            else
+            {
+                url = new URL( keystore );
+
+            }
+
+            if ( url != null )
+            {
+                InputStream inputStream = url.openStream();
+
+                try
+                {
+                    if ( inputStream != null )
+                    {
+
+                        // copy stream to a file
+                        result = workingKeystore;
+
+                        File parentFile = result.getParentFile();
+                        boolean mkdirs = parentFile.exists() || parentFile.mkdirs();
+                        if ( !mkdirs )
+                        {
+                            throw new IOException( "Could not create directory " + parentFile );
+                        }
+                        OutputStream outputStream = new FileOutputStream( result );
+                        try
+                        {
+                            IOUtil.copy( inputStream, outputStream );
+                        }
+                        finally
+                        {
+                            IOUtil.close( outputStream );
+                        }
+                    }
+                }
+                catch ( IOException e )
+                {
+                    result = null;
+                    throw e;
+                }
+                finally
+                {
+                    IOUtil.close( inputStream );
+                }
+
+            }
+        }
+        return result;
     }
 
     /**

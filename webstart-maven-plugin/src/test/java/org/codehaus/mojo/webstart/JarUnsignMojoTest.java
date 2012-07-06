@@ -109,7 +109,7 @@ public class JarUnsignMojoTest
         keystoreConfig.setGen( true );
         sign.setKeystoreConfig( keystoreConfig );
 
-        sign.init( tempdir, false, signTool );
+        sign.init( tempdir, false, signTool, getClassLoader() );
     }
 
     /**
