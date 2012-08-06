@@ -55,7 +55,7 @@
             <configuration>
               <workDirectory>${project.build.directory}/from-url</workDirectory>
               <sign>
-                <keystore>file://${basedir}/src/main/resources/keystore</keystore>
+                <keystore>file:///${basedir}/src/main/resources/keystore</keystore>
                 <workingKeystore>${project.build.directory}/from-url/keystore</workingKeystore>
               </sign>
             </configuration>
