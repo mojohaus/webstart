@@ -83,6 +83,9 @@
       </roles>
       <!--timezone>+1</timezone-->
     </contributor>
+    <contributor>
+      <name>Andreas Kuhtz</name>
+    </contributor>
   </contributors>
 
   <modules>
