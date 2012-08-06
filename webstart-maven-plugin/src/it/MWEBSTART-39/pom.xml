@@ -13,11 +13,40 @@
   </organization>
 
   <build>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>webstart-maven-plugin</artifactId>
+          <version>@project.version@</version>
+
+          <configuration>
+            <makeArchive>false</makeArchive>
+            <pack200>true</pack200>
+            <excludeTransitive>true</excludeTransitive>
+
+            <jnlp>
+              <mainClass>org.apache.commons.cli.BasicParser</mainClass>
+            </jnlp>
+
+            <sign>
+              <keypass>key-passwd</keypass>
+              <storepass>changeit</storepass>
+              <alias>foo_alias</alias>
+              <verify>true</verify>
+            </sign>
+
+            <verbose>true</verbose>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>webstart-maven-plugin</artifactId>
-        <version>@project.version@</version>
         <executions>
           <execution>
             <id>from-classpath</id>
@@ -26,10 +55,14 @@
             </goals>
             <phase>package</phase>
             <configuration>
-              <workDirectory>${project.build.directory}/from-classpath</workDirectory>
+              <workDirectory>
+                ${project.build.directory}/from-classpath
+              </workDirectory>
               <sign>
                 <keystore>classpath:/keystore</keystore>
-                <workingKeystore>${project.build.directory}/from-classpath/keystore</workingKeystore>
+                <workingKeystore>
+                  ${project.build.directory}/from-classpath/keystore
+                </workingKeystore>
               </sign>
             </configuration>
           </execution>
@@ -40,45 +73,15 @@
             </goals>
             <phase>package</phase>
             <configuration>
-              <workDirectory>${project.build.directory}/from-file</workDirectory>
+              <workDirectory>
+                ${project.build.directory}/from-file
+              </workDirectory>
               <sign>
                 <keystore>${basedir}/src/main/resources/keystore</keystore>
               </sign>
             </configuration>
           </execution>
-          <execution>
-            <id>from-url</id>
-            <goals>
-              <goal>jnlp-inline</goal>
-            </goals>
-            <phase>package</phase>
-            <configuration>
-              <workDirectory>${project.build.directory}/from-url</workDirectory>
-              <sign>
-                <keystore>file:///${basedir}/src/main/resources/keystore</keystore>
-                <workingKeystore>${project.build.directory}/from-url/keystore</workingKeystore>
-              </sign>
-            </configuration>
-          </execution>
         </executions>
-        <configuration>
-          <makeArchive>false</makeArchive>
-          <pack200>true</pack200>
-          <excludeTransitive>true</excludeTransitive>
-
-          <jnlp>
-            <mainClass>org.apache.commons.cli.BasicParser</mainClass>
-          </jnlp>
-
-          <sign>
-            <keypass>key-passwd</keypass>
-            <storepass>changeit</storepass>
-            <alias>foo_alias</alias>
-            <verify>true</verify>
-          </sign>
-
-          <verbose>true</verbose>
-        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -90,4 +93,79 @@
       <version>1.1</version>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>webstart-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>from-url</id>
+                <goals>
+                  <goal>jnlp-inline</goal>
+                </goals>
+                <phase>package</phase>
+                <configuration>
+                  <workDirectory>${project.build.directory}/from-url</workDirectory>
+                  <sign>
+                    <keystore>file:///${basedir}/src/main/resources/keystore
+                    </keystore>
+                    <workingKeystore>
+                      ${project.build.directory}/from-url/keystore
+                    </workingKeystore>
+                  </sign>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>not-windows</id>
+      <activation>
+        <os>
+          <family>!windows</family>
+        </os>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>webstart-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>from-url</id>
+                <goals>
+                  <goal>jnlp-inline</goal>
+                </goals>
+                <phase>package</phase>
+                <configuration>
+                  <workDirectory>${project.build.directory}/from-url</workDirectory>
+                  <sign>
+                    <keystore>file://${basedir}/src/main/resources/keystore
+                    </keystore>
+                    <workingKeystore>
+                      ${project.build.directory}/from-url/keystore
+                    </workingKeystore>
+                  </sign>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
