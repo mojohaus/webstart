@@ -1,5 +1,24 @@
 package org.codehaus.mojo.webstart.util;
 
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.DirectoryScanner;
@@ -8,7 +27,6 @@ import org.codehaus.plexus.util.FileUtils;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -94,14 +112,14 @@ public class DefaultIOUtil
         {
             if ( dir.exists() && dir.isDirectory() )
             {
-                getLogger().info( "Deleting directory " + dir.getAbsolutePath() );
+                getLogger().debug( "Deleting directory " + dir.getAbsolutePath() );
                 try
                 {
                     FileUtils.deleteDirectory( dir );
                 }
                 catch ( IOException e )
                 {
-                    throw new MojoExecutionException( "Could not delete directory " + dir, e );
+                    throw new MojoExecutionException( "Could not delete directory: " + dir, e );
                 }
             }
         }
@@ -110,14 +128,13 @@ public class DefaultIOUtil
     /**
      * {@inheritDoc}
      */
-    public void makeDirectoryIfNecessary( File dir, String errorMessage )
+    public void makeDirectoryIfNecessary( File dir )
         throws MojoExecutionException
     {
 
         if ( !dir.exists() && !dir.mkdirs() )
         {
-            throw new MojoExecutionException(
-                ( errorMessage == null ? "Failed to create directory: " : errorMessage ) + dir );
+            throw new MojoExecutionException( "Failed to create directory: " + dir );
         }
 
     }
@@ -140,9 +157,9 @@ public class DefaultIOUtil
             return 0;
         }
 
-        for ( int i = 0; i < files.length; i++ )
+        for ( File file : files )
         {
-            deleteFile( files[i], "Couldn't delete file: " );
+            deleteFile( file );
         }
         return files.length;
     }
@@ -150,11 +167,25 @@ public class DefaultIOUtil
     /**
      * {@inheritDoc}
      */
-    public void deleteFile( File file, String errorMessage )
+    public void deleteFile( File file )
+        throws MojoExecutionException
     {
         if ( file.exists() && !file.delete() )
         {
-            throw new IllegalStateException( errorMessage + file.getAbsolutePath() );
+            throw new MojoExecutionException( "Could not delete file: " + file );
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void renameTo( File source, File target )
+        throws MojoExecutionException
+    {
+        boolean result = source.renameTo( target );
+        if ( !result )
+        {
+            throw new MojoExecutionException( "Could not rename " + source + " to " + target );
         }
     }
 
@@ -167,11 +198,10 @@ public class DefaultIOUtil
             return;
         }
 
-        List files = FileUtils.getFiles( sourceDirectory, includes, excludes );
+        List<File> files = FileUtils.getFiles( sourceDirectory, includes, excludes );
 
-        for ( Iterator i = files.iterator(); i.hasNext(); )
+        for ( File file : files )
         {
-            File file = (File) i.next();
 
             getLogger().debug( "Copying " + file + " to " + destinationDirectory );
 
@@ -183,7 +213,7 @@ public class DefaultIOUtil
 
             if ( file.isDirectory() )
             {
-                makeDirectoryIfNecessary( destDir, null );
+                makeDirectoryIfNecessary( destDir );
             }
             else
             {
@@ -194,7 +224,7 @@ public class DefaultIOUtil
 
     private String concat( String[] array, String delim )
     {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for ( int i = 0; i < array.length; i++ )
         {
             if ( i > 0 )

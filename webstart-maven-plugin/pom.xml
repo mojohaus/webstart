@@ -6,7 +6,6 @@
     <version>1.0-beta-4-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.codehaus.mojo</groupId>
   <artifactId>webstart-maven-plugin</artifactId>
   <version>1.0-beta-4-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
@@ -67,6 +66,11 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-settings</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-annotations</artifactId>
     </dependency>
 
     <dependency>
@@ -318,6 +322,13 @@
 
       <reporting>
         <plugins>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-plugin-plugin</artifactId>
+            <version>${mavenPluginPluginVersion}</version>
+          </plugin>
+
           <plugin>
             <artifactId>maven-invoker-plugin</artifactId>
             <version>1.5</version>

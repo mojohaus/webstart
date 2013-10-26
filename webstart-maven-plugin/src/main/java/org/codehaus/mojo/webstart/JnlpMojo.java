@@ -19,6 +19,11 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 /**
@@ -31,13 +36,10 @@ import org.apache.maven.project.MavenProject;
  *
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
- * @goal jnlp
- * @execute phase="package"
- * @aggregator
- * @requiresDependencyResolution runtime
- * @requiresProject
- * @inheritedByDefault true
  */
+@Mojo( name = "jnlp", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, inheritByDefault = true,
+       requiresDependencyResolution = ResolutionScope.RUNTIME, aggregator = true )
+@Execute( phase = LifecyclePhase.PACKAGE )
 public class JnlpMojo
     extends AbstractJnlpMojo
 {
@@ -47,11 +49,8 @@ public class JnlpMojo
 
     /**
      * Get the executed project from the forked lifecycle.
-     *
-     * @parameter default-value="${executedProject}"
-     * @required
-     * @readonly
      */
+    @Parameter( defaultValue = "${executedProject}", required = true, readonly = true )
     private MavenProject executedProject;
 
     // ----------------------------------------------------------------------

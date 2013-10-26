@@ -167,7 +167,7 @@ public class JnlpDownloadServlet
                 _log.addInformational( "servlet.log.info.goodrequest", jnlpres.getPath() );
             }
 
-            DownloadResponse dres = null;
+            DownloadResponse dres;
 
             if ( isHead )
             {

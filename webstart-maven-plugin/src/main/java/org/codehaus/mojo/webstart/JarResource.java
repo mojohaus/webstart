@@ -215,7 +215,7 @@ public class JarResource
      * populated in the generated JNLP file.
      *
      * @return Returns the value of the mainClass field, or null if the jar represented
-     *         by this instance is not the one that contains the application's main class.
+     * by this instance is not the one that contains the application's main class.
      */
     public String getMainClass()
     {
@@ -321,7 +321,7 @@ public class JarResource
      */
     public String toString()
     {
-        StringBuffer sbuf = new StringBuffer();
+        StringBuilder sbuf = new StringBuilder();
         sbuf.append( "JarResource[ groupId='" ).append( this.groupId ).append( "', artifactId='" ).append(
             this.artifactId ).append( "', version='" ).append( this.version ).append( "', classifier='" ).append(
             this.classifier ).append( "', mainClass='" ).append( this.mainClass ).append(

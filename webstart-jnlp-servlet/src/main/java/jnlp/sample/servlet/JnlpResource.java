@@ -154,7 +154,7 @@ public class JnlpResource
                 // pack200 compression
                 if ( encoding != null && _mimeType != null &&
                     ( _mimeType.compareTo( JAR_MIME_TYPE ) == 0 || _mimeType.compareTo( JAR_MIME_TYPE_NEW ) == 0 ) &&
-                    encoding.toLowerCase().indexOf( DownloadResponse.PACK200_GZIP_ENCODING ) > -1 )
+                    encoding.toLowerCase().contains( DownloadResponse.PACK200_GZIP_ENCODING ) )
                 {
                     search_path = orig_path + ".pack.gz";
                     _resource = context.getResource( search_path );
@@ -175,8 +175,8 @@ public class JnlpResource
                 }
 
                 // gzip compression
-                if ( found == false && encoding != null &&
-                    encoding.toLowerCase().indexOf( DownloadResponse.GZIP_ENCODING ) > -1 )
+                if ( !found && encoding != null &&
+                    encoding.toLowerCase().contains( DownloadResponse.GZIP_ENCODING ) )
                 {
                     search_path = orig_path + ".gz";
                     _resource = context.getResource( search_path );
@@ -196,7 +196,7 @@ public class JnlpResource
                     }
                 }
 
-                if ( found == false )
+                if ( !found )
                 {
                     // no compression
                     search_path = orig_path;

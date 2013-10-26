@@ -159,7 +159,7 @@ public class Logger
 
     public void addInformational( String key )
     {
-        logEvent( INFORMATIONAL, getString( key ), (Throwable) null );
+        logEvent( INFORMATIONAL, getString( key ), null );
     }
 
     public void addInformational( String key, String arg )
@@ -246,8 +246,8 @@ public class Logger
     private String applyPattern( String key, Object[] messageArguments )
     {
         String message = getString( key );
-        MessageFormat formatter = new MessageFormat( message );
-        String output = formatter.format( message, messageArguments );
+//        MessageFormat formatter = new MessageFormat( message );
+        String output = MessageFormat.format( message, messageArguments );
         return output;
     }
 

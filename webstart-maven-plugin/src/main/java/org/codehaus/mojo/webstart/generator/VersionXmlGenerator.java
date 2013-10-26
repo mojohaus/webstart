@@ -27,7 +27,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * This class generates a <code>version.xml</code> file for a given collection of
@@ -68,7 +67,7 @@ public class VersionXmlGenerator
      *                     element will be created in the generated file.
      * @throws MojoExecutionException if an error occurs generating the file.
      */
-    public void generate( File outputDir, Collection/*JarResource*/ jarResources )
+    public void generate( File outputDir, Collection<JarResource> jarResources )
         throws MojoExecutionException
     {
 
@@ -108,7 +107,7 @@ public class VersionXmlGenerator
 
     }
 
-    private void generateXml( BufferedWriter writer, Collection jarResources )
+    private void generateXml( BufferedWriter writer, Collection<JarResource> jarResources )
         throws IOException
     {
 
@@ -117,10 +116,8 @@ public class VersionXmlGenerator
         writer.write( "<jnlp-versions>" );
         writer.newLine();
 
-        for ( Iterator itr = jarResources.iterator(); itr.hasNext(); )
+        for ( JarResource jarResource : jarResources )
         {
-
-            JarResource jarResource = (JarResource) itr.next();
             writer.write( "  <resource>" );
             writer.newLine();
             writer.write( "    <pattern>" );

@@ -27,7 +27,6 @@ import org.codehaus.mojo.webstart.AbstractJnlpMojo;
 import org.codehaus.mojo.webstart.JnlpExtension;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -82,12 +81,12 @@ public class Generator
         return getDependenciesText( config, config.getPackagedJnlpArtifacts() );
     }
 
-    static String getDependenciesText( AbstractJnlpMojo config, List artifacts )
+    static String getDependenciesText( AbstractJnlpMojo config, List<Artifact> artifacts )
     {
         String dependenciesText = "";
         if ( artifacts.size() != 0 )
         {
-            StringBuffer buffer = new StringBuffer( 100 * artifacts.size() );
+            StringBuilder buffer = new StringBuilder( 100 * artifacts.size() );
             buffer.append( "\n" );
             if ( config.isPack200() )
             {
@@ -106,9 +105,8 @@ public class Generator
                 jarLibPath = ( jarLibPath != null && jarLibPath.trim().length() != 0 ) ? jarLibPath.trim() : null;
             }
 
-            for ( int i = 0; i < artifacts.size(); i++ )
+            for ( Artifact artifact : artifacts )
             {
-                Artifact artifact = (Artifact) artifacts.get( i );
                 buffer.append( "<jar href=\"" );
                 if ( jarLibPath != null )
                 {
@@ -135,15 +133,14 @@ public class Generator
     static String getExtensionsText( AbstractJnlpMojo config )
     {
         String text = "";
-        List extensions = config.getJnlpExtensions();
+        List<JnlpExtension> extensions = config.getJnlpExtensions();
         if ( extensions != null && !extensions.isEmpty() )
         {
-            StringBuffer buffer = new StringBuffer( 100 * extensions.size() );
+            StringBuilder buffer = new StringBuilder( 100 * extensions.size() );
             buffer.append( "\n" );
 
-            for ( Iterator it = extensions.iterator(); it.hasNext(); )
+            for ( JnlpExtension extension : extensions )
             {
-                JnlpExtension extension = (JnlpExtension) it.next();
                 buffer.append( "<extension name=\"" );
                 buffer.append( extension.getName() );
                 buffer.append( "\" href=\"" );

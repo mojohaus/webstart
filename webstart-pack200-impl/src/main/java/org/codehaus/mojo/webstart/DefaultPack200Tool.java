@@ -146,13 +146,13 @@ public class DefaultPack200Tool
     {
         // getLog().debug( "packJars for " + directory );
         File[] jarFiles = directory.listFiles( jarFileFilter );
-        for ( int i = 0; i < jarFiles.length; i++ )
+        for ( File jarFile1 : jarFiles )
         {
             // getLog().debug( "packJars: " + jarFiles[i] );
 
             final String extension = gzip ? ".pack.gz" : ".pack";
 
-            File jarFile = jarFiles[i];
+            File jarFile = jarFile1;
 
             File pack200Jar = new File( jarFile.getParentFile(), jarFile.getName() + extension );
 
@@ -175,9 +175,8 @@ public class DefaultPack200Tool
     {
         // getLog().debug( "unpackJars for " + directory );
         File[] packFiles = directory.listFiles( pack200FileFilter );
-        for ( int i = 0; i < packFiles.length; i++ )
+        for ( File packFile : packFiles )
         {
-            File packFile = packFiles[i];
             final String packedJarPath = packFile.getAbsolutePath();
             int extensionLength = packedJarPath.endsWith( ".jar.pack.gz" ) ? 8 : 5;
             String jarFileName = packedJarPath.substring( 0, packedJarPath.length() - extensionLength );
@@ -185,7 +184,7 @@ public class DefaultPack200Tool
 
             deleteFile( jarFile );
 
-            unpack( packFile, jarFile, Collections.EMPTY_MAP );
+            unpack( packFile, jarFile, Collections.emptyMap() );
             setLastModified( jarFile, packFile.lastModified() );
         }
     }

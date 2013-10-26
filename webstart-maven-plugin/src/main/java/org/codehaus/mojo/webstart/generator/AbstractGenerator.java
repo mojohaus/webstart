@@ -33,7 +33,6 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.TimeZone;
 
@@ -266,9 +265,9 @@ public abstract class AbstractGenerator
 
     private void addPropertiesToContext( Properties properties, VelocityContext context )
     {
-        for ( Iterator iter = properties.keySet().iterator(); iter.hasNext(); )
+        for ( Object o : properties.keySet() )
         {
-            String nextKey = (String) iter.next();
+            String nextKey = (String) o;
             String nextValue = properties.getProperty( nextKey );
             context.put( nextKey, nextValue );
         }
@@ -309,16 +308,16 @@ public abstract class AbstractGenerator
      */
     protected String indentText( int level, String text )
     {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         String[] lines = text.split( "\n" );
         String prefix = "";
         for ( int i = 0; i < level; i++ )
         {
             prefix += " ";
         }
-        for ( int i = 0, j = lines.length; i < j; i++ )
+        for ( String line : lines )
         {
-            buffer.append( prefix ).append( lines[i] ).append( "\n" );
+            buffer.append( prefix ).append( line ).append( "\n" );
         }
         return buffer.toString();
     }

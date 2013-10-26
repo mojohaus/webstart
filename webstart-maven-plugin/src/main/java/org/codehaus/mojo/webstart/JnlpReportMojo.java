@@ -20,6 +20,10 @@ package org.codehaus.mojo.webstart;
  */
 
 import org.apache.maven.doxia.siterenderer.Renderer;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
@@ -27,7 +31,6 @@ import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -37,9 +40,8 @@ import java.util.ResourceBundle;
  *
  * @author Geoffrey De Smet
  * @description Creates a Jnlp Report
- * @goal report
- * @phase site
  */
+@Mojo( name = "report", defaultPhase = LifecyclePhase.SITE, requiresReports = true)
 public class JnlpReportMojo
     extends AbstractMavenReport
 {
@@ -49,58 +51,40 @@ public class JnlpReportMojo
 
     /**
      * Location where the site is generated.
-     *
-     * @parameter default-value="${project.reporting.outputDirectory}"
      */
+    @Parameter( defaultValue = "${project.reporting.outputDirectory}" )
     private File outputDirectory;
 
     /**
-     * Maven Project
-     *
-     * @parameter default-value="${project}"
-     * @required
-     * @readonly
-     */
-    private MavenProject project;
-
-    /**
      * Directory where the jnlp artifacts and jnlp sources files reside.
-     *
-     * @parameter default-value="${project.build.directory}/jnlp"
-     * @required
      */
+    @Parameter( defaultValue = "${project.build.directory}/jnlp", required = true )
     private File jnlpSourceDirectory;
 
     /**
      * Directory in the site directory where the jnlp artifacts and jnlp sources files reside.
-     *
-     * @parameter expression="${jnlp.siteJnlpDirectory}" default-value="jnlp"
-     * @required
      */
+    @Parameter( property = "jnlp.siteJnlpDirectory", defaultValue = "jnlp", required = true )
     private String siteJnlpDirectory;
 
     /**
      * Name of the main jnlp file of the project.
-     *
-     * @parameter expression="${jnlp.siteJnlpFile}" default-value="launch.jnlp"
-     * @required
      */
+    @Parameter( property = "jnlp.siteJnlpFile", defaultValue = "launch.jnlp", required = true )
     private String siteJnlpFile;
 
     /**
      * The default filename to use for the report.
-     *
-     * @parameter expression="${outputName}" default-value="jnlp-report"
-     * @required
      */
+    @Parameter( property = "outputName", defaultValue = "jnlp-report", required = true )
     private String outputName;
 
     /**
      * The code base to use on the generated jnlp files.
      *
-     * @parameter expression="${jnlp.codebase}" default-value="${project.url}/jnlp"
      * @since 1.0-beta-2
      */
+    @Parameter( property = "jnlp.codebase", defaultValue = "${project.url}/jnlp" )
     private String codebase;
 
     // ----------------------------------------------------------------------
@@ -108,12 +92,15 @@ public class JnlpReportMojo
     // ----------------------------------------------------------------------
 
     /**
-     * <i>Maven Internal</i>: The Doxia Site Renderer.
-     *
-     * @component
-     * @required
-     * @readonly
+     * Maven Project
      */
+    @Component
+    private MavenProject project;
+
+    /**
+     * <i>Maven Internal</i>: The Doxia Site Renderer.
+     */
+    @Component
     private Renderer siteRenderer;
 
     // ----------------------------------------------------------------------
@@ -196,10 +183,9 @@ public class JnlpReportMojo
         try
         {
             File destinationDirectory = new File( outputDirectory, siteJnlpDirectory );
-            List files = FileUtils.getFiles( jnlpSourceDirectory, "**/*", "" );
-            for ( Iterator i = files.iterator(); i.hasNext(); )
+            List<File> files = FileUtils.getFiles( jnlpSourceDirectory, "**/*", "" );
+            for ( File file : files )
             {
-                File file = (File) i.next();
                 getLog().debug( "Copying " + file + " to " + destinationDirectory );
                 String path = file.getAbsolutePath().substring( jnlpSourceDirectory.getAbsolutePath().length() + 1 );
                 File destDir = new File( destinationDirectory, path );

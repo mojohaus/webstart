@@ -150,7 +150,7 @@ public class VersionXmlGeneratorTest
         jarResources.add( jar1 );
         jarResources.add( jar2 );
 
-        StringBuffer expectedXml = new StringBuffer();
+        StringBuilder expectedXml = new StringBuilder();
         expectedXml.append( "<jnlp-versions>" ).append( "  <resource>" ).append( "    <pattern>" ).append(
             "      <name>bogus1.txt</name>" ).append( "      <version-id>1.0</version-id>" ).append(
             "    </pattern>" ).append( "    <file>bogus1.txt</file>" ).append( "  </resource>" ).append(
@@ -172,7 +172,7 @@ public class VersionXmlGeneratorTest
     {
 
         BufferedReader reader = null;
-        StringBuffer fileContents = new StringBuffer();
+        StringBuilder fileContents = new StringBuilder();
 
         try
         {

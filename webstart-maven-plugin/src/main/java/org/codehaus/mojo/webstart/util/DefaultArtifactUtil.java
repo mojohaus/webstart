@@ -83,7 +83,7 @@ public class DefaultArtifactUtil
 
         // JarArchiver.grabFilesAndDirs()
         ClassLoader cl = new java.net.URLClassLoader( new URL[]{ artifact.getFile().toURI().toURL() } );
-        Class c = null;
+        Class<?> c = null;
         try
         {
             c = Class.forName( mainClass, false, cl );

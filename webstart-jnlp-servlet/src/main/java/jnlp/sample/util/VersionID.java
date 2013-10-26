@@ -38,6 +38,7 @@ package jnlp.sample.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * VersionID contains a JNLP version ID.
@@ -66,7 +67,7 @@ public class VersionID
         _usePrefixMatch = false;
         _useGreaterThan = false;
         _isCompound = false;
-        if ( str == null && str.length() == 0 )
+        if ( str == null || str.length() == 0 )
         {
             _tuple = new String[0];
             return;
@@ -97,7 +98,7 @@ public class VersionID
                 str = str.substring( 0, str.length() - 1 );
             }
 
-            ArrayList list = new ArrayList();
+            List<String> list = new ArrayList<String>();
             int start = 0;
             for ( int i = 0; i < str.length(); i++ )
             {
@@ -117,7 +118,7 @@ public class VersionID
                 list.add( str.substring( start, str.length() ) );
             }
             _tuple = new String[list.size()];
-            _tuple = (String[]) list.toArray( _tuple );
+            _tuple = list.toArray( _tuple );
         }
     }
 
@@ -251,12 +252,12 @@ public class VersionID
             {
                 if ( e1 instanceof Integer && e2 instanceof Integer )
                 {
-                    return ( (Integer) e1 ).intValue() > ( (Integer) e2 ).intValue();
+                    return (Integer) e1 > (Integer) e2;
                 }
                 else
                 {
-                    String s1 = t1[i].toString();
-                    String s2 = t2[i].toString();
+                    String s1 = t1[i];
+                    String s2 = t2[i];
                     return s1.compareTo( s2 ) > 0;
                 }
 
@@ -333,7 +334,7 @@ public class VersionID
      */
     public String toString()
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for ( int i = 0; i < _tuple.length - 1; i++ )
         {
             sb.append( _tuple[i] );

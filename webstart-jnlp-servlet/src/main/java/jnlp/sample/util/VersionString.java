@@ -37,6 +37,7 @@
 package jnlp.sample.util;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 /*
@@ -48,14 +49,14 @@ import java.util.StringTokenizer;
  */
 public class VersionString
 {
-    private ArrayList _versionIds;
+    private List<VersionID> _versionIds;
 
     /**
      * Constructs a VersionString object from string
      */
     public VersionString( String vs )
     {
-        _versionIds = new ArrayList();
+        _versionIds = new ArrayList<VersionID>();
         if ( vs != null )
         {
             StringTokenizer st = new StringTokenizer( vs, " ", false );
@@ -72,9 +73,9 @@ public class VersionString
      */
     public boolean contains( VersionID m )
     {
-        for ( int i = 0; i < _versionIds.size(); i++ )
+        for ( Object _versionId : _versionIds )
         {
-            VersionID vi = (VersionID) _versionIds.get( i );
+            VersionID vi = (VersionID) _versionId;
             boolean check = vi.match( m );
             if ( check )
             {
@@ -97,9 +98,9 @@ public class VersionString
      */
     public boolean containsGreaterThan( VersionID m )
     {
-        for ( int i = 0; i < _versionIds.size(); i++ )
+        for ( Object _versionId : _versionIds )
         {
-            VersionID vi = (VersionID) _versionIds.get( i );
+            VersionID vi = (VersionID) _versionId;
             boolean check = vi.isGreaterThan( m );
             if ( check )
             {
@@ -130,10 +131,10 @@ public class VersionString
      */
     public String toString()
     {
-        StringBuffer sb = new StringBuffer();
-        for ( int i = 0; i < _versionIds.size(); i++ )
+        StringBuilder sb = new StringBuilder();
+        for ( Object _versionId : _versionIds )
         {
-            sb.append( _versionIds.get( i ).toString() );
+            sb.append( _versionId.toString() );
             sb.append( ' ' );
         }
         return sb.toString();

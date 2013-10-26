@@ -36,8 +36,21 @@
 
 package jnlp.sample.jardiff;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
@@ -76,23 +89,23 @@ public class JarDiffPatcher
         JarOutputStream jos = new JarOutputStream( result );
         JarFile oldJar = new JarFile( oldFile );
         JarFile jarDiff = new JarFile( diffFile );
-        Set ignoreSet = new HashSet();
-        Map renameMap = new HashMap();
+        Set<String> ignoreSet = new HashSet<String>();
+        Map<String, String> renameMap = new HashMap<String, String>();
 
         determineNameMapping( jarDiff, ignoreSet, renameMap );
 
         // get all keys in renameMap
-        Object[] keys = renameMap.keySet().toArray();
+        String[] keys = renameMap.keySet().toArray( new String[renameMap.size()] );
 
         // Files to implicit move
-        Set oldjarNames = new HashSet();
+        Set<String> oldjarNames = new HashSet<String>();
 
-        Enumeration oldEntries = oldJar.entries();
+        Enumeration<JarEntry> oldEntries = oldJar.entries();
         if ( oldEntries != null )
         {
             while ( oldEntries.hasMoreElements() )
             {
-                oldjarNames.add( ( (JarEntry) oldEntries.nextElement() ).getName() );
+                oldjarNames.add( ( oldEntries.nextElement() ).getName() );
             }
         }
 
@@ -110,12 +123,12 @@ public class JarDiffPatcher
         size -= ignoreSet.size();
 
         // Add content from JARDiff
-        Enumeration entries = jarDiff.entries();
+        Enumeration<JarEntry> entries = jarDiff.entries();
         if ( entries != null )
         {
             while ( entries.hasMoreElements() )
             {
-                JarEntry entry = (JarEntry) entries.nextElement();
+                JarEntry entry = entries.nextElement();
 
                 if ( !INDEX_NAME.equals( entry.getName() ) )
                 {
@@ -146,12 +159,11 @@ public class JarDiffPatcher
         }
 
         // go through the renameMap and apply move for each entry
-        for ( int j = 0; j < keys.length; j++ )
+        for ( String newName : keys )
         {
 
             // Apply move <oldName> <newName> command
-            String newName = (String) keys[j];
-            String oldName = (String) renameMap.get( newName );
+            String oldName = renameMap.get( newName );
 
             // Get source JarEntry
             JarEntry oldEntry = oldJar.getJarEntry( oldName );
@@ -191,20 +203,14 @@ public class JarDiffPatcher
         }
 
         // implicit move
-        Iterator iEntries = oldjarNames.iterator();
-        if ( iEntries != null )
+        for ( String name : oldjarNames )
         {
-            while ( iEntries.hasNext() )
-            {
+            JarEntry entry = oldJar.getJarEntry( name );
 
-                String name = (String) iEntries.next();
-                JarEntry entry = oldJar.getJarEntry( name );
+            updateDelegate( delegate, currentEntry, size );
+            currentEntry++;
 
-                updateDelegate( delegate, currentEntry, size );
-                currentEntry++;
-
-                writeEntry( jos, entry, oldJar );
-            }
+            writeEntry( jos, entry, oldJar );
         }
 
         updateDelegate( delegate, currentEntry, size );
@@ -220,7 +226,7 @@ public class JarDiffPatcher
         }
     }
 
-    private void determineNameMapping( JarFile jarDiff, Set ignoreSet, Map renameMap )
+    private void determineNameMapping( JarFile jarDiff, Set<String> ignoreSet, Map<String, String> renameMap )
         throws IOException
     {
         InputStream is = jarDiff.getInputStream( jarDiff.getEntry( INDEX_NAME ) );
@@ -241,7 +247,7 @@ public class JarDiffPatcher
         {
             if ( line.startsWith( REMOVE_COMMAND ) )
             {
-                List sub = getSubpaths( line.substring( REMOVE_COMMAND.length() ) );
+                List<String> sub = getSubpaths( line.substring( REMOVE_COMMAND.length() ) );
 
                 if ( sub.size() != 1 )
                 {
@@ -251,7 +257,7 @@ public class JarDiffPatcher
             }
             else if ( line.startsWith( MOVE_COMMAND ) )
             {
-                List sub = getSubpaths( line.substring( MOVE_COMMAND.length() ) );
+                List<String> sub = getSubpaths( line.substring( MOVE_COMMAND.length() ) );
 
                 if ( sub.size() != 2 )
                 {
@@ -286,11 +292,11 @@ public class JarDiffPatcher
         }
     }
 
-    private List getSubpaths( String path )
+    private List<String> getSubpaths( String path )
     {
         int index = 0;
         int length = path.length();
-        ArrayList sub = new ArrayList();
+        List<String> sub = new ArrayList<String>();
 
         while ( index < length )
         {

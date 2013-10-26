@@ -31,7 +31,7 @@ public class JnlpExtension
     extends JnlpConfig
 {
 
-    private List includes;
+    private List<String> includes;
 
     private String name;
 
@@ -53,7 +53,7 @@ public class JnlpExtension
         this.homepage = homepage;
     }
 
-    public void setIncludes( List includes )
+    public void setIncludes( List<String> includes )
     {
         this.includes = includes;
     }
@@ -83,7 +83,7 @@ public class JnlpExtension
         return homepage;
     }
 
-    public List getIncludes()
+    public List<String> getIncludes()
     {
         return includes;
     }

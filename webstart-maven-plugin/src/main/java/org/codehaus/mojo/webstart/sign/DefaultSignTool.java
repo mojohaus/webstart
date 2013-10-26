@@ -328,7 +328,7 @@ public class DefaultSignTool
      *
      * @param jarFile The archive to scan, must not be <code>null</code>.
      * @return <code>true</code>, if the archive contains at least one signature file; <code>false</code>, if the
-     *         archive does not contain any signature files.
+     * archive does not contain any signature files.
      * @throws IOException if scanning <code>jarFile</code> fails.
      */
     public static boolean isArchiveSigned( final File jarFile )

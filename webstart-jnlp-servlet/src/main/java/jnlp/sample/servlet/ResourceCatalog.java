@@ -215,9 +215,9 @@ public class ResourceCatalog
         int error = DownloadResponse.ERR_10_NO_RESOURCE;
         VersionString vs = new VersionString( dreq.getVersion() );
         // Iterate through entries
-        for ( int i = 0; i < list.size(); i++ )
+        for ( Object aList : list )
         {
-            JnlpResource respath = (JnlpResource) list.get( i );
+            JnlpResource respath = (JnlpResource) aList;
             VersionID vid = new VersionID( respath.getVersionId() );
             int sts = matchEntry( name, vs, dreq, respath, vid );
             if ( sts == DownloadResponse.STS_00_OK )
@@ -274,9 +274,9 @@ public class ResourceCatalog
         {
             return false;
         }
-        for ( int i = 0; i < prefixList.length; i++ )
+        for ( String aPrefixList : prefixList )
         {
-            if ( target.startsWith( prefixList[i] ) )
+            if ( target.startsWith( aPrefixList ) )
             {
                 return true;
             }
@@ -302,9 +302,9 @@ public class ResourceCatalog
             return false;
         }
         // Check for a match on a key
-        for ( int i = 0; i < keys.length; i++ )
+        for ( String key : keys )
         {
-            if ( prefixMatchStringList( prefixes, keys[i] ) )
+            if ( prefixMatchStringList( prefixes, key ) )
             {
                 return true;
             }
@@ -356,9 +356,9 @@ public class ResourceCatalog
 
         if ( temp != null )
         {
-            for ( int i = 0; i < temp.length; i++ )
+            for ( String aTemp : temp )
             {
-                filename += "__O" + temp[i];
+                filename += "__O" + aTemp;
             }
         }
 
@@ -366,18 +366,18 @@ public class ResourceCatalog
 
         if ( temp != null )
         {
-            for ( int i = 0; i < temp.length; i++ )
+            for ( String aTemp : temp )
             {
-                filename += "__A" + temp[i];
+                filename += "__A" + aTemp;
             }
         }
         temp = dreq.getLocale();
 
         if ( temp != null )
         {
-            for ( int i = 0; i < temp.length; i++ )
+            for ( String aTemp : temp )
             {
-                filename += "__L" + temp[i];
+                filename += "__L" + aTemp;
             }
         }
 
@@ -420,9 +420,9 @@ public class ResourceCatalog
         if ( dir.exists() && dir.isDirectory() )
         {
             File[] entries = dir.listFiles();
-            for ( int i = 0; i < entries.length; i++ )
+            for ( File entry : entries )
             {
-                JnlpResource jnlpres = parseFileEntry( dirPath, entries[i].getName() );
+                JnlpResource jnlpres = parseFileEntry( dirPath, entry.getName() );
                 if ( jnlpres != null )
                 {
                     if ( _log.isDebugLevel() )

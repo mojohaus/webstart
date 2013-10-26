@@ -27,6 +27,8 @@ import org.apache.maven.artifact.resolver.filter.ExcludesArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.PluginManager;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.settings.Settings;
 import org.codehaus.mojo.webstart.generator.ExtensionGenerator;
@@ -34,14 +36,13 @@ import org.codehaus.mojo.webstart.generator.ExtensionGeneratorExtraConfig;
 import org.codehaus.mojo.webstart.generator.Generator;
 import org.codehaus.mojo.webstart.generator.JnplGeneratorExtraConfig;
 import org.codehaus.mojo.webstart.util.IOUtil;
-import org.codehaus.plexus.archiver.zip.ZipArchiver;
+import org.codehaus.plexus.archiver.Archiver;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -74,9 +75,9 @@ public abstract class AbstractJnlpMojo
 
         private boolean outputJarVersions;
 
-        private List includes;
+        private List<String> includes;
 
-        private List excludes;
+        private List<String> excludes;
 
         /**
          * Returns the value of the flag that determines whether or not
@@ -90,22 +91,22 @@ public abstract class AbstractJnlpMojo
             return outputJarVersions;
         }
 
-        public List getIncludes()
+        public List<String> getIncludes()
         {
             return includes;
         }
 
-        public void setIncludes( List includes )
+        public void setIncludes( List<String> includes )
         {
             this.includes = includes;
         }
 
-        public List getExcludes()
+        public List<String> getExcludes()
         {
             return excludes;
         }
 
-        public void setExcludes( List excludes )
+        public void setExcludes( List<String> excludes )
         {
             this.excludes = excludes;
         }
@@ -114,48 +115,46 @@ public abstract class AbstractJnlpMojo
     /**
      * Flag to create the archive or not.
      *
-     * @parameter default-value="true"
      * @since 1.0-beta-2
      */
+    @Parameter( defaultValue = "true" )
     private boolean makeArchive;
 
     /**
      * Flag to attach the archive or not to the project's build.
      *
-     * @parameter default-value="true"
      * @since 1.0-beta-2
      */
+    @Parameter( defaultValue = "true" )
     private boolean attachArchive;
 
     /**
      * The path of the archive to generate if {@link #makeArchive} flag is on.
      *
-     * @parameter default-value="${project.build.directory}/${project.build.finalName}.zip"
      * @since 1.0-beta-4
      */
+    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}.zip" )
     private File archive;
 
     /**
      * The jnlp configuration element.
-     *
-     * @parameter
      */
+    @Parameter
     private JnlpConfig jnlp;
 
     /**
      * [optional] extensions configuration.
      *
-     * @parameter
      * @since 1.0-beta-2
      */
-    private List jnlpExtensions;
+    @Parameter
+    private List<JnlpExtension> jnlpExtensions;
 
     /**
      * [optional] transitive dependencies filter - if omitted, the plugin will include all transitive dependencies.
      * Provided and test scope dependencies are always excluded.
-     *
-     * @parameter
      */
+    @Parameter
     private Dependencies dependencies;
 
     /**
@@ -165,36 +164,21 @@ public abstract class AbstractJnlpMojo
      * didn't properly migrate from 1.0-alpha-1 to 1.0-alpha-2 configuration.
      * <p/>
      * It will be removed before 1.0.
-     *
-     * @parameter
      */
+    @Parameter
     private String keystore;
 
     /**
-     * @parameter default-value="${basedir}"
-     * @required
-     * @readonly
      */
+    @Parameter( defaultValue = "${basedir}", readonly = true, required = true )
     private File basedir;
-
-    /**
-     * The current user system settings for use in Maven. This is used for
-     * <br/>
-     * plugin manager API calls.
-     *
-     * @parameter default-value="${settings}"
-     * @required
-     * @readonly
-     */
-    private Settings settings;
 
     /**
      * When set to true, this flag indicates that a version attribute should
      * be output in each of the jar resource elements in the generated
      * JNLP file.
-     *
-     * @parameter default-value="false"
      */
+    @Parameter( defaultValue = "false" )
     private boolean outputJarVersions;
 
     // ----------------------------------------------------------------------
@@ -202,25 +186,29 @@ public abstract class AbstractJnlpMojo
     // ----------------------------------------------------------------------
 
     /**
-     * The Zip archiver.
-     *
-     * @component role="org.codehaus.plexus.archiver.Archiver" roleHint="zip"
-     * @required
+     * The current user system settings for use in Maven. This is used for
+     * <br/>
+     * plugin manager API calls.
      */
-    private ZipArchiver zipArchiver;
+    @Component
+    private Settings settings;
+
+    /**
+     * The Zip archiver.
+     */
+    @Component( hint = "zip" )
+    private Archiver zipArchiver;
 
     /**
      * The project helper used to attach the artifact produced by this plugin to the project.
-     *
-     * @component
      */
+    @Component
     private MavenProjectHelper projectHelper;
 
     /**
      * The plugin manager instance used to resolve plugin descriptors.
-     *
-     * @component role="org.apache.maven.plugin.PluginManager"
      */
+    @Component
     private PluginManager pluginManager;
 
     // ----------------------------------------------------------------------
@@ -230,12 +218,12 @@ public abstract class AbstractJnlpMojo
     /**
      * the artifacts packaged in the webstart app
      */
-    private List packagedJnlpArtifacts = new ArrayList();
+    private List<Artifact> packagedJnlpArtifacts = new ArrayList<Artifact>();
 
     /**
      * the artifacts associated to each jnlp extension
      */
-    private Map extensionsJnlpArtifacts = new HashMap();
+    private Map<JnlpExtension, List<Artifact>> extensionsJnlpArtifacts = new HashMap<JnlpExtension, List<Artifact>>();
 
     private Artifact artifactWithMainClass;
 
@@ -271,8 +259,8 @@ public abstract class AbstractJnlpMojo
         // prepare layout
         //
 
-        ioUtil.makeDirectoryIfNecessary( getWorkDirectory(), "Could not create work directory: " );
-        ioUtil.makeDirectoryIfNecessary( getLibDirectory(), "Could not create library directory: " );
+        ioUtil.makeDirectoryIfNecessary( getWorkDirectory() );
+        ioUtil.makeDirectoryIfNecessary( getLibDirectory() );
 
         try
         {
@@ -350,10 +338,9 @@ public abstract class AbstractJnlpMojo
                 // package the zip. Note this is very simple. Look at the JarMojo which does more things.
                 // we should perhaps package as a war when inside a project with war packaging ?
 
-                ioUtil.makeDirectoryIfNecessary( archive.getParentFile(),
-                                                 "Could not create archive parent directory: " );
+                ioUtil.makeDirectoryIfNecessary( archive.getParentFile() );
 
-                ioUtil.deleteFile( archive, "Could not obsolete archive: " );
+                ioUtil.deleteFile( archive );
 
                 verboseLog( "Will create archive at location: " + archive );
 
@@ -383,7 +370,7 @@ public abstract class AbstractJnlpMojo
     // Public methods
     // ----------------------------------------------------------------------
 
-    public List getJnlpExtensions()
+    public List<JnlpExtension> getJnlpExtensions()
     {
         return jnlpExtensions;
     }
@@ -393,12 +380,12 @@ public abstract class AbstractJnlpMojo
         return jnlpExtensions != null && !jnlpExtensions.isEmpty();
     }
 
-    public List getPackagedJnlpArtifacts()
+    public List<Artifact> getPackagedJnlpArtifacts()
     {
         return packagedJnlpArtifacts;
     }
 
-    public Map getExtensionsJnlpArtifacts()
+    public Map<JnlpExtension, List<Artifact>> getExtensionsJnlpArtifacts()
     {
         return extensionsJnlpArtifacts;
     }
@@ -468,13 +455,13 @@ public abstract class AbstractJnlpMojo
 
         boolean failed = false;
 
-        Collection artifacts = getProject().getArtifacts();
+        Collection<Artifact> artifacts = getProject().getArtifacts();
 
         getLog().debug( "artifacts: " + artifacts.size() );
 
         if ( dependencies.getIncludes() != null && !dependencies.getIncludes().isEmpty() )
         {
-            failed = checkDependencies( dependencies.getIncludes(), artifacts ) || failed;
+            failed = checkDependencies( dependencies.getIncludes(), artifacts );
         }
         if ( dependencies.getExcludes() != null && !dependencies.getExcludes().isEmpty() )
         {
@@ -484,7 +471,7 @@ public abstract class AbstractJnlpMojo
         if ( failed )
         {
             throw new MojoExecutionException(
-                "At least one specified dependency is incorrect. " + "Review your project configuration." );
+                "At least one specified dependency is incorrect. Review your project configuration." );
         }
     }
 
@@ -493,7 +480,7 @@ public abstract class AbstractJnlpMojo
      * @param artifacts collection of artifacts to check
      * @return true if at least one of the pattern in the list matches no artifact, false otherwise
      */
-    private boolean checkDependencies( List patterns, Collection artifacts )
+    private boolean checkDependencies( List<String> patterns, Collection<Artifact> artifacts )
     {
         if ( dependencies == null )
         {
@@ -501,9 +488,9 @@ public abstract class AbstractJnlpMojo
         }
 
         boolean failed = false;
-        for ( Iterator it = patterns.iterator(); it.hasNext(); )
+        for ( String pattern : patterns )
         {
-            failed = ensurePatternMatchesAtLeastOneArtifact( it.next().toString(), artifacts ) || failed;
+            failed = ensurePatternMatchesAtLeastOneArtifact( pattern, artifacts ) || failed;
         }
         return failed;
     }
@@ -513,17 +500,15 @@ public abstract class AbstractJnlpMojo
      * @param artifacts collection of artifacts to check
      * @return true if filter matches no artifact, false otherwise *
      */
-    private boolean ensurePatternMatchesAtLeastOneArtifact( String pattern, Collection artifacts )
+    private boolean ensurePatternMatchesAtLeastOneArtifact( String pattern, Collection<Artifact> artifacts )
     {
-        List onePatternList = new ArrayList();
+        List<String> onePatternList = new ArrayList<String>();
         onePatternList.add( pattern );
         ArtifactFilter filter = new IncludesArtifactFilter( onePatternList );
 
         boolean noMatch = true;
-        for ( Iterator it = artifacts.iterator(); it.hasNext(); )
+        for ( Artifact artifact : artifacts )
         {
-            Artifact artifact = (Artifact) it.next();
-
             getLog().debug( "checking pattern: " + pattern + " against " + artifact );
 
             if ( filter.include( artifact ) )
@@ -563,12 +548,11 @@ public abstract class AbstractJnlpMojo
             filter.add( new ExcludesArtifactFilter( dependencies.getExcludes() ) );
         }
 
-        Collection artifacts =
+        Collection<Artifact> artifacts =
             isExcludeTransitive() ? getProject().getDependencyArtifacts() : getProject().getArtifacts();
 
-        for ( Iterator it = artifacts.iterator(); it.hasNext(); )
+        for ( Artifact artifact : artifacts )
         {
-            Artifact artifact = (Artifact) it.next();
             if ( filter.include( artifact ) )
             {
                 processDependency( artifact );
@@ -720,9 +704,9 @@ public abstract class AbstractJnlpMojo
         {
             return;
         }
-        for ( Iterator it3 = collection.iterator(); it3.hasNext(); )
+        for ( Object aCollection : collection )
         {
-            getLog().debug( prefix + it3.next() );
+            getLog().debug( prefix + aCollection );
         }
     }
 
@@ -790,18 +774,16 @@ public abstract class AbstractJnlpMojo
     private void prepareExtensions()
         throws MojoExecutionException
     {
-        List includes = new ArrayList();
-        for ( Iterator itr = jnlpExtensions.iterator(); itr.hasNext(); )
+        List<String> includes = new ArrayList<String>();
+        for ( JnlpExtension extension : jnlpExtensions )
         {
-            JnlpExtension extension = (JnlpExtension) itr.next();
-
             // Check extensions (mandatory name, title and vendor and at least one include)
 
             checkExtension( extension );
 
-            for ( Iterator itrInclude = extension.getIncludes().iterator(); itrInclude.hasNext(); )
+            for ( String o : extension.getIncludes() )
             {
-                includes.add( ( (String) itrInclude.next() ).trim() );
+                includes.add( o.trim() );
             }
 
             if ( extension.getOutputFile() == null || extension.getOutputFile().length() == 0 )
@@ -821,7 +803,7 @@ public abstract class AbstractJnlpMojo
 
         if ( dependencies.getExcludes() == null )
         {
-            dependencies.setExcludes( new ArrayList() );
+            dependencies.setExcludes( new ArrayList<String>() );
         }
 
         dependencies.getExcludes().addAll( includes );
@@ -842,19 +824,15 @@ public abstract class AbstractJnlpMojo
         throws IOException, MojoExecutionException
     {
 
-        Collection artifacts =
+        Collection<Artifact> artifacts =
             isExcludeTransitive() ? getProject().getDependencyArtifacts() : getProject().getArtifacts();
 
-        for ( Iterator itr = jnlpExtensions.iterator(); itr.hasNext(); )
+        for ( JnlpExtension extension : jnlpExtensions )
         {
-
-            JnlpExtension extension = (JnlpExtension) itr.next();
-
             ArtifactFilter filter = new IncludesArtifactFilter( extension.getIncludes() );
 
-            for ( Iterator it = artifacts.iterator(); it.hasNext(); )
+            for ( Artifact artifact : artifacts )
             {
-                Artifact artifact = (Artifact) it.next();
                 if ( filter.include( artifact ) )
                 {
                     processExtensionDependency( extension, artifact );
@@ -912,10 +890,10 @@ public abstract class AbstractJnlpMojo
 
                 // save the artifact dependency for the extension
 
-                List deps = (List) extensionsJnlpArtifacts.get( extension );
+                List<Artifact> deps = extensionsJnlpArtifacts.get( extension );
                 if ( deps == null )
                 {
-                    deps = new ArrayList();
+                    deps = new ArrayList<Artifact>();
                     extensionsJnlpArtifacts.put( extension, deps );
                 }
                 deps.add( artifact );
@@ -938,9 +916,9 @@ public abstract class AbstractJnlpMojo
     private void generateJnlpExtensionsFile( File outputDirectory )
         throws MojoExecutionException
     {
-        for ( Iterator itr = jnlpExtensions.iterator(); itr.hasNext(); )
+        for ( Object jnlpExtension : jnlpExtensions )
         {
-            generateJnlpExtensionFile( outputDirectory, (JnlpExtension) itr.next() );
+            generateJnlpExtensionFile( outputDirectory, (JnlpExtension) jnlpExtension );
         }
     }
 

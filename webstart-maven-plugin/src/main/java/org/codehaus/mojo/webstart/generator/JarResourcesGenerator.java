@@ -26,7 +26,6 @@ import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Generates a JNLP deployment descriptor.
@@ -40,7 +39,7 @@ public class JarResourcesGenerator
 
 {
 
-    private final Collection jarResources;
+    private final Collection<JarResource> jarResources;
 
     private String libPath;
 
@@ -57,8 +56,8 @@ public class JarResourcesGenerator
      */
     public JarResourcesGenerator( Log log, MavenProject mavenProject, File resourceLoaderPath,
                                   String defaultTemplateResourceName, File outputFile, String templateFile,
-                                  Collection jarResources, String mainClass, String webstartJarURL, String libPath,
-                                  String encoding )
+                                  Collection<JarResource> jarResources, String mainClass, String webstartJarURL,
+                                  String libPath, String encoding )
     {
         super( log, mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, templateFile, mainClass,
                webstartJarURL, encoding );
@@ -77,12 +76,12 @@ public class JarResourcesGenerator
         if ( this.jarResources.size() != 0 )
         {
             final int multiplier = 100;
-            StringBuffer buffer = new StringBuffer( multiplier * this.jarResources.size() );
+            StringBuilder buffer = new StringBuilder( multiplier * this.jarResources.size() );
             buffer.append( "\n" );
 
-            for ( Iterator itr = this.jarResources.iterator(); itr.hasNext(); )
+            for ( Object jarResource1 : this.jarResources )
             {
-                JarResource jarResource = (JarResource) itr.next();
+                JarResource jarResource = (JarResource) jarResource1;
 
                 if ( !jarResource.isIncludeInJnlp() )
                 {

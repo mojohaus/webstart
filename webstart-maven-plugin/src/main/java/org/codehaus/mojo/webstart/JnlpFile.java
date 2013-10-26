@@ -37,7 +37,7 @@ public class JnlpFile
 
     private String templateFilename;
 
-    private List jarResources;
+    private List<JarResource> jarResources;
 
     private String mainClass;
 
@@ -75,7 +75,7 @@ public class JnlpFile
      *
      * @return Returns the value of the jarResources field.
      */
-    protected List getJarResources()
+    protected List<JarResource> getJarResources()
     {
         return this.jarResources;
     }
@@ -96,7 +96,7 @@ public class JnlpFile
      *
      * @param jarResources
      */
-    protected void setJarResources( List jarResources )
+    protected void setJarResources( List<JarResource> jarResources )
     {
         this.jarResources = jarResources;
     }

@@ -40,6 +40,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The DownloadRequest incapsulates all the data in a request
@@ -96,7 +97,7 @@ public class DownloadRequest
     // Contruct Request object based on HTTP request
     public DownloadRequest( HttpServletRequest request )
     {
-        this( (ServletContext) null, request );
+        this( null, request );
     }
 
     public DownloadRequest( ServletContext context, HttpServletRequest request )
@@ -126,7 +127,7 @@ public class DownloadRequest
             if ( realPath != null )
             {
                 File f = new File( realPath );
-                if ( f != null && f.exists() && f.isDirectory() )
+                if ( f.exists() && f.isDirectory() )
                 {
                     _path += "/";
                 }
@@ -190,7 +191,7 @@ public class DownloadRequest
         {
             return null;
         }
-        ArrayList list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         int i = 0;
         int length = str.length();
         StringBuffer sb = null;
@@ -239,7 +240,7 @@ public class DownloadRequest
             return null;
         }
         String[] results = new String[list.size()];
-        return (String[]) list.toArray( results );
+        return list.toArray( results );
     }
 
     /* Split parameter at spaces. Convert '\ ' insto a space */

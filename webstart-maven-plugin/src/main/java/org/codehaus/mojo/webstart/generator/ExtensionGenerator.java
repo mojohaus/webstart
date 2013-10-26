@@ -19,6 +19,7 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.velocity.VelocityContext;
@@ -81,7 +82,7 @@ public class ExtensionGenerator
      */
     protected String getDependenciesText()
     {
-        List dependencies = (List) config.getExtensionsJnlpArtifacts().get( extension );
+        List<Artifact> dependencies = config.getExtensionsJnlpArtifacts().get( extension );
 
         return indentText( 4, Generator.getDependenciesText( config, dependencies ) );
     }

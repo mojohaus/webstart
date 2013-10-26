@@ -36,8 +36,24 @@
 
 package jnlp.sample.jardiff;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
@@ -303,9 +319,9 @@ public class JarDiff
         writer.write( "\r\n" );
 
         // Write out entries that have been removed
-        for ( int counter = 0; counter < oldEntries.size(); counter++ )
+        for ( Object oldEntry : oldEntries )
         {
-            String name = (String) oldEntries.get( counter );
+            String name = (String) oldEntry;
 
             writer.write( REMOVE_COMMAND );
             writer.write( " " );
@@ -314,22 +330,18 @@ public class JarDiff
         }
 
         // And those that have moved
-        Iterator names = movedMap.keySet().iterator();
 
-        if ( names != null )
+        for ( Object o : movedMap.keySet() )
         {
-            while ( names.hasNext() )
-            {
-                String newName = (String) names.next();
-                String oldName = (String) movedMap.get( newName );
+            String newName = (String) o;
+            String oldName = (String) movedMap.get( newName );
 
-                writer.write( MOVE_COMMAND );
-                writer.write( " " );
-                writeEscapedString( writer, oldName );
-                writer.write( " " );
-                writeEscapedString( writer, newName );
-                writer.write( "\r\n" );
-            }
+            writer.write( MOVE_COMMAND );
+            writer.write( " " );
+            writeEscapedString( writer, oldName );
+            writer.write( " " );
+            writeEscapedString( writer, newName );
+            writer.write( "\r\n" );
         }
 
         JarEntry je = new JarEntry( INDEX_NAME );
@@ -569,7 +581,7 @@ public class JarDiff
 
             String thisName = null;
 
-            Long crcL = new Long( entry.getCrc() );
+            Long crcL = entry.getCrc();
 
             // check if this jar contains files with the passed in entry's crc
             if ( _crcToEntryMap.containsKey( crcL ) )
@@ -578,21 +590,18 @@ public class JarDiff
                 LinkedList ll = (LinkedList) _crcToEntryMap.get( crcL );
                 // go through the list and check for content match
                 ListIterator li = ll.listIterator( 0 );
-                if ( li != null )
+                while ( li.hasNext() )
                 {
-                    while ( li.hasNext() )
+                    JarEntry thisEntry = (JarEntry) li.next();
+
+                    // check for content match
+                    InputStream oldIS = getJarFile().getInputStream( thisEntry );
+                    InputStream newIS = file.getJarFile().getInputStream( entry );
+
+                    if ( !differs( oldIS, newIS ) )
                     {
-                        JarEntry thisEntry = (JarEntry) li.next();
-
-                        // check for content match
-                        InputStream oldIS = getJarFile().getInputStream( thisEntry );
-                        InputStream newIS = file.getJarFile().getInputStream( entry );
-
-                        if ( !differs( oldIS, newIS ) )
-                        {
-                            thisName = thisEntry.getName();
-                            return thisName;
-                        }
+                        thisName = thisEntry.getName();
+                        return thisName;
                     }
                 }
             }

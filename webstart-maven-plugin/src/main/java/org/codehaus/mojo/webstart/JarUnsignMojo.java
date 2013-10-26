@@ -21,6 +21,10 @@ package org.codehaus.mojo.webstart;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.mojo.webstart.sign.SignTool;
 
 import java.io.File;
@@ -33,10 +37,8 @@ import java.io.File;
  * @author <a href="mailto:jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @author <a href="mailto:andrius@pivotcapital.com">Andrius Šabanas</a>
  * @version $Id$
- * @goal unsign
- * @phase package
- * @requiresProject
  */
+@Mojo( name = "unsign", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true )
 public class JarUnsignMojo
     extends AbstractMojo
 {
@@ -47,33 +49,29 @@ public class JarUnsignMojo
     /**
      * Set this to <code>true</code> to disable signing.
      * Useful to speed up build process in development environment.
-     *
-     * @parameter expression="${maven.jar.unsign.skip}" default-value="false"
      */
+    @Parameter( property = "maven.jar.unsign.skip", defaultValue = "false" )
     private boolean skip;
 
     /**
      * The directory location used for temporary storage of files used by this mojo.
      *
-     * @parameter expression="${tempdir}" default-value="${basedir}"
-     * @required
      * @deprecated since 1.0-beta-4, no more used to unsign jars.
      */
+    @Parameter( property = "tempdir", defaultValue = "${basedir}", required = true )
     private File tempDirectory;
 
     /**
      * Path of the jar to unsign. When specified, the finalName is ignored.
-     *
-     * @parameter alias="jarpath"
-     * default-value="${project.build.directory}/${project.build.finalName}.${project.packaging}"
      */
+    @Parameter( alias = "jarpath",
+                defaultValue = "${project.build.directory}/${project.build.finalName}.${project.packaging}" )
     private File jarPath;
 
     /**
      * Enable verbose mode.
-     *
-     * @parameter expression="${verbose}" default-value="false"
      */
+    @Parameter( property = "verbose", defaultValue = "false" )
     private boolean verbose;
 
     // ----------------------------------------------------------------------
@@ -81,12 +79,9 @@ public class JarUnsignMojo
     // ----------------------------------------------------------------------
 
     /**
-     * JarSigner tool.
-     *
-     * @component role="org.codehaus.mojo.webstart.sign.SignTool"
-     * @required
-     * @readonly
+     * Sign tool.
      */
+    @Component
     private SignTool signTool;
 
     // ----------------------------------------------------------------------

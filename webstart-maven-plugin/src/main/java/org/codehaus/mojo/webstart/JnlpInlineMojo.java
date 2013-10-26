@@ -19,6 +19,9 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 /**
@@ -29,12 +32,9 @@ import org.apache.maven.project.MavenProject;
  *
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
- * @goal jnlp-inline
- * @aggregator
- * @requiresDependencyResolution runtime
- * @requiresProject
- * @inheritedByDefault true
  */
+@Mojo( name = "jnlp-inline", requiresProject = true, inheritByDefault = true,
+       requiresDependencyResolution = ResolutionScope.RUNTIME, aggregator = true )
 public class JnlpInlineMojo
     extends AbstractJnlpMojo
 {
@@ -43,10 +43,8 @@ public class JnlpInlineMojo
     // ----------------------------------------------------------------------
 
     /**
-     * @parameter default-value="${project}"
-     * @required
-     * @readonly
      */
+    @Component
     private MavenProject project;
 
     // ----------------------------------------------------------------------

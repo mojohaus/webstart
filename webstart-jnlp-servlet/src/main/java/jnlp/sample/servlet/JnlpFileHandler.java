@@ -50,7 +50,11 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Calendar;
@@ -144,7 +148,7 @@ public class JnlpFileHandler
             mimeType = JNLP_MIME_TYPE;
         }
 
-        StringBuffer jnlpFileTemplate = new StringBuffer();
+        StringBuilder jnlpFileTemplate = new StringBuilder();
         URLConnection conn = resource.openConnection();
         BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream(), "UTF-8" ) );
         String line = br.readLine();
@@ -219,7 +223,7 @@ public class JnlpFileHandler
             mimeType = JNLP_MIME_TYPE;
         }
 
-        StringBuffer jnlpFileTemplate = new StringBuffer();
+        StringBuilder jnlpFileTemplate = new StringBuilder();
         URLConnection conn = resource.openConnection();
         BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream(), "UTF-8" ) );
         String line = br.readLine();
@@ -265,7 +269,7 @@ public class JnlpFileHandler
                     boolean modified = false;
                     Element root = document.getDocumentElement();
 
-                    if ( root.hasAttribute( "href" ) && query != null )
+                    if ( root.hasAttribute( "href" ) )
                     {
                         String href = root.getAttribute( "href" );
                         root.setAttribute( "href", href + "?" + query );
@@ -344,7 +348,7 @@ public class JnlpFileHandler
     // This code is heavily inspired by the stuff in HttpUtils.getRequestURL
     private String getUrlPrefix( HttpServletRequest req )
     {
-        StringBuffer url = new StringBuffer();
+        StringBuilder url = new StringBuilder();
         String scheme = req.getScheme();
         int port = req.getServerPort();
         url.append( scheme );        // http, https
