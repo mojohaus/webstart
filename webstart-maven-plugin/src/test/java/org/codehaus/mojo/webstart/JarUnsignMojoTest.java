@@ -27,7 +27,6 @@ import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderConsoleLogger;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.codehaus.mojo.webstart.sign.DefaultSignConfig;
 import org.codehaus.mojo.webstart.sign.KeystoreConfig;
 import org.codehaus.mojo.webstart.sign.SignConfig;
 import org.codehaus.mojo.webstart.sign.SignTool;
@@ -94,7 +93,7 @@ public class JarUnsignMojoTest
 
         File keystore = new File( tempdir, "keystore" );
 
-        sign = new DefaultSignConfig();
+        sign = new SignConfig();
         sign.setAlias( "test" );
         sign.setKeypass( "123456" );
         sign.setKeystore( keystore.getAbsolutePath() );

@@ -21,6 +21,7 @@ package org.codehaus.mojo.webstart.sign;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.shared.jarsigner.JarSignerRequest;
+import org.apache.maven.shared.jarsigner.JarSignerSignRequest;
 import org.apache.maven.shared.jarsigner.JarSignerVerifyRequest;
 import org.codehaus.mojo.keytool.requests.KeyToolGenerateKeyPairRequest;
 
@@ -32,15 +33,101 @@ import java.io.File;
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
  */
-public interface SignConfig
+public class SignConfig
 {
 
     /**
-     * Gets the verbose state of the configuration.
      *
-     * @return {@code true} if configuration state is on, {@code false} otherwise.
      */
-    boolean isVerbose();
+    private File workDirectory;
+
+    /**
+     *
+     */
+    private boolean verbose;
+
+    /**
+     *
+     */
+    private KeystoreConfig keystoreConfig;
+
+    /**
+     */
+    private String keystore;
+
+    /**
+     */
+    private File workingKeystore;
+
+    /**
+     */
+    private String keyalg;
+
+    /**
+     */
+    private String keysize;
+
+    /**
+     */
+    private String sigalg;
+
+    /**
+     */
+    private String sigfile;
+
+    /**
+     */
+    private String storetype;
+
+    /**
+     */
+    private String storepass;
+
+    /**
+     */
+    private String keypass;
+
+    /**
+     */
+    private String validity;
+
+    /**
+     */
+    private String dnameCn;
+
+    /**
+     */
+    private String dnameOu;
+
+    /**
+     */
+    private String dnameL;
+
+    /**
+     */
+    private String dnameSt;
+
+    /**
+     */
+    private String dnameO;
+
+    /**
+     */
+    private String dnameC;
+
+    /**
+     */
+    private String alias;
+
+    /**
+     * Whether we want to auto-verify the signed jars.
+     */
+    private boolean verify;
+
+    /**
+     * Optinal max memory to use.
+     */
+    private String maxMemory;
 
     /**
      * Called before any Jars get signed or verified.
@@ -48,14 +135,53 @@ public interface SignConfig
      * This method allows you to create any keys or perform any initialisation that the
      * method of signature that you're implementing requires.
      *
-     * @param workingDirectory working directory
-     * @param verbose          verbose flag coming from the mojo configuration
-     * @param signTool         the sign tool used eventually to create or delete key store
-     * @param classLoader      classloader where to find keystore (if not generating a new one)
+     * @param workDirectory working directory
+     * @param verbose       verbose flag coming from the mojo configuration
+     * @param signTool      the sign tool used eventually to create or delete key store
+     * @param classLoader   classloader where to find keystore (if not generating a new one)
      * @throws MojoExecutionException if something wrong occurs while init (mainly when preparing keys)
      */
-    void init( File workingDirectory, boolean verbose, SignTool signTool, ClassLoader classLoader )
-        throws MojoExecutionException;
+    public void init( File workDirectory, boolean verbose, SignTool signTool, ClassLoader classLoader )
+        throws MojoExecutionException
+    {
+        this.workDirectory = workDirectory;
+        setVerbose( verbose );
+
+        if ( workingKeystore == null )
+        {
+            // use a default workingKeystore file
+            workingKeystore = new File( workDirectory, "workingKeystore" );
+        }
+
+        if ( keystoreConfig != null && keystoreConfig.isGen() )
+        {
+            File keystoreFile = new File( getKeystore() );
+
+            if ( keystoreConfig.isDelete() )
+            {
+                signTool.deleteKeyStore( keystoreFile, isVerbose() );
+            }
+
+            signTool.generateKey( this, keystoreFile );
+        }
+        else
+        {
+            // try to locate key store from any location
+            File keystoreFile = signTool.getKeyStoreFile( getKeystore(), workingKeystore, classLoader );
+
+            // now we will use this key store path
+            setKeystore( keystoreFile.getAbsolutePath() );
+        }
+
+        // at the end keystore file must exists
+        File keystoreFile = new File( getKeystore() );
+
+        if ( !keystoreFile.exists() )
+        {
+            throw new MojoExecutionException( "Could not obtain key store location at " + keystore );
+        }
+    }
+
 
     /**
      * Creates a jarsigner request to do a sign operation.
@@ -64,7 +190,22 @@ public interface SignConfig
      * @param signedJar the optional location of the signed jar to produce (if not set, will use the original location)
      * @return the jarsigner request
      */
-    JarSignerRequest createSignRequest( File jarToSign, File signedJar );
+    public JarSignerRequest createSignRequest( File jarToSign, File signedJar )
+    {
+        JarSignerSignRequest request = new JarSignerSignRequest();
+        request.setAlias( getAlias() );
+        request.setKeypass( getKeypass() );
+        request.setKeystore( getKeystore() );
+        request.setSigfile( getSigfile() );
+        request.setStorepass( getStorepass() );
+        request.setStoretype( getStoretype() );
+        request.setWorkingDirectory( workDirectory );
+        request.setMaxMemory( getMaxMemory() );
+        request.setVerbose( isVerbose() );
+        request.setArchive( jarToSign );
+        request.setSignedjar( signedJar );
+        return request;
+    }
 
     /**
      * Creates a jarsigner request to do a verify operation.
@@ -73,7 +214,16 @@ public interface SignConfig
      * @param certs   flag to show certificats details
      * @return the jarsigner request
      */
-    JarSignerVerifyRequest createVerifyRequest( File jarFile, boolean certs );
+    public JarSignerVerifyRequest createVerifyRequest( File jarFile, boolean certs )
+    {
+        JarSignerVerifyRequest request = new JarSignerVerifyRequest();
+        request.setCerts( certs );
+        request.setWorkingDirectory( workDirectory );
+        request.setMaxMemory( getMaxMemory() );
+        request.setVerbose( isVerbose() );
+        request.setArchive( jarFile );
+        return request;
+    }
 
     /**
      * Creates a keytool request to do a key store generation operation.
@@ -81,46 +231,321 @@ public interface SignConfig
      * @param keystoreFile the location of the key store file to generate
      * @return the keytool request
      */
-    KeyToolGenerateKeyPairRequest createKeyGenRequest( File keystoreFile );
+    public KeyToolGenerateKeyPairRequest createKeyGenRequest( File keystoreFile )
+    {
+        KeyToolGenerateKeyPairRequest request = new KeyToolGenerateKeyPairRequest();
+        request.setAlias( getAlias() );
+        request.setDname( getDname() );
+        request.setKeyalg( getKeyalg() );
+        request.setKeypass( getKeypass() );
+        request.setKeysize( getKeysize() );
+        request.setKeystore( getKeystore() );
+        request.setSigalg( getSigalg() );
+        request.setStorepass( getStorepass() );
+        request.setStoretype( getStoretype() );
+        request.setValidity( getValidity() );
+        request.setVerbose( isVerbose() );
+        request.setWorkingDirectory( workDirectory );
+        return request;
+    }
 
-    void setAlias( String alias );
 
-    void setDnameCn( String dnameCn );
+    /**
+     * Gets the verbose state of the configuration.
+     *
+     * @return {@code true} if configuration state is on, {@code false} otherwise.
+     */
+    public boolean isVerbose()
+    {
+        return verbose;
+    }
 
-    void setDnameOu( String dnameOu );
+    public void setWorkDirectory( File workDirectory )
+    {
+        this.workDirectory = workDirectory;
+    }
 
-    void setDnameL( String dnameL );
+    public void setVerbose( boolean verbose )
+    {
+        this.verbose = verbose;
+    }
 
-    void setDnameSt( String dnameSt );
+    /**
+     * {@inheritDoc}
+     */
+    public void setMaxMemory( String maxMemory )
+    {
+        this.maxMemory = maxMemory;
+    }
 
-    void setDnameO( String dnameO );
+    /**
+     * {@inheritDoc}
+     */
+    public void setKeystoreConfig( KeystoreConfig keystoreConfig )
+    {
+        this.keystoreConfig = keystoreConfig;
+    }
 
-    void setDnameC( String dnameC );
+    /**
+     * {@inheritDoc}
+     */
+    public void setKeystore( String keystore )
+    {
+        this.keystore = keystore;
+    }
 
-    void setKeypass( String keypass );
+    /**
+     * {@inheritDoc}
+     */
+    public void setWorkingKeystore( File workingKeystore )
+    {
+        this.workingKeystore = workingKeystore;
+    }
 
-    void setKeystore( String keystore );
+    /**
+     * {@inheritDoc}
+     */
+    public void setKeyalg( String keyalg )
+    {
+        this.keyalg = keyalg;
+    }
 
-    void setWorkingKeystore( File workingKeystore );
+    /**
+     * {@inheritDoc}
+     */
+    public void setKeysize( String keysize )
+    {
+        this.keysize = keysize;
+    }
 
-    void setStorepass( String storepass );
+    /**
+     * {@inheritDoc}
+     */
+    public void setSigalg( String sigalg )
+    {
+        this.sigalg = sigalg;
+    }
 
-    void setVerify( boolean verify );
+    /**
+     * {@inheritDoc}
+     */
+    public void setSigfile( String sigfile )
+    {
+        this.sigfile = sigfile;
+    }
 
-    void setValidity( String validity );
+    /**
+     * {@inheritDoc}
+     */
+    public void setStoretype( String storetype )
+    {
+        this.storetype = storetype;
+    }
 
-    void setMaxMemory( String maxMemory );
+    /**
+     * {@inheritDoc}
+     */
+    public void setStorepass( String storepass )
+    {
+        this.storepass = storepass;
+    }
 
-    void setKeystoreConfig( KeystoreConfig keystoreConfig );
+    /**
+     * {@inheritDoc}
+     */
+    public void setKeypass( String keypass )
+    {
+        this.keypass = keypass;
+    }
 
-    void setKeyalg( String keyalg );
+    /**
+     * {@inheritDoc}
+     */
+    public void setValidity( String validity )
+    {
+        this.validity = validity;
+    }
 
-    void setKeysize( String keysize );
+    /**
+     * {@inheritDoc}
+     */
+    public void setDnameCn( String dnameCn )
+    {
+        this.dnameCn = dnameCn;
+    }
 
-    void setSigalg( String sigalg );
+    /**
+     * {@inheritDoc}
+     */
+    public void setDnameOu( String dnameOu )
+    {
+        this.dnameOu = dnameOu;
+    }
 
-    void setSigfile( String sigfile );
+    /**
+     * {@inheritDoc}
+     */
+    public void setDnameL( String dnameL )
+    {
+        this.dnameL = dnameL;
+    }
 
-    void setStoretype( String storetype );
+    /**
+     * {@inheritDoc}
+     */
+    public void setDnameSt( String dnameSt )
+    {
+        this.dnameSt = dnameSt;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDnameO( String dnameO )
+    {
+        this.dnameO = dnameO;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDnameC( String dnameC )
+    {
+        this.dnameC = dnameC;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setAlias( String alias )
+    {
+        this.alias = alias;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setVerify( boolean verify )
+    {
+        this.verify = verify;
+    }
+
+    public String getKeystore()
+    {
+        return keystore;
+    }
+
+    public String getKeyalg()
+    {
+        return keyalg;
+    }
+
+    public String getKeysize()
+    {
+        return keysize;
+    }
+
+    public String getSigalg()
+    {
+        return sigalg;
+    }
+
+    public String getSigfile()
+    {
+        return sigfile;
+    }
+
+    public String getStoretype()
+    {
+        return storetype;
+    }
+
+    public String getStorepass()
+    {
+        return storepass;
+    }
+
+    public String getKeypass()
+    {
+        return keypass;
+    }
+
+    public String getValidity()
+    {
+        return validity;
+    }
+
+    public String getDnameCn()
+    {
+        return dnameCn;
+    }
+
+    public String getDnameOu()
+    {
+        return dnameOu;
+    }
+
+    public String getDnameL()
+    {
+        return dnameL;
+    }
+
+    public String getDnameSt()
+    {
+        return dnameSt;
+    }
+
+    public String getDnameO()
+    {
+        return dnameO;
+    }
+
+    public String getDnameC()
+    {
+        return dnameC;
+    }
+
+    public String getAlias()
+    {
+        return alias;
+    }
+
+    public boolean getVerify()
+    {
+        return verify;
+    }
+
+    public String getMaxMemory()
+    {
+        return maxMemory;
+    }
+
+    public String getDname()
+    {
+        StringBuffer buffer = new StringBuffer( 128 );
+
+        appendToDnameBuffer( dnameCn, buffer, "CN" );
+        appendToDnameBuffer( dnameOu, buffer, "OU" );
+        appendToDnameBuffer( dnameL, buffer, "L" );
+        appendToDnameBuffer( dnameSt, buffer, "ST" );
+        appendToDnameBuffer( dnameO, buffer, "O" );
+        appendToDnameBuffer( dnameC, buffer, "C" );
+
+        return buffer.toString();
+    }
+
+    private void appendToDnameBuffer( final String property, StringBuffer buffer, final String prefix )
+    {
+        if ( property != null )
+        {
+            if ( buffer.length() > 0 )
+            {
+                buffer.append( ", " );
+            }
+            // http://jira.codehaus.org/browse/MWEBSTART-112 : have commas in parts of dName (but them must be espace)
+            buffer.append( prefix ).append( "=" );
+            buffer.append( property.replaceAll( ",", "\\\\," ) );
+        }
+    }
 
 }

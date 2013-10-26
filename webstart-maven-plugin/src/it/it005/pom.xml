@@ -65,7 +65,9 @@
             </keystoreConfig>
           </sign>
 
-          <pack200>true</pack200>
+          <pack200>
+            <enabled>true</enabled>
+          </pack200>
           <verbose>false</verbose>
         </configuration>
       </plugin>

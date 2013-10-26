@@ -51,7 +51,7 @@ public class JarResourcesGeneratorTest
         File templateFile = File.createTempFile( "bogusTemplate", ".vm" );
         templateFile.deleteOnExit();
 
-        List jarResources = new ArrayList();
+        List<JarResource> jarResources = new ArrayList<JarResource>();
         String mainClass = "fully.qualified.ClassName";
 
         JarResourcesGenerator generator =

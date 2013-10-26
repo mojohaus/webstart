@@ -25,7 +25,9 @@
 
           <configuration>
             <makeArchive>false</makeArchive>
-            <pack200>true</pack200>
+             <pack200>
+	          <enabled>true</enabled>
+	         </pack200>
             <excludeTransitive>true</excludeTransitive>
 
             <jnlp>

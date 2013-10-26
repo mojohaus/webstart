@@ -49,14 +49,14 @@ public class GeneratorTest
                                  null );
         artifact2.setFile( new File( "artifact2-1.5.jar" ) );
 
-        final ArrayList artifacts = new ArrayList();
+        final List<Artifact> artifacts = new ArrayList<Artifact>();
 
         JnlpMojo mojo = new JnlpMojo()
         {
             /**
              * {@inheritDoc}
              */
-            public List getPackagedJnlpArtifacts()
+            public List<Artifact> getPackagedJnlpArtifacts()
             {
                 return artifacts;
             }
@@ -99,14 +99,14 @@ public class GeneratorTest
                                  null );
         artifact2.setFile( new File( "artifact2-1.5.jar" ) );
 
-        final ArrayList artifacts = new ArrayList();
+        final List<Artifact> artifacts = new ArrayList<Artifact>();
 
         JnlpMojo mojo = new JnlpMojo()
         {
             /**
              * {@inheritDoc}
              */
-            public List getPackagedJnlpArtifacts()
+            public List<Artifact> getPackagedJnlpArtifacts()
             {
                 return artifacts;
             }
@@ -159,14 +159,14 @@ public class GeneratorTest
                                  null );
         artifact2.setFile( new File( "artifact2-1.5.jar" ) );
 
-        final ArrayList artifacts = new ArrayList();
+        final List<Artifact> artifacts = new ArrayList<Artifact>();
 
         JnlpMojo mojo = new JnlpMojo()
         {
             /**
              * {@inheritDoc}
              */
-            public List getPackagedJnlpArtifacts()
+            public List<Artifact> getPackagedJnlpArtifacts()
             {
                 return artifacts;
             }

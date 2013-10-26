@@ -30,7 +30,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mojo.webstart.sign.DefaultSignConfig;
 import org.codehaus.mojo.webstart.sign.SignConfig;
 import org.codehaus.mojo.webstart.sign.SignTool;
 import org.codehaus.mojo.webstart.util.ArtifactUtil;
@@ -111,17 +110,18 @@ public abstract class AbstractBaseJnlpMojo
     private File templateDirectory;
 
     /**
-     * Indicates whether or not jar resources should be compressed
-     * using pack200. Setting this value to true requires SDK 5.0 or greater.
+     * The Pack200 Config.
+     *
+     * @since 1.0-beta-4
      */
-    @Parameter( defaultValue = "false" )
-    private boolean pack200;
+    @Parameter
+    private Pack200Config pack200;
 
     /**
      * The Sign Config
      */
     @Parameter
-    private DefaultSignConfig sign;
+    private SignConfig sign;
 
     /**
      * Indicates whether or not jar files should be verified after signing.
@@ -353,11 +353,21 @@ public abstract class AbstractBaseJnlpMojo
      * Returns the flag that indicates whether or not jar resources
      * will be compressed using pack200.
      *
-     * @return Returns the value of the pack200 field.
+     * @return Returns the value of the pack200.enabled field.
      */
     public boolean isPack200()
     {
-        return pack200;
+        return pack200 != null && pack200.isEnabled();
+    }
+
+    /**
+     * Returns the files to be passed without pack200 compression.
+     *
+     * @return Returns the list value of the pack200.passFiles.
+     */
+    public List<String> getPack200PassFiles()
+    {
+        return pack200 == null ? null : pack200.getPassFiles();
     }
 
     // ----------------------------------------------------------------------
@@ -692,7 +702,7 @@ public abstract class AbstractBaseJnlpMojo
     {
         try
         {
-            getPack200Tool().packJars( directory, filter, isGzip() );
+            getPack200Tool().packJars( directory, filter, isGzip(), getPack200PassFiles() );
         }
         catch ( IOException e )
         {
@@ -776,7 +786,7 @@ public abstract class AbstractBaseJnlpMojo
      */
     protected void verboseLog( String msg )
     {
-        if ( isVerbose())
+        if ( isVerbose() )
         {
             getLog().info( msg );
         }

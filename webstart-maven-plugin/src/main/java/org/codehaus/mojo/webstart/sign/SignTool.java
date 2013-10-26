@@ -22,7 +22,6 @@ package org.codehaus.mojo.webstart.sign;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Tool api for jarsigner operations.

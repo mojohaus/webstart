@@ -22,6 +22,7 @@ package org.codehaus.mojo.webstart;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,7 +49,7 @@ public interface Pack200Tool
      * @param props       the packing properties
      * @param gzip        true if the destination file
      */
-    void pack( File source, File destination, Map props, boolean gzip )
+    void pack( File source, File destination, Map<String, String> props, boolean gzip )
         throws IOException;
 
     /**
@@ -58,7 +59,7 @@ public interface Pack200Tool
      * @param destination the destination jar (may be the same as the source jar)
      * @param props       the packing properties
      */
-    void repack( File source, File destination, Map props )
+    void repack( File source, File destination, Map<String, String> props )
         throws IOException;
 
     /**
@@ -68,7 +69,7 @@ public interface Pack200Tool
      * @param destination the unpacked jar
      * @param props       the packing properties
      */
-    void unpack( File source, File destination, Map props )
+    void unpack( File source, File destination, Map<String, String> props )
         throws IOException;
 
     /**
@@ -79,8 +80,9 @@ public interface Pack200Tool
      * @param directory     the location of the directory containing files to pack
      * @param jarFileFilter the filter to determin which files to pack
      * @param gzip          flag to gzip files after pack them
+     * @param passFiles     the list of file names to be passed as not pack200 compressed
      */
-    void packJars( File directory, FileFilter jarFileFilter, boolean gzip )
+    void packJars( File directory, FileFilter jarFileFilter, boolean gzip, List<String> passFiles )
         throws IOException;
 
     /**

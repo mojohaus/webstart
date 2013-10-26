@@ -113,7 +113,7 @@ public class VersionXmlGeneratorTest
         throws MojoExecutionException, IOException, SAXException, ParserConfigurationException
     {
 
-        List jarResources = new ArrayList();
+        List<JarResource> jarResources = new ArrayList<JarResource>();
         new VersionXmlGenerator( "utf-8" ).generate( this.outputDir, jarResources );
 
         Assert.assertTrue( "Assert expectedFile exists", this.expectedFile.exists() );
@@ -146,23 +146,20 @@ public class VersionXmlGeneratorTest
         jar1.setArtifact( artifact1 );
         jar2.setArtifact( artifact2 );
 
-        List jarResources = new ArrayList( 2 );
+        List<JarResource> jarResources = new ArrayList<JarResource>( 2 );
         jarResources.add( jar1 );
         jarResources.add( jar2 );
-
-        StringBuilder expectedXml = new StringBuilder();
-        expectedXml.append( "<jnlp-versions>" ).append( "  <resource>" ).append( "    <pattern>" ).append(
-            "      <name>bogus1.txt</name>" ).append( "      <version-id>1.0</version-id>" ).append(
-            "    </pattern>" ).append( "    <file>bogus1.txt</file>" ).append( "  </resource>" ).append(
-            "  <resource>" ).append( "    <pattern>" ).append( "      <name>bogus2.txt</name>" ).append(
-            "      <version-id>1.0</version-id>" ).append( "    </pattern>" ).append(
-            "    <file>bogus2.txt</file>" ).append( "  </resource>" ).append( "</jnlp-versions>" );
 
         new VersionXmlGenerator( "utf-8" ).generate( this.outputDir, jarResources );
 
         String actualXml = readFileContents( this.expectedFile );
 
-        Diff diff = new Diff( expectedXml.toString(), actualXml );
+        Diff diff = new Diff( "<jnlp-versions>" + "  <resource>" + "    <pattern>" + "      <name>bogus1.txt</name>" +
+                                  "      <version-id>1.0</version-id>" + "    </pattern>" +
+                                  "    <file>bogus1.txt</file>" + "  </resource>" + "  <resource>" + "    <pattern>" +
+                                  "      <name>bogus2.txt</name>" + "      <version-id>1.0</version-id>" +
+                                  "    </pattern>" + "    <file>bogus2.txt</file>" + "  </resource>" +
+                                  "</jnlp-versions>", actualXml );
         Assert.assertTrue( diff.toString(), diff.similar() );
 
     }

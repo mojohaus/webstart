@@ -31,7 +31,7 @@ public class SignConfigTest
 
     public void testGetDname()
     {
-        DefaultSignConfig signConfig = new DefaultSignConfig();
+        SignConfig signConfig = new SignConfig();
         signConfig.setDnameCn( "www.example.com" );
         signConfig.setDnameOu( "None" );
         signConfig.setDnameL( "Seattle" );
@@ -44,7 +44,7 @@ public class SignConfigTest
 
     public void testGetDnameMissing()
     {
-        DefaultSignConfig signConfig = new DefaultSignConfig();
+        SignConfig signConfig = new SignConfig();
         signConfig.setDnameCn( "www.example.com" );
         signConfig.setDnameL( "Seattle" );
         signConfig.setDnameO( "ExampleOrg" );
@@ -54,7 +54,7 @@ public class SignConfigTest
 
     public void testGetDnameWithCommaInOrganization()
     {
-        DefaultSignConfig signConfig = new DefaultSignConfig();
+        SignConfig signConfig = new SignConfig();
         signConfig.setDnameCn( "www.example.com" );
         signConfig.setDnameOu( "None" );
         signConfig.setDnameL( "Seattle" );

@@ -18,6 +18,40 @@ Upgrade from a previous version
 
   Changes that affect the use and configuration of the plugin.
 
+** 2013-10-26
+
+  The pack200 has changed (see {{{http://jira.codehaus.org/browse/MWEBSTART-212} MWEBSTART-212}}).
+
+  Must change from
+
+-------------
+<pack200>true</pack200>
+-------------
+
+  to
+
+-------------
+<pack200>
+  <enabled>true</enabled>
+</pack200>
+-------------
+
+  You can now also add to the pack200 some passFiles not to be pack like this:
+
+-------------
+<pack200>
+  <enabled>true</enabled>
+  <passFiles>
+    <passFile>com/sun/codemodel/</passFile>
+    <passFile>com/sun/tools/xjc/reader/xmlschema/ct/</passFile>
+  </passFiles>
+</pack200>
+-------------
+
+* Important changes since 1.0-beta-3
+
+  Changes that affect the use and configuration of the plugin.
+
 ** 2012-02-04
 
   The groupId has been changed. You should replace:

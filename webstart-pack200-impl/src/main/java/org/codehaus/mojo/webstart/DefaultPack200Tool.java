@@ -33,10 +33,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200;
+import java.util.jar.Pack200.Packer;
 import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -54,7 +56,7 @@ public class DefaultPack200Tool
     /**
      * {@inheritDoc}
      */
-    public void pack( File source, File destination, Map props, boolean gzip )
+    public void pack( File source, File destination, Map<String,String> props, boolean gzip )
         throws IOException
     {
         JarFile jar = null;
@@ -92,7 +94,7 @@ public class DefaultPack200Tool
     /**
      * {@inheritDoc}
      */
-    public void repack( File source, File destination, Map props )
+    public void repack( File source, File destination, Map<String,String> props )
         throws IOException
     {
         File tempFile = new File( source.toString() + ".tmp" );
@@ -111,7 +113,7 @@ public class DefaultPack200Tool
     /**
      * {@inheritDoc}
      */
-    public void unpack( File source, File destination, Map props )
+    public void unpack( File source, File destination, Map<String,String> props )
         throws IOException
     {
         InputStream in = null;
@@ -141,7 +143,7 @@ public class DefaultPack200Tool
     /**
      * {@inheritDoc}
      */
-    public void packJars( File directory, FileFilter jarFileFilter, boolean gzip )
+    public void packJars( File directory, FileFilter jarFileFilter, boolean gzip, List<String> passFiles )
         throws IOException
     {
         // getLog().debug( "packJars for " + directory );
@@ -158,9 +160,18 @@ public class DefaultPack200Tool
 
             deleteFile( pack200Jar );
 
-            Map propMap = new HashMap();
+            Map<String, String> propMap = new HashMap<String, String>();
             // Work around a JDK bug affecting large JAR files, see MWEBSTART-125
             propMap.put( Pack200.Packer.SEGMENT_LIMIT, String.valueOf( -1 ) );
+
+            // set passFiles if available
+            if ( passFiles != null && !passFiles.isEmpty() )
+            {
+                for ( int j = 0; j < passFiles.size(); j++ )
+                {
+                    propMap.put( Packer.PASS_FILE_PFX + j, passFiles.get( j ) );
+                }
+            }
 
             pack( jarFile, pack200Jar, propMap, gzip );
             setLastModified( pack200Jar, jarFile.lastModified() );
@@ -184,7 +195,7 @@ public class DefaultPack200Tool
 
             deleteFile( jarFile );
 
-            unpack( packFile, jarFile, Collections.emptyMap() );
+            unpack( packFile, jarFile, Collections.<String,String>emptyMap() );
             setLastModified( jarFile, packFile.lastModified() );
         }
     }
