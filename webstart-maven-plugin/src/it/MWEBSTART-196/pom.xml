@@ -26,7 +26,7 @@
             <makeArchive>false</makeArchive>
             <attachArchive>false</attachArchive>
 
-            <sign>true</sign>
+            <canUnsign>true</canUnsign>
             <unsign>true</unsign>
             <!-- SIGNING -->
             <!-- defining this will automatically sign the jar and its dependencies -->
