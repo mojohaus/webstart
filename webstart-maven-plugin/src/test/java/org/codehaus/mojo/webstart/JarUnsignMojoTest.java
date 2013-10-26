@@ -33,6 +33,7 @@ import org.codehaus.mojo.webstart.sign.SignConfig;
 import org.codehaus.mojo.webstart.sign.SignTool;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.util.FileUtils;
+import org.junit.Ignore;
 
 import java.io.File;
 
@@ -42,7 +43,10 @@ import java.io.File;
  *
  * @author Jerome Lacoste <jerome@coffeebreaks.org>
  * @version $Id$
+ * @deprecated webstart plugin should not test the jar signer api. Will be remove before version 1.0
  */
+@Deprecated
+@Ignore
 public class JarUnsignMojoTest
     extends PlexusTestCase
 {

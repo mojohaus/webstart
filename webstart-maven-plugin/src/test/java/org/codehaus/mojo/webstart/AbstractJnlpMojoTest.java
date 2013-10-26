@@ -39,7 +39,7 @@ import java.util.List;
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
  */
-public class AbstractJnlpMojoTest
+public abstract class AbstractJnlpMojoTest
     extends AbstractMojoTestCase
 {
 
