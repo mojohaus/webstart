@@ -776,8 +776,7 @@ public abstract class AbstractBaseJnlpMojo
      */
     protected void verboseLog( String msg )
     {
-        boolean info = isVerbose() || getLog().isInfoEnabled();
-        if ( info )
+        if ( isVerbose())
         {
             getLog().info( msg );
         }
