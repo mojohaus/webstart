@@ -228,10 +228,17 @@ public class DefaultSignTool
 
         File result;
 
-        URI keystoreURI = URI.create( keystore );
+        URI keystoreURI = null;
+        try
+        {
+            keystoreURI = URI.create( keystore );
+        }
+        catch ( IllegalArgumentException e )
+        {
+            // Windows paths like C:\Users throw an IAE due to the '\'  
+        }
 
-        String scheme = keystoreURI.getScheme();
-        if ( scheme == null )
+        if ( keystoreURI == null ||  keystoreURI.getScheme() == null )
         {
 
             // consider it as a simple file

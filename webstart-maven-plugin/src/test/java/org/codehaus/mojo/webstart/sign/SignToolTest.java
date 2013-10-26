@@ -119,7 +119,7 @@ public class SignToolTest
 
         //from a url (from a file)
         keyStoreFile =
-            signTool.getKeyStoreFile( "file:///" + keyStoreFile.getAbsolutePath(), new File( parentDir, "myfile3.txt" ),
+            signTool.getKeyStoreFile( keyStoreFile.toURI().toString(), new File( parentDir, "myfile3.txt" ),
                                       classLoader );
         assertNotNull( keyStoreFile );
         assertEquals( "myfile3.txt", keyStoreFile.getName() );
