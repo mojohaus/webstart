@@ -20,6 +20,17 @@ Webstart Maven Plugin
 
   It requires Maven 2 (version 2.0.6 or later) to work correctly.
 
+* Changes since 1.0-beta-4
+
+** To use with jdk >= 1.7u45
+
+  See the FAQ for more informations. Fixed in {{{http://jira.codehaus.org/browse/MWEBSTART-213} MWEBSTART-213}}
+
+** Use a keystore from an url
+
+  You can now use a keystore in classpath, or more generally from a url. Fixes in
+  {{{http://jira.codehaus.org/browse/MWEBSTART-39} MWEBSTART-39}}
+
 * Note since version 1.0-beta-3
 
   The groupId of the plugin has been changed from

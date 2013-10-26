@@ -26,7 +26,6 @@ import org.apache.maven.shared.jarsigner.JarSignerVerifyRequest;
 import org.codehaus.mojo.keytool.requests.KeyToolGenerateKeyPairRequest;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Default implementation of the {@link SignConfig}.
@@ -139,6 +138,12 @@ public class DefaultSignConfig
         this.workDirectory = workDirectory;
         setVerbose( verbose );
 
+        if ( workingKeystore == null )
+        {
+            // use a default workingKeystore file
+            workingKeystore = new File( workDirectory, "workingKeystore" );
+        }
+
         if ( keystoreConfig != null && keystoreConfig.isGen() )
         {
             File keystoreFile = new File( getKeystore() );
@@ -152,23 +157,19 @@ public class DefaultSignConfig
         }
         else
         {
-
             // try to locate key store from any location
-            try
-            {
-                File keystoreFile = signTool.getKeyStoreFile( getKeystore(), workingKeystore, classLoader );
-                if ( keystoreFile == null )
-                {
-                    throw new MojoExecutionException( "Could not obtain key store location at " + keystore );
-                }
+            File keystoreFile = signTool.getKeyStoreFile( getKeystore(), workingKeystore, classLoader );
 
-                // now we will use this key store path
-                setKeystore( keystoreFile.getAbsolutePath() );
-            }
-            catch ( IOException e )
-            {
-                throw new MojoExecutionException( "Could not obtain key store location at " + keystore, e );
-            }
+            // now we will use this key store path
+            setKeystore( keystoreFile.getAbsolutePath() );
+        }
+
+        // at the end keystore file must exists
+        File keystoreFile = new File( getKeystore() );
+
+        if ( !keystoreFile.exists() )
+        {
+            throw new MojoExecutionException( "Could not obtain key store location at " + keystore );
         }
     }
 

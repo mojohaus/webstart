@@ -23,7 +23,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
+import java.net.URI;
 
 /**
  * Helper for all IO operations.
@@ -34,8 +34,25 @@ import java.io.IOException;
 public interface IOUtil
 {
 
-    void copyResources( File resourcesDir, File workDirectory )
-        throws IOException, MojoExecutionException;
+    /**
+     * Copy the content of a directory to another one recursively.
+     *
+     * @param sourceDirectory directory to copy
+     * @param targetDirectory where to copy
+     * @throws MojoExecutionException if could not perform operation
+     */
+    void copyResources( File sourceDirectory, File targetDirectory )
+        throws MojoExecutionException;
+
+    /**
+     * Copy directory structure from {@code sourceDirectory} to {@code targetDirectory}.
+     *
+     * @param sourceDirectory source of copy
+     * @param targetDirectory target of copy
+     * @throws MojoExecutionException if could not perform operation
+     */
+    void copyDirectoryStructure( File sourceDirectory, File targetDirectory )
+        throws MojoExecutionException;
 
     /**
      * Conditionally copy the file into the target directory.
@@ -47,10 +64,10 @@ public interface IOUtil
      * @return <code>true</code> when the file was copied, <code>false</code> otherwise.
      * @throws IllegalArgumentException if sourceFile is <code>null</code> or
      *                                  <code>sourceFile.getName()</code> is <code>null</code>
-     * @throws IOException              if an error occurs attempting to copy the file.
+     * @throws MojoExecutionException   if an error occurs attempting to copy the file.
      */
     boolean copyFileToDirectoryIfNecessary( File sourceFile, File targetDirectory )
-        throws IOException;
+        throws MojoExecutionException;
 
     /**
      * Delete the specified directory.
@@ -61,6 +78,14 @@ public interface IOUtil
     public void removeDirectory( File dir )
         throws MojoExecutionException;
 
+    /**
+     * Create the given directory if it does not exist.
+     * <p/>
+     * will throw an exception if could not perform the operation.
+     *
+     * @param dir the dir to create if it does not exist
+     * @throws MojoExecutionException if could not create directory
+     */
     public void makeDirectoryIfNecessary( File dir )
         throws MojoExecutionException;
 
@@ -73,10 +98,41 @@ public interface IOUtil
     public int deleteFiles( File directory, FileFilter fileFilter )
         throws MojoExecutionException;
 
+    /**
+     * Delete a file.
+     * <p/>
+     * will throw an exception if could not perform the operation.
+     *
+     * @param file the file to delete
+     * @throws MojoExecutionException if could not delete file
+     */
     public void deleteFile( File file )
         throws MojoExecutionException;
 
+    /**
+     * Rename a file.
+     * <p/>
+     * will throw an exception if could not perform the operation.
+     *
+     * @param source original file to renmae
+     * @param target target file
+     * @throws MojoExecutionException if could not rename file
+     */
     public void renameTo( File source, File target )
+        throws MojoExecutionException;
+
+    /**
+     * Copy a resource from the given uri to {@code target} file.
+     * <p/>
+     * The resource can come from class-path is the scheme is {@code classpath}, otherwise will try to get incoming
+     * resource from the url obtained from the uri.
+     *
+     * @param uri         uri to copy
+     * @param classLoader classloader used to find resource in from classpaht
+     * @param target      where to copy
+     * @throws MojoExecutionException if something wrong happen
+     */
+    void copyResources( URI uri, ClassLoader classLoader, File target )
         throws MojoExecutionException;
 
 }

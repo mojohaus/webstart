@@ -29,18 +29,15 @@ import org.codehaus.mojo.keytool.KeyTool;
 import org.codehaus.mojo.keytool.KeyToolException;
 import org.codehaus.mojo.keytool.KeyToolResult;
 import org.codehaus.mojo.keytool.requests.KeyToolGenerateKeyPairRequest;
+import org.codehaus.mojo.webstart.util.IOUtil;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.cli.CommandLineException;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
+import java.net.URI;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -69,6 +66,13 @@ public class DefaultSignTool
      * @plexus.requirement role="org.codehaus.mojo.keytool.KeyTool"
      */
     private KeyTool keyTool;
+
+    /**
+     * io helper.
+     *
+     * @plexus.requirement
+     */
+    protected IOUtil ioUtil;
 
     /**
      * {@inheritDoc}
@@ -219,75 +223,30 @@ public class DefaultSignTool
      * {@inheritDoc}
      */
     public File getKeyStoreFile( String keystore, File workingKeystore, ClassLoader classLoader )
-        throws IOException
+        throws MojoExecutionException
     {
-        File result = new File( keystore );
 
-        if ( !result.exists() )
+        File result;
+
+        URI keystoreURI = URI.create( keystore );
+
+        String scheme = keystoreURI.getScheme();
+        if ( scheme == null )
         {
-            result = null;
 
-            URL url;
+            // consider it as a simple file
+            result = new File( keystore );
+        }
+        else
+        {
+            // copy stream to working keystore
+            result = workingKeystore;
 
-            if ( keystore.startsWith( "classpath:" ) )
-            {
+            // make parent directory if required
+            ioUtil.makeDirectoryIfNecessary( result.getParentFile() );
 
-                // detects it in classpath
-                String path = keystore.substring( "classpath:".length() );
-
-                if ( path.startsWith( "/" ) )
-                {
-                    // remove first car
-                    path = path.substring( 1 );
-                }
-                url = classLoader.getResource( path );
-            }
-            else
-            {
-                url = new URL( keystore );
-
-            }
-
-            if ( url != null )
-            {
-                InputStream inputStream = url.openStream();
-
-                try
-                {
-                    if ( inputStream != null )
-                    {
-
-                        // copy stream to a file
-                        result = workingKeystore;
-
-                        File parentFile = result.getParentFile();
-                        boolean mkdirs = parentFile.exists() || parentFile.mkdirs();
-                        if ( !mkdirs )
-                        {
-                            throw new IOException( "Could not create directory " + parentFile );
-                        }
-                        OutputStream outputStream = new FileOutputStream( result );
-                        try
-                        {
-                            IOUtil.copy( inputStream, outputStream );
-                        }
-                        finally
-                        {
-                            IOUtil.close( outputStream );
-                        }
-                    }
-                }
-                catch ( IOException e )
-                {
-                    result = null;
-                    throw e;
-                }
-                finally
-                {
-                    IOUtil.close( inputStream );
-                }
-
-            }
+            // copy keystore  to workingKeystore
+            ioUtil.copyResources( keystoreURI, classLoader, result );
         }
         return result;
     }

@@ -6,7 +6,8 @@
 
   <groupId>org.codehaus.mojo</groupId>
   <artifactId>MWEBSTART-39</artifactId>
-  <version>@project.version@</version>
+  <version>1.0-beta-4-SNAPSHOT</version>
+  <!--version>@project.version@</version-->
 
   <organization>
     <name>codeLutin</name>
@@ -19,7 +20,8 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>webstart-maven-plugin</artifactId>
-          <version>@project.version@</version>
+          <!--version>@project.version@</version-->
+          <version>${project.version}</version>
 
           <configuration>
             <makeArchive>false</makeArchive>
@@ -77,7 +79,9 @@
                 ${project.build.directory}/from-file
               </workDirectory>
               <sign>
-                <keystore>${basedir}/src/main/resources/keystore</keystore>
+                <keystore>${project.baseUri}src/main/resources/keystore</keystore>
+                <!-- will use the default one workDirectory/workingKeystore -->
+                <!--<workingKeystore>${project.build.directory}/from-file/keystore</workingKeystore>-->
               </sign>
             </configuration>
           </execution>
@@ -117,8 +121,7 @@
                 <configuration>
                   <workDirectory>${project.build.directory}/from-url</workDirectory>
                   <sign>
-                    <keystore>file:///${basedir}/src/main/resources/keystore
-                    </keystore>
+                    <keystore>${project.baseUri}src/main/resources/keystore</keystore>
                     <workingKeystore>
                       ${project.build.directory}/from-url/keystore
                     </workingKeystore>
@@ -153,11 +156,8 @@
                 <configuration>
                   <workDirectory>${project.build.directory}/from-url</workDirectory>
                   <sign>
-                    <keystore>file://${basedir}/src/main/resources/keystore
-                    </keystore>
-                    <workingKeystore>
-                      ${project.build.directory}/from-url/keystore
-                    </workingKeystore>
+                    <keystore>${project.baseUri}src/main/resources/keystore</keystore>
+                    <workingKeystore>${project.build.directory}/from-url/keystore</workingKeystore>
                   </sign>
                 </configuration>
               </execution>

@@ -47,12 +47,12 @@ public interface SignTool
      * @param keystore        keystore location to find
      * @param workingKeystore location where to copy keystore if coming from an url or from classpath
      * @param classLoader     classloader where to find keystore in classpath
-     * @return the file location of the keysotre saved if required in workding directory or {@code null} if could not
+     * @return the file location of the keystore saved if required in working directory or {@code null} if could not
      * locate keysotre.
      * @since 1.0-beta-4
      */
     public File getKeyStoreFile( String keystore, File workingKeystore, ClassLoader classLoader )
-        throws IOException;
+        throws MojoExecutionException;
 
     /**
      * Generate a key store using keytool.

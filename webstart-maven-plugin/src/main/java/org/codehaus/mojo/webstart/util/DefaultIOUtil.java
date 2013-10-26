@@ -26,7 +26,13 @@ import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -44,29 +50,26 @@ public class DefaultIOUtil
     /**
      * {@inheritDoc}
      */
-    public void copyResources( File resourcesDir, File workDirectory )
-        throws IOException, MojoExecutionException
+    public void copyResources( File sourceDirectory, File targetDirectory )
+        throws MojoExecutionException
     {
-        if ( !resourcesDir.exists() && getLogger().isInfoEnabled() )
+        if ( !sourceDirectory.exists() )
         {
-            getLogger().info( "No resources found in " + resourcesDir.getAbsolutePath() );
+            getLogger().info( "Directory does not exist " + sourceDirectory.getAbsolutePath() );
         }
         else
         {
-            if ( !resourcesDir.isDirectory() )
+            if ( !sourceDirectory.isDirectory() )
             {
-                getLogger().debug( "Not a directory: " + resourcesDir.getAbsolutePath() );
+                getLogger().debug( "Not a directory: " + sourceDirectory.getAbsolutePath() );
             }
             else
             {
-                getLogger().debug( "Copying resources from " + resourcesDir.getAbsolutePath() );
-
-                // hopefully available from FileUtils 1.0.5-SNAPSHOT
-                //FileUtils.copyDirectoryStructure( resourcesDir , workDirectory );
+                getLogger().debug( "Copying resources from " + sourceDirectory.getAbsolutePath() );
 
                 // this may needs to be parametrized somehow
                 String excludes = concat( DirectoryScanner.DEFAULTEXCLUDES, ", " );
-                copyDirectoryStructure( resourcesDir, workDirectory, "**", excludes );
+                copyDirectoryStructure( sourceDirectory, targetDirectory, "**", excludes );
             }
 
         }
@@ -75,8 +78,26 @@ public class DefaultIOUtil
     /**
      * {@inheritDoc}
      */
+    public void copyDirectoryStructure( File sourceDirectory, File targetDirectory )
+        throws MojoExecutionException {
+
+        // hopefully available from FileUtils 1.0.5-SNAPSHOT
+        try
+        {
+            FileUtils.copyDirectoryStructure( sourceDirectory , targetDirectory );
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException( "Could not copy directory structure from "+sourceDirectory+" to "+targetDirectory,e );
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean copyFileToDirectoryIfNecessary( File sourceFile, File targetDirectory )
-        throws IOException
+        throws MojoExecutionException
     {
 
         if ( sourceFile == null )
@@ -90,7 +111,15 @@ public class DefaultIOUtil
 
         if ( shouldCopy )
         {
-            FileUtils.copyFileToDirectory( sourceFile, targetDirectory );
+            try
+            {
+                FileUtils.copyFileToDirectory( sourceFile, targetDirectory );
+            }
+            catch ( IOException e )
+            {
+                throw new MojoExecutionException(
+                    "Could not copy file " + sourceFile + " to directory " + targetDirectory, e );
+            }
         }
         else
         {
@@ -189,16 +218,111 @@ public class DefaultIOUtil
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void copyResources( URI uri, ClassLoader classLoader, File target )
+        throws MojoExecutionException
+    {
+        URL url;
+
+        String scheme = uri.getScheme();
+        if ( "classpath".equals( scheme ) )
+        {
+
+            // get resource from class-path
+            String path = uri.getPath();
+
+            if ( path == null )
+            {
+                // can happen when using classpath:myFile
+                path = uri.toString().substring( scheme.length() + 1 );
+            }
+
+            if ( path.startsWith( "/" ) )
+            {
+                // remove first car
+                path = path.substring( 1 );
+            }
+            url = classLoader.getResource( path );
+        }
+        else
+        {
+            // classic url from uri
+            try
+            {
+                url = uri.toURL();
+            }
+            catch ( MalformedURLException e )
+            {
+                throw new MojoExecutionException( "Bad uri syntax " + uri, e );
+            }
+        }
+
+        InputStream inputStream;
+
+        try
+        {
+            inputStream = url.openStream();
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException( "Could not open resource " + url, e );
+        }
+
+        if ( inputStream == null )
+        {
+            throw new MojoExecutionException( "Could not find resource " + url );
+        }
+        try
+        {
+            OutputStream outputStream = null;
+
+            try
+            {
+                outputStream = new FileOutputStream( target );
+                org.codehaus.plexus.util.IOUtil.copy( inputStream, outputStream );
+                outputStream.close();
+                inputStream.close();
+            }
+            catch ( IOException e )
+            {
+                throw new MojoExecutionException( "Could not copy resource from " + url + " to " + target, e );
+            }
+            finally
+            {
+                if ( outputStream != null )
+                {
+                    org.codehaus.plexus.util.IOUtil.close( outputStream );
+                }
+            }
+        }
+
+        finally
+        {
+            org.codehaus.plexus.util.IOUtil.close( inputStream );
+        }
+
+    }
+
     private void copyDirectoryStructure( File sourceDirectory, File destinationDirectory, String includes,
                                          String excludes )
-        throws IOException, MojoExecutionException
+        throws MojoExecutionException
     {
         if ( !sourceDirectory.exists() )
         {
             return;
         }
 
-        List<File> files = FileUtils.getFiles( sourceDirectory, includes, excludes );
+        List<File> files = null;
+        try
+        {
+            files = FileUtils.getFiles( sourceDirectory, includes, excludes );
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException( "Could not obtain files from " + sourceDirectory, e );
+        }
 
         for ( File file : files )
         {
@@ -217,7 +341,14 @@ public class DefaultIOUtil
             }
             else
             {
-                FileUtils.copyFileToDirectory( file, destDir.getParentFile() );
+                try
+                {
+                    FileUtils.copyFileToDirectory( file, destDir.getParentFile() );
+                }
+                catch ( IOException e )
+                {
+                    throw new MojoExecutionException( "Could not copy file " + file + " to directory" + destDir, e );
+                }
             }
         }
     }

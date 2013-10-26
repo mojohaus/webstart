@@ -37,7 +37,6 @@ import org.codehaus.mojo.webstart.generator.JarResourcesGenerator;
 import org.codehaus.mojo.webstart.generator.SimpleGeneratorExtraConfig;
 import org.codehaus.mojo.webstart.generator.VersionXmlGenerator;
 import org.codehaus.mojo.webstart.util.IOUtil;
-import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +44,6 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -129,15 +127,7 @@ public class JnlpDownloadServletMojo
 
         IOUtil ioUtil = getIoUtil();
 
-        try
-        {
-            ioUtil.copyResources( getResourcesDirectory(), getWorkDirectory() );
-        }
-        catch ( IOException e )
-        {
-            throw new MojoExecutionException(
-                "An error occurred attempting to copy " + "resources to the working directory.", e );
-        }
+        ioUtil.copyResources( getResourcesDirectory(), getWorkDirectory() );
 
         if ( this.commonJarResources != null )
         {
@@ -164,16 +154,8 @@ public class JnlpDownloadServletMojo
                                    getProject().getBuild().getFinalName() + File.separator + this.outputDirectoryName );
 
         ioUtil.makeDirectoryIfNecessary( outputDir );
-        try
-        {
-            FileUtils.copyDirectoryStructure( getWorkDirectory(), outputDir );
-        }
-        catch ( IOException e )
-        {
-            throw new MojoExecutionException(
-                "An error occurred attempting to copy a file to the JNLP output directory.", e );
-        }
 
+        ioUtil.copyDirectoryStructure( getWorkDirectory(), outputDir );
     }
 
     // ----------------------------------------------------------------------
@@ -282,13 +264,10 @@ public class JnlpDownloadServletMojo
                     "configuration for the JNLP file named [" + jnlpFile.getOutputFilename() + "]" );
         }
 
-        Iterator<JarResource> itr = jnlpJarResources.iterator();
         List<JarResource> jarsWithMainClass = new ArrayList<JarResource>();
 
-        while ( itr.hasNext() )
+        for ( JarResource jarResource : jnlpJarResources )
         {
-            JarResource jarResource = itr.next();
-
             checkMandatoryJarResourceFields( jarResource );
 
             if ( jarResource.getMainClass() != null )
@@ -296,7 +275,6 @@ public class JnlpDownloadServletMojo
                 jnlpFile.setMainClass( jarResource.getMainClass() );
                 jarsWithMainClass.add( jarResource );
             }
-
         }
 
         if ( jarsWithMainClass.isEmpty() )
