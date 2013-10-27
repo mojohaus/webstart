@@ -52,7 +52,7 @@ public class JnlpFile
     /**
      * Returns the name to be used for the generated JNLP file.
      *
-     * @return Returns the value of the outputFilename field.
+     * @return the value of the outputFilename field.
      */
     protected String getOutputFilename()
     {
@@ -63,7 +63,7 @@ public class JnlpFile
      * Returns the name of the Velocity template file used to generate the
      * JNLP file.
      *
-     * @return Returns the name of the JNLP template file.
+     * @return the name of the JNLP template file.
      */
     protected String getTemplateFilename()
     {
@@ -73,7 +73,7 @@ public class JnlpFile
     /**
      * Returns the collection of <code>JarResource</code> elements for this JNLP file.
      *
-     * @return Returns the value of the jarResources field.
+     * @return the value of the jarResources field.
      */
     protected List<JarResource> getJarResources()
     {
@@ -84,7 +84,7 @@ public class JnlpFile
      * Returns the fully qualified classname of the class to be specified as
      * the <code>main-class</code> in the generated JNLP file.
      *
-     * @return Returns the value of the mainClass field.
+     * @return the value of the mainClass field.
      */
     protected String getMainClass()
     {
@@ -94,7 +94,7 @@ public class JnlpFile
     /**
      * Sets the collection of <code>JarResource</code> elements for this JNLP file.
      *
-     * @param jarResources
+     * @param jarResources the new value for field {@link #jarResources}
      */
     protected void setJarResources( List<JarResource> jarResources )
     {
@@ -104,7 +104,7 @@ public class JnlpFile
     /**
      * Sets the outputFileName.
      *
-     * @param outputFilename
+     * @param outputFilename the new value for field {@link #outputFilename}
      */
     protected void setOutputFilename( String outputFilename )
     {
@@ -115,7 +115,7 @@ public class JnlpFile
      * Sets the fully qualified classname of the class to be specified as
      * the <code>main-class</code> in the generated JNLP file.
      *
-     * @param mainClass
+     * @param mainClass the new value for field {@link #mainClass}
      */
     protected void setMainClass( String mainClass )
     {

@@ -42,6 +42,16 @@ public interface Pack200Tool
     String ROLE = Pack200Tool.class.getName();
 
     /**
+     * Extension of a pack file.
+     */
+    String PACK_EXTENSION = ".pack";
+
+    /**
+     * Extension of a gz pack file.
+     */
+    String PACK_GZ_EXTENSION = PACK_EXTENSION + ".gz";
+
+    /**
      * Pack a jar.
      *
      * @param source      the source jar

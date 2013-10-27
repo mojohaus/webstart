@@ -77,7 +77,10 @@ public class JarResource
      * Returns true if the given object is a JarResource and has the same
      * combination of <code>groupId</code>, <code>artifactId</code>,
      * <code>version</code> and <code>classifier</code>.
+     *
+     * @return {@code true} if equals to given other object.
      */
+    @Override
     public boolean equals( Object obj )
     {
 
@@ -227,7 +230,7 @@ public class JarResource
      * element in the generated JNLP file should include a version attribute.
      * Default is true.
      *
-     * @param outputJarVersion
+     * @param outputJarVersion new value of field {@link #outputJarVersion}
      */
     protected void setOutputJarVersion( boolean outputJarVersion )
     {
@@ -259,7 +262,7 @@ public class JarResource
     /**
      * Sets the underlying artifact that this instance represents.
      *
-     * @param artifact
+     * @param artifact new value for field {@link #artifact}
      * @throws IllegalArgumentException if {@code artifact} is null.
      */
     public void setArtifact( Artifact artifact )
@@ -281,7 +284,7 @@ public class JarResource
      * jar resource element in the generated JNLP file. If not set explicitly, this defaults
      * to the file name of the underlying artifact.
      *
-     * @param hrefValue
+     * @param hrefValue new value for field {@link #hrefValue}
      */
     protected void setHrefValue( String hrefValue )
     {
@@ -321,12 +324,8 @@ public class JarResource
      */
     public String toString()
     {
-        StringBuilder sbuf = new StringBuilder();
-        sbuf.append( "JarResource[ groupId='" ).append( this.groupId ).append( "', artifactId='" ).append(
-            this.artifactId ).append( "', version='" ).append( this.version ).append( "', classifier='" ).append(
-            this.classifier ).append( "', mainClass='" ).append( this.mainClass ).append(
-            "', outputJarVersion='" ).append( this.outputJarVersion ).append( "', hrefValue='" ).append(
-            this.hrefValue ).append( "' ]" );
-        return sbuf.toString();
+        return "JarResource[ groupId='" + this.groupId + "', artifactId='" + this.artifactId + "', version='" +
+            this.version + "', classifier='" + this.classifier + "', mainClass='" + this.mainClass +
+            "', outputJarVersion='" + this.outputJarVersion + "', hrefValue='" + this.hrefValue + "' ]";
     }
 }

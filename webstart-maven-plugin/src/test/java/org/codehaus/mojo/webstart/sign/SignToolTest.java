@@ -118,9 +118,8 @@ public class SignToolTest
         assertEquals( tmpDir, keyStoreFile.getParentFile() );
 
         //from a url (from a file)
-        keyStoreFile =
-            signTool.getKeyStoreFile( keyStoreFile.toURI().toString(), new File( parentDir, "myfile3.txt" ),
-                                      classLoader );
+        keyStoreFile = signTool.getKeyStoreFile( keyStoreFile.toURI().toString(), new File( parentDir, "myfile3.txt" ),
+                                                 classLoader );
         assertNotNull( keyStoreFile );
         assertEquals( "myfile3.txt", keyStoreFile.getName() );
         assertEquals( parentDir, keyStoreFile.getParentFile() );

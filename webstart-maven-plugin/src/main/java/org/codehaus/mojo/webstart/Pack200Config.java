@@ -27,19 +27,22 @@ import java.util.List;
  * @author Peter Butkovic butkovic@gmail.com
  * @author $LastChangedBy$
  * @version $Revision$
- * @since 25 June 2013
+ * @since 1.0-beta-4
  */
 public class Pack200Config
 {
 
     /**
      * Whether pack200 is enabled at all or not.
+     *
+     * @see #isEnabled()
      */
     private boolean enabled;
 
     /**
-     * The files to be passed without compression. <br />
-     * See: {@link Pack200Config#getPassFiles()}
+     * The files to be passed without compression.
+     *
+     * @see #getPassFiles()
      */
     private List<String> passFiles;
 
@@ -69,13 +72,11 @@ public class Pack200Config
         return passFiles;
     }
 
-
     public void setEnabled( boolean enabled )
     {
         this.enabled = enabled;
 
     }
-
 
     public void setPassFiles( List<String> passFiles )
     {

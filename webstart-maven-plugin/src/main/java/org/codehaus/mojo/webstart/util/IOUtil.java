@@ -62,9 +62,7 @@ public interface IOUtil
      * @param sourceFile      source file to copy
      * @param targetDirectory location of the target directory where to copy file
      * @return <code>true</code> when the file was copied, <code>false</code> otherwise.
-     * @throws IllegalArgumentException if sourceFile is <code>null</code> or
-     *                                  <code>sourceFile.getName()</code> is <code>null</code>
-     * @throws MojoExecutionException   if an error occurs attempting to copy the file.
+     * @throws MojoExecutionException if an error occurs attempting to copy the file.
      */
     boolean copyFileToDirectoryIfNecessary( File sourceFile, File targetDirectory )
         throws MojoExecutionException;
@@ -75,7 +73,7 @@ public interface IOUtil
      * @param dir the directory to delete
      * @throws MojoExecutionException if could not delete directory
      */
-    public void removeDirectory( File dir )
+    void removeDirectory( File dir )
         throws MojoExecutionException;
 
     /**
@@ -86,7 +84,7 @@ public interface IOUtil
      * @param dir the dir to create if it does not exist
      * @throws MojoExecutionException if could not create directory
      */
-    public void makeDirectoryIfNecessary( File dir )
+    void makeDirectoryIfNecessary( File dir )
         throws MojoExecutionException;
 
     /**
@@ -95,7 +93,7 @@ public interface IOUtil
      * @return the number of deleted files
      * @throws MojoExecutionException if could not delete files
      */
-    public int deleteFiles( File directory, FileFilter fileFilter )
+    int deleteFiles( File directory, FileFilter fileFilter )
         throws MojoExecutionException;
 
     /**
@@ -106,7 +104,7 @@ public interface IOUtil
      * @param file the file to delete
      * @throws MojoExecutionException if could not delete file
      */
-    public void deleteFile( File file )
+    void deleteFile( File file )
         throws MojoExecutionException;
 
     /**
@@ -118,7 +116,7 @@ public interface IOUtil
      * @param target target file
      * @throws MojoExecutionException if could not rename file
      */
-    public void renameTo( File source, File target )
+    void renameTo( File source, File target )
         throws MojoExecutionException;
 
     /**

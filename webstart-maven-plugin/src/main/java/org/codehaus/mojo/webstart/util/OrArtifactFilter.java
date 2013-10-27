@@ -41,7 +41,7 @@ public class OrArtifactFilter
     /**
      * {@inheritDoc}
      */
-    public boolean include( final Artifact artifact )
+    public boolean include( Artifact artifact )
     {
         boolean include = false;
         for ( ArtifactFilter filter : this.filters )
@@ -58,9 +58,9 @@ public class OrArtifactFilter
     /**
      * Adds the artifact filter to be applied.
      *
-     * @param artifactFilter
+     * @param artifactFilter new filter to add
      */
-    public void add( final ArtifactFilter artifactFilter )
+    public void add( ArtifactFilter artifactFilter )
     {
         this.filters.add( artifactFilter );
     }

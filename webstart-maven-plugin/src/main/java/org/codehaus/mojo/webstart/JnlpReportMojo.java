@@ -39,9 +39,8 @@ import java.util.ResourceBundle;
  * Creates a JNLP report.
  *
  * @author Geoffrey De Smet
- * @description Creates a Jnlp Report
  */
-@Mojo( name = "report", defaultPhase = LifecyclePhase.SITE, requiresReports = true)
+@Mojo( name = "report", defaultPhase = LifecyclePhase.SITE, requiresReports = true )
 public class JnlpReportMojo
     extends AbstractMavenReport
 {

@@ -53,10 +53,15 @@ import java.util.zip.GZIPOutputStream;
 public class DefaultPack200Tool
     implements Pack200Tool
 {
+
+    public static final String PACK_GZ_EXTENSION = ".pack.gz";
+
+    public static final String PACK_EXTENSION = ".pack";
+
     /**
      * {@inheritDoc}
      */
-    public void pack( File source, File destination, Map<String,String> props, boolean gzip )
+    public void pack( File source, File destination, Map<String, String> props, boolean gzip )
         throws IOException
     {
         JarFile jar = null;
@@ -94,7 +99,7 @@ public class DefaultPack200Tool
     /**
      * {@inheritDoc}
      */
-    public void repack( File source, File destination, Map<String,String> props )
+    public void repack( File source, File destination, Map<String, String> props )
         throws IOException
     {
         File tempFile = new File( source.toString() + ".tmp" );
@@ -113,7 +118,7 @@ public class DefaultPack200Tool
     /**
      * {@inheritDoc}
      */
-    public void unpack( File source, File destination, Map<String,String> props )
+    public void unpack( File source, File destination, Map<String, String> props )
         throws IOException
     {
         InputStream in = null;
@@ -152,7 +157,7 @@ public class DefaultPack200Tool
         {
             // getLog().debug( "packJars: " + jarFiles[i] );
 
-            final String extension = gzip ? ".pack.gz" : ".pack";
+            final String extension = gzip ? PACK_GZ_EXTENSION : PACK_EXTENSION;
 
             File jarFile = jarFile1;
 
@@ -189,13 +194,13 @@ public class DefaultPack200Tool
         for ( File packFile : packFiles )
         {
             final String packedJarPath = packFile.getAbsolutePath();
-            int extensionLength = packedJarPath.endsWith( ".jar.pack.gz" ) ? 8 : 5;
+            int extensionLength = packedJarPath.endsWith( PACK_GZ_EXTENSION ) ? 8 : 5;
             String jarFileName = packedJarPath.substring( 0, packedJarPath.length() - extensionLength );
             File jarFile = new File( jarFileName );
 
             deleteFile( jarFile );
 
-            unpack( packFile, jarFile, Collections.<String,String>emptyMap() );
+            unpack( packFile, jarFile, Collections.<String, String>emptyMap() );
             setLastModified( jarFile, packFile.lastModified() );
         }
     }

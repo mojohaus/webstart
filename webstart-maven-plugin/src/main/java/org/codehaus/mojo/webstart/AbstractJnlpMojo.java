@@ -49,8 +49,8 @@ import java.util.Map;
 /**
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
- * @todo how to propagate the -X argument to enable verbose?
- * @todo initialize the jnlp alias and dname.o from pom.artifactId and pom.organization.name
+ *          TODO how to propagate the -X argument to enable verbose?
+ *          TODO initialize the jnlp alias and dname.o from pom.artifactId and pom.organization.name
  */
 public abstract class AbstractJnlpMojo
     extends AbstractBaseJnlpMojo

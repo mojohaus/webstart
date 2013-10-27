@@ -270,161 +270,101 @@ public class SignConfig
         this.verbose = verbose;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setMaxMemory( String maxMemory )
     {
         this.maxMemory = maxMemory;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setKeystoreConfig( KeystoreConfig keystoreConfig )
     {
         this.keystoreConfig = keystoreConfig;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setKeystore( String keystore )
     {
         this.keystore = keystore;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setWorkingKeystore( File workingKeystore )
     {
         this.workingKeystore = workingKeystore;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setKeyalg( String keyalg )
     {
         this.keyalg = keyalg;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setKeysize( String keysize )
     {
         this.keysize = keysize;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setSigalg( String sigalg )
     {
         this.sigalg = sigalg;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setSigfile( String sigfile )
     {
         this.sigfile = sigfile;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setStoretype( String storetype )
     {
         this.storetype = storetype;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setStorepass( String storepass )
     {
         this.storepass = storepass;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setKeypass( String keypass )
     {
         this.keypass = keypass;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setValidity( String validity )
     {
         this.validity = validity;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setDnameCn( String dnameCn )
     {
         this.dnameCn = dnameCn;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setDnameOu( String dnameOu )
     {
         this.dnameOu = dnameOu;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setDnameL( String dnameL )
     {
         this.dnameL = dnameL;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setDnameSt( String dnameSt )
     {
         this.dnameSt = dnameSt;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setDnameO( String dnameO )
     {
         this.dnameO = dnameO;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setDnameC( String dnameC )
     {
         this.dnameC = dnameC;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setAlias( String alias )
     {
         this.alias = alias;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setVerify( boolean verify )
     {
         this.verify = verify;

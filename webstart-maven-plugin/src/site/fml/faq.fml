@@ -3,21 +3,21 @@
 
   <part id="General">
 
-    <faq id="security_since_jdk1.7u45">
-      <question>Why does I can't any longer launch a generated jnlp file since jdk1.7u45?</question>
+    <faq id="security_since_jdk1_7u45">
+      <question>Why generated jnlp fail to start since jdk1.7u45?</question>
       <answer>
         <p>
           Oracle put more strict rules on jnlp (see https://blogs.oracle.com/thejavatutorials/entry/jdk_7u45_and_javafx_2)
           for more informations
         </p>
         <p>
-          To fix this, you need to add some manifest entries to all the jars used in the jnlp file. This can be code by simply adding
-          something like this in your pluging configuration:
+          To fix this, you need to add some manifest entries to all the jars used in the jnlp file.
+          This can be done by simply adding something like this in your pluging configuration:
           <pre>
-             <updateManifestEntries>
-              <Permissions>all-permissions</Permissions>
-              <Codebase>*</Codebase>
-            </updateManifestEntries>
+           &lt;updateManifestEntries&gt;
+             &lt;Permissions&gt;all-permissions&lt;/Permissions&gt;
+             &lt;Codebase&gt;*&lt;/Codebase&gt;
+           &lt;/updateManifestEntries&gt;
           </pre>
         </p>
       </answer>

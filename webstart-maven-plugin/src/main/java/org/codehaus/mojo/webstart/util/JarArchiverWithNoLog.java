@@ -26,7 +26,7 @@ import org.codehaus.plexus.logging.console.ConsoleLogger;
 
 /**
  * A jar archiver with no info logs.
- *
+ * <p/>
  * Created on 10/26/13.
  *
  * @author Tony Chemit <chemit@codelutin.com>
@@ -34,7 +34,8 @@ import org.codehaus.plexus.logging.console.ConsoleLogger;
  * @since 1.0-beta-4
  */
 public class JarArchiverWithNoLog
-    extends JarArchiver implements Archiver
+    extends JarArchiver
+    implements Archiver
 {
 
     Logger log = new ConsoleLogger( Logger.LEVEL_WARN, "console" );

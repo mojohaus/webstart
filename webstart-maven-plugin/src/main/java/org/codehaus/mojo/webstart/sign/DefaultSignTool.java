@@ -56,14 +56,14 @@ public class DefaultSignTool
     /**
      * The component to invoke jarsigner command.
      *
-     * @plexus.requirement role="org.apache.maven.shared.jarsigner.JarSigner"
+     * @plexus.requirement
      */
     private JarSigner jarSigner;
 
     /**
      * The component to invoke keyTool command.
      *
-     * @plexus.requirement role="org.codehaus.mojo.keytool.KeyTool"
+     * @plexus.requirement
      */
     private KeyTool keyTool;
 
@@ -238,7 +238,7 @@ public class DefaultSignTool
             // Windows paths like C:\Users throw an IAE due to the '\'  
         }
 
-        if ( keystoreURI == null ||  keystoreURI.getScheme() == null )
+        if ( keystoreURI == null || keystoreURI.getScheme() == null )
         {
 
             // consider it as a simple file

@@ -69,12 +69,18 @@ public abstract class AbstractBaseJnlpMojo
      */
     private static final String UNPROCESSED_PREFIX = "unprocessed_";
 
+    /**
+     * Suffix extension of a jar file.
+     */
     public static final String JAR_SUFFIX = ".jar";
 
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
 
+    /**
+     * Local repository.
+     */
     @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
     private ArtifactRepository localRepository;
 
@@ -118,7 +124,7 @@ public abstract class AbstractBaseJnlpMojo
     private Pack200Config pack200;
 
     /**
-     * The Sign Config
+     * The Sign Config.
      */
     @Parameter
     private SignConfig sign;
@@ -201,12 +207,13 @@ public abstract class AbstractBaseJnlpMojo
     private Map<String, String> updateManifestEntries;
 
     /**
-     * Compile class-path used to search for the keystore (if keysotre location was prefixed by {@code classpath:}).
+     * Compile class-path elements used to search for the keystore
+     * (if kestore location was prefixed by {@code classpath:}).
      *
      * @since 1.0-beta-4
      */
     @Parameter( defaultValue = "${project.compileClasspathElements}", required = true, readonly = true )
-    private List compileClassPath;
+    private List<?> compileClassPath;
 
     // ----------------------------------------------------------------------
     // Components
@@ -271,6 +278,9 @@ public abstract class AbstractBaseJnlpMojo
     // Fields
     // ----------------------------------------------------------------------
 
+    /**
+     * List of detected modified artifacts (will then re-apply stuff on them).
+     */
     private final List<String> modifiedJnlpArtifacts = new ArrayList<String>();
 
     // the jars to sign and pack are selected if they are prefixed by UNPROCESSED_PREFIX.
@@ -280,8 +290,14 @@ public abstract class AbstractBaseJnlpMojo
     // Note: if other files (the pom, the keystore config) have changed, one needs to clean
     private final FileFilter unprocessedJarFileFilter;
 
+    /**
+     * Filter of processed jar files.
+     */
     private final FileFilter processedJarFileFilter;
 
+    /**
+     * Filter of jar files that need to be pack200.
+     */
     private final FileFilter unprocessedPack200FileFilter;
 
     /**
@@ -314,7 +330,6 @@ public abstract class AbstractBaseJnlpMojo
             }
         };
 
-//        unprocessedPack200FileFilter = new UnprocessedPack200FileFilter();
         unprocessedPack200FileFilter = new FileFilter()
         {
             /**
@@ -323,7 +338,8 @@ public abstract class AbstractBaseJnlpMojo
             public boolean accept( File pathname )
             {
                 return pathname.isFile() && pathname.getName().startsWith( UNPROCESSED_PREFIX ) &&
-                    ( pathname.getName().endsWith( ".jar.pack.gz" ) || pathname.getName().endsWith( ".jar.pack" ) );
+                    ( pathname.getName().endsWith( JAR_SUFFIX + Pack200Tool.PACK_GZ_EXTENSION ) ||
+                        pathname.getName().endsWith( JAR_SUFFIX + Pack200Tool.PACK_EXTENSION ) );
             }
         };
     }
@@ -720,22 +736,6 @@ public abstract class AbstractBaseJnlpMojo
         return getClass().getClassLoader().getResource( "default-jnlp-extension-template.vm" );
     }
 
-//    protected URL getWebstartJarURL()
-//    {
-//        String url = findDefaultJnlpTemplateURL().toString();
-//        try
-//        {
-//            return new URL( url.substring( "jar:".length(), url.indexOf( "!" ) ) );
-//        }
-//        catch ( Exception e )
-//        {
-//            IllegalStateException iae =
-//                new IllegalStateException( "Failure to find webstart Jar URL: " + e.getMessage() );
-//            iae.initCause( e );
-//            throw iae;
-//        }
-//    }
-
     /**
      * @return something of the form jar:file:..../webstart-maven-plugin-.....jar!/
      */
@@ -803,8 +803,10 @@ public abstract class AbstractBaseJnlpMojo
     private void unpackJars( File directory )
         throws MojoExecutionException
     {
-        getLog().info( "-- Unpack jars before sign operation " +
-                           "(see http://docs.oracle.com/javase/7/docs/technotes/guides/deployment/deployment-guide/pack200.html)" );
+        getLog().info( "-- Unpack jars before sign operation " );
+
+        verboseLog(
+            "see http://docs.oracle.com/javase/7/docs/technotes/guides/deployment/deployment-guide/pack200.html" );
 
         // pack
         pack200Jars( directory, unprocessedJarFileFilter );

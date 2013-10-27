@@ -68,6 +68,7 @@ public class ExtensionGenerator
     /**
      * {@inheritDoc}
      */
+    @Override
     protected VelocityContext createAndPopulateContext()
     {
         VelocityContext context = super.createAndPopulateContext();

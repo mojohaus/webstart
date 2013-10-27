@@ -79,16 +79,18 @@ public class DefaultIOUtil
      * {@inheritDoc}
      */
     public void copyDirectoryStructure( File sourceDirectory, File targetDirectory )
-        throws MojoExecutionException {
+        throws MojoExecutionException
+    {
 
         // hopefully available from FileUtils 1.0.5-SNAPSHOT
         try
         {
-            FileUtils.copyDirectoryStructure( sourceDirectory , targetDirectory );
+            FileUtils.copyDirectoryStructure( sourceDirectory, targetDirectory );
         }
         catch ( IOException e )
         {
-            throw new MojoExecutionException( "Could not copy directory structure from "+sourceDirectory+" to "+targetDirectory,e );
+            throw new MojoExecutionException(
+                "Could not copy directory structure from " + sourceDirectory + " to " + targetDirectory, e );
         }
     }
 
