@@ -33,6 +33,7 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
 
@@ -230,6 +231,7 @@ public abstract class AbstractGenerator
         // Should we replace dots with underscores ?        
         addPropertiesToContext( System.getProperties(), context );
         addPropertiesToContext( mavenProject.getProperties(), context );
+        addPropertiesToContext( extraConfig.getProperties(), context );
 
         context.put( "project", mavenProject.getModel() );
         context.put( "jnlpCodebase", extraConfig.getJnlpCodeBase() );
@@ -263,13 +265,13 @@ public abstract class AbstractGenerator
         return context;
     }
 
-    private void addPropertiesToContext( Properties properties, VelocityContext context )
+    private void addPropertiesToContext( Map properties, VelocityContext context )
     {
         for ( Object o : properties.keySet() )
         {
             String nextKey = (String) o;
-            String nextValue = properties.getProperty( nextKey );
-            context.put( nextKey, nextValue );
+            Object nextValue = properties.get( nextKey );
+            context.put( nextKey, nextValue.toString() );
         }
     }
 

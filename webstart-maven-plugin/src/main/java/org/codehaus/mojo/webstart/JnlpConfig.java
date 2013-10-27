@@ -20,6 +20,7 @@ package org.codehaus.mojo.webstart;
  */
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * Bean to host part of the JnlpMojo configuration.
@@ -51,6 +52,8 @@ public class JnlpConfig
     private String href;
 
     private String mainClass;
+
+    private Map<String,String> properties;
 
     /**
      * The path containing any resources which will be added to the webstart artifact
@@ -111,6 +114,11 @@ public class JnlpConfig
     public void setMainClass( String mainClass )
     {
         this.mainClass = mainClass;
+    }
+
+    public void setProperties( Map<String, String> properties )
+    {
+        this.properties = properties;
     }
 
     public String getInputTemplateResourcePath()
@@ -178,5 +186,10 @@ public class JnlpConfig
     public String getMainClass()
     {
         return mainClass;
+    }
+
+    public Map<String, String> getProperties()
+    {
+        return properties;
     }
 }

@@ -19,6 +19,9 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
+import java.util.Collections;
+import java.util.Map;
+
 /**
  * Simple implementation of {@link GeneratorExtraConfig}.
  *
@@ -73,6 +76,14 @@ public class SimpleGeneratorExtraConfig
     public String getJnlpCodeBase()
     {
         return codebase;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Map<String, String> getProperties()
+    {
+        return Collections.emptyMap();
     }
 
 }

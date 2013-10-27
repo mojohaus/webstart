@@ -19,6 +19,8 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
+import java.util.Map;
+
 /**
  * Interface for configuration elements used by the generator.
  *
@@ -36,4 +38,6 @@ public interface GeneratorExtraConfig
     String getJ2seVersion();
 
     String getJnlpCodeBase();
+
+    Map<String, String> getProperties();
 }

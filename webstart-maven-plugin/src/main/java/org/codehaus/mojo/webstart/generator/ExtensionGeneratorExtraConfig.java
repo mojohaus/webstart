@@ -21,6 +21,9 @@ package org.codehaus.mojo.webstart.generator;
 
 import org.codehaus.mojo.webstart.JnlpExtension;
 
+import java.util.Collections;
+import java.util.Map;
+
 /**
  * {@link GeneratorExtraConfig} implementation for a {@link JnlpExtension}.
  *
@@ -96,6 +99,14 @@ public class ExtensionGeneratorExtraConfig
     public String getJnlpCodeBase()
     {
         return codebase;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Map<String, String> getProperties()
+    {
+        return Collections.emptyMap();
     }
 
 }

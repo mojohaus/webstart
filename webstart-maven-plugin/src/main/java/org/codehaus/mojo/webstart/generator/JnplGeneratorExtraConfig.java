@@ -21,6 +21,8 @@ package org.codehaus.mojo.webstart.generator;
 
 import org.codehaus.mojo.webstart.JnlpConfig;
 
+import java.util.Map;
+
 /**
  * {@link GeneratorExtraConfig} implementation for a {@link JnlpConfig}.
  *
@@ -98,4 +100,11 @@ public class JnplGeneratorExtraConfig
         return codebase;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public Map<String, String> getProperties()
+    {
+        return jnlp.getProperties();
+    }
 }
