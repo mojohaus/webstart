@@ -267,11 +267,14 @@ public abstract class AbstractGenerator
 
     private void addPropertiesToContext( Map properties, VelocityContext context )
     {
-        for ( Object o : properties.keySet() )
+        if ( properties != null )
         {
-            String nextKey = (String) o;
-            Object nextValue = properties.get( nextKey );
-            context.put( nextKey, nextValue.toString() );
+            for ( Object o : properties.keySet() )
+            {
+                String nextKey = (String) o;
+                Object nextValue = properties.get( nextKey );
+                context.put( nextKey, nextValue.toString() );
+            }
         }
     }
 
