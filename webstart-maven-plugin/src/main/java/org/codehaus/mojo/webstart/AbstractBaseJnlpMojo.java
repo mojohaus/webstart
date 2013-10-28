@@ -22,9 +22,7 @@ package org.codehaus.mojo.webstart;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
@@ -35,7 +33,6 @@ import org.codehaus.mojo.webstart.sign.SignTool;
 import org.codehaus.mojo.webstart.util.ArtifactUtil;
 import org.codehaus.mojo.webstart.util.IOUtil;
 import org.codehaus.mojo.webstart.util.JarUtil;
-import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -88,7 +85,7 @@ public abstract class AbstractBaseJnlpMojo
      * The collection of remote artifact repositories.
      */
     @Parameter( defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true )
-    private List remoteRepositories;
+    private List<ArtifactRepository> remoteRepositories;
 
     /**
      * The directory in which files will be stored prior to processing.
@@ -219,11 +216,11 @@ public abstract class AbstractBaseJnlpMojo
     // Components
     // ----------------------------------------------------------------------
 
-    /**
-     * Artifact resolver, needed to download source jars for inclusion in classpath.
-     */
-    @Component
-    private ArtifactResolver artifactResolver;
+//    /**
+//     * Artifact resolver, needed to download source jars for inclusion in classpath.
+//     */
+//    @Component
+//    private ArtifactResolver artifactResolver;
 
     /**
      * Sign tool.
@@ -231,11 +228,11 @@ public abstract class AbstractBaseJnlpMojo
     @Component
     private SignTool signTool;
 
-    /**
-     * Artifact factory, needed to download source jars for inclusion in classpath.
-     */
-    @Component
-    private ArtifactFactory artifactFactory;
+//    /**
+//     * Artifact factory, needed to download source jars for inclusion in classpath.
+//     */
+//    @Component
+//    private ArtifactFactory artifactFactory;
 
     /**
      * All available pack200 tools.
@@ -444,27 +441,27 @@ public abstract class AbstractBaseJnlpMojo
         return templateDirectory;
     }
 
-    /**
-     * Returns the ArtifactFactory that can be used to create artifacts that
-     * need to be retrieved from maven artifact repositories.
-     *
-     * @return Returns the value of the artifactFactory field.
-     */
-    protected ArtifactFactory getArtifactFactory()
-    {
-        return artifactFactory;
-    }
+//    /**
+//     * Returns the ArtifactFactory that can be used to create artifacts that
+//     * need to be retrieved from maven artifact repositories.
+//     *
+//     * @return Returns the value of the artifactFactory field.
+//     */
+//    protected ArtifactFactory getArtifactFactory()
+//    {
+//        return artifactFactory;
+//    }
 
-    /**
-     * Returns the ArtifactResolver that can be used to retrieve artifacts
-     * from maven artifact repositories.
-     *
-     * @return Returns the value of the artifactResolver field.
-     */
-    protected ArtifactResolver getArtifactResolver()
-    {
-        return artifactResolver;
-    }
+//    /**
+//     * Returns the ArtifactResolver that can be used to retrieve artifacts
+//     * from maven artifact repositories.
+//     *
+//     * @return Returns the value of the artifactResolver field.
+//     */
+//    protected ArtifactResolver getArtifactResolver()
+//    {
+//        return artifactResolver;
+//    }
 
     /**
      * Returns the local artifact repository.
@@ -482,7 +479,7 @@ public abstract class AbstractBaseJnlpMojo
      *
      * @return Returns the value of the remoteRepositories field.
      */
-    protected List getRemoteRepositories()
+    protected List<ArtifactRepository> getRemoteRepositories()
     {
         return remoteRepositories;
     }
@@ -581,24 +578,21 @@ public abstract class AbstractBaseJnlpMojo
     protected void checkPack200()
         throws MojoExecutionException
     {
-        if ( !isPack200() )
+        if ( isPack200() )
         {
 
-            // pack 200 is not required, so no check to do
-            return;
-        }
+            final float javaVersion5 = 1.5f;
+            if ( SystemUtils.JAVA_VERSION_FLOAT < javaVersion5 )
+            {
+                throw new MojoExecutionException(
+                    "Configuration error: Pack200 compression is only available on SDK 5.0 or above." );
+            }
 
-        final float javaVersion5 = 1.5f;
-        if ( SystemUtils.JAVA_VERSION_FLOAT < javaVersion5 )
-        {
-            throw new MojoExecutionException(
-                "Configuration error: Pack200 compression is only available on SDK 5.0 or above." );
-        }
-
-        // check the pack200Tool exists
-        if ( pack200Tools.isEmpty() )
-        {
-            throw new MojoExecutionException( "Configuration error: No Pack200Tool found." );
+            // check the pack200Tool exists
+            if ( pack200Tools.isEmpty() )
+            {
+                throw new MojoExecutionException( "Configuration error: No Pack200Tool found." );
+            }
         }
     }
 
@@ -614,10 +608,10 @@ public abstract class AbstractBaseJnlpMojo
      * @return <code>true</code> when the file was copied, <code>false</code> otherwise.
      * @throws IllegalArgumentException if sourceFile is <code>null</code> or
      *                                  <code>sourceFile.getName()</code> is <code>null</code>
-     * @throws IOException              if an error occurs attempting to copy the file.
+     * @throws MojoExecutionException   if an error occurs attempting to copy the file.
      */
     protected boolean copyJarAsUnprocessedToDirectoryIfNecessary( File sourceFile, File targetDirectory )
-        throws IOException
+        throws MojoExecutionException
     {
 
         if ( sourceFile == null )
@@ -632,12 +626,13 @@ public abstract class AbstractBaseJnlpMojo
         boolean shouldCopy =
             !signedTargetFile.exists() || ( signedTargetFile.lastModified() < sourceFile.lastModified() );
 
-        shouldCopy = shouldCopy &&
+        shouldCopy &=
             ( !unsignedTargetFile.exists() || ( unsignedTargetFile.lastModified() < sourceFile.lastModified() ) );
 
         if ( shouldCopy )
         {
-            FileUtils.copyFile( sourceFile, unsignedTargetFile );
+            getIoUtil().copyFile( sourceFile, unsignedTargetFile );
+
         }
         else
         {
@@ -710,6 +705,12 @@ public abstract class AbstractBaseJnlpMojo
         {
             makeUnprocessedFilesFinal( getLibDirectory() );
         }
+
+        if ( isPack200() )
+        {
+            getLog().debug( "packing jars" );
+            pack200Jars( getLibDirectory(), processedJarFileFilter );
+        }
     }
 
 
@@ -762,17 +763,17 @@ public abstract class AbstractBaseJnlpMojo
         return ioUtil;
     }
 
-    protected void packJars()
-        throws MojoExecutionException
-    {
-
-        if ( isPack200() )
-        {
-            getLog().debug( "packing jars" );
-            pack200Jars( getLibDirectory(), processedJarFileFilter );
-        }
-
-    }
+//    protected void packJars()
+//        throws MojoExecutionException
+//    {
+//
+//        if ( isPack200() )
+//        {
+//            getLog().debug( "packing jars" );
+//            pack200Jars( getLibDirectory(), processedJarFileFilter );
+//        }
+//
+//    }
 
     protected Pack200Tool getPack200Tool()
     {

@@ -39,7 +39,6 @@ import org.codehaus.mojo.webstart.util.IOUtil;
 import org.codehaus.plexus.archiver.Archiver;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -255,9 +254,9 @@ public abstract class AbstractJnlpMojo
 
         IOUtil ioUtil = getIoUtil();
 
-        //
+        // ---
         // prepare layout
-        //
+        // ---
 
         ioUtil.makeDirectoryIfNecessary( getWorkDirectory() );
         ioUtil.makeDirectoryIfNecessary( getLibDirectory() );
@@ -281,43 +280,12 @@ public abstract class AbstractJnlpMojo
                     "didn't find artifact with main class: " + jnlp.getMainClass() + ". Did you specify it? " );
             }
 
-            // native libs
-            // FIXME
+            // ---
+            // Process native libs (FIXME)
+            // ---
 
-            /*
-            for( Iterator it = getNativeLibs().iterator(); it.hasNext(); ) {
-                Artifact artifact = ;
-                Artifact copiedArtifact =
+            processNativeLibs();
 
-                // similar to what we do for jars, except that we must pack them into jar instead of copying.
-                // them
-                    File nativeLib = artifact.getFile()
-                    if(! nativeLib.endsWith( ".jar" ) ){
-                        getLog().debug("Wrapping native library " + artifact + " into jar." );
-                        File nativeLibJar = new File( applicationFolder, xxx + ".jar");
-                        Jar jarTask = new Jar();
-                        jarTask.setDestFile( nativeLib );
-                        jarTask.setBasedir( basedir );
-                        jarTask.setIncludes( nativeLib );
-                        jarTask.execute();
-
-                        nativeLibJar.setLastModified( nativeLib.lastModified() );
-
-                        copiedArtifact = new ....
-                    } else {
-                        getLog().debug( "Copying native lib " + artifact );
-                        copyFileToDirectory( artifact.getFile(), applicationFolder );
-
-                        copiedArtifact = artifact;
-                    }
-                    copiedNativeArtifacts.add( copiedArtifact );
-                }
-            }
-            */
-
-            //
-            // pack200 and jar signing
-            //
             if ( ( isPack200() || getSign() != null ) && getLog().isDebugEnabled() )
             {
                 logCollection(
@@ -325,13 +293,30 @@ public abstract class AbstractJnlpMojo
                     getModifiedJnlpArtifacts() );
             }
 
+            // ---
+            // Process collected jars
+            // ---
+
             signOrRenameJars();
-            packJars();
+
+            // ---
+            // Generate jnlp file
+            // ---
+
             generateJnlpFile( getWorkDirectory() );
+
+            // ---
+            // Generate jnlp extension files
+            // ---
+
             if ( withExtensions )
             {
                 generateJnlpExtensionsFile( getWorkDirectory() );
             }
+
+            // ---
+            // Generate archive file if required
+            // ---
 
             if ( makeArchive )
             {
@@ -528,10 +513,10 @@ public abstract class AbstractJnlpMojo
      * Iterate through all the top level and transitive dependencies declared in the project and
      * collect all the runtime scope dependencies for inclusion in the .zip and signing.
      *
-     * @throws IOException if could not process dependencies
+     * @throws MojoExecutionException if could not process dependencies
      */
     private void processDependencies()
-        throws IOException
+        throws MojoExecutionException
     {
 
         processDependency( getProject().getArtifact() );
@@ -561,7 +546,7 @@ public abstract class AbstractJnlpMojo
     }
 
     private void processDependency( Artifact artifact )
-        throws IOException
+        throws MojoExecutionException
     {
         // TODO: scope handler
         // Include runtime and compile time libraries
@@ -697,6 +682,40 @@ public abstract class AbstractJnlpMojo
         }
     }
 
+    private void processNativeLibs()
+    {
+        /*
+            for( Iterator it = getNativeLibs().iterator(); it.hasNext(); ) {
+                Artifact artifact = ;
+                Artifact copiedArtifact =
+
+                // similar to what we do for jars, except that we must pack them into jar instead of copying.
+                // them
+                    File nativeLib = artifact.getFile()
+                    if(! nativeLib.endsWith( ".jar" ) ){
+                        getLog().debug("Wrapping native library " + artifact + " into jar." );
+                        File nativeLibJar = new File( applicationFolder, xxx + ".jar");
+                        Jar jarTask = new Jar();
+                        jarTask.setDestFile( nativeLib );
+                        jarTask.setBasedir( basedir );
+                        jarTask.setIncludes( nativeLib );
+                        jarTask.execute();
+
+                        nativeLibJar.setLastModified( nativeLib.lastModified() );
+
+                        copiedArtifact = new ....
+                    } else {
+                        getLog().debug( "Copying native lib " + artifact );
+                        copyFileToDirectory( artifact.getFile(), applicationFolder );
+
+                        copiedArtifact = artifact;
+                    }
+                    copiedNativeArtifacts.add( copiedArtifact );
+                }
+            }
+            */
+    }
+
     private void logCollection( final String prefix, final Collection collection )
     {
         getLog().debug( prefix + " " + collection );
@@ -714,8 +733,6 @@ public abstract class AbstractJnlpMojo
         throws MojoExecutionException
     {
 
-        getLog().debug( "a fact " + getArtifactFactory() );
-        getLog().debug( "a resol " + getArtifactResolver() );
         getLog().debug( "basedir " + this.basedir );
         getLog().debug( "gzip " + isGzip() );
         getLog().debug( "pack200 " + isPack200() );
@@ -817,11 +834,10 @@ public abstract class AbstractJnlpMojo
      * TODO, should check that all dependencies are well signed with the same
      * extension with the same signer.
      *
-     * @throws IOException
      * @throws MojoExecutionException
      */
     private void processExtensionsDependencies()
-        throws IOException, MojoExecutionException
+        throws MojoExecutionException
     {
 
         Collection<Artifact> artifacts =
@@ -842,7 +858,7 @@ public abstract class AbstractJnlpMojo
     }
 
     private void processExtensionDependency( JnlpExtension extension, Artifact artifact )
-        throws IOException, MojoExecutionException
+        throws MojoExecutionException
     {
         // TODO: scope handler
         // Include runtime and compile time libraries

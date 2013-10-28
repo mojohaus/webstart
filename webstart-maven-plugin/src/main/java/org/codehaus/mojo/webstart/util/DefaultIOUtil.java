@@ -78,6 +78,23 @@ public class DefaultIOUtil
     /**
      * {@inheritDoc}
      */
+    public void copyFile( File sourceFile, File targetFile )
+        throws MojoExecutionException
+    {
+        try
+        {
+            FileUtils.copyFile( sourceFile, targetFile);
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException( "Could not copy file "+sourceFile+" to "+targetFile, e );
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
     public void copyDirectoryStructure( File sourceDirectory, File targetDirectory )
         throws MojoExecutionException
     {
@@ -93,7 +110,6 @@ public class DefaultIOUtil
                 "Could not copy directory structure from " + sourceDirectory + " to " + targetDirectory, e );
         }
     }
-
 
     /**
      * {@inheritDoc}

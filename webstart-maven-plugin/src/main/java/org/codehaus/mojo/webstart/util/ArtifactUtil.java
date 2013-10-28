@@ -20,10 +20,14 @@ package org.codehaus.mojo.webstart.util;
  */
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.mojo.webstart.JarResource;
 import org.codehaus.mojo.webstart.JnlpConfig;
 
-import java.net.MalformedURLException;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Some usefull methods on artifacts.
@@ -35,9 +39,30 @@ import java.net.MalformedURLException;
 public interface ArtifactUtil
 {
 
+    /**
+     * Plexus component role.
+     */
+    String ROLE = ArtifactUtil.class.getName();
+
     boolean artifactContainsMainClass( Artifact artifact, JnlpConfig jnlp )
-        throws MalformedURLException;
+        throws MojoExecutionException;
 
     boolean artifactContainsMainClass( Artifact artifact, JarResource jnlp )
-        throws MalformedURLException;
+        throws MojoExecutionException;
+
+    /**
+     * Creates from the given jar resource the underlying artifact.
+     *
+     * @param jarResource the jar resource
+     * @return the created artifact from the given jar resource
+     */
+    Artifact createArtifact( JarResource jarResource );
+
+    void resolve( Artifact artifact, List remoteRepositories, ArtifactRepository localRepository )
+        throws MojoExecutionException;
+
+    Set<Artifact> resolveTransitively( Set<Artifact> jarResourceArtifacts, Artifact artifact,
+                                       ArtifactRepository localRepository, List<ArtifactRepository> remoteRepositories,
+                                       ArtifactFilter artifactFilter )
+        throws MojoExecutionException;
 }

@@ -19,6 +19,7 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 
 /**
@@ -223,6 +224,13 @@ public class JarResource
     public String getMainClass()
     {
         return this.mainClass;
+    }
+
+    public boolean isMandatoryField()
+    {
+        return StringUtils.isNotBlank( getGroupId() ) &&
+            StringUtils.isNotBlank( getArtifactId() ) &&
+            StringUtils.isNotBlank( getVersion() );
     }
 
     /**

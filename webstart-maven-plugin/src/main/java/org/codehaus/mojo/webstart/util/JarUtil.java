@@ -35,6 +35,11 @@ import java.util.Map;
 public interface JarUtil
 {
 
+    /**
+     * Plexus component role.
+     */
+    String ROLE = JarUtil.class.getName();
+
     void setManifestEntries( Map<String, String> entries )
         throws MojoExecutionException;
 

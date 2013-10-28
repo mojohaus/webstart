@@ -20,12 +20,23 @@ package org.codehaus.mojo.webstart.util;
  */
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.factory.ArtifactFactory;
+import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.mojo.webstart.JarResource;
 import org.codehaus.mojo.webstart.JnlpConfig;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Default implementation of {@link ArtifactUtil}.
@@ -41,10 +52,29 @@ public class DefaultArtifactUtil
 {
 
     /**
+     * @plexus.requirement
+     */
+    private ArtifactFactory artifactFactory;
+
+    /**
+     * Artifact resolver, needed to download source jars for inclusion in classpath.
+     *
+     * @plexus.requirement
+     */
+    private ArtifactResolver artifactResolver;
+
+    /**
+     * The project's artifact metadata source, used to resolve transitive dependencies.
+     *
+     * @plexus.requirement
+     */
+    private ArtifactMetadataSource artifactMetadataSource;
+
+    /**
      * {@inheritDoc}
      */
     public boolean artifactContainsMainClass( Artifact artifact, JnlpConfig jnlp )
-        throws MalformedURLException
+        throws MojoExecutionException
     {
         boolean result = false;
         if ( jnlp != null )
@@ -58,7 +88,7 @@ public class DefaultArtifactUtil
      * {@inheritDoc}
      */
     public boolean artifactContainsMainClass( Artifact artifact, JarResource jnlp )
-        throws MalformedURLException
+        throws MojoExecutionException
     {
         boolean result = false;
         if ( jnlp != null )
@@ -66,6 +96,77 @@ public class DefaultArtifactUtil
             result = artifactContainsClass( artifact, jnlp.getMainClass() );
         }
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Artifact createArtifact( JarResource jarResource )
+    {
+
+        if ( jarResource.getClassifier() == null )
+        {
+            return artifactFactory.createArtifact( jarResource.getGroupId(), jarResource.getArtifactId(),
+                                                   jarResource.getVersion(), Artifact.SCOPE_RUNTIME, "jar" );
+        }
+        else
+        {
+            return artifactFactory.createArtifactWithClassifier( jarResource.getGroupId(), jarResource.getArtifactId(),
+                                                                 jarResource.getVersion(), "jar",
+                                                                 jarResource.getClassifier() );
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void resolve( Artifact artifact, List remoteRepositories, ArtifactRepository localRepository )
+        throws MojoExecutionException
+    {
+        try
+        {
+            artifactResolver.resolve( artifact, remoteRepositories, localRepository );
+        }
+        catch ( ArtifactResolutionException e )
+        {
+            throw new MojoExecutionException( "Could not resolv artifact: " + artifact, e );
+        }
+        catch ( ArtifactNotFoundException e )
+        {
+            throw new MojoExecutionException( "Could not find artifact: " + artifact, e );
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Set<Artifact> resolveTransitively( Set<Artifact> jarResourceArtifacts, Artifact originateArtifact,
+                                              ArtifactRepository localRepository,
+                                              List<ArtifactRepository> remoteRepositories,
+                                              ArtifactFilter artifactFilter )
+        throws MojoExecutionException
+    {
+
+        try
+        {
+            ArtifactResolutionResult result =
+                artifactResolver.resolveTransitively( jarResourceArtifacts, originateArtifact, null,
+                                                      //managedVersions
+                                                      localRepository, remoteRepositories, this.artifactMetadataSource,
+                                                      artifactFilter );
+
+            Set<Artifact> resultArtifacts = result.getArtifacts();
+
+            return resultArtifacts;
+        }
+        catch ( ArtifactResolutionException e )
+        {
+            throw new MojoExecutionException( "Could not resolv transitive dependencies", e );
+        }
+        catch ( ArtifactNotFoundException e )
+        {
+            throw new MojoExecutionException( "Could not find transitive dependencies ", e );
+        }
     }
 
     /**
@@ -77,12 +178,21 @@ public class DefaultArtifactUtil
      * @throws java.net.MalformedURLException if artifact file url is mal formed
      */
     protected boolean artifactContainsClass( Artifact artifact, final String mainClass )
-        throws MalformedURLException
+        throws MojoExecutionException
     {
         boolean containsClass = true;
 
         // JarArchiver.grabFilesAndDirs()
-        ClassLoader cl = new java.net.URLClassLoader( new URL[]{ artifact.getFile().toURI().toURL() } );
+        URL url = null;
+        try
+        {
+            url = artifact.getFile().toURI().toURL();
+        }
+        catch ( MalformedURLException e )
+        {
+            throw new MojoExecutionException( "Could not get artifact url: " + artifact.getFile(), e );
+        }
+        ClassLoader cl = new java.net.URLClassLoader( new URL[]{ url } );
         Class<?> c = null;
         try
         {

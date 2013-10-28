@@ -35,6 +35,11 @@ public interface IOUtil
 {
 
     /**
+     * Plexus component role.
+     */
+    String ROLE = IOUtil.class.getName();
+
+    /**
      * Copy the content of a directory to another one recursively.
      *
      * @param sourceDirectory directory to copy
@@ -66,6 +71,9 @@ public interface IOUtil
      */
     boolean copyFileToDirectoryIfNecessary( File sourceFile, File targetDirectory )
         throws MojoExecutionException;
+
+    void copyFile( File sourceFile, File targetFile )
+    throws MojoExecutionException;
 
     /**
      * Delete the specified directory.
@@ -132,5 +140,4 @@ public interface IOUtil
      */
     void copyResources( URI uri, ClassLoader classLoader, File target )
         throws MojoExecutionException;
-
 }
