@@ -22,8 +22,9 @@ package org.codehaus.mojo.webstart.generator;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.maven.plugin.logging.SystemStreamLog;
+import org.apache.maven.plugin.testing.stubs.ArtifactStub;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mojo.webstart.JarResource;
+import org.codehaus.mojo.webstart.ResolvedJarResource;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class JarResourcesGeneratorTest
         File templateFile = File.createTempFile( "bogusTemplate", ".vm" );
         templateFile.deleteOnExit();
 
-        List<JarResource> jarResources = new ArrayList<JarResource>();
+        List<ResolvedJarResource> jarResources = new ArrayList<ResolvedJarResource>();
         String mainClass = "fully.qualified.ClassName";
 
         JarResourcesGenerator generator =
@@ -63,10 +64,10 @@ public class JarResourcesGeneratorTest
         assertEquals( "", generator.getDependenciesText() );
 
         //Add some JarResources and confirm the correct output
-        JarResource jarResource1 = buildJarResource( "href1", "1.1", "bogus.Class", true, true );
-        JarResource jarResource2 = buildJarResource( "href2", "1.2", null, true, true );
-        JarResource jarResource3 = buildJarResource( "href3", "1.3", null, false, true );
-        JarResource jarResource4 = buildJarResource( "href4", "1.4", null, false, false );
+        ResolvedJarResource jarResource1 = buildJarResource( "href1", "1.1", "bogus.Class", true, true );
+        ResolvedJarResource jarResource2 = buildJarResource( "href2", "1.2", null, true, true );
+        ResolvedJarResource jarResource3 = buildJarResource( "href3", "1.3", null, false, true );
+        ResolvedJarResource jarResource4 = buildJarResource( "href4", "1.4", null, false, false );
 
         jarResources.add( jarResource1 );
         jarResources.add( jarResource2 );
@@ -95,11 +96,11 @@ public class JarResourcesGeneratorTest
 
     }
 
-    private JarResource buildJarResource( final String hrefValue, final String version, final String mainClass,
-                                          final boolean outputJarVersion, final boolean includeInJnlp )
+    private ResolvedJarResource buildJarResource( final String hrefValue, final String version, final String mainClass,
+                                                  final boolean outputJarVersion, final boolean includeInJnlp )
     {
 
-        return new JarResource()
+        return new ResolvedJarResource( new ArtifactStub() )
         {
 
             /**

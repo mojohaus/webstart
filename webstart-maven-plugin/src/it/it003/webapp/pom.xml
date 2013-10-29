@@ -74,6 +74,12 @@
                   <version>${project.version}</version>
                   <mainClass>org.mycompany.webstart.HelloWorld</mainClass>
                 </jarResource>
+
+                <jarResource>
+                  <groupId>junit</groupId>
+                  <artifactId>junit</artifactId>
+                  <version>3.8.1</version>
+                </jarResource>
               </jarResources>
             </jnlpFile>
           </jnlpFiles>

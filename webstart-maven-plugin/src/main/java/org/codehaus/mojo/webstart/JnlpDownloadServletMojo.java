@@ -40,8 +40,9 @@ import org.codehaus.mojo.webstart.util.ArtifactUtil;
 import org.codehaus.mojo.webstart.util.IOUtil;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -118,7 +119,7 @@ public class JnlpDownloadServletMojo
         // Check configuration and get all configured jar resources
         // ---
 
-        Set<JarResource> configuredJarResources = checkConfiguration();
+        checkConfiguration();
 
         // ---
         // Prepare working directory layout
@@ -130,10 +131,45 @@ public class JnlpDownloadServletMojo
         ioUtil.copyResources( getResourcesDirectory(), getWorkDirectory() );
 
         // ---
-        // Process configured jar resources
+        // Resolve common jar resources
         // ---
 
-        processJarResources( configuredJarResources );
+        getLog().info( "-- Prepare commons jar resources" );
+        Set<ResolvedJarResource> resolvedCommonJarResources;
+
+        if ( CollectionUtils.isEmpty( commonJarResources ) )
+        {
+            resolvedCommonJarResources = Collections.emptySet();
+        }
+        else
+        {
+            resolvedCommonJarResources = resolveJarResources( commonJarResources );
+        }
+
+        Set<ResolvedJarResource> allResolvedJarResources = new HashSet<ResolvedJarResource>();
+        allResolvedJarResources.addAll( resolvedCommonJarResources );
+
+        // ---
+        // Resolved jnlpFiles
+        // ---
+
+        getLog().info( "-- Prepare jnlp files" );
+        Set<ResolvedJnlpFile> resolvedJnlpFiles = new HashSet<ResolvedJnlpFile>();
+
+        for ( JnlpFile jnlpFile : jnlpFiles )
+        {
+            verboseLog( "prepare jnlp " + jnlpFile );
+
+            // resolve jar resources of the jnpl file
+            Set<ResolvedJarResource> resolvedJarResources = resolveJarResources( jnlpFile.getJarResources() );
+            // keep them (to generate the versions.xml file)
+            allResolvedJarResources.addAll( resolvedJarResources );
+            // the jnlp file have also the common jar resources
+            resolvedJarResources.addAll( resolvedCommonJarResources );
+            // create the resolved jnlp file
+            ResolvedJnlpFile resolvedJnlpFile = new ResolvedJnlpFile( jnlpFile, resolvedJarResources );
+            resolvedJnlpFiles.add( resolvedJnlpFile );
+        }
 
         // ---
         // Process collected jars
@@ -145,7 +181,7 @@ public class JnlpDownloadServletMojo
         // Generate jnlp files
         // ---
 
-        for ( JnlpFile jnlpFile : jnlpFiles )
+        for ( ResolvedJnlpFile jnlpFile : resolvedJnlpFiles )
         {
             generateJnlpFile( jnlpFile, getLibPath() );
         }
@@ -154,7 +190,7 @@ public class JnlpDownloadServletMojo
         // Generate version xml file
         // ---
 
-        generateVersionXml( configuredJarResources );
+        generateVersionXml( allResolvedJarResources );
 
         // ---
         // Copy to final directory
@@ -191,7 +227,7 @@ public class JnlpDownloadServletMojo
      *
      * @throws MojoExecutionException if any user configuration is invalid.
      */
-    private Set<JarResource> checkConfiguration()
+    private void checkConfiguration()
         throws MojoExecutionException
     {
 
@@ -210,8 +246,6 @@ public class JnlpDownloadServletMojo
             jnlpFiles.get( 0 ).setOutputFilename( "launch.jnlp" );
         }
 
-        Set<JarResource> result = new HashSet<JarResource>();
-
         // ---
         // check Jnlp files configuration
         // ---
@@ -227,10 +261,7 @@ public class JnlpDownloadServletMojo
                                                       jnlpFile.getOutputFilename() + "]." );
             }
 
-            checkJnlpFileConfiguration( jnlpFile );
-
-            // collect all jar resources of this file
-            result.addAll( jnlpFile.getJarResources() );
+            checkJnlpFileuration( jnlpFile );
         }
 
         if ( CollectionUtils.isNotEmpty( commonJarResources ) )
@@ -249,8 +280,6 @@ public class JnlpDownloadServletMojo
                     throw new MojoExecutionException( "Configuration Error: A mainClass must not be specified " +
                                                           "on a JarResource in the commonJarResources collection." );
                 }
-
-                result.add( jarResource );
             }
 
             // ---
@@ -275,8 +304,6 @@ public class JnlpDownloadServletMojo
                 }
             }
         }
-
-        return result;
     }
 
     /**
@@ -285,7 +312,7 @@ public class JnlpDownloadServletMojo
      * @param jnlpFile The configuration element to be checked.
      * @throws MojoExecutionException if the config element is invalid.
      */
-    private void checkJnlpFileConfiguration( JnlpFile jnlpFile )
+    private void checkJnlpFileuration( JnlpFile jnlpFile )
         throws MojoExecutionException
     {
 
@@ -383,13 +410,14 @@ public class JnlpDownloadServletMojo
      * fill also his hrefValue if required (jar resource with outputJarVersion filled).
      *
      * @param configuredJarResources list of configured jar resources
+     * @return the set of resolved jar resources
      * @throws MojoExecutionException if something bas occurs while retrieving resources
      */
-    private void processJarResources( Set<JarResource> configuredJarResources )
+    private Set<ResolvedJarResource> resolveJarResources( Collection<JarResource> configuredJarResources )
         throws MojoExecutionException
     {
 
-        Set<JarResource> collectedJarResources = new HashSet<JarResource>();
+        Set<ResolvedJarResource> collectedJarResources = new HashSet<ResolvedJarResource>();
 
         ArtifactUtil artifactUtil = getArtifactUtil();
 
@@ -420,9 +448,9 @@ public class JnlpDownloadServletMojo
                             jarResource );
                 }
             }
-            jarResource.setArtifact( artifact );
+            ResolvedJarResource resolvedJarResource = new ResolvedJarResource( jarResource, artifact );
             getLog().debug( "Add jarResource (configured): " + jarResource );
-            collectedJarResources.add( jarResource );
+            collectedJarResources.add( resolvedJarResource );
         }
 
         if ( !isExcludeTransitive() )
@@ -431,7 +459,7 @@ public class JnlpDownloadServletMojo
             // get all artifacts to resolve
 
             Set<Artifact> artifacts = new HashSet<Artifact>();
-            for ( JarResource jarResource : configuredJarResources )
+            for ( ResolvedJarResource jarResource : collectedJarResources )
             {
                 artifacts.add( jarResource.getArtifact() );
             }
@@ -454,7 +482,8 @@ public class JnlpDownloadServletMojo
             // existing jar resources (if not already in)
             for ( Artifact resolvedArtifact : transitiveArtifacts )
             {
-                JarResource newJarResource = new JarResource( resolvedArtifact );
+
+                ResolvedJarResource newJarResource = new ResolvedJarResource( resolvedArtifact );
 
                 if ( !collectedJarResources.contains( newJarResource ) )
                 {
@@ -465,7 +494,7 @@ public class JnlpDownloadServletMojo
         }
 
         // for each JarResource, copy its artifact to the lib directory if necessary
-        for ( JarResource jarResource : collectedJarResources )
+        for ( ResolvedJarResource jarResource : collectedJarResources )
         {
             Artifact artifact = jarResource.getArtifact();
             boolean copied = copyJarAsUnprocessedToDirectoryIfNecessary( artifact.getFile(), getLibDirectory() );
@@ -485,21 +514,16 @@ public class JnlpDownloadServletMojo
                 jarResource.setHrefValue( hrefValue );
             }
         }
+        return collectedJarResources;
     }
 
-    private void generateJnlpFile( JnlpFile jnlpFile, String libPath )
+    private void generateJnlpFile( ResolvedJnlpFile jnlpFile, String libPath )
         throws MojoExecutionException
     {
 
         File jnlpOutputFile = new File( getWorkDirectory(), jnlpFile.getOutputFilename() );
 
-        Set<JarResource> jarResources = new LinkedHashSet<JarResource>();
-        jarResources.addAll( jnlpFile.getJarResources() );
-
-        if ( CollectionUtils.isNotEmpty( commonJarResources ) )
-        {
-            jarResources.addAll( commonJarResources );
-        }
+        Set<ResolvedJarResource> jarResources = jnlpFile.getJarResources();
 
         JarResourcesGenerator jnlpGenerator = new JarResourcesGenerator( getLog(), getProject(), getTemplateDirectory(),
                                                                          "default-jnlp-servlet-template.vm",
@@ -528,27 +552,12 @@ public class JnlpDownloadServletMojo
      *
      * @throws MojoExecutionException if could not generate the xml version file
      */
-    private void generateVersionXml( Set<JarResource> jarResources )
+    private void generateVersionXml( Set<ResolvedJarResource> jarResources )
         throws MojoExecutionException
     {
-//
-//        Set<JarResource> jarResources = new LinkedHashSet<JarResource>();
-//
-//        //combine the jar resources from commonJarResources and each JnlpFile config
-//
-//        for ( JnlpFile jnlpFile : jnlpFiles )
-//        {
-//            jarResources.addAll( jnlpFile.getJarResources() );
-//        }
-//
-//        if ( commonJarResources != null )
-//        {
-//            jarResources.addAll( commonJarResources );
-//        }
 
         VersionXmlGenerator generator = new VersionXmlGenerator( getEncoding() );
         generator.generate( getLibDirectory(), jarResources );
-
     }
 
     /**

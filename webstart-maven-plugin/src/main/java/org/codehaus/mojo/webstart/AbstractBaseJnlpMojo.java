@@ -216,23 +216,11 @@ public abstract class AbstractBaseJnlpMojo
     // Components
     // ----------------------------------------------------------------------
 
-//    /**
-//     * Artifact resolver, needed to download source jars for inclusion in classpath.
-//     */
-//    @Component
-//    private ArtifactResolver artifactResolver;
-
     /**
      * Sign tool.
      */
     @Component
     private SignTool signTool;
-
-//    /**
-//     * Artifact factory, needed to download source jars for inclusion in classpath.
-//     */
-//    @Component
-//    private ArtifactFactory artifactFactory;
 
     /**
      * All available pack200 tools.
@@ -440,28 +428,6 @@ public abstract class AbstractBaseJnlpMojo
     {
         return templateDirectory;
     }
-
-//    /**
-//     * Returns the ArtifactFactory that can be used to create artifacts that
-//     * need to be retrieved from maven artifact repositories.
-//     *
-//     * @return Returns the value of the artifactFactory field.
-//     */
-//    protected ArtifactFactory getArtifactFactory()
-//    {
-//        return artifactFactory;
-//    }
-
-//    /**
-//     * Returns the ArtifactResolver that can be used to retrieve artifacts
-//     * from maven artifact repositories.
-//     *
-//     * @return Returns the value of the artifactResolver field.
-//     */
-//    protected ArtifactResolver getArtifactResolver()
-//    {
-//        return artifactResolver;
-//    }
 
     /**
      * Returns the local artifact repository.
@@ -762,18 +728,6 @@ public abstract class AbstractBaseJnlpMojo
     {
         return ioUtil;
     }
-
-//    protected void packJars()
-//        throws MojoExecutionException
-//    {
-//
-//        if ( isPack200() )
-//        {
-//            getLog().debug( "packing jars" );
-//            pack200Jars( getLibDirectory(), processedJarFileFilter );
-//        }
-//
-//    }
 
     protected Pack200Tool getPack200Tool()
     {

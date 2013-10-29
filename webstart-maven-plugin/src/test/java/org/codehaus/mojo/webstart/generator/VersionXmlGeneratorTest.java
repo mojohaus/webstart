@@ -25,7 +25,7 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.codehaus.mojo.webstart.JarResource;
+import org.codehaus.mojo.webstart.ResolvedJarResource;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.custommonkey.xmlunit.Diff;
 import org.xml.sax.SAXException;
@@ -113,7 +113,7 @@ public class VersionXmlGeneratorTest
         throws MojoExecutionException, IOException, SAXException, ParserConfigurationException
     {
 
-        List<JarResource> jarResources = new ArrayList<JarResource>();
+        List<ResolvedJarResource> jarResources = new ArrayList<ResolvedJarResource>();
         new VersionXmlGenerator( "utf-8" ).generate( this.outputDir, jarResources );
 
         Assert.assertTrue( "Assert expectedFile exists", this.expectedFile.exists() );
@@ -140,13 +140,13 @@ public class VersionXmlGeneratorTest
                                  "classifier", null );
         artifact2.setFile( new File( "bogus2.txt" ) );
 
-        JarResource jar1 = new JarResource();
-        JarResource jar2 = new JarResource();
+        ResolvedJarResource jar1 = new ResolvedJarResource( artifact1 );
+        ResolvedJarResource jar2 = new ResolvedJarResource( artifact2 );
 
-        jar1.setArtifact( artifact1 );
-        jar2.setArtifact( artifact2 );
+//        jar1.setArtifact( artifact1 );
+//        jar2.setArtifact( artifact2 );
 
-        List<JarResource> jarResources = new ArrayList<JarResource>( 2 );
+        List<ResolvedJarResource> jarResources = new ArrayList<ResolvedJarResource>( 2 );
         jarResources.add( jar1 );
         jarResources.add( jar2 );
 

@@ -21,7 +21,7 @@ package org.codehaus.mojo.webstart.generator;
 
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mojo.webstart.JarResource;
+import org.codehaus.mojo.webstart.ResolvedJarResource;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
@@ -39,7 +39,7 @@ public class JarResourcesGenerator
 
 {
 
-    private final Collection<JarResource> jarResources;
+    private final Collection<ResolvedJarResource> jarResources;
 
     private String libPath;
 
@@ -56,7 +56,7 @@ public class JarResourcesGenerator
      */
     public JarResourcesGenerator( Log log, MavenProject mavenProject, File resourceLoaderPath,
                                   String defaultTemplateResourceName, File outputFile, String templateFile,
-                                  Collection<JarResource> jarResources, String mainClass, String webstartJarURL,
+                                  Collection<ResolvedJarResource> jarResources, String mainClass, String webstartJarURL,
                                   String libPath, String encoding )
     {
         super( log, mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, templateFile, mainClass,
@@ -73,15 +73,14 @@ public class JarResourcesGenerator
 
         String jarResourcesText = "";
 
-        if ( this.jarResources.size() != 0 )
+        if ( jarResources.size() != 0 )
         {
             final int multiplier = 100;
-            StringBuilder buffer = new StringBuilder( multiplier * this.jarResources.size() );
+            StringBuilder buffer = new StringBuilder( multiplier * jarResources.size() );
             buffer.append( "\n" );
 
-            for ( Object jarResource1 : this.jarResources )
+            for ( ResolvedJarResource jarResource : jarResources )
             {
-                JarResource jarResource = (JarResource) jarResource1;
 
                 if ( !jarResource.isIncludeInJnlp() )
                 {

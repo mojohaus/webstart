@@ -20,7 +20,7 @@ package org.codehaus.mojo.webstart.generator;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.codehaus.mojo.webstart.JarResource;
+import org.codehaus.mojo.webstart.ResolvedJarResource;
 import org.codehaus.plexus.util.WriterFactory;
 
 import java.io.BufferedWriter;
@@ -67,7 +67,7 @@ public class VersionXmlGenerator
      *                     element will be created in the generated file.
      * @throws MojoExecutionException if an error occurs generating the file.
      */
-    public void generate( File outputDir, Collection<JarResource> jarResources )
+    public void generate( File outputDir, Collection<ResolvedJarResource> jarResources )
         throws MojoExecutionException
     {
 
@@ -107,7 +107,7 @@ public class VersionXmlGenerator
 
     }
 
-    private void generateXml( BufferedWriter writer, Collection<JarResource> jarResources )
+    private void generateXml( BufferedWriter writer, Collection<ResolvedJarResource> jarResources )
         throws IOException
     {
 
@@ -116,7 +116,7 @@ public class VersionXmlGenerator
         writer.write( "<jnlp-versions>" );
         writer.newLine();
 
-        for ( JarResource jarResource : jarResources )
+        for ( ResolvedJarResource jarResource : jarResources )
         {
             writer.write( "  <resource>" );
             writer.newLine();

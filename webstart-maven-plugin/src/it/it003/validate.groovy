@@ -37,6 +37,25 @@ def assertExistsFile( file )
   return true
 }
 
+def assertContains( content, expected )
+{
+  if ( !content.contains(expected) )
+  {
+    println( expected + " was not found in \n :" + content )
+    return false
+  }
+  return true
+}
+
+def assertNotContains( content, expected )
+{
+  if ( content.contains(expected) )
+  {
+    println( expected + " should not be found in \n :" + content )
+    return false
+  }
+  return true
+}
 File target = new File( basedir, "webapp/target" )
 assert assertExistsDirectory( target )
 
@@ -48,11 +67,42 @@ expectedFiles.each{
 File explodedWebstart = new File( target, "webapp/webstart" )
 assert assertExistsDirectory( explodedWebstart )
 
-String[] expectedJnlpFiles = [ "core-1.0.jar", "hello-world-1.0.jar", "launch1.jnlp", "launch2.jnlp", "version.xml" ]
+String[] expectedJnlpFiles = [ "core-1.0.jar", "hello-world-1.0.jar", "commons-logging-1.1.3.jar", "junit-3.8.1.jar", "launch1.jnlp", "launch2.jnlp", "version.xml" ]
 expectedJnlpFiles.each{
  assert assertExistsFile( new File ( explodedWebstart, it ) )
 }
 
 assert explodedWebstart.list().length == expectedJnlpFiles.length
+
+File jnlpFile1 = new File( explodedWebstart, "launch1.jnlp")
+
+String jnlpContent1 = jnlpFile1.text
+
+assert assertContains( jnlpContent1,  "<jar href=\"hello-world.jar\" version=\"1.0\" main=\"true\"/>" )
+assert assertContains( jnlpContent1,  "<jar href=\"core.jar\" version=\"1.0\"/>" )
+assert assertContains( jnlpContent1,  "<jar href=\"commons-logging.jar\" version=\"1.1.3\"/>" )
+assert assertNotContains( jnlpContent1,  "<jar href=\"junit.jar\" version=\"3.8.1\"/>" )
+
+File jnlpFile2 = new File( explodedWebstart, "launch2.jnlp")
+
+String jnlpContent2 = jnlpFile2.text
+
+assert assertContains( jnlpContent2,  "<jar href=\"hello-world.jar\" version=\"1.0\" main=\"true\"/>" )
+assert assertContains( jnlpContent2,  "<jar href=\"junit.jar\" version=\"3.8.1\"/>" )
+assert assertContains( jnlpContent2,  "<jar href=\"core.jar\" version=\"1.0\"/>" )
+assert assertContains( jnlpContent2,  "<jar href=\"commons-logging.jar\" version=\"1.1.3\"/>" )
+
+File versionFile = new File( explodedWebstart, "version.xml")
+
+String versionFileContent = versionFile.text
+
+assert assertContains( versionFileContent,  "<name>hello-world.jar</name>" )
+assert assertContains( versionFileContent,  "<file>hello-world-1.0.jar</file>" )
+assert assertContains( versionFileContent,  "<name>core.jar</name>" )
+assert assertContains( versionFileContent,  "<file>core-1.0.jar</file>" )
+assert assertContains( versionFileContent,  "<name>junit.jar</name>" )
+assert assertContains( versionFileContent,  "<file>junit-3.8.1.jar</file>" )
+assert assertContains( versionFileContent,  "<name>commons-logging.jar</name>" )
+assert assertContains( versionFileContent,  "<file>commons-logging-1.1.3.jar</file>" )
 
 return true
