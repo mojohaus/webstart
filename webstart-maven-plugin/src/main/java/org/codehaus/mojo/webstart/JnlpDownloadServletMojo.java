@@ -421,12 +421,31 @@ public class JnlpDownloadServletMojo
 
         ArtifactUtil artifactUtil = getArtifactUtil();
 
+        // artifacts resolved from repositories
+        Set<Artifact> artifacts = new HashSet<Artifact>();
+
+        // sibling projects hit from a jar resources (need a special transitive resolution)
+        Set<MavenProject> siblingProjects = new HashSet<MavenProject>();
+
         // for each configured JarResource, create and resolve the corresponding artifact and
         // check it for the mainClass if specified
         for ( JarResource jarResource : configuredJarResources )
         {
             Artifact artifact = artifactUtil.createArtifact( jarResource );
-            artifactUtil.resolve( artifact, getRemoteRepositories(), getLocalRepository() );
+
+            // first try to resolv from reactor
+            MavenProject siblingProject = artifactUtil.resolveFromReactor( artifact, getProject(), reactorProjects );
+            if ( siblingProject == null )
+            {
+                // try to resolve from repositories
+                artifactUtil.resolveFromRepositories( artifact, getRemoteRepositories(), getLocalRepository() );
+                artifacts.add( artifact );
+            }
+            else
+            {
+                artifact = siblingProject.getArtifact();
+                siblingProjects.add( siblingProject );
+            }
 
             if ( StringUtils.isNotBlank( jarResource.getMainClass() ) )
             {
@@ -456,14 +475,6 @@ public class JnlpDownloadServletMojo
         if ( !isExcludeTransitive() )
         {
 
-            // get all artifacts to resolve
-
-            Set<Artifact> artifacts = new HashSet<Artifact>();
-            for ( ResolvedJarResource jarResource : collectedJarResources )
-            {
-                artifacts.add( jarResource.getArtifact() );
-            }
-
             // prepare artifact filter
 
             AndArtifactFilter artifactFilter = new AndArtifactFilter();
@@ -475,8 +486,8 @@ public class JnlpDownloadServletMojo
             // get all transitive dependencies
 
             Set<Artifact> transitiveArtifacts =
-                getArtifactUtil().resolveTransitively( artifacts, getProject().getArtifact(), getLocalRepository(),
-                                                       getRemoteRepositories(), artifactFilter );
+                getArtifactUtil().resolveTransitively( artifacts, siblingProjects, getProject().getArtifact(),
+                                                       getLocalRepository(), getRemoteRepositories(), artifactFilter );
 
             // for each transitive dependency, wrap it in a JarResource and add it to the collection of
             // existing jar resources (if not already in)

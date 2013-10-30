@@ -23,6 +23,7 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.webstart.JarResource;
 import org.codehaus.mojo.webstart.JnlpConfig;
 
@@ -58,11 +59,15 @@ public interface ArtifactUtil
      */
     Artifact createArtifact( JarResource jarResource );
 
-    void resolve( Artifact artifact, List remoteRepositories, ArtifactRepository localRepository )
+    MavenProject resolveFromReactor( Artifact artifact, MavenProject mavenProject, List<MavenProject> reactorProjects )
         throws MojoExecutionException;
 
-    Set<Artifact> resolveTransitively( Set<Artifact> jarResourceArtifacts, Artifact artifact,
-                                       ArtifactRepository localRepository, List<ArtifactRepository> remoteRepositories,
-                                       ArtifactFilter artifactFilter )
+
+    void resolveFromRepositories( Artifact artifact, List remoteRepositories, ArtifactRepository localRepository )
+        throws MojoExecutionException;
+
+    Set<Artifact> resolveTransitively( Set<Artifact> jarResourceArtifacts, Set<MavenProject> siblingProjects,
+                                       Artifact artifact, ArtifactRepository localRepository,
+                                       List<ArtifactRepository> remoteRepositories, ArtifactFilter artifactFilter )
         throws MojoExecutionException;
 }

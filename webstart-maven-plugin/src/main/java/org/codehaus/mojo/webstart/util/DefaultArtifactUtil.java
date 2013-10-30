@@ -19,6 +19,7 @@ package org.codehaus.mojo.webstart.util;
  * under the License.
  */
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -29,12 +30,14 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.webstart.JarResource;
 import org.codehaus.mojo.webstart.JnlpConfig;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -120,7 +123,33 @@ public class DefaultArtifactUtil
     /**
      * {@inheritDoc}
      */
-    public void resolve( Artifact artifact, List remoteRepositories, ArtifactRepository localRepository )
+    public MavenProject resolveFromReactor( Artifact artifact, MavenProject mp, List<MavenProject> reactorProjects )
+        throws MojoExecutionException
+    {
+        MavenProject result = null;
+
+        String artifactId = artifact.getArtifactId();
+
+        if ( CollectionUtils.isNotEmpty( reactorProjects ) )
+        {
+            for ( MavenProject reactorProject : reactorProjects )
+            {
+                if ( reactorProject.getArtifactId().equals( artifactId ) )
+                {
+                    result = reactorProject;
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void resolveFromRepositories( Artifact artifact, List remoteRepositories,
+                                         ArtifactRepository localRepository )
         throws MojoExecutionException
     {
         try
@@ -140,13 +169,32 @@ public class DefaultArtifactUtil
     /**
      * {@inheritDoc}
      */
-    public Set<Artifact> resolveTransitively( Set<Artifact> jarResourceArtifacts, Artifact originateArtifact,
-                                              ArtifactRepository localRepository,
+    public Set<Artifact> resolveTransitively( Set<Artifact> jarResourceArtifacts, Set<MavenProject> siblingProjects,
+                                              Artifact originateArtifact, ArtifactRepository localRepository,
                                               List<ArtifactRepository> remoteRepositories,
                                               ArtifactFilter artifactFilter )
         throws MojoExecutionException
     {
 
+        Set<Artifact> resultArtifacts = new HashSet<Artifact>();
+
+        if ( CollectionUtils.isNotEmpty( siblingProjects ) )
+        {
+
+            // getting transitive dependencies from project
+            for ( MavenProject siblingProject : siblingProjects )
+            {
+                Set<Artifact> artifacts = siblingProject.getArtifacts();
+                for ( Artifact artifact : artifacts )
+                {
+                    if ( artifactFilter.include( artifact ) )
+                    {
+
+                        resultArtifacts.add( artifact );
+                    }
+                }
+            }
+        }
         try
         {
             ArtifactResolutionResult result =
@@ -155,7 +203,7 @@ public class DefaultArtifactUtil
                                                       localRepository, remoteRepositories, this.artifactMetadataSource,
                                                       artifactFilter );
 
-            Set<Artifact> resultArtifacts = result.getArtifacts();
+            resultArtifacts.addAll( result.getArtifacts() );
 
             return resultArtifacts;
         }
@@ -175,7 +223,7 @@ public class DefaultArtifactUtil
      * @param artifact  artifact to test
      * @param mainClass the fully qualified name to find in artifact
      * @return {@code true} if given artifact contains the given fqn, {@code false} otherwise
-     * @throws java.net.MalformedURLException if artifact file url is mal formed
+     * @throws MojoExecutionException if artifact file url is mal formed
      */
     protected boolean artifactContainsClass( Artifact artifact, final String mainClass )
         throws MojoExecutionException

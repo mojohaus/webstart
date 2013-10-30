@@ -142,7 +142,7 @@ public abstract class AbstractBaseJnlpMojo
     /**
      * Enable verbose output.
      */
-    @Parameter( property = "verbose", defaultValue = "false" )
+    @Parameter( property = "webstart.verbose", alias = "verbose", defaultValue = "false" )
     private boolean verbose;
 
     /**
