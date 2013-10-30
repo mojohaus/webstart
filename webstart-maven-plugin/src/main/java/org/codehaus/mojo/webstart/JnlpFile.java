@@ -20,6 +20,7 @@ package org.codehaus.mojo.webstart;
  */
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class represents a &lt;jnlpFile&gt; configuration element from the
@@ -40,6 +41,8 @@ public class JnlpFile
     private List<JarResource> jarResources;
 
     private String mainClass;
+
+    private Map<String, String> properties;
 
     /**
      * Creates a new uninitialized {@code JnlpFile}.
@@ -92,6 +95,16 @@ public class JnlpFile
     }
 
     /**
+     * Returns the extrat <code>properties</code> we can inject in the generated JNLP file.
+     *
+     * @return the value of the properties field.
+     */
+    protected Map<String, String> getProperties()
+    {
+        return this.properties;
+    }
+
+    /**
      * Sets the collection of <code>JarResource</code> elements for this JNLP file.
      *
      * @param jarResources the new value for field {@link #jarResources}
@@ -121,5 +134,17 @@ public class JnlpFile
     {
         this.mainClass = mainClass;
     }
+
+    /**
+     * Sets the extra properties we can inject in the generated JNLP file.
+     *
+     * @param properties the new value for field {@link #properties}
+     */
+
+    public void setProperties( Map<String, String> properties )
+    {
+        this.properties = properties;
+    }
+
 
 }

@@ -19,7 +19,6 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
-import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -33,8 +32,11 @@ public class SimpleGeneratorExtraConfig
 {
     private final String codebase;
 
-    public SimpleGeneratorExtraConfig( String codebase )
+    private final Map<String, String> properties;
+
+    public SimpleGeneratorExtraConfig( Map<String, String> properties, String codebase )
     {
+        this.properties = properties;
         this.codebase = codebase;
     }
 
@@ -83,7 +85,7 @@ public class SimpleGeneratorExtraConfig
      */
     public Map<String, String> getProperties()
     {
-        return Collections.emptyMap();
+        return properties;
     }
 
 }

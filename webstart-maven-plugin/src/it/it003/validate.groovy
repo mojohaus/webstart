@@ -82,6 +82,7 @@ assert assertContains( jnlpContent1,  "<jar href=\"hello-world.jar\" version=\"1
 assert assertContains( jnlpContent1,  "<jar href=\"core.jar\" version=\"1.0\"/>" )
 assert assertContains( jnlpContent1,  "<jar href=\"commons-logging.jar\" version=\"1.1.3\"/>" )
 assert assertNotContains( jnlpContent1,  "<jar href=\"junit.jar\" version=\"3.8.1\"/>" )
+assert assertContains( jnlpContent1,  "<property name=\"environment\" value=\"dev1\"/>" )
 
 File jnlpFile2 = new File( explodedWebstart, "launch2.jnlp")
 
@@ -91,6 +92,7 @@ assert assertContains( jnlpContent2,  "<jar href=\"hello-world.jar\" version=\"1
 assert assertContains( jnlpContent2,  "<jar href=\"junit.jar\" version=\"3.8.1\"/>" )
 assert assertContains( jnlpContent2,  "<jar href=\"core.jar\" version=\"1.0\"/>" )
 assert assertContains( jnlpContent2,  "<jar href=\"commons-logging.jar\" version=\"1.1.3\"/>" )
+assert assertContains( jnlpContent2,  "<property name=\"environment\" value=\"dev2\"/>" )
 
 File versionFile = new File( explodedWebstart, "version.xml")
 

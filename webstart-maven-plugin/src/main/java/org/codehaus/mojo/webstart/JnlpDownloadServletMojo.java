@@ -543,7 +543,7 @@ public class JnlpDownloadServletMojo
                                                                          getWebstartJarURLForVelocity(), libPath,
                                                                          getEncoding() );
 
-        jnlpGenerator.setExtraConfig( new SimpleGeneratorExtraConfig( getCodebase() ) );
+        jnlpGenerator.setExtraConfig( new SimpleGeneratorExtraConfig(jnlpFile.getProperties(), getCodebase() ) );
 
         try
         {
