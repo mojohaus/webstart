@@ -22,6 +22,7 @@
   </security>
   <resources>
     <j2se version="1.5+" /> <!-- define required Java runtime version -->
+    <property name="environment" value="$env"/>
     $dependencies
   </resources>
   <application-desc main-class="$mainClass"/>

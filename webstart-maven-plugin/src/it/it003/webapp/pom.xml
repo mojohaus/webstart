@@ -63,6 +63,9 @@
                   <mainClass>org.mycompany.webstart.HelloWorld</mainClass>
                 </jarResource>
               </jarResources>
+              <properties>
+                <env>dev1</env>
+              </properties>
             </jnlpFile>
             <jnlpFile>
               <templateFilename>jnlpTemplate.vm</templateFilename>
@@ -81,6 +84,10 @@
                   <version>3.8.1</version>
                 </jarResource>
               </jarResources>
+              <properties>
+                <env>dev2</env>
+              </properties>
+
             </jnlpFile>
           </jnlpFiles>
 
