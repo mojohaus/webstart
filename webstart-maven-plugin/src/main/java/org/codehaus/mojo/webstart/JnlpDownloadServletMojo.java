@@ -143,7 +143,7 @@ public class JnlpDownloadServletMojo
         }
         else
         {
-            resolvedCommonJarResources = resolveJarResources( commonJarResources );
+            resolvedCommonJarResources = resolveJarResources( commonJarResources, null );
         }
 
         Set<ResolvedJarResource> allResolvedJarResources = new HashSet<ResolvedJarResource>();
@@ -161,11 +161,12 @@ public class JnlpDownloadServletMojo
             verboseLog( "prepare jnlp " + jnlpFile );
 
             // resolve jar resources of the jnpl file
-            Set<ResolvedJarResource> resolvedJarResources = resolveJarResources( jnlpFile.getJarResources() );
+            Set<ResolvedJarResource> resolvedJarResources =
+                resolveJarResources( jnlpFile.getJarResources(), resolvedCommonJarResources );
+
             // keep them (to generate the versions.xml file)
             allResolvedJarResources.addAll( resolvedJarResources );
-            // the jnlp file have also the common jar resources
-            resolvedJarResources.addAll( resolvedCommonJarResources );
+
             // create the resolved jnlp file
             ResolvedJnlpFile resolvedJnlpFile = new ResolvedJnlpFile( jnlpFile, resolvedJarResources );
             resolvedJnlpFiles.add( resolvedJnlpFile );
@@ -410,14 +411,21 @@ public class JnlpDownloadServletMojo
      * fill also his hrefValue if required (jar resource with outputJarVersion filled).
      *
      * @param configuredJarResources list of configured jar resources
+     * @param commonJarResources     list of resolved common jar resources (null when resolving common jar resources)
      * @return the set of resolved jar resources
      * @throws MojoExecutionException if something bas occurs while retrieving resources
      */
-    private Set<ResolvedJarResource> resolveJarResources( Collection<JarResource> configuredJarResources )
+    private Set<ResolvedJarResource> resolveJarResources( Collection<JarResource> configuredJarResources,
+                                                          Set<ResolvedJarResource> commonJarResources )
         throws MojoExecutionException
     {
 
         Set<ResolvedJarResource> collectedJarResources = new HashSet<ResolvedJarResource>();
+
+        if ( commonJarResources != null )
+        {
+            collectedJarResources.addAll( commonJarResources );
+        }
 
         ArtifactUtil artifactUtil = getArtifactUtil();
 
