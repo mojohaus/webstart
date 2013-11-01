@@ -63,6 +63,7 @@ public class ResolvedJarResource
         }
         this.jarResource = jarResource;
         this.artifact = artifact;
+        setHrefValue( jarResource.getHrefValue() );
     }
 
     public String getArtifactId()

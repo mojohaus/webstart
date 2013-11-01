@@ -51,6 +51,11 @@ public class JarResource
     private String type;
 
     /**
+     * The hrefValue to fill in JarResource file.
+     */
+    private String hrefValue;
+
+    /**
      * Returns the value of the artifactId field.
      *
      * @return Returns the value of the artifactId field.
@@ -155,6 +160,18 @@ public class JarResource
     public boolean isIncludeInJnlp()
     {
         return this.includeInJnlp;
+    }
+
+    /**
+     * Returns the value that should be output for this jar in the href attribute of the
+     * jar resource element in the generated JNLP file. If not set explicitly, this defaults
+     * to the file name of the underlying artifact.
+     *
+     * @return The href attribute to be output for this jar resource in the generated JNLP file definied by user.
+     */
+    public String getHrefValue()
+    {
+        return hrefValue;
     }
 
     /**
