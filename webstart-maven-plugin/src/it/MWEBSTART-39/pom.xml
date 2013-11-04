@@ -6,8 +6,7 @@
 
   <groupId>org.codehaus.mojo</groupId>
   <artifactId>MWEBSTART-39</artifactId>
-  <version>1.0-beta-4-SNAPSHOT</version>
-  <!--version>@project.version@</version-->
+  <version>@project.version@</version>
 
   <organization>
     <name>codeLutin</name>
@@ -20,8 +19,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>webstart-maven-plugin</artifactId>
-          <!--version>@project.version@</version-->
-          <version>${project.version}</version>
+          <version>@project.version@</version>
 
           <configuration>
             <makeArchive>false</makeArchive>
