@@ -571,12 +571,15 @@ public abstract class AbstractBaseJnlpMojo
      *
      * @param sourceFile      source file to copy
      * @param targetDirectory location of the target directory where to copy file
+     * @param targetFilename [optional] to change the target filename to use (if {@code null} will
+     *                       use the sourceFile name).
      * @return <code>true</code> when the file was copied, <code>false</code> otherwise.
      * @throws IllegalArgumentException if sourceFile is <code>null</code> or
      *                                  <code>sourceFile.getName()</code> is <code>null</code>
      * @throws MojoExecutionException   if an error occurs attempting to copy the file.
      */
-    protected boolean copyJarAsUnprocessedToDirectoryIfNecessary( File sourceFile, File targetDirectory )
+    protected boolean copyJarAsUnprocessedToDirectoryIfNecessary( File sourceFile, File targetDirectory,
+                                                                  String targetFilename)
         throws MojoExecutionException
     {
 
@@ -585,9 +588,14 @@ public abstract class AbstractBaseJnlpMojo
             throw new IllegalArgumentException( "sourceFile is null" );
         }
 
-        File signedTargetFile = new File( targetDirectory, sourceFile.getName() );
+        if ( targetFilename == null )
+        {
+            targetFilename = sourceFile.getName();
+        }
 
-        File unsignedTargetFile = toUnprocessFile( targetDirectory, sourceFile );
+        File signedTargetFile = new File( targetDirectory, targetFilename );
+
+        File unsignedTargetFile = toUnprocessFile( targetDirectory, targetFilename );
 
         boolean shouldCopy =
             !signedTargetFile.exists() || ( signedTargetFile.lastModified() < sourceFile.lastModified() );
@@ -934,13 +942,13 @@ public abstract class AbstractBaseJnlpMojo
         return new URLClassLoader( urls );
     }
 
-    private File toUnprocessFile( File targetDirectory, File source )
+    private File toUnprocessFile( File targetDirectory, String sourceName )
     {
-        if ( source.getName().startsWith( UNPROCESSED_PREFIX ) )
+        if ( sourceName.startsWith( UNPROCESSED_PREFIX ) )
         {
-            throw new IllegalStateException( source.getName() + " does start with " + UNPROCESSED_PREFIX );
+            throw new IllegalStateException( sourceName + " does start with " + UNPROCESSED_PREFIX );
         }
-        String targetFilename = UNPROCESSED_PREFIX + source.getName();
+        String targetFilename = UNPROCESSED_PREFIX + sourceName;
         return new File( targetDirectory, targetFilename );
     }
 

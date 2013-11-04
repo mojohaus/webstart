@@ -41,11 +41,11 @@ public class GeneratorTest
         throws Exception
     {
         final Artifact artifact1 =
-            new DefaultArtifact( "groupId", "artifactId1", VersionRange.createFromVersion( "1.0" ), "scope", "jar",
+            new DefaultArtifact( "groupId", "artifact1", VersionRange.createFromVersion( "1.0" ), "scope", "jar",
                                  "classifier", null );
         artifact1.setFile( new File( "artifact1-1.0.jar" ) );
         final Artifact artifact2 =
-            new DefaultArtifact( "groupId", "artifactId2", VersionRange.createFromVersion( "1.5" ), null, "jar", "",
+            new DefaultArtifact( "groupId", "artifact2", VersionRange.createFromVersion( "1.5" ), null, "jar", "",
                                  null );
         artifact2.setFile( new File( "artifact2-1.5.jar" ) );
 
@@ -80,8 +80,9 @@ public class GeneratorTest
 
         mojo.setOutputJarVersions( true );
 
-        assertEquals( "\n<jar href=\"artifact1-1.0.jar\" version=\"1.0\" main=\"true\"/>" +
-                          "\n<jar href=\"artifact2-1.5.jar\" version=\"1.5\"/>\n",
+        assertEquals( "\n<property name=\"jnlp.versionEnabled\" value=\"true\" />" +
+                          "\n<jar href=\"artifact1.jar\" version=\"1.0\" main=\"true\"/>" +
+                          "\n<jar href=\"artifact2.jar\" version=\"1.5\"/>\n",
                       Generator.getDependenciesText( mojo ) );
 
 
@@ -91,11 +92,11 @@ public class GeneratorTest
         throws Exception
     {
         final Artifact artifact1 =
-            new DefaultArtifact( "groupId", "artifactId1", VersionRange.createFromVersion( "1.0" ), "scope", "jar",
+            new DefaultArtifact( "groupId", "artifact1", VersionRange.createFromVersion( "1.0" ), "scope", "jar",
                                  "classifier", null );
         artifact1.setFile( new File( "artifact1-1.0.jar" ) );
         final Artifact artifact2 =
-            new DefaultArtifact( "groupId", "artifactId2", VersionRange.createFromVersion( "1.5" ), null, "jar", "",
+            new DefaultArtifact( "groupId", "artifact2", VersionRange.createFromVersion( "1.5" ), null, "jar", "",
                                  null );
         artifact2.setFile( new File( "artifact2-1.5.jar" ) );
 
@@ -140,8 +141,9 @@ public class GeneratorTest
         mojo.setOutputJarVersions( true );
 
         assertEquals( "\n<property name=\"jnlp.packEnabled\" value=\"true\" />" +
-                          "\n<jar href=\"artifact1-1.0.jar\" version=\"1.0\" main=\"true\"/>" +
-                          "\n<jar href=\"artifact2-1.5.jar\" version=\"1.5\"/>\n",
+                          "\n<property name=\"jnlp.versionEnabled\" value=\"true\" />" +
+                          "\n<jar href=\"artifact1.jar\" version=\"1.0\" main=\"true\"/>" +
+                          "\n<jar href=\"artifact2.jar\" version=\"1.5\"/>\n",
                       Generator.getDependenciesText( mojo ) );
 
 
@@ -151,11 +153,11 @@ public class GeneratorTest
         throws Exception
     {
         final Artifact artifact1 =
-            new DefaultArtifact( "groupId", "artifactId1", VersionRange.createFromVersion( "1.0" ), "scope", "jar",
+            new DefaultArtifact( "groupId", "artifact1", VersionRange.createFromVersion( "1.0" ), "scope", "jar",
                                  "classifier", null );
         artifact1.setFile( new File( "artifact1-1.0.jar" ) );
         final Artifact artifact2 =
-            new DefaultArtifact( "groupId", "artifactId2", VersionRange.createFromVersion( "1.5" ), null, "jar", "",
+            new DefaultArtifact( "groupId", "artifact2", VersionRange.createFromVersion( "1.5" ), null, "jar", "",
                                  null );
         artifact2.setFile( new File( "artifact2-1.5.jar" ) );
 
@@ -199,8 +201,9 @@ public class GeneratorTest
 
         mojo.setOutputJarVersions( true );
 
-        assertEquals( "\n<jar href=\"lib/artifact1-1.0.jar\" version=\"1.0\" main=\"true\"/>" +
-                          "\n<jar href=\"lib/artifact2-1.5.jar\" version=\"1.5\"/>\n",
+        assertEquals( "\n<property name=\"jnlp.versionEnabled\" value=\"true\" />" +
+                          "\n<jar href=\"lib/artifact1.jar\" version=\"1.0\" main=\"true\"/>" +
+                          "\n<jar href=\"lib/artifact2.jar\" version=\"1.5\"/>\n",
                       Generator.getDependenciesText( mojo ) );
 
 

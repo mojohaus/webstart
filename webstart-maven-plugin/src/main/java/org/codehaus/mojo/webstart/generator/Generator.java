@@ -98,6 +98,16 @@ public class Generator
                  */
                 buffer.append( "<property name=\"jnlp.packEnabled\" value=\"true\" />\n" );
             }
+            if ( config.isOutputJarVersions() )
+            {
+                /*
+                 * http://jira.codehaus.org/browse/MWEBSTART-221
+                 *
+                 * If we're going to use version files, we should specify jnlp.versionEnabled
+                 *
+                 */
+                buffer.append( "<property name=\"jnlp.versionEnabled\" value=\"true\" />\n" );
+            }
             String jarLibPath = null;
             if ( config.getLibPath() != null )
             {
@@ -112,11 +122,15 @@ public class Generator
                 {
                     buffer.append( jarLibPath ).append( "/" );
                 }
-                buffer.append( artifact.getFile().getName() ).append( "\"" );
 
+                String filename = artifact.getFile().getName();
                 if ( config.isOutputJarVersions() )
                 {
+                    String extension = filename.substring( filename.lastIndexOf( "." ) );
+                    buffer.append( artifact.getArtifactId() ).append( extension ).append( "\"" );
                     buffer.append( " version=\"" ).append( artifact.getVersion() ).append( "\"" );
+                } else {
+                    buffer.append( filename ).append( "\"" );
                 }
 
                 if ( config.isArtifactWithMainClass( artifact ) )

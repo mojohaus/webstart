@@ -176,6 +176,9 @@ public abstract class AbstractJnlpMojo
      * When set to true, this flag indicates that a version attribute should
      * be output in each of the jar resource elements in the generated
      * JNLP file.
+     *
+     * <strong>Note: </strong> since version 1.0-beta-5 we use the version download protocol optimization (see
+     * http://docs.oracle.com/javase/tutorial/deployment/deploymentInDepth/avoidingUnnecessaryUpdateChecks.html).
      */
     @Parameter( defaultValue = "false" )
     private boolean outputJarVersions;
@@ -574,12 +577,19 @@ public abstract class AbstractJnlpMojo
                         "artifact " + artifact + " has no matching file, why? Check the logs..." );
                 }
 
-                boolean copied = copyJarAsUnprocessedToDirectoryIfNecessary( toCopy, getLibDirectory() );
+                String name = toCopy.getName();
+
+                String extension = name.substring( name.lastIndexOf( '.' ) );
+
+                if (isOutputJarVersions()) {
+                    name = artifact.getArtifactId() + "__V" + artifact.getVersion() + extension;
+                }
+                boolean copied =
+                    copyJarAsUnprocessedToDirectoryIfNecessary( toCopy, getLibDirectory(), name );
 
                 if ( copied )
                 {
 
-                    String name = toCopy.getName();
                     getModifiedJnlpArtifacts().add( name.substring( 0, name.lastIndexOf( '.' ) ) );
 
                 }
