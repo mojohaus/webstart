@@ -22,11 +22,6 @@
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
-      <properties>
-        <webstartJnlpServletVersion>
-          1.0-6.0.02_ea_b02.2
-        </webstartJnlpServletVersion>
-      </properties>
       <repositories>
         <repository>
           <id>local.central</id>
