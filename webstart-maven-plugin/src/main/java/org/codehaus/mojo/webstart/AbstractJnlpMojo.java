@@ -58,7 +58,25 @@ public abstract class AbstractJnlpMojo
     // Constants
     // ----------------------------------------------------------------------
 
-    private static final String DEFAULT_TEMPLATE_LOCATION = "src/main/jnlp/template.vm";
+    /**
+     * Name of the built in jnlp template to use if none given.
+     */
+    private static final String BUILT_IN_JNLP_TEMPLATE_FILENAME= "default-jnlp-template.vm";
+
+    /**
+     * Name of the default jnlp template to use if user define it in the default template directory.
+     */
+    private static final String JNLP_TEMPLATE_FILENAME= "template.vm";
+
+    /**
+     * Name of the built in extension template to use if none is given.
+     */
+    private static final String BUILT_IN_EXTENSION_TEMPLATE_FILENAME = "default-jnlp-extension-template.vm";
+
+    /**
+     * Name of the default jnlp extension template to use if user define it in the default template directory.
+     */
+    private static final String EXTENSION_TEMPLATE_FILENAME = "extension-template.vm";
 
     // ----------------------------------------------------------------------
     // Mojo Parameters
@@ -633,6 +651,10 @@ public abstract class AbstractJnlpMojo
     private void generateJnlpFile( File outputDirectory )
         throws MojoExecutionException
     {
+        // ---
+        // get output file
+        // ---
+
         if ( StringUtils.isBlank( jnlp.getOutputFile() ) )
         {
             getLog().debug( "Jnlp output file name not specified. Using default output file name: launch.jnlp." );
@@ -640,23 +662,36 @@ public abstract class AbstractJnlpMojo
         }
         File jnlpOutputFile = new File( outputDirectory, jnlp.getOutputFile() );
 
-        File templateDirectory = getTemplateDirectory();
+        // ---
+        // get template directory
+        // ---
+
+        File templateDirectory;
 
         if ( StringUtils.isNotBlank( jnlp.getInputTemplateResourcePath() ) )
         {
             templateDirectory = new File( jnlp.getInputTemplateResourcePath() );
+            getLog().debug( "Use jnlp directory : " + templateDirectory);
+        } else {
+            // use default template directory
+            templateDirectory = getTemplateDirectory();
+            getLog().debug( "Use default template directory : " + templateDirectory);
         }
+
+        // ---
+        // get template filename
+        // ---
 
         if ( StringUtils.isBlank( jnlp.getInputTemplate() ) )
         {
             getLog().debug( "Jnlp template file name not specified. Checking if default output file name exists: " +
-                                DEFAULT_TEMPLATE_LOCATION );
+                                JNLP_TEMPLATE_FILENAME);
 
-            File templateFile = new File( templateDirectory, DEFAULT_TEMPLATE_LOCATION );
+            File templateFile = new File( templateDirectory, JNLP_TEMPLATE_FILENAME );
 
             if ( templateFile.isFile() )
             {
-                jnlp.setInputTemplate( DEFAULT_TEMPLATE_LOCATION );
+                jnlp.setInputTemplate( JNLP_TEMPLATE_FILENAME );
             }
             else
             {
@@ -676,7 +711,7 @@ public abstract class AbstractJnlpMojo
         String templateFileName = jnlp.getInputTemplate();
 
         Generator jnlpGenerator =
-            new Generator( getLog(), getProject(), this, "default-jnlp-template.vm", templateDirectory, jnlpOutputFile,
+            new Generator( getLog(), getProject(), this,BUILT_IN_JNLP_TEMPLATE_FILENAME , templateDirectory, jnlpOutputFile,
                            templateFileName, getJnlp().getMainClass(), getWebstartJarURLForVelocity(), getEncoding() );
 
         jnlpGenerator.setExtraConfig( new JnplGeneratorExtraConfig( jnlp, getCodebase() ) );
@@ -952,26 +987,44 @@ public abstract class AbstractJnlpMojo
         throws MojoExecutionException
     {
 
+        // ---
+        // get output file
+        // ---
+
         File jnlpOutputFile = new File( outputDirectory, extension.getOutputFile() );
 
-        File templateDirectory = getProject().getBasedir();
+        // ---
+        // get template directory
+        // ---
+
+        File templateDirectory;
 
         if ( StringUtils.isNotBlank( extension.getInputTemplateResourcePath() ) )
         {
+            // if user overrides the input template resource path
             templateDirectory = new File( extension.getInputTemplateResourcePath() );
+        } else {
+
+            // use default template directory
+            templateDirectory = getTemplateDirectory();
+            getLog().debug( "Use default jnlp directory : " + templateDirectory);
         }
+
+        // ---
+        // get template filename
+        // ---
 
         if ( StringUtils.isBlank( extension.getInputTemplate() ) )
         {
             getLog().debug(
                 "Jnlp extension template file name not specified. Checking if default output file name exists: " +
-                    DEFAULT_TEMPLATE_LOCATION );
+                    EXTENSION_TEMPLATE_FILENAME);
 
-            File templateFile = new File( templateDirectory, DEFAULT_TEMPLATE_LOCATION );
+            File templateFile = new File( templateDirectory, EXTENSION_TEMPLATE_FILENAME);
 
             if ( templateFile.isFile() )
             {
-                extension.setInputTemplate( DEFAULT_TEMPLATE_LOCATION );
+                extension.setInputTemplate( EXTENSION_TEMPLATE_FILENAME );
             }
             else
             {
@@ -991,7 +1044,7 @@ public abstract class AbstractJnlpMojo
         String templateFileName = extension.getInputTemplate();
 
         ExtensionGenerator jnlpGenerator =
-            new ExtensionGenerator( getLog(), this.getProject(), this, extension, "default-jnlp-extension-template.vm",
+            new ExtensionGenerator( getLog(), this.getProject(), this, extension, BUILT_IN_EXTENSION_TEMPLATE_FILENAME,
                                     templateDirectory, jnlpOutputFile, templateFileName, this.getJnlp().getMainClass(),
                                     getWebstartJarURLForVelocity(), getEncoding() );
 
