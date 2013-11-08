@@ -36,6 +36,8 @@ public class JnlpFile
 
     private String inputTemplateResourcePath;
 
+    private String templateFilename;
+
     private String inputTemplate;
 
     private String outputFilename;
@@ -52,6 +54,11 @@ public class JnlpFile
     public JnlpFile()
     {
         // do nothing
+    }
+
+    public String getTemplateFilename()
+    {
+        return templateFilename;
     }
 
     public void setInputTemplateResourcePath( String inputTemplateResourcePath )

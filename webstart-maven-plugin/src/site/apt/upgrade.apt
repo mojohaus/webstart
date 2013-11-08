@@ -24,7 +24,7 @@ Upgrade from a previous version
   extension files does).
 
   Use then the <inputTemplateResourcePath> property to override the default template directory for a specific jnlp file
-  to generate, use also the <inputTemplate> (was before <templateFilename>).
+  to generate, use also the <inputTemplate> (the previous configuration <templateFilename> is still available but is deprecated).
 
 * Important changes since 1.0-beta-3
 

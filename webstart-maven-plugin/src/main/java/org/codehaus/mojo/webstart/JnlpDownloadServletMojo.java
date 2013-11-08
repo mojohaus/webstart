@@ -336,6 +336,11 @@ public class JnlpDownloadServletMojo
                 "Configuration error: An outputFilename must be specified for each jnlpFile element" );
         }
 
+        if ( StringUtils.isNotBlank( jnlpFile.getTemplateFilename() ) )
+        {
+            getLog().warn( "jnlpFile.templateFilename is deprecated (since 1.0-beta-5), use now the jnlpFile.inputTemplate instead." );
+            jnlpFile.setInputTemplate( jnlpFile.getTemplateFilename() );
+        }
 //        if ( StringUtils.isBlank( jnlpFile.getInputTemplate() ) )
 //        {
 //            verboseLog(
