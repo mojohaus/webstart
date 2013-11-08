@@ -130,6 +130,13 @@ public class SignConfig
     private String maxMemory;
 
     /**
+     * To use tsa location.
+     *
+     * @since 1.0-beta-5
+     */
+    private String tsaLocation;
+
+    /**
      * Called before any Jars get signed or verified.
      * <p/>
      * This method allows you to create any keys or perform any initialisation that the
@@ -204,6 +211,7 @@ public class SignConfig
         request.setVerbose( isVerbose() );
         request.setArchive( jarToSign );
         request.setSignedjar( signedJar );
+        request.setTsaLocation( getTsaLocation() );
         return request;
     }
 
@@ -370,6 +378,11 @@ public class SignConfig
         this.verify = verify;
     }
 
+    public void setTsaLocation( String tsaLocation )
+    {
+        this.tsaLocation = tsaLocation;
+    }
+
     public String getKeystore()
     {
         return keystore;
@@ -453,6 +466,11 @@ public class SignConfig
     public boolean getVerify()
     {
         return verify;
+    }
+
+    public String getTsaLocation()
+    {
+        return tsaLocation;
     }
 
     public String getMaxMemory()

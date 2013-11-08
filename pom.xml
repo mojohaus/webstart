@@ -103,7 +103,7 @@
   <properties>
     <mavenVersion>2.0.6</mavenVersion>
     <mavenPluginPluginVersion>3.1</mavenPluginPluginVersion>
-    <keytoolVersion>1.1</keytoolVersion>
+    <keytoolVersion>1.4-SNAPSHOT</keytoolVersion>
     <sitePluginVersion>3.3</sitePluginVersion>
 
     <!-- release plugin configuration -->
@@ -226,7 +226,7 @@
       <dependency>
         <groupId>org.apache.maven.shared</groupId>
         <artifactId>maven-jarsigner</artifactId>
-        <version>1.0</version>
+        <version>1.1-SNAPSHOT</version>
         <exclusions>
           <exclusion>
             <groupId>org.codehaus.plexus</groupId>

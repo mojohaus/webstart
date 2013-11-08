@@ -25,21 +25,17 @@ import org.apache.maven.shared.jarsigner.JarSignerException;
 import org.apache.maven.shared.jarsigner.JarSignerRequest;
 import org.apache.maven.shared.jarsigner.JarSignerResult;
 import org.apache.maven.shared.jarsigner.JarSignerUtil;
+import org.apache.maven.shared.utils.cli.CommandLineException;
 import org.codehaus.mojo.keytool.KeyTool;
 import org.codehaus.mojo.keytool.KeyToolException;
 import org.codehaus.mojo.keytool.KeyToolResult;
 import org.codehaus.mojo.keytool.requests.KeyToolGenerateKeyPairRequest;
 import org.codehaus.mojo.webstart.util.IOUtil;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.util.cli.CommandLineException;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 /**
  * Default implementation of the {@link SignTool}.
@@ -156,8 +152,7 @@ public class DefaultSignTool
     {
         try
         {
-//            return JarSignerUtil.isArchiveSigned( jarFile );
-            return isArchiveSigned( jarFile );
+            return JarSignerUtil.isArchiveSigned( jarFile );
         }
         catch ( IOException e )
         {
@@ -285,99 +280,6 @@ public class DefaultSignTool
         {
             getLogger().debug( msg );
         }
-    }
-
-    // TODO-tchemit-2012-07-01 : Replace this by JarSignerUtil code when using maven-jarsigner 1.1
-
-    /**
-     * Scans an archive for existing signatures.
-     *
-     * @param jarFile The archive to scan, must not be <code>null</code>.
-     * @return <code>true</code>, if the archive contains at least one signature file; <code>false</code>, if the
-     * archive does not contain any signature files.
-     * @throws IOException if scanning <code>jarFile</code> fails.
-     */
-    public static boolean isArchiveSigned( final File jarFile )
-        throws IOException
-    {
-        if ( jarFile == null )
-        {
-            throw new NullPointerException( "jarFile" );
-        }
-
-        ZipInputStream in = null;
-        boolean suppressExceptionOnClose = true;
-
-        try
-        {
-            boolean signed = false;
-            in = new ZipInputStream( new BufferedInputStream( new FileInputStream( jarFile ) ) );
-
-            for ( ZipEntry ze = in.getNextEntry(); ze != null; ze = in.getNextEntry() )
-            {
-                if ( isSignatureFile( ze.getName() ) )
-                {
-                    signed = true;
-                    break;
-                }
-            }
-
-            suppressExceptionOnClose = false;
-            return signed;
-        }
-        finally
-        {
-            try
-            {
-                if ( in != null )
-                {
-                    in.close();
-                }
-            }
-            catch ( final IOException e )
-            {
-                if ( !suppressExceptionOnClose )
-                {
-                    throw e;
-                }
-            }
-        }
-    }
-
-    /**
-     * Checks whether the specified JAR file entry denotes a signature-related file, i.e. matches
-     * <code>META-INF/*.SF</code>, <code>META-INF/*.DSA</code> or <code>META-INF/*.RSA</code>.
-     *
-     * @param entryName The name of the JAR file entry to check, must not be <code>null</code>.
-     * @return <code>true</code> if the entry is related to a signature, <code>false</code> otherwise.
-     */
-    private static boolean isSignatureFile( String entryName )
-    {
-        if ( entryName.regionMatches( true, 0, "META-INF", 0, 8 ) )
-        {
-            entryName = entryName.replace( '\\', '/' );
-
-            if ( entryName.indexOf( '/' ) == 8 && entryName.lastIndexOf( '/' ) == 8 )
-            {
-                if ( entryName.regionMatches( true, entryName.length() - 3, ".SF", 0, 3 ) )
-                {
-                    return true;
-                }
-                if ( entryName.regionMatches( true, entryName.length() - 4, ".DSA", 0, 4 ) )
-                {
-                    return true;
-                }
-                if ( entryName.regionMatches( true, entryName.length() - 4, ".RSA", 0, 4 ) )
-                {
-                    return true;
-                }
-                if ( entryName.regionMatches( true, entryName.length() - 3, ".EC", 0, 3 ) )
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
 }
