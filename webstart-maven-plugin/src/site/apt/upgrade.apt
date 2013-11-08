@@ -14,6 +14,18 @@ Upgrade from a previous version
 
   <<Note:>> we may further change the POM configuration, especially if we fix {{{http://jira.codehaus.org/browse/MWEBSTART-58} MWEBSTART-58}}.
 
+* Important changes since 1.0-beta-4
+
+  Changes that affect the use and configuration of the plugin.
+
+** 2013-11-08
+
+  jnlpFile (for <jnlp-download-servlet> mojo) has changed, you can now defined the input resource path (like jnlp and
+  extension files does).
+
+  Use then the <inputTemplateResourcePath> property to override the default template directory for a specific jnlp file
+  to generate, use also the <inputTemplate> (was before <templateFilename>).
+
 * Important changes since 1.0-beta-3
 
   Changes that affect the use and configuration of the plugin.

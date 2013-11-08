@@ -61,6 +61,19 @@ public class JnlpDownloadServletMojo
 {
 
     // ----------------------------------------------------------------------
+    // Constants
+    // ----------------------------------------------------------------------
+    /**
+     * Name of the built-in servlet template to use if none is given.
+     */
+    private static final String BUILT_IN_SERVLET_TEMPLATE_FILENAME = "default-jnlp-servlet-template.vm";
+
+    /**
+     * Name of the default jnlp extension template to use if user define it in the default template directory.
+     */
+    private static final String SERVLET_TEMPLATE_FILENAME = "servlet-template.vm";
+
+    // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
 
@@ -262,7 +275,7 @@ public class JnlpDownloadServletMojo
                                                       jnlpFile.getOutputFilename() + "]." );
             }
 
-            checkJnlpFileuration( jnlpFile );
+            checkJnlpFileConfiguration( jnlpFile );
         }
 
         if ( CollectionUtils.isNotEmpty( commonJarResources ) )
@@ -298,7 +311,7 @@ public class JnlpDownloadServletMojo
                         String message = "Configuration Error: The jar resource element for artifact " + jarResource +
                             " defined in common jar resources is duplicated in the jar " +
                             "resources configuration of the jnlp file identified by the template file " +
-                            jnlpFile.getTemplateFilename() + ".";
+                            jnlpFile.getInputTemplate() + ".";
 
                         throw new MojoExecutionException( message );
                     }
@@ -313,7 +326,7 @@ public class JnlpDownloadServletMojo
      * @param jnlpFile The configuration element to be checked.
      * @throws MojoExecutionException if the config element is invalid.
      */
-    private void checkJnlpFileuration( JnlpFile jnlpFile )
+    private void checkJnlpFileConfiguration( JnlpFile jnlpFile )
         throws MojoExecutionException
     {
 
@@ -323,21 +336,21 @@ public class JnlpDownloadServletMojo
                 "Configuration error: An outputFilename must be specified for each jnlpFile element" );
         }
 
-        if ( StringUtils.isBlank( jnlpFile.getTemplateFilename() ) )
-        {
-            verboseLog(
-                "No templateFilename found for " + jnlpFile.getOutputFilename() + ". Will use the default template." );
-        }
-        else
-        {
-            File templateFile = new File( getTemplateDirectory(), jnlpFile.getTemplateFilename() );
-
-            if ( !templateFile.isFile() )
-            {
-                throw new MojoExecutionException(
-                    "The specified JNLP template does not exist: [" + templateFile + "]" );
-            }
-        }
+//        if ( StringUtils.isBlank( jnlpFile.getInputTemplate() ) )
+//        {
+//            verboseLog(
+//                "No templateFilename found for " + jnlpFile.getOutputFilename() + ". Will use the default template." );
+//        }
+//        else
+//        {
+//            File templateFile = new File( getTemplateDirectory(), jnlpFile.getInputTemplate() );
+//
+//            if ( !templateFile.isFile() )
+//            {
+//                throw new MojoExecutionException(
+//                    "The specified JNLP template does not exist: [" + templateFile + "]" );
+//            }
+//        }
 
         List<JarResource> jnlpJarResources = jnlpFile.getJarResources();
 
@@ -544,9 +557,59 @@ public class JnlpDownloadServletMojo
 
         Set<ResolvedJarResource> jarResources = jnlpFile.getJarResources();
 
-        JarResourcesGenerator jnlpGenerator = new JarResourcesGenerator( getLog(), getProject(), getTemplateDirectory(),
-                                                                         "default-jnlp-servlet-template.vm",
-                                                                         jnlpOutputFile, jnlpFile.getTemplateFilename(),
+        // ---
+        // get template directory
+        // ---
+
+        File templateDirectory;
+
+        if ( StringUtils.isNotBlank( jnlpFile.getInputTemplateResourcePath() ) )
+        {
+            templateDirectory = new File( jnlpFile.getInputTemplateResourcePath() );
+            getLog().debug( "Use jnlp directory : " + templateDirectory);
+        } else {
+            // use default template directory
+            templateDirectory = getTemplateDirectory();
+            getLog().debug( "Use default template directory : " + templateDirectory);
+        }
+
+        // ---
+        // get template filename
+        // ---
+
+        if ( StringUtils.isBlank( jnlpFile.getInputTemplate() ) )
+        {
+            getLog().debug(
+                "Jnlp servlet template file name not specified. Checking if default output file name exists: " +
+                    SERVLET_TEMPLATE_FILENAME);
+
+            File templateFile = new File( templateDirectory, SERVLET_TEMPLATE_FILENAME);
+
+            if ( templateFile.isFile() )
+            {
+                jnlpFile.setInputTemplate( SERVLET_TEMPLATE_FILENAME );
+            }
+            else
+            {
+                getLog().debug( "Jnlp servlet template file not found in default location. Using inbuilt one." );
+            }
+        }
+        else
+        {
+            File templateFile = new File( templateDirectory, jnlpFile.getInputTemplate() );
+
+            if ( !templateFile.isFile() )
+            {
+                throw new MojoExecutionException(
+                    "The specified JNLP servlet template does not exist: [" + templateFile + "]" );
+            }
+        }
+
+        String templateFileName = jnlpFile.getInputTemplate();
+
+        JarResourcesGenerator jnlpGenerator = new JarResourcesGenerator( getLog(), getProject(), templateDirectory,
+                                                                         BUILT_IN_SERVLET_TEMPLATE_FILENAME,
+                                                                         jnlpOutputFile, templateFileName,
                                                                          jarResources, jnlpFile.getMainClass(),
                                                                          getWebstartJarURLForVelocity(), libPath,
                                                                          getEncoding() );

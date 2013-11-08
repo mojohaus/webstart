@@ -43,20 +43,18 @@ public class ResolvedJnlpFile
      */
     private final Set<ResolvedJarResource> jarResources;
 
+    private String inputTemplate;
+
     public ResolvedJnlpFile( JnlpFile config, Set<ResolvedJarResource> jarResources )
     {
         this.config = config;
         this.jarResources = jarResources;
+        this.inputTemplate = this.config.getInputTemplate();
     }
 
     public String getOutputFilename()
     {
         return config.getOutputFilename();
-    }
-
-    public String getTemplateFilename()
-    {
-        return config.getTemplateFilename();
     }
 
     public String getMainClass()
@@ -69,8 +67,23 @@ public class ResolvedJnlpFile
         return config.getProperties();
     }
 
+    public String getInputTemplateResourcePath()
+    {
+        return config.getInputTemplateResourcePath();
+    }
+
     public Set<ResolvedJarResource> getJarResources()
     {
         return jarResources;
+    }
+
+    public String getInputTemplate()
+    {
+        return inputTemplate;
+    }
+
+    public void setInputTemplate( String inputTemplate )
+    {
+        this.inputTemplate = inputTemplate;
     }
 }

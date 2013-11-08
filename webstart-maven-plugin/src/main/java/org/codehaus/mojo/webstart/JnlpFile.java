@@ -34,9 +34,11 @@ import java.util.Map;
 public class JnlpFile
 {
 
-    private String outputFilename;
+    private String inputTemplateResourcePath;
 
-    private String templateFilename;
+    private String inputTemplate;
+
+    private String outputFilename;
 
     private List<JarResource> jarResources;
 
@@ -52,14 +54,19 @@ public class JnlpFile
         // do nothing
     }
 
-    /**
-     * Returns the name to be used for the generated JNLP file.
-     *
-     * @return the value of the outputFilename field.
-     */
-    protected String getOutputFilename()
+    public void setInputTemplateResourcePath( String inputTemplateResourcePath )
     {
-        return this.outputFilename;
+        this.inputTemplateResourcePath = inputTemplateResourcePath;
+    }
+
+    public String getInputTemplateResourcePath()
+    {
+        return inputTemplateResourcePath;
+    }
+
+    public void setInputTemplate( String inputTemplate )
+    {
+        this.inputTemplate = inputTemplate;
     }
 
     /**
@@ -68,9 +75,19 @@ public class JnlpFile
      *
      * @return the name of the JNLP template file.
      */
-    protected String getTemplateFilename()
+    public String getInputTemplate()
     {
-        return this.templateFilename;
+        return inputTemplate;
+    }
+
+    /**
+     * Returns the name to be used for the generated JNLP file.
+     *
+     * @return the value of the outputFilename field.
+     */
+    protected String getOutputFilename()
+    {
+        return this.outputFilename;
     }
 
     /**
