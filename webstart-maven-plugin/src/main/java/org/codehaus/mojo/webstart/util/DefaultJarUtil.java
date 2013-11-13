@@ -20,10 +20,13 @@ package org.codehaus.mojo.webstart.util;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.jar.Manifest;
 import org.codehaus.plexus.archiver.jar.ManifestException;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,32 +36,29 @@ import java.util.Map;
  * Created on 10/26/13.
  *
  * @author Tony Chemit <chemit@codelutin.com>
- * @plexus.component role-hint="default"
  * @since 1.0-beta-4
  */
+@Component( role = JarUtil.class, hint = "default" )
 public class DefaultJarUtil
     implements JarUtil
 {
 
     /**
      * io helper.
-     *
-     * @plexus.requirement
      */
+    @Requirement
     protected IOUtil ioUtil;
 
     /**
      * The Jar unarchiver.
-     *
-     * @plexus.requirement role-hint="jar"
      */
+    @Requirement(hint = "jar")
     protected UnArchiver jarUnarchiver;
 
     /**
      * The Jar archiver.
-     *
-     * @plexus.requirement role="org.codehaus.plexus.archiver.Archiver" role-hint="jarWithNoLog"
      */
+    @Requirement(role = Archiver.class, hint = "jarWithNoLog")
     protected JarArchiver jarArchiver;
 
     /**
@@ -125,7 +125,5 @@ public class DefaultJarUtil
 
         // delete temp directory
         ioUtil.removeDirectory( extractDirectory );
-
-
     }
 }

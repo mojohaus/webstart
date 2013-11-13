@@ -31,6 +31,8 @@ import org.codehaus.mojo.keytool.KeyToolException;
 import org.codehaus.mojo.keytool.KeyToolResult;
 import org.codehaus.mojo.keytool.requests.KeyToolGenerateKeyPairRequest;
 import org.codehaus.mojo.webstart.util.IOUtil;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import java.io.File;
@@ -41,9 +43,9 @@ import java.net.URI;
  * Default implementation of the {@link SignTool}.
  *
  * @author tchemit <chemit@codelutin.com>
- * @plexus.component role-hint="default"
  * @since 1.0-beta-3
  */
+@Component( role = SignTool.class, hint = "default" )
 public class DefaultSignTool
     extends AbstractLogEnabled
     implements SignTool
@@ -51,23 +53,20 @@ public class DefaultSignTool
 
     /**
      * The component to invoke jarsigner command.
-     *
-     * @plexus.requirement
      */
+    @Requirement
     private JarSigner jarSigner;
 
     /**
      * The component to invoke keyTool command.
-     *
-     * @plexus.requirement
      */
+    @Requirement
     private KeyTool keyTool;
 
     /**
      * io helper.
-     *
-     * @plexus.requirement
      */
+    @Requirement
     protected IOUtil ioUtil;
 
     /**

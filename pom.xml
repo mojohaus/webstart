@@ -165,12 +165,18 @@
         <artifactId>maven-plugin-api</artifactId>
         <version>${mavenVersion}</version>
       </dependency>
-      <!-- dependencies to annotations -->
+      <!-- dependencies to maven annotations -->
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-annotations</artifactId>
         <version>${mavenPluginPluginVersion}</version>
         <scope>provided</scope>
+      </dependency>
+      <!-- dependencies to plexus annotations -->
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-annotations</artifactId>
+        <version>1.5.5</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
@@ -222,11 +228,17 @@
           </exclusion>
         </exclusions>
       </dependency>
-      
+
+      <dependency>
+        <groupId>org.apache.maven.shared</groupId>
+        <artifactId>maven-shared-utils</artifactId>
+        <version>0.3</version>
+      </dependency>
+
       <dependency>
         <groupId>org.apache.maven.shared</groupId>
         <artifactId>maven-jarsigner</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.1</version>
         <exclusions>
           <exclusion>
             <groupId>org.codehaus.plexus</groupId>
@@ -386,6 +398,11 @@
               <version>1.0</version>
             </signature>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-component-metadata</artifactId>
+          <version>1.5.5</version>
         </plugin>
       </plugins>
     </pluginManagement>

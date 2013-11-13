@@ -33,6 +33,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.webstart.JarResource;
 import org.codehaus.mojo.webstart.JnlpConfig;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import java.net.MalformedURLException;
@@ -45,32 +47,29 @@ import java.util.Set;
  * Default implementation of {@link ArtifactUtil}.
  *
  * @author tchemit <chemit@codelutin.com>
- * @plexus.component role-hint="default"
  * @since 1.0-beta-4
  */
-
+@Component( role = ArtifactUtil.class, hint = "default" )
 public class DefaultArtifactUtil
     extends AbstractLogEnabled
     implements ArtifactUtil
 {
 
     /**
-     * @plexus.requirement
      */
+    @Requirement
     private ArtifactFactory artifactFactory;
 
     /**
      * Artifact resolver, needed to download source jars for inclusion in classpath.
-     *
-     * @plexus.requirement
      */
+    @Requirement
     private ArtifactResolver artifactResolver;
 
     /**
      * The project's artifact metadata source, used to resolve transitive dependencies.
-     *
-     * @plexus.requirement
      */
+    @Requirement
     private ArtifactMetadataSource artifactMetadataSource;
 
     /**
@@ -231,7 +230,7 @@ public class DefaultArtifactUtil
         boolean containsClass = true;
 
         // JarArchiver.grabFilesAndDirs()
-        URL url = null;
+        URL url;
         try
         {
             url = artifact.getFile().toURI().toURL();
@@ -263,7 +262,7 @@ public class DefaultArtifactUtil
 
             try
             {
-                c.getMethod( "main", new Class[]{ String[].class } );
+                c.getMethod( "main", String[].class );
             }
             catch ( NoSuchMethodException e )
             {

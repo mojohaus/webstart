@@ -20,6 +20,7 @@ package org.codehaus.mojo.webstart.util;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
@@ -39,9 +40,9 @@ import java.util.List;
  * Helper for all IO operations.
  *
  * @author tchemit <chemit@codelutin.com>
- * @plexus.component role-hint="default"
  * @since 1.0-beta-4
  */
+@Component( role = IOUtil.class, hint = "default" )
 public class DefaultIOUtil
     extends AbstractLogEnabled
     implements IOUtil

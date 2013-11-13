@@ -19,7 +19,8 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
-import org.apache.tools.ant.util.FileUtils;
+import org.apache.maven.shared.utils.io.IOUtil;
+import org.codehaus.plexus.component.annotations.Component;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -47,9 +48,9 @@ import java.util.zip.GZIPOutputStream;
  * Default implementation of the {@link Pack200Tool}.
  *
  * @author tchemit <chemit@codelutin.com>
- * @plexus.component role-hint="default"
  * @since 1.0-beta-2
  */
+@Component( role = Pack200Tool.class, hint = "default" )
 public class DefaultPack200Tool
     implements Pack200Tool
 {
@@ -88,7 +89,7 @@ public class DefaultPack200Tool
         }
         finally
         {
-            FileUtils.close( out );
+            IOUtil.close( out );
             if ( jar != null )
             {
                 jar.close();
@@ -140,8 +141,8 @@ public class DefaultPack200Tool
         }
         finally
         {
-            FileUtils.close( in );
-            FileUtils.close( out );
+            IOUtil.close( in );
+            IOUtil.close( out );
         }
     }
 
