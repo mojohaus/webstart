@@ -21,14 +21,12 @@ package org.codehaus.mojo.webstart.sign;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.shared.jarsigner.JarSigner;
-import org.apache.maven.shared.jarsigner.JarSignerException;
 import org.apache.maven.shared.jarsigner.JarSignerRequest;
-import org.apache.maven.shared.jarsigner.JarSignerResult;
 import org.apache.maven.shared.jarsigner.JarSignerUtil;
 import org.apache.maven.shared.utils.cli.CommandLineException;
+import org.apache.maven.shared.utils.cli.javatool.JavaToolException;
+import org.apache.maven.shared.utils.cli.javatool.JavaToolResult;
 import org.codehaus.mojo.keytool.KeyTool;
-import org.codehaus.mojo.keytool.KeyToolException;
-import org.codehaus.mojo.keytool.KeyToolResult;
 import org.codehaus.mojo.keytool.requests.KeyToolGenerateKeyPairRequest;
 import org.codehaus.mojo.webstart.util.IOUtil;
 import org.codehaus.plexus.component.annotations.Component;
@@ -79,7 +77,7 @@ public class DefaultSignTool
 
         try
         {
-            KeyToolResult result = keyTool.execute( request );
+            JavaToolResult result = keyTool.execute( request );
 
             CommandLineException exception = result.getExecutionException();
             if ( exception != null )
@@ -87,7 +85,7 @@ public class DefaultSignTool
                 throw new MojoExecutionException( "Could not sign jar " + keystoreFile, exception );
             }
         }
-        catch ( KeyToolException e )
+        catch ( JavaToolException e )
         {
             throw new MojoExecutionException( "Could not find keytool", e );
         }
@@ -104,7 +102,7 @@ public class DefaultSignTool
 
         try
         {
-            JarSignerResult result = jarSigner.execute( request );
+            JavaToolResult result = jarSigner.execute( request );
 
             CommandLineException exception = result.getExecutionException();
             if ( exception != null )
@@ -112,7 +110,7 @@ public class DefaultSignTool
                 throw new MojoExecutionException( "Could not sign jar " + jarFile, exception );
             }
         }
-        catch ( JarSignerException e )
+        catch ( JavaToolException e )
         {
             throw new MojoExecutionException( "Could not find jarSigner", e );
         }
@@ -129,7 +127,7 @@ public class DefaultSignTool
 
         try
         {
-            JarSignerResult result = jarSigner.execute( request );
+            JavaToolResult result = jarSigner.execute( request );
 
             CommandLineException exception = result.getExecutionException();
             if ( exception != null )
@@ -137,7 +135,7 @@ public class DefaultSignTool
                 throw new MojoExecutionException( "Could not verify jar " + jarFile, exception );
             }
         }
-        catch ( JarSignerException e )
+        catch ( JavaToolException e )
         {
             throw new MojoExecutionException( "Could not find jarSigner", e );
         }
