@@ -42,7 +42,7 @@ import org.codehaus.mojo.webstart.util.IOUtil;
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -159,7 +159,7 @@ public class JnlpDownloadServletMojo
             resolvedCommonJarResources = resolveJarResources( commonJarResources, null );
         }
 
-        Set<ResolvedJarResource> allResolvedJarResources = new HashSet<ResolvedJarResource>();
+        Set<ResolvedJarResource> allResolvedJarResources = new LinkedHashSet<ResolvedJarResource>();
         allResolvedJarResources.addAll( resolvedCommonJarResources );
 
         // ---
@@ -167,7 +167,7 @@ public class JnlpDownloadServletMojo
         // ---
 
         getLog().info( "-- Prepare jnlp files" );
-        Set<ResolvedJnlpFile> resolvedJnlpFiles = new HashSet<ResolvedJnlpFile>();
+        Set<ResolvedJnlpFile> resolvedJnlpFiles = new LinkedHashSet<ResolvedJnlpFile>();
 
         for ( JnlpFile jnlpFile : jnlpFiles )
         {
@@ -264,7 +264,7 @@ public class JnlpDownloadServletMojo
         // check Jnlp files configuration
         // ---
 
-        Set<String> filenames = new HashSet<String>( jnlpFiles.size() );
+        Set<String> filenames = new LinkedHashSet<String>( jnlpFiles.size() );
 
         for ( JnlpFile jnlpFile : jnlpFiles )
         {
@@ -438,7 +438,7 @@ public class JnlpDownloadServletMojo
         throws MojoExecutionException
     {
 
-        Set<ResolvedJarResource> collectedJarResources = new HashSet<ResolvedJarResource>();
+        Set<ResolvedJarResource> collectedJarResources = new LinkedHashSet<ResolvedJarResource>();
 
         if ( commonJarResources != null )
         {
@@ -448,10 +448,10 @@ public class JnlpDownloadServletMojo
         ArtifactUtil artifactUtil = getArtifactUtil();
 
         // artifacts resolved from repositories
-        Set<Artifact> artifacts = new HashSet<Artifact>();
+        Set<Artifact> artifacts = new LinkedHashSet<Artifact>();
 
         // sibling projects hit from a jar resources (need a special transitive resolution)
-        Set<MavenProject> siblingProjects = new HashSet<MavenProject>();
+        Set<MavenProject> siblingProjects = new LinkedHashSet<MavenProject>();
 
         // for each configured JarResource, create and resolve the corresponding artifact and
         // check it for the mainClass if specified

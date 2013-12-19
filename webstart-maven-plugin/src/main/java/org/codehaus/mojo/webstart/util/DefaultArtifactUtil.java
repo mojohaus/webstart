@@ -39,7 +39,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -175,7 +175,7 @@ public class DefaultArtifactUtil
         throws MojoExecutionException
     {
 
-        Set<Artifact> resultArtifacts = new HashSet<Artifact>();
+        Set<Artifact> resultArtifacts = new LinkedHashSet<Artifact>();
 
         if ( CollectionUtils.isNotEmpty( siblingProjects ) )
         {
