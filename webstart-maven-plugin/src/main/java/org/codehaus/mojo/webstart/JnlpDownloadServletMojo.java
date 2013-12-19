@@ -471,6 +471,7 @@ public class JnlpDownloadServletMojo
             {
                 artifact = siblingProject.getArtifact();
                 siblingProjects.add( siblingProject );
+                artifacts.add( artifact );
             }
 
             if ( StringUtils.isNotBlank( jarResource.getMainClass() ) )
