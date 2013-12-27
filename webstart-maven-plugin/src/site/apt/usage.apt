@@ -26,6 +26,9 @@ Usage
 
   * If you need to generate multiple JNLP file(s), are those sufficiently similar to be generated from a single Maven module?
 
+  []
+
+  See also {{{./faq.html#difference_between_jnlp_jnlp_inline_and_jnlp_single}FAQ}}.
 
 * The goals
 

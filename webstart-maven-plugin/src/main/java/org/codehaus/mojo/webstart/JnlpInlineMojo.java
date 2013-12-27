@@ -30,6 +30,8 @@ import org.apache.maven.project.MavenProject;
  * The plugin tries to not re-sign/re-pack if the dependent jar hasn't changed.
  * As a consequence, if one modifies the pom jnlp config or a keystore, one should clean before rebuilding.
  *
+ * For more informations about how to choose the matching mojo see http://mojo.codehaus.org/webstart/webstart-maven-plugin/usage.html#Choices
+ *
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
  */

@@ -82,6 +82,41 @@
       </answer>
     </faq>
 
+    <faq id="difference_between_jnlp_jnlp_inline_and_jnlp_single">
+          <question>What is the difference between jnlp, jnlp-inline and jnlp-single mojos?</question>
+          <answer>
+            <ul>
+              <li>The <strong>jnlp</strong> mojo is
+                <ul>
+                <li>aggregator</li>
+                <li><strong>FORKS</strong> a build lifecycle and won't install the zip packages in your local repository</li>
+                <li>attached to the <strong>package</strong> phase, so you can invoke it from commandline</li>
+                </ul>
+              </li>
+              <li>The <strong>jnlp-inline</strong> mojo is
+              <ul>
+                <li>aggregator</li>
+                <li>does <strong>NOT</strong> fork a build lifecycle and won't install the zip packages in your local repository</li>
+                <li><strong>NOT</strong> attached to any phase (you can't invoke it from commandline)</li>
+                </ul>
+              </li>
+              <li>The <strong>jnlp-single</strong> mojo is
+              <ul>
+                <li><strong>NOT</strong> aggregator</li>
+                <li>does <strong>NOT</strong> a build lifecycle and won't install the zip packages in your local repository</li>
+                <li><strong>NOT</strong> attached to any phase (you can't invoke it from commandline)</li>
+              </ul>
+              </li>
+            </ul>
+            To choose which mojo then to use, ask yourself those questions:
+            <ul>
+              <li>Do I need a aggregator mode?</li>
+              <li>Do I need to invoke it from commandline?</li>
+              <li>Do I need to execute the mojo in a forked build lifecycle?</li>
+            </ul>
+          </answer>
+        </faq>
+
   </part>
 
 </faqs>

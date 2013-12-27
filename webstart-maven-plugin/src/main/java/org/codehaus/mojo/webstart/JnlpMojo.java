@@ -33,6 +33,8 @@ import org.apache.maven.project.MavenProject;
  * As a consequence, if one modifies the pom jnlp config or a keystore, one should clean before rebuilding.
  * <p/>This mojo forks a build lifecycle and won't install the zip packages in your local repository.
  * You probably want to use the jnlp-inline instead.
+ * <p/>
+ * For more informations about how to choose the matching mojo see http://mojo.codehaus.org/webstart/webstart-maven-plugin/usage.html#Choices
  *
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
