@@ -282,6 +282,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>keytool-api-1.7</artifactId>
+        <version>${keytoolVersion}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.apache.ant</groupId>
         <artifactId>ant</artifactId>
         <version>1.7.0</version>
