@@ -26,11 +26,9 @@ import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ExcludesArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.PluginManager;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProjectHelper;
-import org.apache.maven.settings.Settings;
 import org.codehaus.mojo.webstart.generator.ExtensionGenerator;
 import org.codehaus.mojo.webstart.generator.ExtensionGeneratorExtraConfig;
 import org.codehaus.mojo.webstart.generator.Generator;
@@ -206,14 +204,6 @@ public abstract class AbstractJnlpMojo
     // ----------------------------------------------------------------------
 
     /**
-     * The current user system settings for use in Maven. This is used for
-     * <br/>
-     * plugin manager API calls.
-     */
-    @Component
-    private Settings settings;
-
-    /**
      * The Zip archiver.
      */
     @Component( hint = "zip" )
@@ -224,12 +214,6 @@ public abstract class AbstractJnlpMojo
      */
     @Component
     private MavenProjectHelper projectHelper;
-
-    /**
-     * The plugin manager instance used to resolve plugin descriptors.
-     */
-    @Component
-    private PluginManager pluginManager;
 
     // ----------------------------------------------------------------------
     // Fields
