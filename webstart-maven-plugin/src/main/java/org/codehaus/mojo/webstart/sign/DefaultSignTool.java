@@ -109,6 +109,12 @@ public class DefaultSignTool
             {
                 throw new MojoExecutionException( "Could not sign jar " + jarFile, exception );
             }
+            int exitCode = result.getExitCode();
+            if ( exitCode != 0 )
+            {
+                throw new MojoExecutionException(
+                    "Could not sign jar " + jarFile + ", use -X to have detail of error" );
+            }
         }
         catch ( JavaToolException e )
         {
@@ -133,6 +139,12 @@ public class DefaultSignTool
             if ( exception != null )
             {
                 throw new MojoExecutionException( "Could not verify jar " + jarFile, exception );
+            }
+            int exitCode = result.getExitCode();
+            if ( exitCode != 0 )
+            {
+                throw new MojoExecutionException(
+                    "Could not verify jar " + jarFile + ", use -X to have detail of error" );
             }
         }
         catch ( JavaToolException e )
