@@ -14,6 +14,14 @@ Upgrade from a previous version
 
   <<Note:>> we may further change the POM configuration, especially if we fix {{{http://jira.codehaus.org/browse/MWEBSTART-58} MWEBSTART-58}}.
 
+* Important changes since 1.0-beta-5
+
+  Changes that affect the use and configuration of the plugin.
+
+** 2013-13-27
+
+  Remove verifyjar parameter (was not used ever!). (see {{{https://jira.codehaus.org/browse/MWEBSTART-238}MWEBSTART-238}}).
+
 * Important changes since 1.0-beta-4
 
   Changes that affect the use and configuration of the plugin.

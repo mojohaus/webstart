@@ -767,7 +767,6 @@ public abstract class AbstractJnlpMojo
         getLog().debug( "pack200 " + isPack200() );
         getLog().debug( "project " + this.getProject() );
         getLog().debug( "zipArchiver " + this.zipArchiver );
-        getLog().debug( "verifyjar " + isVerifyjar() );
         getLog().debug( "verbose " + isVerbose() );
 
         checkPack200();

@@ -127,12 +127,6 @@ public abstract class AbstractBaseJnlpMojo
     private SignConfig sign;
 
     /**
-     * Indicates whether or not jar files should be verified after signing.
-     */
-    @Parameter( defaultValue = "true" )
-    private boolean verifyjar;
-
-    /**
      * Indicates whether or not gzip archives will be created for each of the jar
      * files included in the webstart bundle.
      */
@@ -492,16 +486,6 @@ public abstract class AbstractBaseJnlpMojo
     }
 
     /**
-     * Returns the flag that indicates whether or not jars should be verified after signing.
-     *
-     * @return Returns the value of the verifyjar field.
-     */
-    protected boolean isVerifyjar()
-    {
-        return verifyjar;
-    }
-
-    /**
      * Returns the flag that indicates whether or not all transitive dependencies will be excluded
      * from the generated JNLP bundle.
      *
@@ -571,15 +555,15 @@ public abstract class AbstractBaseJnlpMojo
      *
      * @param sourceFile      source file to copy
      * @param targetDirectory location of the target directory where to copy file
-     * @param targetFilename [optional] to change the target filename to use (if {@code null} will
-     *                       use the sourceFile name).
+     * @param targetFilename  [optional] to change the target filename to use (if {@code null} will
+     *                        use the sourceFile name).
      * @return <code>true</code> when the file was copied, <code>false</code> otherwise.
      * @throws IllegalArgumentException if sourceFile is <code>null</code> or
      *                                  <code>sourceFile.getName()</code> is <code>null</code>
      * @throws MojoExecutionException   if an error occurs attempting to copy the file.
      */
     protected boolean copyJarAsUnprocessedToDirectoryIfNecessary( File sourceFile, File targetDirectory,
-                                                                  String targetFilename)
+                                                                  String targetFilename )
         throws MojoExecutionException
     {
 
@@ -627,12 +611,12 @@ public abstract class AbstractBaseJnlpMojo
         throws MojoExecutionException
     {
 
-        if ( getSign() != null )
+        if ( sign != null )
         {
             try
             {
                 ClassLoader loader = getCompileClassLoader();
-                getSign().init( getWorkDirectory(), isVerbose(), signTool, loader );
+                sign.init( getWorkDirectory(), getLog().isDebugEnabled(), signTool, loader );
             }
             catch ( MalformedURLException e )
             {
@@ -682,7 +666,7 @@ public abstract class AbstractBaseJnlpMojo
 
         if ( isPack200() )
         {
-            getLog().debug( "packing jars" );
+            verboseLog( "-- Pack jars" );
             pack200Jars( getLibDirectory(), processedJarFileFilter );
         }
     }
@@ -857,6 +841,8 @@ public abstract class AbstractBaseJnlpMojo
             return 0;
         }
 
+        boolean signVerify = sign.isVerify();
+
         for ( File unprocessedJarFile : jarFiles )
         {
 
@@ -864,12 +850,16 @@ public abstract class AbstractBaseJnlpMojo
             ioUtil.deleteFile( signedJar );
 
             verboseLog( "Sign " + signedJar.getName() );
-
-            signTool.sign( getSign(), unprocessedJarFile, signedJar );
+            signTool.sign( sign, unprocessedJarFile, signedJar );
 
             getLog().debug( "lastModified signedJar:" + signedJar.lastModified() + " unprocessed signed Jar:" +
                                 unprocessedJarFile.lastModified() );
 
+            if ( signVerify )
+            {
+                verboseLog( "Verify signature of " + signedJar.getName() );
+                signTool.verify( sign, signedJar, isVerbose() );
+            }
             // remove unprocessed files
             // TODO wouldn't have to do that if we copied the unprocessed jar files in a temporary area
             ioUtil.deleteFile( unprocessedJarFile );

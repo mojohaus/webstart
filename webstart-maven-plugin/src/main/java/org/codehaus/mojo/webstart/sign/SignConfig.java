@@ -222,7 +222,7 @@ public class SignConfig
      * @param certs   flag to show certificats details
      * @return the jarsigner request
      */
-    public JarSignerVerifyRequest createVerifyRequest( File jarFile, boolean certs )
+    public JarSignerRequest createVerifyRequest( File jarFile, boolean certs )
     {
         JarSignerVerifyRequest request = new JarSignerVerifyRequest();
         request.setCerts( certs );
@@ -463,7 +463,7 @@ public class SignConfig
         return alias;
     }
 
-    public boolean getVerify()
+    public boolean isVerify()
     {
         return verify;
     }
