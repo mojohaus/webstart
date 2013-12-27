@@ -128,12 +128,14 @@ public class DefaultArtifactUtil
         MavenProject result = null;
 
         String artifactId = artifact.getArtifactId();
+        String groupId = artifact.getGroupId();
 
         if ( CollectionUtils.isNotEmpty( reactorProjects ) )
         {
             for ( MavenProject reactorProject : reactorProjects )
             {
-                if ( reactorProject.getArtifactId().equals( artifactId ) )
+                if ( reactorProject.getArtifactId().equals( artifactId ) &&
+                    reactorProject.getGroupId().equals( groupId ) )
                 {
                     result = reactorProject;
                     break;
