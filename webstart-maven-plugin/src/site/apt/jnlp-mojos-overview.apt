@@ -74,7 +74,6 @@ $dependencies
 $mainClass
 $outputFile             from user input if specified, default otherwise (one can use $$name when using the JnlpDownloadServlet)
 $project                maps to the Project Model (i.e. POM) (can be used to retrieve project.Name, project.Version, etc..)
-$property               all properties taken from the POM/profile or from the Java System properties. Note: properties containing dots ('.') might not be passed properly. This is due to the nature of the Velocity parser which treats dots as delimiters.
 ## some aliases named after the JNLP file structure
 $informationTitle       alias for $project.Name
 $informationDescription alias for $project.Description
@@ -83,6 +82,10 @@ $informationHomepage    alias for $project.Organization.Url
 ## explicit timestamps for use with JnlpDownloadServlet (see JnlpDownloadServlet Guide at http://java.sun.com/j2se/1.5.0/docs/guide/javaws/developersguide/downloadservletguide.html#processing)
 $explicitTimestamp      explicit timestamp in local time zone, for example "TS: 2007-06-19 18:09:56+0300"
 $explicitTimestampUTC   explicit timestamp in UTC time zone, for example "TS: 2007-06-19 15:09:56Z"
+## Other properties
+System properties (All properties taken from System.getProperties())(Note: properties containing dots ('.') might not be passed properly. This is due to the nature of the Velocity parser which treats dots as delimiters.)
+Maven project properties (All properties taken from pom.properties section)  (Note: properties containing dots ('.') might not be passed properly. This is due to the nature of the Velocity parser which treats dots as delimiters.)
+Extra config properties (All properties taken from config.properties section) (Note: properties containing dots ('.') might not be passed properly. This is due to the nature of the Velocity parser which treats dots as delimiters.)
 -------------------------------
 
   See the {{{http://velocity.apache.org/engine/releases/velocity-1.5/user-guide.html#variables}Velocity User Guide}} for
