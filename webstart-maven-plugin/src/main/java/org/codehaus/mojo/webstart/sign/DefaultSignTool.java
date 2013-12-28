@@ -26,6 +26,7 @@ import org.apache.maven.shared.jarsigner.JarSignerUtil;
 import org.apache.maven.shared.utils.cli.CommandLineException;
 import org.apache.maven.shared.utils.cli.javatool.JavaToolException;
 import org.apache.maven.shared.utils.cli.javatool.JavaToolResult;
+import org.apache.maven.shared.utils.io.FileUtils;
 import org.codehaus.mojo.keytool.KeyTool;
 import org.codehaus.mojo.keytool.requests.KeyToolGenerateKeyPairRequest;
 import org.codehaus.mojo.webstart.util.IOUtil;
@@ -33,9 +34,19 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Default implementation of the {@link SignTool}.
@@ -82,7 +93,13 @@ public class DefaultSignTool
             CommandLineException exception = result.getExecutionException();
             if ( exception != null )
             {
-                throw new MojoExecutionException( "Could not sign jar " + keystoreFile, exception );
+                throw new MojoExecutionException( "Could not generate key store " + keystoreFile, exception );
+            }
+            int exitCode = result.getExitCode();
+            if ( exitCode != 0 )
+            {
+                throw new MojoExecutionException(
+                    "Could not generate key store " + keystoreFile + ", use -X to have detail of error" );
             }
         }
         catch ( JavaToolException e )
@@ -185,7 +202,9 @@ public class DefaultSignTool
             verboseLog( verbose, "Unsign jar " + jarFile );
             try
             {
-                JarSignerUtil.unsignArchive( jarFile );
+                //Fixme reuse this with maven-jarsigner 1.3
+                //JarSignerUtil.unsignArchive( jarFile );
+                unsignArchive( jarFile );
             }
             catch ( IOException e )
             {
@@ -289,6 +308,162 @@ public class DefaultSignTool
         {
             getLogger().debug( msg );
         }
+    }
+
+    /**
+     * Removes any existing signatures from the specified JAR file. We will stream from the input JAR directly to the
+     * output JAR to retain as much metadata from the original JAR as possible.
+     *
+     * @param jarFile The JAR file to unsign, must not be <code>null</code>.
+     * @throws java.io.IOException
+     */
+    //Fixme remove this when using maven-jarsigner 1.3
+    public void unsignArchive( File jarFile )
+        throws IOException
+    {
+
+        File unsignedFile = new File( jarFile.getAbsolutePath() + ".unsigned" );
+
+        ZipInputStream zis = null;
+        ZipOutputStream zos = null;
+        try
+        {
+            zis = new ZipInputStream( new BufferedInputStream( new FileInputStream( jarFile ) ) );
+            zos = new ZipOutputStream( new BufferedOutputStream( new FileOutputStream( unsignedFile ) ) );
+
+            for ( ZipEntry ze = zis.getNextEntry(); ze != null; ze = zis.getNextEntry() )
+            {
+                if ( isSignatureFile( ze.getName() ) )
+                {
+
+                    continue;
+                }
+
+                zos.putNextEntry( new ZipEntry( ze.getName() ) );
+
+                if (isManifestFile(ze.getName())) {
+
+                    // remove any digest informations
+
+                    getLogger().info("Found manifest: "+ze.getName());
+
+                    Manifest mf = new Manifest( zis );
+
+                    getLogger().info("Manifest: "+mf);
+
+                    Manifest oldManifest = new Manifest( zis );
+                    Manifest newManifest = buildUnsignedManifest( oldManifest );
+                    newManifest.write( zos );
+
+                    continue;
+                }
+
+                org.apache.maven.shared.utils.io.IOUtil.copy( zis, zos );
+
+            }
+        }
+        finally
+        {
+            org.apache.maven.shared.utils.io.IOUtil.close( zis );
+            org.apache.maven.shared.utils.io.IOUtil.close( zos );
+        }
+
+        FileUtils.rename( unsignedFile, jarFile );
+
+    }
+
+    /**
+     * Checks whether the specified JAR file entry denotes a signature-related file, i.e. matches
+     * <code>META-INF/*.SF</code>, <code>META-INF/*.DSA</code> or <code>META-INF/*.RSA</code>.
+     *
+     * @param entryName The name of the JAR file entry to check, must not be <code>null</code>.
+     * @return <code>true</code> if the entry is related to a signature, <code>false</code> otherwise.
+     */
+    //Fixme remove this when using maven-jarsigner 1.3
+    private boolean isSignatureFile( String entryName )
+    {
+        boolean result = false;
+        if ( entryName.regionMatches( true, 0, "META-INF", 0, 8 ) )
+        {
+            entryName = entryName.replace( '\\', '/' );
+
+            if ( entryName.indexOf( '/' ) == 8 && entryName.lastIndexOf( '/' ) == 8 )
+            {
+                if ( entryName.regionMatches( true, entryName.length() - 3, ".SF", 0, 3 ) )
+                {
+                    result = true;
+                }
+                else if ( entryName.regionMatches( true, entryName.length() - 4, ".DSA", 0, 4 ) )
+                {
+                    result = true;
+                }
+                else if ( entryName.regionMatches( true, entryName.length() - 4, ".RSA", 0, 4 ) )
+                {
+                    result = true;
+                }
+                else if ( entryName.regionMatches( true, entryName.length() - 3, ".EC", 0, 3 ) )
+                {
+                    result = true;
+                }
+            }
+        }
+        return result;
+    }
+
+    //Fixme remove this when using maven-jarsigner 1.3
+    private boolean isManifestFile( String entryName )
+    {
+        boolean result = false;
+        if ( entryName.regionMatches( true, 0, "META-INF", 0, 8 ) )
+        {
+            entryName = entryName.replace( '\\', '/' );
+
+            if ( entryName.indexOf( '/' ) == 8 && entryName.lastIndexOf( '/' ) == 8 )
+            {
+                if ( entryName.regionMatches( true, entryName.length() - 11, "MANIFEST.MF", 0, 11 ) )
+                {
+                    result = true;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Build a new manifest from the given one removing any signing information inside it.
+     *
+     * This is done by removing any attributes containing some digest informations.
+     * If a entry has then no more attributes, then it will not be readd in the result manifest.
+     *
+     * @param manifest manifest to clean
+     * @return the build manifest with no digest attributes
+     * @since 1.3
+     */
+    protected Manifest buildUnsignedManifest( Manifest manifest ) {
+
+        Manifest result = new Manifest( manifest );
+        result.getMainAttributes().clear();
+
+        for ( Map.Entry<String, Attributes> entry : manifest.getEntries().entrySet() )
+        {
+            Attributes oldAttributes = entry.getValue();
+            Attributes newAttributes = new Attributes();
+            for ( Map.Entry<Object, Object> objectEntry : oldAttributes.entrySet() )
+            {
+                String attributeKey = String.valueOf( objectEntry.getKey() );
+                if ( !attributeKey.contains( "-Digest" ) )
+                {
+                    // can add this attribute
+                    newAttributes.put( objectEntry.getKey(), objectEntry.getValue() );
+                }
+            }
+            if ( !newAttributes.isEmpty() )
+            {
+                // can add this entry
+                result.getEntries().put( entry.getKey(), newAttributes );
+            }
+        }
+        return result;
     }
 
 }
