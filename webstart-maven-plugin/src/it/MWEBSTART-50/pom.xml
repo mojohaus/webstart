@@ -44,8 +44,8 @@
           <artifactId>webstart-maven-plugin</artifactId>
           <version>@project.version@</version>
           <configuration>
-            <unsign>false</unsign>
-            <canUnsign>false</canUnsign>
+            <unsign>true</unsign>
+            <canUnsign>true</canUnsign>
             <attachArchive>false</attachArchive>
             <makeArchive>true</makeArchive>
             <jnlp>
