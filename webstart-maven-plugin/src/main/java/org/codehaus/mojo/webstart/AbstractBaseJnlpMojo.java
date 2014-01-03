@@ -812,13 +812,11 @@ public abstract class AbstractBaseJnlpMojo
             return;
         }
 
-        jarUtil.setManifestEntries( updateManifestEntries );
-
         for ( File unprocessedJarFile : jarFiles )
         {
             verboseLog( "Update manifest " + toProcessFile( unprocessedJarFile ).getName() );
 
-            jarUtil.updateManifestEntries( unprocessedJarFile );
+            jarUtil.updateManifestEntries( unprocessedJarFile, updateManifestEntries );
         }
     }
 
