@@ -19,12 +19,6 @@ package org.codehaus.mojo.webstart.util;
  * under the License.
  */
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.util.DirectoryScanner;
-import org.codehaus.plexus.util.FileUtils;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileOutputStream;
@@ -35,6 +29,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.zip.ZipFile;
+
+import org.apache.maven.plugin.MojoExecutionException;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.util.DirectoryScanner;
+import org.codehaus.plexus.util.FileUtils;
 
 /**
  * Helper for all IO operations.
@@ -323,6 +324,22 @@ public class DefaultIOUtil
         }
 
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void close( ZipFile closeable )
+    {
+		try 
+		{
+			if (closeable != null) 
+			{
+				closeable.close();
+			}
+		}
+		catch (IOException ignore) {
+		}
+	}
 
     private void copyDirectoryStructure( File sourceDirectory, File destinationDirectory, String includes,
                                          String excludes )

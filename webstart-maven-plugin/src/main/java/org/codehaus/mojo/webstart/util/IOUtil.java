@@ -19,11 +19,12 @@ package org.codehaus.mojo.webstart.util;
  * under the License.
  */
 
-import org.apache.maven.plugin.MojoExecutionException;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URI;
+import java.util.zip.ZipFile;
+
+import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * Helper for all IO operations.
@@ -140,4 +141,11 @@ public interface IOUtil
      */
     void copyResources( URI uri, ClassLoader classLoader, File target )
         throws MojoExecutionException;
+
+    /**
+     * Silently closes the resource
+     * 
+     * @param closeable
+     */
+    void close( ZipFile closeable );
 }
