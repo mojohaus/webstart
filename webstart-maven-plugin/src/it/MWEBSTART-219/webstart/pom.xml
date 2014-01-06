@@ -83,6 +83,9 @@
 						</jnlpFile>
 					</jnlpFiles>
 					<libPath>lib</libPath>
+
+          <filenameMapping>simple</filenameMapping>
+          <!-- use simple filename mapping -->
 				</configuration>
 			</plugin>
 		</plugins>

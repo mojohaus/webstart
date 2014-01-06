@@ -64,7 +64,7 @@ assert jnlpLib.list().length == ( expectedJnlpLibFiles.length * 2 ) + 1 // jar +
 File jnlpFile  = new File( jnlpDirectory, "test.jnlp" )
 String jnlpContent1 = jnlpFile.text
 
-assert assertContains( jnlpContent1,  "<jar href=\"commons-cli.jar\" version=\"1.1\" main=\"true\"/>" )
+assert assertContains( jnlpContent1,  "<jar href=\"commons-cli-commons-cli.jar\" version=\"1.1\" main=\"true\"/>" )
 assert assertContains( jnlpContent1,  "<property name=\"jnlp.versionEnabled\" value=\"true\" />" )
 
 return true

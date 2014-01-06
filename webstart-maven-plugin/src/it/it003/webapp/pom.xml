@@ -124,7 +124,8 @@
           <unsign>true</unsign>
           <!-- unsign already signed packages and sign them with own key -->
 
-          <verifyjar>false</verifyjar>
+          <filenameMapping>simple</filenameMapping>
+          <!-- use simple filename mapping -->
         </configuration>
       </plugin>
     </plugins>

@@ -76,12 +76,12 @@ expectedJnlpFiles.each{
 File jnlpFile = new File( jnlp, "test.jnlp" )
 String jnlpContent = jnlpFile.text
 
-String[] expectedJnlpContains = [ "<jar href=\"commons-logging-1.1.1.jar\"/>", "<jar href=\"commons-cli-1.1.jar\" main=\"true\"/>",  "<extension name=\"sun\" href=\"sun.jnlp\"/>", "<extension name=\"jxlayer\" href=\"jxlayer.jnlp\"/>" ]
+String[] expectedJnlpContains = [ "<jar href=\"commons-logging-commons-logging-1.1.1.jar\"/>", "<jar href=\"commons-cli-commons-cli-1.1.jar\" main=\"true\"/>",  "<extension name=\"sun\" href=\"sun.jnlp\"/>", "<extension name=\"jxlayer\" href=\"jxlayer.jnlp\"/>" ]
 expectedJnlpContains.each{
   assert assertContains( jnlpContent,  it )
 }
 
-String[] notExpectedJnlpContains = [ "<jar href=\"javahelp-2.0.02.jar\"/>", "<jar href=\"jxlayer-3.0.4.jar\"/>" ]
+String[] notExpectedJnlpContains = [ "<jar href=\"java.help-javahelp-2.0.02.jar\"/>", "<jar href=\"org.swinglabs-jxlayer-3.0.4.jar\"/>" ]
 notExpectedJnlpContains.each{
   assert assertNotContains( jnlpContent,  it )
 }

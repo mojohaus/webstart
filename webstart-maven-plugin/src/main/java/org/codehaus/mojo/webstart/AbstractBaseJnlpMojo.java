@@ -208,22 +208,21 @@ public abstract class AbstractBaseJnlpMojo
     private List<?> compileClassPath;
 
     /**
-     * Filename mapping used to write all dependencies in the jnlp application.
+     * Naming strategy for dependencies of a jnlp application.
+     *
+     * The strategy purpose is to transform the name of the dependency file.
      *
      * The actual authorized values are:
      * <ul>
-     *     <li><strong>simple</strong>: artifactId-version.jar</li>
+     *     <li><strong>simple</strong>: artifactId[-classifier]-version.jar</li>
      *     <li><strong>full</strong>: groupId-artifactId[-classifier]-version.jar</li>
      * </ul>
      *
-     * The {@code simple} is the default one (this was in fact how it was done before 1.0-beta-5).
-     *
-     * In the version 1.0, the default value will become {@code full}, since this mapping is better to avoid any
-     * dependency name colision.
+     * Default value is {@code full} which avoid any colision of naming.
      *
      * @since 1.0-beta-5
      */
-    @Parameter( property = "jnlp.filenameMapping", defaultValue = "simple", required = true)
+    @Parameter( property = "jnlp.filenameMapping", defaultValue = "full", required = true)
     private String filenameMapping;
 
     // ----------------------------------------------------------------------
