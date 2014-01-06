@@ -57,7 +57,7 @@ public class JarResourcesGenerator
         {
             final int multiplier = 100;
             StringBuilder buffer = new StringBuilder( multiplier * jarResources.size() );
-            buffer.append( "\n" );
+            buffer.append( EOL );
 
             for ( ResolvedJarResource jarResource : jarResources )
             {
@@ -86,7 +86,7 @@ public class JarResourcesGenerator
                     buffer.append( " main=\"true\"" );
                 }
 
-                buffer.append( "/>\n" );
+                buffer.append( "/>" ).append( EOL );
             }
             jarResourcesText = buffer.toString();
         }

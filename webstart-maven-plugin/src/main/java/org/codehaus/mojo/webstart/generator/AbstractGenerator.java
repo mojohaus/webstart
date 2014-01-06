@@ -22,6 +22,7 @@ package org.codehaus.mojo.webstart.generator;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.utils.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -47,15 +48,6 @@ import java.util.TimeZone;
 public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
 {
 
-//    private final MavenProject mavenProject;
-
-//    private final File outputFile;
-
-//    private final String encoding;
-//
-//    private final String mainClass;
-//
-
     private VelocityEngine engine;
 
     private Template velocityTemplate;
@@ -65,6 +57,8 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
     private final C extraConfig;
 
     private Log log;
+
+    public static final String EOL = System.getProperty( "line.separator" );
 
     protected AbstractGenerator( Log log, GeneratorTechnicalConfig config, C extraConfig )
     {
@@ -144,11 +138,6 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
             throw iae;
         }
     }
-
-//    public void setExtraConfig( GeneratorExtraConfig extraConfig )
-//    {
-//        this.extraConfig = extraConfig;
-//    }
 
     public C getExtraConfig()
     {
@@ -297,14 +286,10 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
     {
         StringBuilder buffer = new StringBuilder();
         String[] lines = text.split( "\n" );
-        String prefix = "";
-        for ( int i = 0; i < level; i++ )
-        {
-            prefix += " ";
-        }
+        String prefix = StringUtils.leftPad( "", level );
         for ( String line : lines )
         {
-            buffer.append( prefix ).append( line ).append( "\n" );
+            buffer.append( prefix ).append( line ).append( EOL );
         }
         return buffer.toString();
     }

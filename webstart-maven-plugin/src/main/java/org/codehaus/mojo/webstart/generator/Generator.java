@@ -57,6 +57,8 @@ public class Generator
         {
             // add extensions
             context.put( "extensions", indentText( 4, getExtensionsText( getExtraConfig() ) ) );
+        } else {
+            context.put( "extensions", "" );
         }
         return context;
     }
@@ -69,10 +71,10 @@ public class Generator
     static String getDependenciesText( GeneratorExtraConfigWithDeps config, Collection<Artifact> artifacts )
     {
         String dependenciesText = "";
-        if ( artifacts.size() != 0 )
+        if ( !artifacts.isEmpty() )
         {
             StringBuilder buffer = new StringBuilder( 100 * artifacts.size() );
-            buffer.append( "\n" );
+            buffer.append( EOL );
             if ( config.isPack200() )
             {
                 /*
@@ -81,7 +83,7 @@ public class Generator
                  * If we're going to use Pack200, we should specify jnlp.packEnabled
                  *
                  */
-                buffer.append( "<property name=\"jnlp.packEnabled\" value=\"true\" />\n" );
+                buffer.append( "<property name=\"jnlp.packEnabled\" value=\"true\" />" ).append( EOL );
             }
             if ( config.isOutputJarVersions() )
             {
@@ -91,7 +93,7 @@ public class Generator
                  * If we're going to use version files, we should specify jnlp.versionEnabled
                  *
                  */
-                buffer.append( "<property name=\"jnlp.versionEnabled\" value=\"true\" />\n" );
+                buffer.append( "<property name=\"jnlp.versionEnabled\" value=\"true\" />" ).append( EOL );
             }
             String jarLibPath = null;
             if ( config.getLibPath() != null )
@@ -127,7 +129,7 @@ public class Generator
                 {
                     buffer.append( " main=\"true\"" );
                 }
-                buffer.append( "/>\n" );
+                buffer.append( "/>" ).append( EOL );
             }
             dependenciesText = buffer.toString();
         }
@@ -149,7 +151,7 @@ public class Generator
                 buffer.append( extension.getName() );
                 buffer.append( "\" href=\"" );
                 buffer.append( extension.getOutputFile() );
-                buffer.append( "\"/>\n" );
+                buffer.append( "\"/>" ).append( EOL );
             }
             text = buffer.toString();
         }
