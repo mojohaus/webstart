@@ -187,6 +187,37 @@ public class DefaultPack200Tool
     /**
      * {@inheritDoc}
      */
+    public File packJar( File jarFile, boolean gzip, List<String> passFiles )
+        throws IOException
+    {
+        final String extension = gzip ? PACK_GZ_EXTENSION : PACK_EXTENSION;
+
+        File pack200Jar = new File( jarFile.getParentFile(), jarFile.getName() + extension );
+
+        deleteFile( pack200Jar );
+
+        Map<String, String> propMap = new HashMap<String, String>();
+        // Work around a JDK bug affecting large JAR files, see MWEBSTART-125
+        propMap.put( Pack200.Packer.SEGMENT_LIMIT, String.valueOf( -1 ) );
+
+        // set passFiles if available
+        if ( passFiles != null && !passFiles.isEmpty() )
+        {
+            for ( int j = 0; j < passFiles.size(); j++ )
+            {
+                propMap.put( Packer.PASS_FILE_PFX + j, passFiles.get( j ) );
+            }
+        }
+
+        pack( jarFile, pack200Jar, propMap, gzip );
+        setLastModified( pack200Jar, jarFile.lastModified() );
+        return pack200Jar;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
     public void unpackJars( File directory, FileFilter pack200FileFilter )
         throws IOException
     {
@@ -204,6 +235,24 @@ public class DefaultPack200Tool
             unpack( packFile, jarFile, Collections.<String, String>emptyMap() );
             setLastModified( jarFile, packFile.lastModified() );
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public File unpackJar( File packFile )
+        throws IOException
+    {
+        final String packedJarPath = packFile.getAbsolutePath();
+        int extensionLength = packedJarPath.endsWith( PACK_GZ_EXTENSION ) ? 8 : 5;
+        String jarFileName = packedJarPath.substring( 0, packedJarPath.length() - extensionLength );
+        File jarFile = new File( jarFileName );
+
+        deleteFile( jarFile );
+
+        unpack( packFile, jarFile, Collections.<String, String>emptyMap() );
+        setLastModified( jarFile, packFile.lastModified() );
+        return jarFile;
     }
 
     private void deleteFile( File file )

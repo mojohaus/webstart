@@ -96,11 +96,33 @@ public interface Pack200Tool
         throws IOException;
 
     /**
+     * Pack the given jarfile and return the packed file.
+     *
+     * @param jarFile   jar file to pack
+     * @param gzip      flag to enable gzip compression
+     * @param passFiles the list of file names to be passed as not pack200 compressed
+     * @return the packed file
+     * @throws IOException
+     */
+    File packJar( File jarFile, boolean gzip, List<String> passFiles )
+        throws IOException;
+
+    /**
      * UnPacks from the given {@code directory}, all files matched by the filter.
      *
      * @param directory         the location of the directory containing files to unpack
      * @param pack200FileFilter the fileter to determin which files to unpakc
      */
     void unpackJars( File directory, FileFilter pack200FileFilter )
+        throws IOException;
+
+    /**
+     * Unpack the given file and return it.
+     *
+     * @param packFile the file to unpack
+     * @return the unpacked file
+     * @throws IOException
+     */
+    File unpackJar( File packFile )
         throws IOException;
 }
