@@ -18,7 +18,15 @@ Upgrade from a previous version
 
   Changes that affect the use and configuration of the plugin.
 
-** 2013-13-27
+** 2014-01-06
+
+  Introduce the <<<filenameMapping>>> parameter and set default value to <<<full>>>.
+
+  To get back to old behaviour, just set the value to <<<simple>>>.
+
+  For more details, see {{{https://jira.codehaus.org/browse/MWEBSTART-195}MWEBSTART-195}}.
+
+** 2013-12-27
 
   Remove verifyjar parameter (was not used ever!). (see {{{https://jira.codehaus.org/browse/MWEBSTART-238}MWEBSTART-238}}).
 
