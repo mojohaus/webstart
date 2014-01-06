@@ -21,12 +21,8 @@ package org.codehaus.mojo.webstart.generator;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.project.MavenProject;
 import org.apache.velocity.VelocityContext;
-import org.codehaus.mojo.webstart.AbstractJnlpMojo;
-import org.codehaus.mojo.webstart.JnlpExtension;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -35,34 +31,12 @@ import java.util.List;
  * @author chemit
  */
 public class ExtensionGenerator
-    extends AbstractGenerator
+    extends AbstractGenerator<ExtensionGeneratorConfig>
 {
 
-    private AbstractJnlpMojo config;
-
-    private JnlpExtension extension;
-
-    /**
-     * @param mavenProject
-     * @param task
-     * @param extension
-     * @param defaultTemplateResourceName
-     * @param resourceLoaderPath          used to find the template in conjunction to inputFileTemplatePath
-     * @param outputFile
-     * @param inputFileTemplatePath       relative to resourceLoaderPath
-     * @param mainClass
-     * @param webstartJarURL
-     */
-    public ExtensionGenerator( Log log, MavenProject mavenProject, AbstractJnlpMojo task, JnlpExtension extension,
-                               String defaultTemplateResourceName, File resourceLoaderPath, File outputFile,
-                               String inputFileTemplatePath, String mainClass, String webstartJarURL, String encoding )
+    public ExtensionGenerator( Log log, GeneratorTechnicalConfig technicalConfig, ExtensionGeneratorConfig extraConfig )
     {
-
-        super( log, mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, inputFileTemplatePath,
-               mainClass, webstartJarURL, encoding );
-
-        this.config = task;
-        this.extension = extension;
+        super( log, technicalConfig, extraConfig );
     }
 
     /**
@@ -73,19 +47,18 @@ public class ExtensionGenerator
     {
         VelocityContext context = super.createAndPopulateContext();
         // add the extension in velocity context
-        context.put( "extension", extension );
+        context.put( "extension", getExtraConfig().getExtension() );
         return context;
     }
-
 
     /**
      * {@inheritDoc}
      */
     protected String getDependenciesText()
     {
-        List<Artifact> dependencies = config.getExtensionsJnlpArtifacts().get( extension );
+        List<Artifact> dependencies = getExtraConfig().getExtensionJnlpArtifacts( getExtraConfig().getExtension() );
 
-        return indentText( 4, Generator.getDependenciesText( config, dependencies ) );
+        return indentText( 4, Generator.getDependenciesText( getExtraConfig(), dependencies ) );
     }
 
 }

@@ -28,6 +28,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mojo.webstart.dependency.filenaming.DependencyFilenameStrategy;
 import org.codehaus.mojo.webstart.sign.SignConfig;
 import org.codehaus.mojo.webstart.sign.SignTool;
 import org.codehaus.mojo.webstart.util.ArtifactUtil;
@@ -206,6 +207,25 @@ public abstract class AbstractBaseJnlpMojo
     @Parameter( defaultValue = "${project.compileClasspathElements}", required = true, readonly = true )
     private List<?> compileClassPath;
 
+    /**
+     * Filename mapping used to write all dependencies in the jnlp application.
+     *
+     * The actual authorized values are:
+     * <ul>
+     *     <li><strong>simple</strong>: artifactId-version.jar</li>
+     *     <li><strong>full</strong>: groupId-artifactId[-classifier]-version.jar</li>
+     * </ul>
+     *
+     * The {@code simple} is the default one (this was in fact how it was done before 1.0-beta-5).
+     *
+     * In the version 1.0, the default value will become {@code full}, since this mapping is better to avoid any
+     * dependency name colision.
+     *
+     * @since 1.0-beta-5
+     */
+    @Parameter( property = "jnlp.filenameMapping", defaultValue = "simple", required = true)
+    private String filenameMapping;
+
     // ----------------------------------------------------------------------
     // Components
     // ----------------------------------------------------------------------
@@ -253,6 +273,14 @@ public abstract class AbstractBaseJnlpMojo
     @Component( hint = "default" )
     private JarUtil jarUtil;
 
+    /**
+     * All dependency filename strategy indexed by theire role-hint.
+     *
+     * @since 1.0-beta-5
+     */
+    @Component( role = DependencyFilenameStrategy.class )
+    private Map<String, DependencyFilenameStrategy> dependencyFilenameStrategyMap;
+
     // ----------------------------------------------------------------------
     // Fields
     // ----------------------------------------------------------------------
@@ -278,6 +306,11 @@ public abstract class AbstractBaseJnlpMojo
      * Filter of jar files that need to be pack200.
      */
     private final FileFilter unprocessedPack200FileFilter;
+
+    /**
+     * The dependency filename strategy.
+     */
+    private DependencyFilenameStrategy dependencyFilenameStrategy;
 
     /**
      * Creates a new {@code AbstractBaseJnlpMojo}.
@@ -518,6 +551,28 @@ public abstract class AbstractBaseJnlpMojo
             getLog().warn( "No encoding defined, will use the default one : " + encoding );
         }
         return encoding;
+    }
+
+    protected DependencyFilenameStrategy getDependencyFilenameStrategy()
+    {
+        if ( dependencyFilenameStrategy == null )
+        {
+            dependencyFilenameStrategy = dependencyFilenameStrategyMap.get(filenameMapping );
+        }
+        return dependencyFilenameStrategy;
+    }
+
+    protected void  checkDependencyFilenameStrategy()
+        throws MojoExecutionException
+    {
+        if ( getDependencyFilenameStrategy() == null )
+        {
+
+            dependencyFilenameStrategy = dependencyFilenameStrategyMap.get(filenameMapping );
+            if (dependencyFilenameStrategy==null) {
+                throw new MojoExecutionException( "Could not find filenameMapping named '"+filenameMapping+"', use one of the following one: "+ dependencyFilenameStrategyMap.keySet());
+            }
+        }
     }
 
     /**

@@ -19,6 +19,7 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
@@ -30,11 +31,11 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.mojo.webstart.generator.ExtensionGenerator;
-import org.codehaus.mojo.webstart.generator.ExtensionGeneratorExtraConfig;
+import org.codehaus.mojo.webstart.generator.ExtensionGeneratorConfig;
 import org.codehaus.mojo.webstart.generator.Generator;
-import org.codehaus.mojo.webstart.generator.JnplGeneratorExtraConfig;
+import org.codehaus.mojo.webstart.generator.GeneratorConfig;
+import org.codehaus.mojo.webstart.generator.GeneratorTechnicalConfig;
 import org.codehaus.mojo.webstart.util.IOUtil;
-import org.codehaus.plexus.archiver.Archiver;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,12 +60,12 @@ public abstract class AbstractJnlpMojo
     /**
      * Name of the built in jnlp template to use if none given.
      */
-    private static final String BUILT_IN_JNLP_TEMPLATE_FILENAME= "default-jnlp-template.vm";
+    private static final String BUILT_IN_JNLP_TEMPLATE_FILENAME = "default-jnlp-template.vm";
 
     /**
      * Name of the default jnlp template to use if user define it in the default template directory.
      */
-    private static final String JNLP_TEMPLATE_FILENAME= "template.vm";
+    private static final String JNLP_TEMPLATE_FILENAME = "template.vm";
 
     /**
      * Name of the built in extension template to use if none is given.
@@ -88,23 +89,9 @@ public abstract class AbstractJnlpMojo
     public static class Dependencies
     {
 
-        private boolean outputJarVersions;
-
         private List<String> includes;
 
         private List<String> excludes;
-
-        /**
-         * Returns the value of the flag that determines whether or not
-         * the version attribute will be output in each jar resource element
-         * in the generated JNLP file.
-         *
-         * @return The default output version flag.
-         */
-        public boolean getOutputJarVersions()
-        {
-            return outputJarVersions;
-        }
 
         public List<String> getIncludes()
         {
@@ -192,7 +179,7 @@ public abstract class AbstractJnlpMojo
      * When set to true, this flag indicates that a version attribute should
      * be output in each of the jar resource elements in the generated
      * JNLP file.
-     *
+     * <p/>
      * <strong>Note: </strong> since version 1.0-beta-5 we use the version download protocol optimization (see
      * http://docs.oracle.com/javase/tutorial/deployment/deploymentInDepth/avoidingUnnecessaryUpdateChecks.html).
      */
@@ -202,12 +189,6 @@ public abstract class AbstractJnlpMojo
     // ----------------------------------------------------------------------
     // Components
     // ----------------------------------------------------------------------
-
-    /**
-     * The Zip archiver.
-     */
-    @Component( hint = "zip" )
-    private Archiver zipArchiver;
 
     /**
      * The project helper used to attach the artifact produced by this plugin to the project.
@@ -242,7 +223,7 @@ public abstract class AbstractJnlpMojo
         throws MojoExecutionException
     {
 
-        boolean withExtensions = hasJnlpExtensions();
+        boolean withExtensions = CollectionUtils.isNotEmpty( jnlpExtensions );
 
         if ( withExtensions )
         {
@@ -334,10 +315,7 @@ public abstract class AbstractJnlpMojo
 
                 verboseLog( "Will create archive at location: " + archive );
 
-                zipArchiver.addDirectory( getWorkDirectory() );
-                zipArchiver.setDestFile( archive );
-                getLog().debug( "about to call createArchive" );
-                zipArchiver.createArchive();
+                ioUtil.createArchive( getWorkDirectory(), archive );
 
                 if ( attachArchive )
                 {
@@ -354,61 +332,6 @@ public abstract class AbstractJnlpMojo
         {
             throw new MojoExecutionException( "Failure to run the plugin: ", e );
         }
-    }
-
-    // ----------------------------------------------------------------------
-    // Public methods
-    // ----------------------------------------------------------------------
-
-    public List<JnlpExtension> getJnlpExtensions()
-    {
-        return jnlpExtensions;
-    }
-
-    public boolean hasJnlpExtensions()
-    {
-        return jnlpExtensions != null && !jnlpExtensions.isEmpty();
-    }
-
-    public List<Artifact> getPackagedJnlpArtifacts()
-    {
-        return packagedJnlpArtifacts;
-    }
-
-    public Map<JnlpExtension, List<Artifact>> getExtensionsJnlpArtifacts()
-    {
-        return extensionsJnlpArtifacts;
-    }
-
-    public boolean isArtifactWithMainClass( Artifact artifact )
-    {
-        final boolean b = artifactWithMainClass.equals( artifact );
-        getLog().debug( "compare " + artifactWithMainClass + " with " + artifact + ": " + b );
-        return b;
-    }
-
-    /**
-     * Returns the flag that indicates whether or not a version attribute
-     * should be output in each jar resource element in the generated
-     * JNLP file. The default is false.
-     *
-     * @return Returns the value of the {@code outputJarVersions} property.
-     */
-    public boolean isOutputJarVersions()
-    {
-        return this.outputJarVersions;
-    }
-
-    /**
-     * Sets the flag that indicates whether or not a version attribute
-     * should be output in each jar resource element in the generated
-     * JNLP file. The default is false.
-     *
-     * @param outputJarVersions new value of the {@link #outputJarVersions} field
-     */
-    public void setOutputJarVersions( boolean outputJarVersions )
-    {
-        this.outputJarVersions = outputJarVersions;
     }
 
     // ----------------------------------------------------------------------
@@ -583,11 +506,11 @@ public abstract class AbstractJnlpMojo
 
                 String extension = name.substring( name.lastIndexOf( '.' ) );
 
-                if (isOutputJarVersions()) {
+                if ( outputJarVersions )
+                {
                     name = artifact.getArtifactId() + "__V" + artifact.getVersion() + extension;
                 }
-                boolean copied =
-                    copyJarAsUnprocessedToDirectoryIfNecessary( toCopy, getLibDirectory(), name );
+                boolean copied = copyJarAsUnprocessedToDirectoryIfNecessary( toCopy, getLibDirectory(), name );
 
                 if ( copied )
                 {
@@ -598,7 +521,7 @@ public abstract class AbstractJnlpMojo
 
                 packagedJnlpArtifacts.add( artifact );
 
-                boolean containsMainClass = getArtifactUtil().artifactContainsMainClass( artifact, jnlp );
+                boolean containsMainClass = getArtifactUtil().artifactContainsClass( artifact, jnlp.getMainClass() );
 
                 if ( containsMainClass )
                 {
@@ -655,11 +578,13 @@ public abstract class AbstractJnlpMojo
         if ( StringUtils.isNotBlank( jnlp.getInputTemplateResourcePath() ) )
         {
             templateDirectory = new File( jnlp.getInputTemplateResourcePath() );
-            getLog().debug( "Use jnlp directory : " + templateDirectory);
-        } else {
+            getLog().debug( "Use jnlp directory : " + templateDirectory );
+        }
+        else
+        {
             // use default template directory
             templateDirectory = getTemplateDirectory();
-            getLog().debug( "Use default template directory : " + templateDirectory);
+            getLog().debug( "Use default template directory : " + templateDirectory );
         }
 
         // ---
@@ -669,7 +594,7 @@ public abstract class AbstractJnlpMojo
         if ( StringUtils.isBlank( jnlp.getInputTemplate() ) )
         {
             getLog().debug( "Jnlp template file name not specified. Checking if default output file name exists: " +
-                                JNLP_TEMPLATE_FILENAME);
+                                JNLP_TEMPLATE_FILENAME );
 
             File templateFile = new File( templateDirectory, JNLP_TEMPLATE_FILENAME );
 
@@ -694,11 +619,17 @@ public abstract class AbstractJnlpMojo
         }
         String templateFileName = jnlp.getInputTemplate();
 
-        Generator jnlpGenerator =
-            new Generator( getLog(), getProject(), this,BUILT_IN_JNLP_TEMPLATE_FILENAME , templateDirectory, jnlpOutputFile,
-                           templateFileName, getJnlp().getMainClass(), getWebstartJarURLForVelocity(), getEncoding() );
+        GeneratorTechnicalConfig generatorTechnicalConfig =
+            new GeneratorTechnicalConfig( getProject(), templateDirectory, BUILT_IN_JNLP_TEMPLATE_FILENAME,
+                                          jnlpOutputFile, templateFileName, jnlp.getMainClass(),
+                                          getWebstartJarURLForVelocity(), getEncoding() );
 
-        jnlpGenerator.setExtraConfig( new JnplGeneratorExtraConfig( jnlp, getCodebase() ) );
+        GeneratorConfig generatorConfig =
+            new GeneratorConfig( getLibPath(), isPack200(), outputJarVersions, artifactWithMainClass,
+                                 getDependencyFilenameStrategy(), packagedJnlpArtifacts, jnlpExtensions, getCodebase(),
+                                 jnlp );
+
+        Generator jnlpGenerator = new Generator( getLog(), generatorTechnicalConfig, generatorConfig );
 
         try
         {
@@ -766,9 +697,9 @@ public abstract class AbstractJnlpMojo
         getLog().debug( "gzip " + isGzip() );
         getLog().debug( "pack200 " + isPack200() );
         getLog().debug( "project " + this.getProject() );
-        getLog().debug( "zipArchiver " + this.zipArchiver );
         getLog().debug( "verbose " + isVerbose() );
 
+        checkDependencyFilenameStrategy();
         checkPack200();
         checkDependencies();
 
@@ -986,11 +917,13 @@ public abstract class AbstractJnlpMojo
         {
             // if user overrides the input template resource path
             templateDirectory = new File( extension.getInputTemplateResourcePath() );
-        } else {
+        }
+        else
+        {
 
             // use default template directory
             templateDirectory = getTemplateDirectory();
-            getLog().debug( "Use default jnlp directory : " + templateDirectory);
+            getLog().debug( "Use default jnlp directory : " + templateDirectory );
         }
 
         // ---
@@ -1001,9 +934,9 @@ public abstract class AbstractJnlpMojo
         {
             getLog().debug(
                 "Jnlp extension template file name not specified. Checking if default output file name exists: " +
-                    EXTENSION_TEMPLATE_FILENAME);
+                    EXTENSION_TEMPLATE_FILENAME );
 
-            File templateFile = new File( templateDirectory, EXTENSION_TEMPLATE_FILENAME);
+            File templateFile = new File( templateDirectory, EXTENSION_TEMPLATE_FILENAME );
 
             if ( templateFile.isFile() )
             {
@@ -1026,12 +959,19 @@ public abstract class AbstractJnlpMojo
         }
         String templateFileName = extension.getInputTemplate();
 
-        ExtensionGenerator jnlpGenerator =
-            new ExtensionGenerator( getLog(), this.getProject(), this, extension, BUILT_IN_EXTENSION_TEMPLATE_FILENAME,
-                                    templateDirectory, jnlpOutputFile, templateFileName, this.getJnlp().getMainClass(),
-                                    getWebstartJarURLForVelocity(), getEncoding() );
+        GeneratorTechnicalConfig generatorTechnicalConfig =
+            new GeneratorTechnicalConfig( getProject(), templateDirectory, BUILT_IN_EXTENSION_TEMPLATE_FILENAME,
+                                          jnlpOutputFile, templateFileName, this.getJnlp().getMainClass(),
+                                          getWebstartJarURLForVelocity(), getEncoding() );
 
-        jnlpGenerator.setExtraConfig( new ExtensionGeneratorExtraConfig( extension, getCodebase() ) );
+        ExtensionGeneratorConfig extensionGeneratorConfig =
+            new ExtensionGeneratorConfig( getLibPath(), isPack200(), outputJarVersions, artifactWithMainClass,
+                                          getDependencyFilenameStrategy(), extensionsJnlpArtifacts, getCodebase(),
+                                          extension );
+        ExtensionGenerator jnlpGenerator =
+            new ExtensionGenerator( getLog(), generatorTechnicalConfig, extensionGeneratorConfig );
+
+//        jnlpGenerator.setExtraConfig( new ExtensionGeneratorExtraConfig( extension, getCodebase() ) );
 
         try
         {

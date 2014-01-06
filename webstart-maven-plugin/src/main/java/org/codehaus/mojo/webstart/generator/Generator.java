@@ -21,12 +21,10 @@ package org.codehaus.mojo.webstart.generator;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.project.MavenProject;
 import org.apache.velocity.VelocityContext;
-import org.codehaus.mojo.webstart.AbstractJnlpMojo;
 import org.codehaus.mojo.webstart.JnlpExtension;
 
-import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -36,25 +34,12 @@ import java.util.List;
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  */
 public class Generator
-    extends AbstractGenerator
+    extends AbstractGenerator<GeneratorConfig>
 {
 
-    private AbstractJnlpMojo config;
-
-    /**
-     * @param task
-     * @param resourceLoaderPath    used to find the template in conjunction to inputFileTemplatePath
-     * @param outputFile
-     * @param inputFileTemplatePath relative to resourceLoaderPath
-     */
-    public Generator( Log log, MavenProject mavenProject, AbstractJnlpMojo task, String defaultTemplateResourceName,
-                      File resourceLoaderPath, File outputFile, String inputFileTemplatePath, String mainClass,
-                      String webstartJarURL, String encoding )
+    public Generator( Log log, GeneratorTechnicalConfig technicalConfig, GeneratorConfig extraConfig )
     {
-        super( log, mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, inputFileTemplatePath,
-               mainClass, webstartJarURL, encoding );
-
-        this.config = task;
+        super( log, technicalConfig, extraConfig );
     }
 
     /**
@@ -62,26 +47,26 @@ public class Generator
      */
     protected String getDependenciesText()
     {
-        return indentText( 4, getDependenciesText( config ) );
+        return indentText( 4, getDependenciesText( getExtraConfig() ) );
     }
 
     protected VelocityContext createAndPopulateContext()
     {
         VelocityContext context = super.createAndPopulateContext();
-        if ( config.hasJnlpExtensions() )
+        if ( getExtraConfig().hasJnlpExtensions() )
         {
             // add extensions
-            context.put( "extensions", indentText( 4, getExtensionsText( config ) ) );
+            context.put( "extensions", indentText( 4, getExtensionsText( getExtraConfig() ) ) );
         }
         return context;
     }
 
-    static String getDependenciesText( AbstractJnlpMojo config )
+    static String getDependenciesText( GeneratorConfig config )
     {
         return getDependenciesText( config, config.getPackagedJnlpArtifacts() );
     }
 
-    static String getDependenciesText( AbstractJnlpMojo config, List<Artifact> artifacts )
+    static String getDependenciesText( GeneratorExtraConfigWithDeps config, Collection<Artifact> artifacts )
     {
         String dependenciesText = "";
         if ( artifacts.size() != 0 )
@@ -123,13 +108,18 @@ public class Generator
                     buffer.append( jarLibPath ).append( "/" );
                 }
 
-                String filename = artifact.getFile().getName();
+//                    String filename = artifact.getFile().getName();
                 if ( config.isOutputJarVersions() )
                 {
-                    String extension = filename.substring( filename.lastIndexOf( "." ) );
-                    buffer.append( artifact.getArtifactId() ).append( extension ).append( "\"" );
+                    String filename = config.getDependencyFilename( artifact, null );
+//                      String extension = filename.substring( filename.lastIndexOf( "." ) );
+//                    buffer.append( artifact.getArtifactId() ).append( extension ).append( "\"" );
+                    buffer.append( filename ).append( "\"" );
                     buffer.append( " version=\"" ).append( artifact.getVersion() ).append( "\"" );
-                } else {
+                }
+                else
+                {
+                    String filename = config.getDependencyFilename( artifact, false );
                     buffer.append( filename ).append( "\"" );
                 }
 
@@ -144,7 +134,7 @@ public class Generator
         return dependenciesText;
     }
 
-    static String getExtensionsText( AbstractJnlpMojo config )
+    static String getExtensionsText( GeneratorConfig config )
     {
         String text = "";
         List<JnlpExtension> extensions = config.getJnlpExtensions();

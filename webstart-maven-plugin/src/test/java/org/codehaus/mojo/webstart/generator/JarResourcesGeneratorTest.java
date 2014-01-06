@@ -55,10 +55,18 @@ public class JarResourcesGeneratorTest
         List<ResolvedJarResource> jarResources = new ArrayList<ResolvedJarResource>();
         String mainClass = "fully.qualified.ClassName";
 
-        JarResourcesGenerator generator =
-            new JarResourcesGenerator( new SystemStreamLog(), mavenProject, resourceLoaderPath,
-                                       "default-jnlp-template.vm", outputFile, templateFile.getName(), jarResources,
-                                       mainClass, "jar:file:/tmp/path/to/webstart-plugin.jar", null, "utf-8" );
+        GeneratorTechnicalConfig generatorTechnicalConfig =
+            new GeneratorTechnicalConfig( mavenProject, resourceLoaderPath, "default-jnlp-template.vm",
+                                          outputFile, templateFile.getName(), mainClass,
+                                          "jar:file:/tmp/path/to/webstart-plugin.jar", "utf-8" );
+        JarResourceGeneratorConfig jarResourceGeneratorConfig = new JarResourceGeneratorConfig( jarResources, null, null, null );
+        JarResourcesGenerator generator  =
+            new JarResourcesGenerator( new SystemStreamLog(), generatorTechnicalConfig, jarResourceGeneratorConfig );
+
+//        JarResourcesGenerator generator =
+//            new JarResourcesGenerator( new SystemStreamLog(), mavenProject, resourceLoaderPath,
+//                                       "default-jnlp-template.vm", outputFile, templateFile.getName(), jarResources,
+//                                       mainClass, "jar:file:/tmp/path/to/webstart-plugin.jar", null, "utf-8" );
 
         //The list of jarResources is empty so the output text should be an empty string
         assertEquals( "", generator.getDependenciesText() );
@@ -82,10 +90,14 @@ public class JarResourcesGeneratorTest
 
         Assert.assertEquals( expectedText, actualText );
 
-        JarResourcesGenerator generator2 =
-            new JarResourcesGenerator( new SystemStreamLog(), mavenProject, resourceLoaderPath,
-                                       "default-jnlp-template.vm", outputFile, templateFile.getName(), jarResources,
-                                       mainClass, "jar:file:/tmp/path/to/webstart-plugin.jar", "myLib", "utf-8" );
+        JarResourceGeneratorConfig jarResourceGeneratorConfig2 = new JarResourceGeneratorConfig( jarResources, "myLib", null, null );
+        JarResourcesGenerator generator2  =
+            new JarResourcesGenerator( new SystemStreamLog(), generatorTechnicalConfig, jarResourceGeneratorConfig2 );
+
+//        JarResourcesGenerator generator2 =
+//            new JarResourcesGenerator( new SystemStreamLog(), mavenProject, resourceLoaderPath,
+//                                       "default-jnlp-template.vm", outputFile, templateFile.getName(), jarResources,
+//                                       mainClass, "jar:file:/tmp/path/to/webstart-plugin.jar", "myLib", "utf-8" );
 
         String expectedText2 = "\n<jar href=\"myLib/href1\" version=\"1.1\" main=\"true\"/>\n" +
             "<jar href=\"myLib/href2\" version=\"1.2\"/>\n" + "<jar href=\"myLib/href3\"/>\n";

@@ -3,10 +3,10 @@ package org.codehaus.mojo.webstart.generator;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
+ * distributed with work for additional information
+ * regarding copyright ownership.  The ASF licenses file
  * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
+ * "License"); you may not use file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
@@ -19,28 +19,55 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
+import org.apache.maven.artifact.Artifact;
 import org.codehaus.mojo.webstart.JnlpExtension;
+import org.codehaus.mojo.webstart.dependency.filenaming.DependencyFilenameStrategy;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
- * {@link GeneratorExtraConfig} implementation for a {@link JnlpExtension}.
+ * Created on 1/6/14.
  *
- * @author tchemit <chemit@codelutin.com>
- * @since 1.0-beta-4
+ * @author Tony Chemit <chemit@codelutin.com>
+ * @since 1.0-beta-5
  */
-public class ExtensionGeneratorExtraConfig
-    implements GeneratorExtraConfig
+public class ExtensionGeneratorConfig
+    extends AbstractGeneratorExtraConfigWithDeps
 {
+
+    private final Map<JnlpExtension, List<Artifact>> extensionsJnlpArtifacts;
+
     private final JnlpExtension extension;
 
     private final String codebase;
 
-    public ExtensionGeneratorExtraConfig( JnlpExtension extension, String codebase )
+    public ExtensionGeneratorConfig( String libPath, boolean pack200, boolean outputJarVersions,
+                                     Artifact artifactWithMainClass,
+                                     DependencyFilenameStrategy dependencyFilenameStrategy,
+                                     Map<JnlpExtension, List<Artifact>> extensionsJnlpArtifacts, String codebase,
+                                     JnlpExtension extension )
     {
+        super( libPath, pack200, outputJarVersions, artifactWithMainClass, dependencyFilenameStrategy );
+        this.extensionsJnlpArtifacts = extensionsJnlpArtifacts;
         this.extension = extension;
         this.codebase = codebase;
+    }
+
+    public JnlpExtension getExtension()
+    {
+        return extension;
+    }
+
+    public String getCodebase()
+    {
+        return codebase;
+    }
+
+    public List<Artifact> getExtensionJnlpArtifacts( JnlpExtension extension )
+    {
+        return extensionsJnlpArtifacts.get( extension );
     }
 
     /**
@@ -108,5 +135,4 @@ public class ExtensionGeneratorExtraConfig
     {
         return Collections.emptyMap();
     }
-
 }

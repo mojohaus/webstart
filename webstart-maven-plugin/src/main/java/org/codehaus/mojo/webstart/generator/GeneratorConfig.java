@@ -19,27 +19,65 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.maven.artifact.Artifact;
 import org.codehaus.mojo.webstart.JnlpConfig;
+import org.codehaus.mojo.webstart.JnlpExtension;
+import org.codehaus.mojo.webstart.dependency.filenaming.DependencyFilenameStrategy;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
- * {@link GeneratorExtraConfig} implementation for a {@link JnlpConfig}.
+ * configuration of {@link Generator}.
+ * <p/>
+ * Created on 1/5/14.
  *
- * @author tchemit <chemit@codelutin.com>
- * @since 1.0-beta-4
+ * @author Tony Chemit <chemit@codelutin.com>
+ * @since 1.0-beta-5
  */
-public class JnplGeneratorExtraConfig
-    implements GeneratorExtraConfig
+public class GeneratorConfig
+    extends AbstractGeneratorExtraConfigWithDeps
 {
+
+    private final Collection<Artifact> packagedJnlpArtifacts;
+
+    private final List<JnlpExtension> jnlpExtensions;
+
     private final String codebase;
 
     private final JnlpConfig jnlp;
 
-    public JnplGeneratorExtraConfig( JnlpConfig jnlp, String codebase )
+    public GeneratorConfig( String libPath, boolean pack200, boolean outputJarVersions, Artifact artifactWithMainClass,
+                            DependencyFilenameStrategy dependencyFilenameStrategy,
+                            Collection<Artifact> packagedJnlpArtifacts, List<JnlpExtension> jnlpExtensions,
+                            String codebase, JnlpConfig jnlp )
     {
+        super( libPath, pack200, outputJarVersions, artifactWithMainClass, dependencyFilenameStrategy );
+
+        this.packagedJnlpArtifacts = packagedJnlpArtifacts;
+        this.jnlpExtensions = jnlpExtensions;
         this.codebase = codebase;
         this.jnlp = jnlp;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Collection<Artifact> getPackagedJnlpArtifacts()
+    {
+        return packagedJnlpArtifacts;
+    }
+
+    public List<JnlpExtension> getJnlpExtensions()
+    {
+        return jnlpExtensions;
+    }
+
+    public boolean hasJnlpExtensions()
+    {
+        return CollectionUtils.isNotEmpty( jnlpExtensions );
     }
 
     /**

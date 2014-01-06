@@ -20,11 +20,9 @@ package org.codehaus.mojo.webstart.generator;
  */
 
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.webstart.ResolvedJarResource;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.io.File;
 import java.util.Collection;
 
 /**
@@ -35,34 +33,13 @@ import java.util.Collection;
  * @author Kevin Stembridge
  */
 public class JarResourcesGenerator
-    extends AbstractGenerator
-
+    extends AbstractGenerator<JarResourceGeneratorConfig>
 {
 
-    private final Collection<ResolvedJarResource> jarResources;
-
-    private String libPath;
-
-    /**
-     * Creates a new {@code JarResources}.
-     *
-     * @param mavenProject       The Maven project that this generator is being run within.
-     * @param resourceLoaderPath used to find the template in conjunction to inputFileTemplatePath
-     * @param outputFile
-     * @param templateFile       relative to resourceLoaderPath
-     * @param jarResources       The collection of JarResources that will be output in the JNLP file.
-     * @param mainClass          The fully qualified name of the application's main class.
-     * @param libPath            The path where the libraries are placed within the jnlp structure
-     */
-    public JarResourcesGenerator( Log log, MavenProject mavenProject, File resourceLoaderPath,
-                                  String defaultTemplateResourceName, File outputFile, String templateFile,
-                                  Collection<ResolvedJarResource> jarResources, String mainClass, String webstartJarURL,
-                                  String libPath, String encoding )
+    public JarResourcesGenerator( Log log, GeneratorTechnicalConfig technicalConfig,
+                                  JarResourceGeneratorConfig extraConfig )
     {
-        super( log, mavenProject, resourceLoaderPath, defaultTemplateResourceName, outputFile, templateFile, mainClass,
-               webstartJarURL, encoding );
-        this.jarResources = jarResources;
-        this.libPath = libPath;
+        super( log, technicalConfig, extraConfig );
     }
 
     /**
@@ -72,6 +49,9 @@ public class JarResourcesGenerator
     {
 
         String jarResourcesText = "";
+
+        String libPath = getExtraConfig().getLibPath();
+        Collection<ResolvedJarResource> jarResources = getExtraConfig().getJarResources();
 
         if ( jarResources.size() != 0 )
         {

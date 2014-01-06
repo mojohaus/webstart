@@ -28,7 +28,6 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.log.NullLogSystem;
 import org.codehaus.plexus.util.WriterFactory;
 
-import java.io.File;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -45,73 +44,44 @@ import java.util.TimeZone;
  * @version $Revision$
  * @since 30 Aug 2007
  */
-public abstract class AbstractGenerator
+public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
 {
+
+//    private final MavenProject mavenProject;
+
+//    private final File outputFile;
+
+//    private final String encoding;
+//
+//    private final String mainClass;
+//
 
     private VelocityEngine engine;
 
-    private final MavenProject mavenProject;
-
     private Template velocityTemplate;
 
-    private final File outputFile;
+    private final GeneratorTechnicalConfig config;
 
-    private final String mainClass;
-
-    private final String encoding;
-
-    private GeneratorExtraConfig extraConfig;
+    private final C extraConfig;
 
     private Log log;
 
-
-    /**
-     * Creates a new {@code AbstractGenerator}.
-     *
-     * @param resourceLoaderPath    used to find the template in conjunction to inputFileTemplatePath
-     * @param outputFile            The location of the file to be generated.
-     * @param inputFileTemplatePath relative to resourceLoaderPath
-     * @param mainClass             The text that should replace the $mainClass placeholder in the JNLP template.
-     * @throws IllegalArgumentException if any argument is null.
-     */
-    protected AbstractGenerator( Log log, MavenProject mavenProject, File resourceLoaderPath,
-                                 String defaultTemplateResourceName, File outputFile, String inputFileTemplatePath,
-                                 String mainClass, String webstartJarURL, String encoding )
+    protected AbstractGenerator( Log log, GeneratorTechnicalConfig config, C extraConfig )
     {
 
         this.log = log;
-        if ( mavenProject == null )
-        {
-            throw new IllegalArgumentException( "mavenProject must not be null" );
-        }
-
-        if ( resourceLoaderPath == null )
-        {
-            throw new IllegalArgumentException( "resourceLoaderPath must not be null" );
-        }
-
-        if ( outputFile == null )
-        {
-            throw new IllegalArgumentException( "outputFile must not be null" );
-        }
-
-        if ( mainClass == null )
-        {
-            throw new IllegalArgumentException( "mainClass must not be null" );
-        }
-
-        this.outputFile = outputFile;
-        this.mainClass = mainClass;
-        this.mavenProject = mavenProject;
-        this.encoding = encoding;
+        this.config = config;
+        this.extraConfig = extraConfig;
 
         Properties props = new Properties();
+
+        String inputFileTemplatePath = config.getInputFileTemplatePath();
 
         if ( inputFileTemplatePath != null )
         {
             props.setProperty( VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS,
                                "org.apache.velocity.runtime.log.NullLogSystem" );
-            props.setProperty( "file.resource.loader.path", resourceLoaderPath.getAbsolutePath() );
+            props.setProperty( "file.resource.loader.path", config.getResourceLoaderPath().getAbsolutePath() );
 
             initVelocity( props );
 
@@ -124,8 +94,9 @@ public abstract class AbstractGenerator
         {
             log.info( "No template specified Using default one." );
 
-            inputFileTemplatePath = defaultTemplateResourceName;
+            inputFileTemplatePath = config.getDefaultTemplateResourceName();
 
+            String webstartJarURL = config.getWebstartJarURL();
             log.debug( "***** Webstart JAR URL: " + webstartJarURL );
 
             props = new Properties();
@@ -140,13 +111,14 @@ public abstract class AbstractGenerator
 
             if ( !engine.templateExists( inputFileTemplatePath ) )
             {
-                log.error( "Inbuilt template not found!! " + defaultTemplateResourceName + " Will probably fail." );
+                log.error( "Inbuilt template not found!! " + config.getDefaultTemplateResourceName() +
+                               " Will probably fail." );
             }
         }
 
         try
         {
-            this.velocityTemplate = engine.getTemplate( inputFileTemplatePath, encoding );
+            this.velocityTemplate = engine.getTemplate( inputFileTemplatePath, config.getEncoding() );
         }
         catch ( Exception e )
         {
@@ -173,9 +145,14 @@ public abstract class AbstractGenerator
         }
     }
 
-    public void setExtraConfig( GeneratorExtraConfig extraConfig )
+//    public void setExtraConfig( GeneratorExtraConfig extraConfig )
+//    {
+//        this.extraConfig = extraConfig;
+//    }
+
+    public C getExtraConfig()
     {
-        this.extraConfig = extraConfig;
+        return extraConfig;
     }
 
     /**
@@ -188,7 +165,7 @@ public abstract class AbstractGenerator
     {
         VelocityContext context = createAndPopulateContext();
 
-        Writer writer = WriterFactory.newWriter( outputFile, encoding );
+        Writer writer = WriterFactory.newWriter( config.getOutputFile(), config.getEncoding() );
 
         try
         {
@@ -230,6 +207,10 @@ public abstract class AbstractGenerator
         // Note: properties that contain dots will not be properly parsed by Velocity. 
         // Should we replace dots with underscores ?        
         addPropertiesToContext( System.getProperties(), context );
+
+        MavenProject mavenProject = config.getMavenProject();
+        String encoding = config.getEncoding();
+
         addPropertiesToContext( mavenProject.getProperties(), context );
         addPropertiesToContext( extraConfig.getProperties(), context );
 
@@ -250,15 +231,16 @@ public abstract class AbstractGenerator
         context.put( "explicitTimestamp", dateToExplicitTimestamp( timestamp ) );
         context.put( "explicitTimestampUTC", dateToExplicitTimestampUTC( timestamp ) );
 
-        context.put( "outputFile", outputFile.getName() );
-        context.put( "mainClass", this.mainClass );
+        context.put( "outputFile", config.getOutputFile().getName() );
+        context.put( "mainClass", config.getMainClass() );
+
         context.put( "encoding", encoding );
         context.put( "input.encoding", encoding );
         context.put( "output.encoding", encoding );
 
         // TODO make this more extensible
-        context.put( "allPermissions", Boolean.valueOf( BooleanUtils.toBoolean( extraConfig.getAllPermissions() ) ) );
-        context.put( "offlineAllowed", Boolean.valueOf( BooleanUtils.toBoolean( extraConfig.getOfflineAllowed() ) ) );
+        context.put( "allPermissions", BooleanUtils.toBoolean( extraConfig.getAllPermissions() ) );
+        context.put( "offlineAllowed", BooleanUtils.toBoolean( extraConfig.getOfflineAllowed() ) );
         context.put( "jnlpspec", extraConfig.getJnlpSpec() );
         context.put( "j2seVersion", extraConfig.getJ2seVersion() );
 

@@ -22,11 +22,16 @@ package org.codehaus.mojo.webstart.generator;
 import junit.framework.TestCase;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.artifact.versioning.VersionRange;
-import org.codehaus.mojo.webstart.JnlpMojo;
+import org.codehaus.mojo.webstart.JnlpConfig;
+import org.codehaus.mojo.webstart.dependency.filenaming.DependencyFilenameStrategy;
+import org.codehaus.mojo.webstart.dependency.filenaming.FullDependencyFilenameStrategy;
+import org.codehaus.mojo.webstart.dependency.filenaming.SimpleDependencyFilenameStrategy;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,176 +41,161 @@ import java.util.List;
 public class GeneratorTest
     extends TestCase
 {
+    protected Artifact artifact1;
+
+    protected Artifact artifact2;
+
+    private List<Artifact> artifacts;
+
+    @Override
+    public void setUp()
+        throws Exception
+    {
+        super.setUp();
+        DefaultArtifactHandler artifactHandler = new DefaultArtifactHandler( "jar" );
+        artifact1 =
+            new DefaultArtifact( "groupId", "artifact1", VersionRange.createFromVersion( "1.0" ), "scope", "jar",
+                                 "classifier", artifactHandler );
+        artifact1.setFile( new File( "artifact1-1.0.jar" ) );
+        artifact2 =
+            new DefaultArtifact( "groupId", "artifact2", VersionRange.createFromVersion( "1.5" ), null, "jar", "",
+                                 artifactHandler );
+        artifact2.setFile( new File( "artifact2-1.5.jar" ) );
+        artifacts = new ArrayList<Artifact>();
+        artifacts.add( artifact1 );
+        artifacts.add( artifact2 );
+    }
 
     public void testGetDependenciesText()
         throws Exception
     {
-        final Artifact artifact1 =
-            new DefaultArtifact( "groupId", "artifact1", VersionRange.createFromVersion( "1.0" ), "scope", "jar",
-                                 "classifier", null );
-        artifact1.setFile( new File( "artifact1-1.0.jar" ) );
-        final Artifact artifact2 =
-            new DefaultArtifact( "groupId", "artifact2", VersionRange.createFromVersion( "1.5" ), null, "jar", "",
-                                 null );
-        artifact2.setFile( new File( "artifact2-1.5.jar" ) );
 
-        final List<Artifact> artifacts = new ArrayList<Artifact>();
+        DependencyFilenameStrategy dependencyFilenameStrategy = new SimpleDependencyFilenameStrategy();
 
-        JnlpMojo mojo = new JnlpMojo()
-        {
-            /**
-             * {@inheritDoc}
-             */
-            public List<Artifact> getPackagedJnlpArtifacts()
-            {
-                return artifacts;
-            }
+        String codebase = null;
+        JnlpConfig jnlp = null;
 
-            /**
-             * {@inheritDoc}
-             */
-            public boolean isArtifactWithMainClass( Artifact artifact )
-            {
-                return artifact == artifact1;
-            }
-        };
+        GeneratorConfig generatorConfigEmpty =
+            new GeneratorConfig( null, false, false, artifact1, dependencyFilenameStrategy,
+                                 Collections.<Artifact>emptyList(), null, codebase, jnlp );
 
-        assertEquals( "", Generator.getDependenciesText( mojo ) );
+        assertEquals( "", Generator.getDependenciesText( generatorConfigEmpty ) );
 
-        artifacts.add( artifact1 );
-        artifacts.add( artifact2 );
+        GeneratorConfig generatorConfig =
+            new GeneratorConfig( null, false, false, artifact1, dependencyFilenameStrategy, artifacts, null, codebase,
+                                 jnlp );
 
-        assertEquals( "\n<jar href=\"artifact1-1.0.jar\" main=\"true\"/>" + "\n<jar href=\"artifact2-1.5.jar\"/>\n",
-                      Generator.getDependenciesText( mojo ) );
+        assertEquals(
+            "\n<jar href=\"artifact1-classifier-1.0.jar\" main=\"true\"/>" + "\n<jar href=\"artifact2-1.5.jar\"/>\n",
+            Generator.getDependenciesText( generatorConfig ) );
 
-        mojo.setOutputJarVersions( true );
+        GeneratorConfig generatorConfig2 =
+            new GeneratorConfig( null, false, true, artifact1, dependencyFilenameStrategy, artifacts, null, codebase,
+                                 jnlp );
 
         assertEquals( "\n<property name=\"jnlp.versionEnabled\" value=\"true\" />" +
-                          "\n<jar href=\"artifact1.jar\" version=\"1.0\" main=\"true\"/>" +
+                          "\n<jar href=\"artifact1-classifier.jar\" version=\"1.0\" main=\"true\"/>" +
                           "\n<jar href=\"artifact2.jar\" version=\"1.5\"/>\n",
-                      Generator.getDependenciesText( mojo ) );
+                      Generator.getDependenciesText( generatorConfig2 ) );
+    }
 
+    public void testGetDependenciesTextWithFullNaming()
+        throws Exception
+    {
 
+        DependencyFilenameStrategy dependencyFilenameStrategy = new FullDependencyFilenameStrategy();
+
+        String codebase = null;
+        JnlpConfig jnlp = null;
+
+        GeneratorConfig generatorConfigEmpty =
+            new GeneratorConfig( null, false, false, artifact1, dependencyFilenameStrategy,
+                                 Collections.<Artifact>emptyList(), null, codebase, jnlp );
+
+        assertEquals( "", Generator.getDependenciesText( generatorConfigEmpty ) );
+
+        GeneratorConfig generatorConfig =
+            new GeneratorConfig( null, false, false, artifact1, dependencyFilenameStrategy, artifacts, null, codebase,
+                                 jnlp );
+
+        assertEquals( "\n<jar href=\"groupId-artifact1-classifier-1.0.jar\" main=\"true\"/>" +
+                          "\n<jar href=\"groupId-artifact2-1.5.jar\"/>\n",
+                      Generator.getDependenciesText( generatorConfig ) );
+
+        GeneratorConfig generatorConfig2 =
+            new GeneratorConfig( null, false, true, artifact1, dependencyFilenameStrategy, artifacts, null, codebase,
+                                 jnlp );
+
+        assertEquals( "\n<property name=\"jnlp.versionEnabled\" value=\"true\" />" +
+                          "\n<jar href=\"groupId-artifact1-classifier.jar\" version=\"1.0\" main=\"true\"/>" +
+                          "\n<jar href=\"groupId-artifact2.jar\" version=\"1.5\"/>\n",
+                      Generator.getDependenciesText( generatorConfig2 ) );
     }
 
     public void testGetDependenciesTextWithPack200()
         throws Exception
     {
-        final Artifact artifact1 =
-            new DefaultArtifact( "groupId", "artifact1", VersionRange.createFromVersion( "1.0" ), "scope", "jar",
-                                 "classifier", null );
-        artifact1.setFile( new File( "artifact1-1.0.jar" ) );
-        final Artifact artifact2 =
-            new DefaultArtifact( "groupId", "artifact2", VersionRange.createFromVersion( "1.5" ), null, "jar", "",
-                                 null );
-        artifact2.setFile( new File( "artifact2-1.5.jar" ) );
 
-        final List<Artifact> artifacts = new ArrayList<Artifact>();
+        DependencyFilenameStrategy dependencyFilenameStrategy = new SimpleDependencyFilenameStrategy();
 
-        JnlpMojo mojo = new JnlpMojo()
-        {
-            /**
-             * {@inheritDoc}
-             */
-            public List<Artifact> getPackagedJnlpArtifacts()
-            {
-                return artifacts;
-            }
+        String codebase = null;
+        JnlpConfig jnlp = null;
 
-            /**
-             * {@inheritDoc}
-             */
-            public boolean isArtifactWithMainClass( Artifact artifact )
-            {
-                return artifact == artifact1;
-            }
+        GeneratorConfig generatorConfigEmpty =
+            new GeneratorConfig( null, true, false, artifact1, dependencyFilenameStrategy,
+                                 Collections.<Artifact>emptyList(), null, codebase, jnlp );
 
-            /**
-             * {@inheritDoc}
-             */
-            public boolean isPack200()
-            {
-                return true;
-            }
-        };
+        assertEquals( "", Generator.getDependenciesText( generatorConfigEmpty ) );
 
-        assertEquals( "", Generator.getDependenciesText( mojo ) );
-
-        artifacts.add( artifact1 );
-        artifacts.add( artifact2 );
+        GeneratorConfig generatorConfig =
+            new GeneratorConfig( null, true, false, artifact1, dependencyFilenameStrategy, artifacts, null, codebase,
+                                 jnlp );
 
         assertEquals( "\n<property name=\"jnlp.packEnabled\" value=\"true\" />" +
-                          "\n<jar href=\"artifact1-1.0.jar\" main=\"true\"/>" +
-                          "\n<jar href=\"artifact2-1.5.jar\"/>\n", Generator.getDependenciesText( mojo ) );
+                          "\n<jar href=\"artifact1-classifier-1.0.jar\" main=\"true\"/>" +
+                          "\n<jar href=\"artifact2-1.5.jar\"/>\n", Generator.getDependenciesText( generatorConfig ) );
 
-        mojo.setOutputJarVersions( true );
+        GeneratorConfig generatorConfig2 =
+            new GeneratorConfig( null, true, true, artifact1, dependencyFilenameStrategy, artifacts, null, codebase,
+                                 jnlp );
 
         assertEquals( "\n<property name=\"jnlp.packEnabled\" value=\"true\" />" +
                           "\n<property name=\"jnlp.versionEnabled\" value=\"true\" />" +
-                          "\n<jar href=\"artifact1.jar\" version=\"1.0\" main=\"true\"/>" +
+                          "\n<jar href=\"artifact1-classifier.jar\" version=\"1.0\" main=\"true\"/>" +
                           "\n<jar href=\"artifact2.jar\" version=\"1.5\"/>\n",
-                      Generator.getDependenciesText( mojo ) );
-
-
+                      Generator.getDependenciesText( generatorConfig2 ) );
     }
 
     public void testGetDependenciesTextWithLibPath()
         throws Exception
     {
-        final Artifact artifact1 =
-            new DefaultArtifact( "groupId", "artifact1", VersionRange.createFromVersion( "1.0" ), "scope", "jar",
-                                 "classifier", null );
-        artifact1.setFile( new File( "artifact1-1.0.jar" ) );
-        final Artifact artifact2 =
-            new DefaultArtifact( "groupId", "artifact2", VersionRange.createFromVersion( "1.5" ), null, "jar", "",
-                                 null );
-        artifact2.setFile( new File( "artifact2-1.5.jar" ) );
 
-        final List<Artifact> artifacts = new ArrayList<Artifact>();
+        DependencyFilenameStrategy dependencyFilenameStrategy = new SimpleDependencyFilenameStrategy();
 
-        JnlpMojo mojo = new JnlpMojo()
-        {
-            /**
-             * {@inheritDoc}
-             */
-            public List<Artifact> getPackagedJnlpArtifacts()
-            {
-                return artifacts;
-            }
+        String codebase = null;
+        JnlpConfig jnlp = null;
 
-            /**
-             * {@inheritDoc}
-             */
-            public boolean isArtifactWithMainClass( Artifact artifact )
-            {
-                return artifact == artifact1;
-            }
+        GeneratorConfig generatorConfigEmpty =
+            new GeneratorConfig( "lib", false, false, artifact1, dependencyFilenameStrategy,
+                                 Collections.<Artifact>emptyList(), null, codebase, jnlp );
 
-            /**
-             * {@inheritDoc}
-             */
-            public String getLibPath()
-            {
-                return "lib";
-            }
-        };
+        assertEquals( "", Generator.getDependenciesText( generatorConfigEmpty ) );
 
-        assertEquals( "", Generator.getDependenciesText( mojo ) );
+        GeneratorConfig generatorConfig =
+            new GeneratorConfig( "lib", false, false, artifact1, dependencyFilenameStrategy, artifacts, null, codebase,
+                                 jnlp );
 
-        artifacts.add( artifact1 );
-        artifacts.add( artifact2 );
+        assertEquals( "\n<jar href=\"lib/artifact1-classifier-1.0.jar\" main=\"true\"/>" +
+                          "\n<jar href=\"lib/artifact2-1.5.jar\"/>\n",
+                      Generator.getDependenciesText( generatorConfig ) );
 
-        assertEquals(
-            "\n<jar href=\"lib/artifact1-1.0.jar\" main=\"true\"/>" + "\n<jar href=\"lib/artifact2-1.5.jar\"/>\n",
-            Generator.getDependenciesText( mojo ) );
-
-        mojo.setOutputJarVersions( true );
+        GeneratorConfig generatorConfig2 =
+            new GeneratorConfig( "lib", false, true, artifact1, dependencyFilenameStrategy, artifacts, null, codebase,
+                                 jnlp );
 
         assertEquals( "\n<property name=\"jnlp.versionEnabled\" value=\"true\" />" +
-                          "\n<jar href=\"lib/artifact1.jar\" version=\"1.0\" main=\"true\"/>" +
+                          "\n<jar href=\"lib/artifact1-classifier.jar\" version=\"1.0\" main=\"true\"/>" +
                           "\n<jar href=\"lib/artifact2.jar\" version=\"1.5\"/>\n",
-                      Generator.getDependenciesText( mojo ) );
-
-
+                      Generator.getDependenciesText( generatorConfig2 ) );
     }
 }

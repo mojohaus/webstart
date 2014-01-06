@@ -33,8 +33,9 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mojo.webstart.generator.GeneratorTechnicalConfig;
+import org.codehaus.mojo.webstart.generator.JarResourceGeneratorConfig;
 import org.codehaus.mojo.webstart.generator.JarResourcesGenerator;
-import org.codehaus.mojo.webstart.generator.SimpleGeneratorExtraConfig;
 import org.codehaus.mojo.webstart.generator.VersionXmlGenerator;
 import org.codehaus.mojo.webstart.util.ArtifactUtil;
 import org.codehaus.mojo.webstart.util.IOUtil;
@@ -63,6 +64,7 @@ public class JnlpDownloadServletMojo
     // ----------------------------------------------------------------------
     // Constants
     // ----------------------------------------------------------------------
+
     /**
      * Name of the built-in servlet template to use if none is given.
      */
@@ -214,8 +216,6 @@ public class JnlpDownloadServletMojo
         File outputDir = new File( getProject().getBuild().getDirectory(),
                                    getProject().getBuild().getFinalName() + File.separator + outputDirectoryName );
 
-        ioUtil.makeDirectoryIfNecessary( outputDir );
-
         ioUtil.copyDirectoryStructure( getWorkDirectory(), outputDir );
     }
 
@@ -244,7 +244,7 @@ public class JnlpDownloadServletMojo
     private void checkConfiguration()
         throws MojoExecutionException
     {
-
+        checkDependencyFilenameStrategy();
         checkPack200();
 
         if ( CollectionUtils.isEmpty( jnlpFiles ) )
@@ -338,7 +338,8 @@ public class JnlpDownloadServletMojo
 
         if ( StringUtils.isNotBlank( jnlpFile.getTemplateFilename() ) )
         {
-            getLog().warn( "jnlpFile.templateFilename is deprecated (since 1.0-beta-5), use now the jnlpFile.inputTemplate instead." );
+            getLog().warn(
+                "jnlpFile.templateFilename is deprecated (since 1.0-beta-5), use now the jnlpFile.inputTemplate instead." );
             jnlpFile.setInputTemplate( jnlpFile.getTemplateFilename() );
         }
 //        if ( StringUtils.isBlank( jnlpFile.getInputTemplate() ) )
@@ -487,7 +488,7 @@ public class JnlpDownloadServletMojo
                             jarResource + "]" );
                 }
 
-                boolean containsMainClass = artifactUtil.artifactContainsMainClass( artifact, jarResource );
+                boolean containsMainClass = artifactUtil.artifactContainsClass( artifact, jarResource.getMainClass() );
                 if ( !containsMainClass )
                 {
                     throw new MojoExecutionException(
@@ -546,12 +547,17 @@ public class JnlpDownloadServletMojo
                 getModifiedJnlpArtifacts().add( name.substring( 0, name.lastIndexOf( '.' ) ) );
             }
 
-            if ( jarResource.isOutputJarVersion() )
-            {
-                // Create and set a version-less href for jarResource
-                String hrefValue = buildHrefValue( artifact );
-                jarResource.setHrefValue( hrefValue );
-            }
+            String filename = getDependencyFilenameStrategy().getDependencyFilename( artifact,
+                                                                                     jarResource.isOutputJarVersion()
+                                                                                         ? null
+                                                                                         : false );
+            jarResource.setHrefValue( filename );
+//            if ( jarResource.isOutputJarVersion() )
+//            {
+//                // Create and set a version-less href for jarResource
+//                String hrefValue = buildHrefValue( artifact );
+//                jarResource.setHrefValue( hrefValue );
+//            }
         }
         return collectedJarResources;
     }
@@ -573,11 +579,13 @@ public class JnlpDownloadServletMojo
         if ( StringUtils.isNotBlank( jnlpFile.getInputTemplateResourcePath() ) )
         {
             templateDirectory = new File( jnlpFile.getInputTemplateResourcePath() );
-            getLog().debug( "Use jnlp directory : " + templateDirectory);
-        } else {
+            getLog().debug( "Use jnlp directory : " + templateDirectory );
+        }
+        else
+        {
             // use default template directory
             templateDirectory = getTemplateDirectory();
-            getLog().debug( "Use default template directory : " + templateDirectory);
+            getLog().debug( "Use default template directory : " + templateDirectory );
         }
 
         // ---
@@ -588,9 +596,9 @@ public class JnlpDownloadServletMojo
         {
             getLog().debug(
                 "Jnlp servlet template file name not specified. Checking if default output file name exists: " +
-                    SERVLET_TEMPLATE_FILENAME);
+                    SERVLET_TEMPLATE_FILENAME );
 
-            File templateFile = new File( templateDirectory, SERVLET_TEMPLATE_FILENAME);
+            File templateFile = new File( templateDirectory, SERVLET_TEMPLATE_FILENAME );
 
             if ( templateFile.isFile() )
             {
@@ -614,14 +622,15 @@ public class JnlpDownloadServletMojo
 
         String templateFileName = jnlpFile.getInputTemplate();
 
-        JarResourcesGenerator jnlpGenerator = new JarResourcesGenerator( getLog(), getProject(), templateDirectory,
-                                                                         BUILT_IN_SERVLET_TEMPLATE_FILENAME,
-                                                                         jnlpOutputFile, templateFileName,
-                                                                         jarResources, jnlpFile.getMainClass(),
-                                                                         getWebstartJarURLForVelocity(), libPath,
-                                                                         getEncoding() );
+        GeneratorTechnicalConfig generatorTechnicalConfig =
+            new GeneratorTechnicalConfig( getProject(), templateDirectory, BUILT_IN_SERVLET_TEMPLATE_FILENAME,
+                                          jnlpOutputFile, templateFileName, jnlpFile.getMainClass(),
+                                          getWebstartJarURLForVelocity(), getEncoding() );
+        JarResourceGeneratorConfig jarResourceGeneratorConfig = new JarResourceGeneratorConfig( jarResources, libPath, getCodebase(), jnlpFile.getProperties() );
+        JarResourcesGenerator jnlpGenerator =
+            new JarResourcesGenerator( getLog(), generatorTechnicalConfig, jarResourceGeneratorConfig );
 
-        jnlpGenerator.setExtraConfig( new SimpleGeneratorExtraConfig(jnlpFile.getProperties(), getCodebase() ) );
+//        jnlpGenerator.setExtraConfig( new SimpleGeneratorExtraConfig( jnlpFile.getProperties(), getCodebase() ) );
 
         try
         {
@@ -649,26 +658,26 @@ public class JnlpDownloadServletMojo
         generator.generate( getLibDirectory(), jarResources );
     }
 
-    /**
-     * Builds the string to be entered in the href attribute of the jar
-     * resource element in the generated JNLP file. will be equal
-     * to the artifact file name with the version number stripped out.
-     *
-     * @param artifact The underlying artifact of the jar resource.
-     * @return The href string for the given artifact, never null.
-     */
-    private String buildHrefValue( Artifact artifact )
-    {
-        StringBuilder sbuf = new StringBuilder();
-        sbuf.append( artifact.getArtifactId() );
-
-        if ( StringUtils.isNotEmpty( artifact.getClassifier() ) )
-        {
-            sbuf.append( "-" ).append( artifact.getClassifier() );
-        }
-
-        sbuf.append( "." ).append( artifact.getArtifactHandler().getExtension() );
-
-        return sbuf.toString();
-    }
+//    /**
+//     * Builds the string to be entered in the href attribute of the jar
+//     * resource element in the generated JNLP file. will be equal
+//     * to the artifact file name with the version number stripped out.
+//     *
+//     * @param artifact The underlying artifact of the jar resource.
+//     * @return The href string for the given artifact, never null.
+//     */
+//    private String buildHrefValue( Artifact artifact )
+//    {
+//        StringBuilder sbuf = new StringBuilder();
+//        sbuf.append( artifact.getArtifactId() );
+//
+//        if ( StringUtils.isNotEmpty( artifact.getClassifier() ) )
+//        {
+//            sbuf.append( "-" ).append( artifact.getClassifier() );
+//        }
+//
+//        sbuf.append( "." ).append( artifact.getArtifactHandler().getExtension() );
+//
+//        return sbuf.toString();
+//    }
 }
