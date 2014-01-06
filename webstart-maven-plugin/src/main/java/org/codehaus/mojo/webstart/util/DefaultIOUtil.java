@@ -19,6 +19,14 @@ package org.codehaus.mojo.webstart.util;
  * under the License.
  */
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.codehaus.plexus.archiver.Archiver;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.util.DirectoryScanner;
+import org.codehaus.plexus.util.FileUtils;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileOutputStream;
@@ -31,12 +39,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.zip.ZipFile;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.util.DirectoryScanner;
-import org.codehaus.plexus.util.FileUtils;
-
 /**
  * Helper for all IO operations.
  *
@@ -48,6 +50,12 @@ public class DefaultIOUtil
     extends AbstractLogEnabled
     implements IOUtil
 {
+
+    /**
+     * The Zip archiver.
+     */
+    @Requirement( hint = "zip" )
+    private Archiver zipArchiver;
 
     /**
      * {@inheritDoc}
@@ -83,13 +91,14 @@ public class DefaultIOUtil
     public void copyFile( File sourceFile, File targetFile )
         throws MojoExecutionException
     {
+        makeDirectoryIfNecessary( targetFile.getParentFile() );
         try
         {
-            FileUtils.copyFile( sourceFile, targetFile);
+            FileUtils.copyFile( sourceFile, targetFile );
         }
         catch ( IOException e )
         {
-            throw new MojoExecutionException( "Could not copy file "+sourceFile+" to "+targetFile, e );
+            throw new MojoExecutionException( "Could not copy file " + sourceFile + " to " + targetFile, e );
         }
     }
 
@@ -100,6 +109,8 @@ public class DefaultIOUtil
     public void copyDirectoryStructure( File sourceDirectory, File targetDirectory )
         throws MojoExecutionException
     {
+
+        makeDirectoryIfNecessary( targetDirectory );
 
         // hopefully available from FileUtils 1.0.5-SNAPSHOT
         try
@@ -330,16 +341,44 @@ public class DefaultIOUtil
      */
     public void close( ZipFile closeable )
     {
-		try 
-		{
-			if (closeable != null) 
-			{
-				closeable.close();
-			}
-		}
-		catch (IOException ignore) {
-		}
-	}
+        try
+        {
+            if ( closeable != null )
+            {
+                closeable.close();
+            }
+        }
+        catch ( IOException ignore )
+        {
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void createArchive( File directory, File archive )
+        throws MojoExecutionException
+    {
+
+        // package the zip. Note this is very simple. Look at the JarMojo which does more things.
+        // we should perhaps package as a war when inside a project with war packaging ?
+
+        makeDirectoryIfNecessary( archive.getParentFile() );
+
+        deleteFile( archive );
+
+        zipArchiver.addDirectory( directory );
+        zipArchiver.setDestFile( archive );
+
+        try
+        {
+            zipArchiver.createArchive();
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException( "Could not create zip archive: " + archive, e );
+        }
+    }
 
     private void copyDirectoryStructure( File sourceDirectory, File destinationDirectory, String includes,
                                          String excludes )
@@ -350,7 +389,7 @@ public class DefaultIOUtil
             return;
         }
 
-        List<File> files = null;
+        List<File> files;
         try
         {
             files = FileUtils.getFiles( sourceDirectory, includes, excludes );

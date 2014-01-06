@@ -25,7 +25,6 @@ import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.webstart.JarResource;
-import org.codehaus.mojo.webstart.JnlpConfig;
 
 import java.util.List;
 import java.util.Set;
@@ -36,7 +35,6 @@ import java.util.Set;
  * @author tchemit <chemit@codelutin.com>
  * @since 1.0-beta-4
  */
-
 public interface ArtifactUtil
 {
 
@@ -45,10 +43,15 @@ public interface ArtifactUtil
      */
     String ROLE = ArtifactUtil.class.getName();
 
-    boolean artifactContainsMainClass( Artifact artifact, JnlpConfig jnlp )
-        throws MojoExecutionException;
-
-    boolean artifactContainsMainClass( Artifact artifact, JarResource jnlp )
+    /**
+     * Tests if the given fully qualified name exists in the given artifact.
+     *
+     * @param artifact  artifact to test
+     * @param mainClass the fully qualified name to find in artifact
+     * @return {@code true} if given artifact contains the given fqn, {@code false} otherwise
+     * @throws MojoExecutionException if artifact file url is mal formed
+     */
+    public boolean artifactContainsClass( Artifact artifact, final String mainClass )
         throws MojoExecutionException;
 
     /**

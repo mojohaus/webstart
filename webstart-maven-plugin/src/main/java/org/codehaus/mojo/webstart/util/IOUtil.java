@@ -148,4 +148,7 @@ public interface IOUtil
      * @param closeable
      */
     void close( ZipFile closeable );
+
+    void createArchive(File directory, File archive)
+        throws MojoExecutionException;
 }

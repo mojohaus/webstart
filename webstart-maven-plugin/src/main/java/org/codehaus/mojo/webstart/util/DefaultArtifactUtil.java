@@ -32,7 +32,6 @@ import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.webstart.JarResource;
-import org.codehaus.mojo.webstart.JnlpConfig;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -71,34 +70,6 @@ public class DefaultArtifactUtil
      */
     @Requirement
     private ArtifactMetadataSource artifactMetadataSource;
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean artifactContainsMainClass( Artifact artifact, JnlpConfig jnlp )
-        throws MojoExecutionException
-    {
-        boolean result = false;
-        if ( jnlp != null )
-        {
-            result = artifactContainsClass( artifact, jnlp.getMainClass() );
-        }
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean artifactContainsMainClass( Artifact artifact, JarResource jnlp )
-        throws MojoExecutionException
-    {
-        boolean result = false;
-        if ( jnlp != null )
-        {
-            result = artifactContainsClass( artifact, jnlp.getMainClass() );
-        }
-        return result;
-    }
 
     /**
      * {@inheritDoc}
@@ -226,7 +197,8 @@ public class DefaultArtifactUtil
      * @return {@code true} if given artifact contains the given fqn, {@code false} otherwise
      * @throws MojoExecutionException if artifact file url is mal formed
      */
-    protected boolean artifactContainsClass( Artifact artifact, final String mainClass )
+
+    public boolean artifactContainsClass( Artifact artifact, final String mainClass )
         throws MojoExecutionException
     {
         boolean containsClass = true;
