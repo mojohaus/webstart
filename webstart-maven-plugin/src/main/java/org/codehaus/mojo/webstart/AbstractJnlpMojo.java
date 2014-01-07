@@ -119,7 +119,7 @@ public abstract class AbstractJnlpMojo
      *
      * @since 1.0-beta-2
      */
-    @Parameter( defaultValue = "true" )
+    @Parameter( property = "jnlp.makeArchive", defaultValue = "true" )
     private boolean makeArchive;
 
     /**
@@ -127,7 +127,7 @@ public abstract class AbstractJnlpMojo
      *
      * @since 1.0-beta-2
      */
-    @Parameter( defaultValue = "true" )
+    @Parameter( property = "jnlp.attachArchive", defaultValue = "true" )
     private boolean attachArchive;
 
     /**
@@ -135,7 +135,7 @@ public abstract class AbstractJnlpMojo
      *
      * @since 1.0-beta-4
      */
-    @Parameter( defaultValue = "${project.build.directory}/${project.build.finalName}.zip" )
+    @Parameter( property = "jnlp.archive", defaultValue = "${project.build.directory}/${project.build.finalName}.zip" )
     private File archive;
 
     /**
@@ -183,7 +183,7 @@ public abstract class AbstractJnlpMojo
      * <strong>Note: </strong> since version 1.0-beta-5 we use the version download protocol optimization (see
      * http://docs.oracle.com/javase/tutorial/deployment/deploymentInDepth/avoidingUnnecessaryUpdateChecks.html).
      */
-    @Parameter( defaultValue = "false" )
+    @Parameter( property = "jnlp.outputJarVersions", defaultValue = "false" )
     private boolean outputJarVersions;
 
     // ----------------------------------------------------------------------

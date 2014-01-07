@@ -91,26 +91,26 @@ public abstract class AbstractBaseJnlpMojo
     /**
      * The directory in which files will be stored prior to processing.
      */
-    @Parameter( defaultValue = "${project.build.directory}/jnlp", required = true )
+    @Parameter( property = "jnlp.workDirectory", defaultValue = "${project.build.directory}/jnlp", required = true )
     private File workDirectory;
 
     /**
      * The path where the libraries are placed within the jnlp structure.
      */
-    @Parameter( defaultValue = "" )
+    @Parameter( property = "jnlp.libPath", defaultValue = "" )
     protected String libPath;
 
     /**
      * The location of the directory (relative or absolute) containing non-jar resources that
      * are to be included in the JNLP bundle.
      */
-    @Parameter
+    @Parameter( property = "jnlp.resourcesDirectory" )
     private File resourcesDirectory;
 
     /**
      * The location where the JNLP Velocity template files are stored.
      */
-    @Parameter( defaultValue = "${project.basedir}/src/main/jnlp", required = true )
+    @Parameter( property = "jnlp.templateDirectory", defaultValue = "${project.basedir}/src/main/jnlp", required = true )
     private File templateDirectory;
 
     /**
@@ -131,7 +131,7 @@ public abstract class AbstractBaseJnlpMojo
      * Indicates whether or not gzip archives will be created for each of the jar
      * files included in the webstart bundle.
      */
-    @Parameter( defaultValue = "false" )
+    @Parameter( property = "jnlp.gzip", defaultValue = "false" )
     private boolean gzip;
 
     /**
@@ -145,7 +145,7 @@ public abstract class AbstractBaseJnlpMojo
      *
      * @parameter
      */
-    @Parameter
+    @Parameter( property = "jnlp.excludeTransitive" )
     private boolean excludeTransitive;
 
     /**
@@ -169,7 +169,7 @@ public abstract class AbstractBaseJnlpMojo
     /**
      * Define whether to remove existing signatures.
      */
-    @Parameter( alias = "unsign", defaultValue = "false" )
+    @Parameter( property = "jnlp.unsign", alias = "unsign", defaultValue = "false" )
     private boolean unsignAlreadySignedJars;
 
     /**
@@ -180,7 +180,7 @@ public abstract class AbstractBaseJnlpMojo
      *
      * @since 1.0-beta-2
      */
-    @Parameter( defaultValue = "true" )
+    @Parameter( property = "jnlp.canUnsign", defaultValue = "true" )
     private boolean canUnsign;
 
     /**

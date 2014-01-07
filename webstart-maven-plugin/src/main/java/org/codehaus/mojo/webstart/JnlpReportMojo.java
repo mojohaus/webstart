@@ -51,13 +51,13 @@ public class JnlpReportMojo
     /**
      * Location where the site is generated.
      */
-    @Parameter( defaultValue = "${project.reporting.outputDirectory}" )
+    @Parameter( property = "jnlp.outputDirectory", defaultValue = "${project.reporting.outputDirectory}" )
     private File outputDirectory;
 
     /**
      * Directory where the jnlp artifacts and jnlp sources files reside.
      */
-    @Parameter( defaultValue = "${project.build.directory}/jnlp", required = true )
+    @Parameter( property = "jnlp.jnlpSourceDirectory", defaultValue = "${project.build.directory}/jnlp", required = true )
     private File jnlpSourceDirectory;
 
     /**

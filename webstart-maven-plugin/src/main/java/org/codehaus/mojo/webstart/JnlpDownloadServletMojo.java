@@ -84,7 +84,7 @@ public class JnlpDownloadServletMojo
      * artifacts will be stored after processing. directory will be created
      * directly within the root of the WAR produced by the enclosing project.
      */
-    @Parameter( defaultValue = "webstart" )
+    @Parameter( property = "jnlp.outputDirectoryName", defaultValue = "webstart" )
     private String outputDirectoryName;
 
     /**
