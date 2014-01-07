@@ -3,11 +3,11 @@
   <parent>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>webstart</artifactId>
-    <version>1.0-beta-5</version>
+    <version>1.0-beta-6-SNAPSHOT</version>
   </parent>
 
   <artifactId>webstart-maven-plugin</artifactId>
-  <version>1.0-beta-5</version>
+  <version>1.0-beta-6-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   <name>MWEBSTART :: Webstart Maven Plugin</name>
   <description>Maven plugin that supports webstart application development. Helps generate JNLP files and supports the
