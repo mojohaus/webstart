@@ -19,17 +19,18 @@ package org.codehaus.mojo.webstart.dependency;
  * under the License.
  */
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.mojo.webstart.dependency.task.JnlpDependencyTask;
-import org.codehaus.mojo.webstart.dependency.task.JnlpDependencyTaskException;
 import org.codehaus.mojo.webstart.util.IOUtil;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.logging.Logger;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created on 1/4/14.
@@ -46,157 +47,194 @@ public class DefaultJnlpDependencyRequestConsumer
     @Requirement
     private IOUtil ioUtil;
 
-    private int maxThreads;
-
-    private boolean failFast;
-
     /**
      * {@inheritDoc}
      */
-    public void setMaxThreads( int maxThreads )
-    {
-        this.maxThreads = maxThreads;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setFailFast( boolean failFast )
-    {
-        this.failFast = failFast;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public JnlpDependencyResults execute( JnlpDependencyRequests requests )
+    public JnlpDependencyResults execute( JnlpDependencyRequestConsumerConfig config, JnlpDependencyRequests requests )
     {
 
-        List<JnlpDependencyRequest> dependencyRequests = requests.getRequests();
+        getLogger().info( "Process " + requests.getNbRequests() + " dependencies." );
 
-        getLogger().info( "Process " + dependencyRequests.size() + " requests." );
+        RequestExecutor executor = new RequestExecutor( getLogger(), ioUtil, config );
 
-        JnlpDependencyResults results = new JnlpDependencyResults();
+        executor.registerRequests( requests.getRequests() );
 
-        for ( JnlpDependencyRequest request : dependencyRequests )
-        {
-            JnlpDependencyResult result = execute( request );
-            results.registerResult( request, result );
-            if ( failFast && result.isError() )
-            {
-                getLogger().warn( "Fail fast after first dependency processing error." );
-                break;
-            }
-        }
+        JnlpDependencyResults results = executor.terminatesAndWaits();
+
         return results;
     }
 
-    protected JnlpDependencyResult execute( JnlpDependencyRequest request )
+    private static class RequestExecutor
+        extends ThreadPoolExecutor
     {
 
-        JnlpDependencyConfig config = request.getConfig();
+        private final JnlpDependencyRequestConsumerConfig config;
 
-        JnlpDependencyResult result = prepareResult( config );
+        private final Logger logger;
 
-        File workingDirectory = config.getWorkingDirectory();
+        private final IOUtil ioUtil;
 
-        File workingFile = result.getOriginalfile();
+        private final JnlpDependencyResults results;
 
-        JnlpDependencyTask[] tasks = request.getTasks();
-
-        for ( int i = 0, length = tasks.length; i < length; i++ )
+        public RequestExecutor( Logger logger, IOUtil ioUtil, JnlpDependencyRequestConsumerConfig config )
         {
+            super( config.getMaxThreads(), config.getMaxThreads(), 1L, TimeUnit.SECONDS,
+                   new LinkedBlockingQueue<Runnable>() );
+            this.logger = logger;
+            this.ioUtil = ioUtil;
+            this.config = config;
+            this.results = new JnlpDependencyResults();
+        }
 
-            JnlpDependencyTask task = tasks[i];
 
-            // copy previous file to a new task isolated directory
-            File newDirectory = new File( workingDirectory, i + "_" + task.getClass().getSimpleName() );
+        @Override
+        protected void afterExecute( Runnable r, Throwable t )
+        {
+            super.afterExecute( r, t );
+            RequestTask task = (RequestTask) r;
+
+            JnlpDependencyResult result = task.result;
+
+            results.registerResult( task.request, result );
+
+            boolean withError = t != null;
+
+            if ( withError )
+            {
+                result.setError( t );
+
+                if ( config.isFailFast() )
+                {
+                    logger.warn( "Fail fast after first dependency processing error." );
+
+                    //TODO Stop the executor
+                    shutdownNow();
+                }
+            }
+
+
+        }
+
+        /**
+         * Ask the thread to stop.
+         * <p/>
+         * It will finish all incoming files (but will not accept more files to
+         * parse)
+         * <p/>
+         * <b>Note:</b> The method does not return until all files are not consumed.
+         */
+        public JnlpDependencyResults terminatesAndWaits()
+        {
+            // ask executor to terminate
+            shutdown();
+
             try
             {
-                ioUtil.copyFileToDirectoryIfNecessary( workingFile, newDirectory );
+                // wait until all submited jobs are terminated
+                // i don't want timeout, i think 2 days is good :)
+                awaitTermination( 2 * 60 * 60 * 24, TimeUnit.SECONDS );
             }
-            catch ( MojoExecutionException e )
+            catch ( InterruptedException e )
             {
-                result.setError( e );
-                break;
+                logger.error( "Could not stop the executor after two days...", e );
             }
-            workingFile = new File( newDirectory, workingFile.getName() );
 
-            getLogger().debug( String.format( "[task %s] (%s): workingFile: %s", i, task, workingFile ) );
+            return results;
+        }
+
+        public void registerRequests( List<JnlpDependencyRequest> dependencyRequests )
+        {
+
+            for ( JnlpDependencyRequest dependencyRequest : dependencyRequests )
+            {
+                RequestTask newtask = new RequestTask( logger, ioUtil, dependencyRequest );
+
+                JnlpDependencyResult result = newtask.result;
+                if ( result.isUptodate() )
+                {
+                    if ( config.isVerbose() )
+                    {
+                        logger.info(
+                            "Skip up-to-date dependency: " + dependencyRequest.getConfig().getArtifact().getId() );
+                    }
+                    results.registerResult( newtask.request, result );
+                }
+                else
+                {
+                    if ( config.isVerbose() )
+                    {
+                        logger.info( "Process dependency: " + dependencyRequest.getConfig().getArtifact().getId() );
+                    }
+                    execute( newtask );
+                }
+            }
+        }
+    }
+
+
+    private static class RequestTask
+        implements Runnable
+    {
+
+        private final Logger logger;
+
+        private final IOUtil ioUtil;
+
+        private final JnlpDependencyRequest request;
+
+        private JnlpDependencyResult result;
+
+        private RequestTask( Logger logger, IOUtil ioUtil, JnlpDependencyRequest request )
+        {
+            this.logger = logger;
+            this.ioUtil = ioUtil;
+            this.request = request;
+            this.result = new JnlpDependencyResult( request );
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void run()
+        {
+            JnlpDependencyConfig config = request.getConfig();
+
+            File workingFile = request.getOriginalFile();
+
             try
             {
-                workingFile = task.execute( config, workingFile );
+                // copy artifact file to original file
+                ioUtil.copyFile( config.getArtifact().getFile(), workingFile );
+
+                File workingDirectory = config.getWorkingDirectory();
+
+                JnlpDependencyTask[] tasks = request.getTasks();
+
+                for ( int i = 0, length = tasks.length; i < length; i++ )
+                {
+
+                    JnlpDependencyTask task = tasks[i];
+
+                    // copy previous file to a new task isolated directory
+                    File newDirectory = new File( workingDirectory, i + "_" + task.getClass().getSimpleName() );
+                    ioUtil.copyFileToDirectoryIfNecessary( workingFile, newDirectory );
+
+                    workingFile = new File( newDirectory, workingFile.getName() );
+
+                    logger.debug( String.format( "[task %s] (%s): workingFile: %s", i, task, workingFile ) );
+
+                    workingFile = task.execute( config, workingFile );
+                }
+
+                // copy to final destination
+                ioUtil.copyFile( workingFile, request.getFinalFile() );
             }
-            catch ( JnlpDependencyTaskException e )
+            catch ( Exception e )
             {
                 result.setError( e );
-                break;
             }
-        }
 
-        // copy to final destination
-
-        finalizeResult( config, workingFile, result );
-
-        getLogger().info( "Dependency " + config.getArtifact().getId() + " treated." );
-
-        return result;
-    }
-
-    private JnlpDependencyResult prepareResult( JnlpDependencyConfig config )
-    {
-
-        File workingDirectory = config.getWorkingDirectory();
-
-        Artifact artifact = config.getArtifact();
-
-        File incomingFile = artifact.getFile();
-
-        String fileName = config.getDependencyFilenameStrategy().getDependencyFilename( artifact, false );
-
-        File workingFile = new File( workingDirectory, fileName );
-
-        JnlpDependencyResult result = new JnlpDependencyResult( artifact, workingFile );
-
-        copyFile( incomingFile, workingFile, result );
-        return result;
-    }
-
-    private void finalizeResult( JnlpDependencyConfig config, File workingFile, JnlpDependencyResult result )
-    {
-
-        // copy to final destination
-
-        File finalDirectory = config.getFinalDirectory();
-        String filename = config.getDependencyFilenameStrategy().getDependencyFilename( config.getArtifact(),
-                                                                                        config.isOutputJarVersion() );
-
-        if ( config.isPack200() )
-        {
-            filename += ".pack";
-        }
-
-        if ( config.isGzip() )
-        {
-            filename += ".gz";
-        }
-
-        File finalFile = new File( finalDirectory, filename );
-
-        copyFile( workingFile, finalFile, result );
-        result.setFinalFile( finalFile );
-    }
-
-    private void copyFile( File source, File destination, JnlpDependencyResult result )
-    {
-        getLogger().debug( "Copy " + source.getName() + " to " + destination );
-        try
-        {
-            ioUtil.copyFile( source, destination );
-        }
-        catch ( MojoExecutionException e )
-        {
-            result.setError( e );
+            logger.info( "Dependency " + config.getArtifact().getId() + " treated." );
         }
     }
 }

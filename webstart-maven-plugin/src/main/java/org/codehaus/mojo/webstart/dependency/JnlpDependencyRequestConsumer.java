@@ -30,9 +30,5 @@ public interface JnlpDependencyRequestConsumer
 
     String ROLE = JnlpDependencyRequestConsumer.class.getName();
 
-    void setMaxThreads( int maxThreads );
-
-    void setFailFast( boolean failFast );
-
-    JnlpDependencyResults execute( JnlpDependencyRequests requests );
+    JnlpDependencyResults execute( JnlpDependencyRequestConsumerConfig config, JnlpDependencyRequests requests );
 }

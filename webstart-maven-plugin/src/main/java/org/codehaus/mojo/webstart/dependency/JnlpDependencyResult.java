@@ -31,46 +31,42 @@ import java.io.File;
  */
 public class JnlpDependencyResult
 {
-    private final Artifact artifact;
 
-    private final File originalfile;
+    private final JnlpDependencyRequest request;
 
-    private File finalFile;
+    private Throwable error;
 
-    private Exception error;
-
-    public JnlpDependencyResult( Artifact artifact, File originalFile )
+    public JnlpDependencyResult( JnlpDependencyRequest request )
     {
-        this.artifact = artifact;
-        this.originalfile = originalFile;
+        this.request = request;
     }
 
     public Artifact getArtifact()
     {
-        return artifact;
+        return request.getConfig().getArtifact();
     }
 
-    public File getOriginalfile()
+    public File getOriginalFile()
     {
-        return originalfile;
+        return request.getOriginalFile();
     }
 
     public File getFinalFile()
     {
-        return finalFile;
+        return request.getFinalFile();
     }
 
-    public Exception getError()
+    public boolean isUptodate()
+    {
+        return request.isUptodate();
+    }
+
+    public Throwable getError()
     {
         return error;
     }
 
-    public void setFinalFile( File finalFile )
-    {
-        this.finalFile = finalFile;
-    }
-
-    public void setError( Exception error )
+    public void setError( Throwable error )
     {
         this.error = error;
     }

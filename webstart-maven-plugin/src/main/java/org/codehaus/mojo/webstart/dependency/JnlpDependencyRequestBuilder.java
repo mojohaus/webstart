@@ -33,5 +33,7 @@ public interface JnlpDependencyRequestBuilder
 
     void init( JnlpDependencyGlobalConfig config );
 
+    JnlpDependencyRequests createRequests();
+
     JnlpDependencyRequest createRequest( Artifact artifact, boolean outputJarVersion );
 }

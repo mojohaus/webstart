@@ -19,49 +19,48 @@ package org.codehaus.mojo.webstart.dependency;
  * under the License.
  */
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
- * Created on 1/4/14.
+ * Created on 1/7/14.
  *
  * @author Tony Chemit <chemit@codelutin.com>
  * @since 1.0-beta-5
  */
-public class JnlpDependencyRequests
+public class JnlpDependencyRequestConsumerConfig
 {
 
-    /**
-     * Registred requests.
-     */
-    private final List<JnlpDependencyRequest> requests;
+    private boolean verbose;
 
-    private final JnlpDependencyGlobalConfig config;
+    private int maxThreads;
 
-    public JnlpDependencyRequests( JnlpDependencyGlobalConfig config )
+    private boolean failFast;
+
+    public int getMaxThreads()
     {
-        this.config = config;
-        requests = new ArrayList<JnlpDependencyRequest>();
+        return maxThreads;
     }
 
-    public JnlpDependencyGlobalConfig getConfig()
+    public void setMaxThreads( int maxThreads )
     {
-        return config;
+        this.maxThreads = maxThreads;
     }
 
-    public void addRequest( JnlpDependencyRequest request )
+    public boolean isFailFast()
     {
-        requests.add( request );
+        return failFast;
     }
 
-    public List<JnlpDependencyRequest> getRequests()
+    public void setFailFast( boolean failFast )
     {
-        return Collections.unmodifiableList( requests );
+        this.failFast = failFast;
     }
 
-    public int getNbRequests()
+    public boolean isVerbose()
     {
-        return requests.size();
+        return verbose;
+    }
+
+    public void setVerbose( boolean verbose )
+    {
+        this.verbose = verbose;
     }
 }

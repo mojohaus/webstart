@@ -81,4 +81,30 @@ public class JnlpDependencyResults
         }
         return resultWithErrors.toArray( new JnlpDependencyResult[resultWithErrors.size()] );
     }
+
+    public int getNbRequestsProcessed()
+    {
+        int result = 0;
+        for ( JnlpDependencyRequest request : results.keySet() )
+        {
+            if ( !request.isUptodate() )
+            {
+                result++;
+            }
+        }
+        return result;
+    }
+
+    public int getNbRequestsUptodate()
+    {
+        int result = 0;
+        for ( JnlpDependencyRequest request : results.keySet() )
+        {
+            if ( request.isUptodate() )
+            {
+                result++;
+            }
+        }
+        return result;
+    }
 }

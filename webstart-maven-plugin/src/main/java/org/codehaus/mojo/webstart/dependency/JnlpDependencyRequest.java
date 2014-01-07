@@ -19,7 +19,10 @@ package org.codehaus.mojo.webstart.dependency;
  * under the License.
  */
 
+import org.apache.maven.artifact.Artifact;
 import org.codehaus.mojo.webstart.dependency.task.JnlpDependencyTask;
+
+import java.io.File;
 
 /**
  * Created on 1/4/14.
@@ -34,10 +37,25 @@ public class JnlpDependencyRequest
 
     private final JnlpDependencyTask[] tasks;
 
+    private final File originalFile;
+
+    private final File finalFile;
+
+    private final boolean uptodate;
+
     public JnlpDependencyRequest( JnlpDependencyConfig config, JnlpDependencyTask... tasks )
     {
         this.config = config;
         this.tasks = tasks;
+
+        originalFile = buildOriginalFile();
+        finalFile = buildFinalFile();
+
+        File incomingFile = getConfig().getArtifact().getFile();
+
+        long limitDate = incomingFile.lastModified();
+        uptodate = originalFile.exists() && originalFile.lastModified() > limitDate &&
+            finalFile.exists() && finalFile.lastModified() > limitDate;
     }
 
     public JnlpDependencyConfig getConfig()
@@ -48,5 +66,51 @@ public class JnlpDependencyRequest
     public JnlpDependencyTask[] getTasks()
     {
         return tasks;
+    }
+
+    public File getOriginalFile()
+    {
+        return originalFile;
+    }
+
+    public boolean isUptodate()
+    {
+        return uptodate;
+    }
+
+    public File getFinalFile()
+    {
+        return finalFile;
+    }
+
+    private File buildOriginalFile()
+    {
+
+        File workingDirectory = config.getWorkingDirectory();
+
+        Artifact artifact = config.getArtifact();
+
+        String fileName = config.getDependencyFilenameStrategy().getDependencyFilename( artifact, false );
+
+        return new File( workingDirectory, fileName );
+    }
+
+    private File buildFinalFile()
+    {
+
+        File finalDirectory = config.getFinalDirectory();
+        String filename = config.getDependencyFilenameStrategy().getDependencyFilename( config.getArtifact(),
+                                                                                        config.isOutputJarVersion() );
+        if ( config.isPack200() )
+        {
+            filename += ".pack";
+        }
+
+        if ( config.isGzip() )
+        {
+            filename += ".gz";
+        }
+
+        return new File( finalDirectory, filename );
     }
 }

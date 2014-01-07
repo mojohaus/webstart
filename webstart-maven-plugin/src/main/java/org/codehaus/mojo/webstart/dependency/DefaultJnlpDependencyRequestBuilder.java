@@ -72,6 +72,14 @@ public class DefaultJnlpDependencyRequestBuilder
     /**
      * {@inheritDoc}
      */
+    public JnlpDependencyRequests createRequests()
+    {
+        return new JnlpDependencyRequests( globalConfig );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public JnlpDependencyRequest createRequest( Artifact artifact, boolean outputJarVersion )
     {
 
