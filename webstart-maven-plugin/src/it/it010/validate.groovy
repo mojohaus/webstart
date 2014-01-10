@@ -68,7 +68,7 @@ expectedFiles.each{
  assert assertExistsFile( new File ( target, it ) )
 }
 
-String[] expectedJnlpFiles = [ "commons-cli-1.1.jar", "commons-logging-1.1.1.jar", "javahelp-2.0.02.jar", "jxlayer-3.0.4.jar",  "jxlayer.jnlp","sun.jnlp", "test.jnlp" ]
+String[] expectedJnlpFiles = [ "commons-cli-1.1.jar", "commons-logging-1.1.1.jar", "javax.help-javahelp-2.0.02.jar", "org.swinglabs-jxlayer-3.0.4.jar",  "jxlayer.jnlp","sun.jnlp", "test.jnlp" ]
 expectedJnlpFiles.each{
  assert assertExistsFile( new File ( jnlp, it ) )
 }
@@ -81,7 +81,7 @@ expectedJnlpContains.each{
   assert assertContains( jnlpContent,  it )
 }
 
-String[] notExpectedJnlpContains = [ "<jar href=\"java.help-javahelp-2.0.02.jar\"/>", "<jar href=\"org.swinglabs-jxlayer-3.0.4.jar\"/>" ]
+String[] notExpectedJnlpContains = [ "<jar href=\"javax.help-javahelp-2.0.02.jar\"/>", "<jar href=\"org.swinglabs-jxlayer-3.0.4.jar\"/>" ]
 notExpectedJnlpContains.each{
   assert assertNotContains( jnlpContent,  it )
 }

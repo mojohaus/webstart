@@ -762,7 +762,7 @@ public abstract class AbstractJnlpMojo
                 includes.add( o.trim() );
             }
 
-            if ( extension.getOutputFile() == null || extension.getOutputFile().length() == 0 )
+            if ( StringUtils.isEmpty( extension.getOutputFile() ) )
             {
                 String name = extension.getName() + ".jnlp";
                 verboseLog(
@@ -853,7 +853,12 @@ public abstract class AbstractJnlpMojo
                         "artifact " + artifact + " must be signed as part of an extension.." );
                 }
 
-                boolean copied = getIoUtil().copyFileToDirectoryIfNecessary( toCopy, getLibDirectory() );
+                String targetFilename =
+                    getDependencyFilenameStrategy().getDependencyFilename( artifact, outputJarVersions );
+
+                boolean copied =
+                    copyJarAsUnprocessedToDirectoryIfNecessary( toCopy, getLibDirectory(), targetFilename );
+
                 if ( copied )
                 {
                     verboseLog( "copy extension artifact " + toCopy );
@@ -891,9 +896,9 @@ public abstract class AbstractJnlpMojo
     private void generateJnlpExtensionsFile( File outputDirectory )
         throws MojoExecutionException
     {
-        for ( Object jnlpExtension : jnlpExtensions )
+        for ( JnlpExtension jnlpExtension : jnlpExtensions )
         {
-            generateJnlpExtensionFile( outputDirectory, (JnlpExtension) jnlpExtension );
+            generateJnlpExtensionFile( outputDirectory, jnlpExtension );
         }
     }
 
