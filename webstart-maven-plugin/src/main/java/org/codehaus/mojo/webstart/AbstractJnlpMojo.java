@@ -502,14 +502,9 @@ public abstract class AbstractJnlpMojo
                         "artifact " + artifact + " has no matching file, why? Check the logs..." );
                 }
 
-                String name = toCopy.getName();
+                String name =
+                    getDependencyFilenameStrategy().getDependencyFilename( artifact, outputJarVersions );
 
-                String extension = name.substring( name.lastIndexOf( '.' ) );
-
-                if ( outputJarVersions )
-                {
-                    name = artifact.getArtifactId() + "__V" + artifact.getVersion() + extension;
-                }
                 boolean copied = copyJarAsUnprocessedToDirectoryIfNecessary( toCopy, getLibDirectory(), name );
 
                 if ( copied )
@@ -856,11 +851,12 @@ public abstract class AbstractJnlpMojo
                 String targetFilename =
                     getDependencyFilenameStrategy().getDependencyFilename( artifact, outputJarVersions );
 
-                boolean copied =
-                    copyJarAsUnprocessedToDirectoryIfNecessary( toCopy, getLibDirectory(), targetFilename );
+                File targetFile = new File( getLibDirectory(), targetFilename );
+                boolean copied = getIoUtil().shouldCopyFile( toCopy, targetFile );
 
                 if ( copied )
                 {
+                    getIoUtil().copyFile( toCopy, targetFile );
                     verboseLog( "copy extension artifact " + toCopy );
                 }
                 else

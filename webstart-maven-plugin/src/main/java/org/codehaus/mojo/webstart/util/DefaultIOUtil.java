@@ -127,6 +127,15 @@ public class DefaultIOUtil
     /**
      * {@inheritDoc}
      */
+    public boolean shouldCopyFile( File sourceFile, File targetFile )
+    {
+        boolean shouldCopy = !targetFile.exists() || ( targetFile.lastModified() < sourceFile.lastModified() );
+        return shouldCopy;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean copyFileToDirectoryIfNecessary( File sourceFile, File targetDirectory )
         throws MojoExecutionException
     {
@@ -138,7 +147,7 @@ public class DefaultIOUtil
 
         File targetFile = new File( targetDirectory, sourceFile.getName() );
 
-        boolean shouldCopy = !targetFile.exists() || ( targetFile.lastModified() < sourceFile.lastModified() );
+        boolean shouldCopy = shouldCopyFile( sourceFile, targetFile );
 
         if ( shouldCopy )
         {

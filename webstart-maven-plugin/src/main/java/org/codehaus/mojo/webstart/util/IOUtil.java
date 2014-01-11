@@ -61,6 +61,13 @@ public interface IOUtil
         throws MojoExecutionException;
 
     /**
+     * @param sourceFile source file
+     * @param targetFile target file
+     * @return {@code true} if source file should be copy to target location
+     */
+    boolean shouldCopyFile( File sourceFile, File targetFile );
+
+    /**
      * Conditionally copy the file into the target directory.
      * The operation is not performed when the target file exists and is up to date.
      * The target file name is taken from the <code>sourceFile</code> name.
@@ -144,7 +151,7 @@ public interface IOUtil
 
     /**
      * Silently closes the resource
-     * 
+     *
      * @param closeable
      */
     void close( ZipFile closeable );

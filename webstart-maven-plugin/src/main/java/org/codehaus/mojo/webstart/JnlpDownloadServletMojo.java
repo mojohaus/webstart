@@ -537,7 +537,11 @@ public class JnlpDownloadServletMojo
         for ( ResolvedJarResource jarResource : collectedJarResources )
         {
             Artifact artifact = jarResource.getArtifact();
-            boolean copied = copyJarAsUnprocessedToDirectoryIfNecessary( artifact.getFile(), getLibDirectory(), null );
+
+            String filenameWithVersion = getDependencyFilenameStrategy().getDependencyFilename( artifact, false );
+
+            boolean copied = copyJarAsUnprocessedToDirectoryIfNecessary( artifact.getFile(), getLibDirectory(),
+                                                                         filenameWithVersion );
 
             if ( copied )
             {

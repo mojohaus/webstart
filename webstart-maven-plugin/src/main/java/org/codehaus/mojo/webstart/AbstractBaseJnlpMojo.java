@@ -222,7 +222,7 @@ public abstract class AbstractBaseJnlpMojo
      *
      * @since 1.0-beta-5
      */
-    @Parameter( property = "jnlp.filenameMapping", defaultValue = "full", required = true)
+    @Parameter( property = "jnlp.filenameMapping", defaultValue = "simple", required = true)
     private String filenameMapping;
 
     // ----------------------------------------------------------------------

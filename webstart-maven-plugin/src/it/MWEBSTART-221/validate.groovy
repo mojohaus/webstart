@@ -41,7 +41,7 @@ def assertContains( content, expected )
 }
 
 String[] expectedJnlpFiles = ["test.jnlp", "jxlayer.jnlp"]
-String[] expectedJnlpLibFiles = ["commons-cli__V1.1.jar", "org.swinglabs-jxlayer__V3.0.4.jar"]
+String[] expectedJnlpLibFiles = ["commons-cli__V1.1.jar", "jxlayer__V3.0.4.jar"]
 
 
 File target = new File( basedir, "target" )
@@ -66,13 +66,13 @@ assert jnlpLib.list().length == ( expectedJnlpLibFiles.length * 2 ) + 2 // jar +
 File jnlpFile  = new File( jnlpDirectory, "test.jnlp" )
 String jnlpContent1 = jnlpFile.text
 
-assert assertContains( jnlpContent1,  "<jar href=\"commons-cli-commons-cli.jar\" version=\"1.1\" main=\"true\"/>" )
+assert assertContains( jnlpContent1,  "<jar href=\"commons-cli.jar\" version=\"1.1\" main=\"true\"/>" )
 assert assertContains( jnlpContent1,  "<property name=\"jnlp.versionEnabled\" value=\"true\" />" )
 
 File extensionFile  = new File( jnlpDirectory, "jxlayer.jnlp" )
 String extensionContent1 = extensionFile .text
 
-assert assertContains( extensionContent1,  "<jar href=\"org.swinglabs-jxlayer.jar\" version=\"3.0.4\"/>" )
+assert assertContains( extensionContent1,  "<jar href=\"jxlayer.jar\" version=\"3.0.4\"/>" )
 assert assertContains( extensionContent1,  "<property name=\"jnlp.versionEnabled\" value=\"true\" />" )
 
 return true
