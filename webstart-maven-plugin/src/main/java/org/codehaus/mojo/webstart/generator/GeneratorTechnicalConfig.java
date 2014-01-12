@@ -67,10 +67,10 @@ public class GeneratorTechnicalConfig
             throw new IllegalArgumentException( "outputFile must not be null" );
         }
 
-        if ( mainClass == null )
-        {
-            throw new IllegalArgumentException( "mainClass must not be null" );
-        }
+//        if ( mainClass == null )
+//        {
+//            throw new IllegalArgumentException( "mainClass must not be null" );
+//        }
 
         this.mavenProject = mavenProject;
         this.outputFile = outputFile;

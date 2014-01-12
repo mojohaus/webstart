@@ -38,7 +38,9 @@ import org.codehaus.mojo.webstart.generator.GeneratorTechnicalConfig;
 import org.codehaus.mojo.webstart.util.IOUtil;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -233,8 +235,6 @@ public abstract class AbstractJnlpMojo
 
         checkInput();
 
-        findDefaultJnlpTemplateURL();
-
         getLog().debug( "using work directory " + getWorkDirectory() );
         getLog().debug( "using library directory " + getLibDirectory() );
 
@@ -255,15 +255,15 @@ public abstract class AbstractJnlpMojo
 
             processDependencies();
 
-            if ( withExtensions )
-            {
-                processExtensionsDependencies();
-            }
-
-            if ( artifactWithMainClass == null )
+            if ( jnlp.isRequireMainClass() && artifactWithMainClass == null )
             {
                 throw new MojoExecutionException(
                     "didn't find artifact with main class: " + jnlp.getMainClass() + ". Did you specify it? " );
+            }
+
+            if ( withExtensions )
+            {
+                processExtensionsDependencies();
             }
 
             // ---
@@ -352,6 +352,22 @@ public abstract class AbstractJnlpMojo
     // Private Methods
     // ----------------------------------------------------------------------
 
+    void checkJnlpConfig()
+        throws MojoExecutionException
+    {
+        JnlpFileType type = jnlp.getType();
+        if ( type == null )
+        {
+            throw new MojoExecutionException( "jnlp must define a default jnlp type file to generate (among " +
+                                                  Arrays.toString( JnlpFileType.values() ) + " )." );
+        }
+        if ( !type.isRequireMainClass() && StringUtils.isNotBlank( jnlp.getMainClass() ) )
+        {
+            getLog().warn( "Jnlp file of type '" + type +
+                               "' does not support mainClass, value will not be accessible in template." );
+            jnlp.setMainClass( null );
+        }
+    }
     /**
      * Detects improper includes/excludes configuration.
      *
@@ -516,24 +532,31 @@ public abstract class AbstractJnlpMojo
 
                 packagedJnlpArtifacts.add( artifact );
 
-                boolean containsMainClass = getArtifactUtil().artifactContainsClass( artifact, jnlp.getMainClass() );
-
-                if ( containsMainClass )
+                if ( jnlp.isRequireMainClass() )
                 {
-                    if ( artifactWithMainClass == null )
+
+                    // try to find if this dependency contains the main class
+                    boolean containsMainClass =
+                        getArtifactUtil().artifactContainsClass( artifact, jnlp.getMainClass() );
+
+                    if ( containsMainClass )
                     {
-                        artifactWithMainClass = artifact;
-                        getLog().debug(
-                            "Found main jar. Artifact " + artifactWithMainClass + " contains the main class: " +
-                                jnlp.getMainClass() );
-                    }
-                    else
-                    {
-                        getLog().warn(
-                            "artifact " + artifact + " also contains the main class: " + jnlp.getMainClass() +
-                                ". IGNORED." );
+                        if ( artifactWithMainClass == null )
+                        {
+                            artifactWithMainClass = artifact;
+                            getLog().debug(
+                                "Found main jar. Artifact " + artifactWithMainClass + " contains the main class: " +
+                                    jnlp.getMainClass() );
+                        }
+                        else
+                        {
+                            getLog().warn(
+                                "artifact " + artifact + " also contains the main class: " + jnlp.getMainClass() +
+                                    ". IGNORED." );
+                        }
                     }
                 }
+
             }
             else
             // FIXME how do we deal with native libs?
@@ -615,7 +638,7 @@ public abstract class AbstractJnlpMojo
         String templateFileName = jnlp.getInputTemplate();
 
         GeneratorTechnicalConfig generatorTechnicalConfig =
-            new GeneratorTechnicalConfig( getProject(), templateDirectory, BUILT_IN_JNLP_TEMPLATE_FILENAME,
+            new GeneratorTechnicalConfig( getProject(), templateDirectory, jnlp.getType().getDefaultTemplateName(),
                                           jnlpOutputFile, templateFileName, jnlp.getMainClass(),
                                           getWebstartJarURLForVelocity(), getEncoding() );
 
@@ -694,9 +717,12 @@ public abstract class AbstractJnlpMojo
         getLog().debug( "project " + this.getProject() );
         getLog().debug( "verbose " + isVerbose() );
 
+        checkJnlpConfig();
         checkDependencyFilenameStrategy();
         checkPack200();
         checkDependencies();
+
+        findDefaultTemplateURL(jnlp.getType());
 
         if ( jnlp != null && jnlp.getResources() != null )
         {
@@ -732,7 +758,11 @@ public abstract class AbstractJnlpMojo
             throw new MojoExecutionException(
                 "JnlpExtension need at least one include artifact. Review your project configuration." );
         }
+    }
 
+    protected URL findDefaultJnlpExtensionTemplateURL()
+    {
+        return getClass().getClassLoader().getResource( "default-jnlp-extension-template.vm" );
     }
 
     /**
@@ -962,7 +992,7 @@ public abstract class AbstractJnlpMojo
 
         GeneratorTechnicalConfig generatorTechnicalConfig =
             new GeneratorTechnicalConfig( getProject(), templateDirectory, BUILT_IN_EXTENSION_TEMPLATE_FILENAME,
-                                          jnlpOutputFile, templateFileName, this.getJnlp().getMainClass(),
+                                          jnlpOutputFile, templateFileName, getJnlp().getMainClass(),
                                           getWebstartJarURLForVelocity(), getEncoding() );
 
         ExtensionGeneratorConfig extensionGeneratorConfig =

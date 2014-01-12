@@ -40,7 +40,6 @@ public abstract class AbstractGeneratorExtraConfigWithDeps
 
     private final Artifact artifactWithMainClass;
 
-
     private final DependencyFilenameStrategy dependencyFilenameStrategy;
 
     public AbstractGeneratorExtraConfigWithDeps( String libPath, boolean pack200, boolean outputJarVersions,
@@ -84,8 +83,7 @@ public abstract class AbstractGeneratorExtraConfigWithDeps
      */
     public boolean isArtifactWithMainClass( Artifact artifact )
     {
-        final boolean b = artifactWithMainClass.equals( artifact );
-        return b;
+        return artifactWithMainClass != null && artifactWithMainClass.equals( artifact );
     }
 
     /**

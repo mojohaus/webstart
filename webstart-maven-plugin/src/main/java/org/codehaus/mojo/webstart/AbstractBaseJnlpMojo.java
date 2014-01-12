@@ -739,14 +739,9 @@ public abstract class AbstractBaseJnlpMojo
         }
     }
 
-    protected URL findDefaultJnlpTemplateURL()
+    protected URL findDefaultTemplateURL(JnlpFileType fileType)
     {
-        return getClass().getClassLoader().getResource( "default-jnlp-template.vm" );
-    }
-
-    protected URL findDefaultJnlpExtensionTemplateURL()
-    {
-        return getClass().getClassLoader().getResource( "default-jnlp-extension-template.vm" );
+        return getClass().getClassLoader().getResource( fileType.getDefaultTemplateName() );
     }
 
     /**
@@ -754,7 +749,7 @@ public abstract class AbstractBaseJnlpMojo
      */
     protected String getWebstartJarURLForVelocity()
     {
-        String url = findDefaultJnlpTemplateURL().toString();
+        String url = findDefaultTemplateURL(JnlpFileType.application).toString();
         return url.substring( 0, url.indexOf( "!" ) + 2 );
     }
 

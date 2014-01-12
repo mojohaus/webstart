@@ -47,8 +47,6 @@ public class JnlpConfig
 
     private String offlineAllowed;
 
-    // private String codebase;
-
     private String href;
 
     private String mainClass;
@@ -60,6 +58,8 @@ public class JnlpConfig
      * Obsolete. Will be removed after 1.0-alpha- series.
      */
     private File resources;
+
+    private JnlpFileType type = JnlpFileType.application;
 
     public void setInputTemplateResourcePath( String inputTemplateResourcePath )
     {
@@ -100,11 +100,6 @@ public class JnlpConfig
     {
         this.allPermissions = allPermissions;
     }
-    /*
-    public void setCodebase( String codebase )
-    {
-        this.codebase = codebase;
-    }*/
 
     public void setHref( String href )
     {
@@ -119,6 +114,16 @@ public class JnlpConfig
     public void setProperties( Map<String, String> properties )
     {
         this.properties = properties;
+    }
+
+    public void setType( String type )
+    {
+        this.type = JnlpFileType.valueOf( type );
+    }
+
+    public void setType( JnlpFileType type )
+    {
+        this.type = type;
     }
 
     public String getInputTemplateResourcePath()
@@ -171,13 +176,6 @@ public class JnlpConfig
         return resources;
     }
 
-    /*
-    public String getCodebase()
-    {
-        return codebase;
-    }
-    */
-
     public String getHref()
     {
         return href;
@@ -191,5 +189,15 @@ public class JnlpConfig
     public Map<String, String> getProperties()
     {
         return properties;
+    }
+
+    public JnlpFileType getType()
+    {
+        return type;
+    }
+
+    public boolean isRequireMainClass()
+    {
+        return type.isRequireMainClass();
     }
 }
