@@ -102,7 +102,7 @@
 
   <properties>
     <mavenVersion>2.0.10</mavenVersion>
-    <mavenPluginPluginVersion>3.1</mavenPluginPluginVersion>
+    <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
     <keytoolVersion>1.4</keytoolVersion>
     <sitePluginVersion>3.3</sitePluginVersion>
 
@@ -144,6 +144,45 @@
       <modules>
         <module>webstart-pack200-impl</module>
       </modules>
+    </profile>
+
+    <profile>
+      <id>reporting</id>
+      <activation>
+        <property>
+          <name>skipReports</name>
+          <value>!true</value>
+        </property>
+      </activation>
+      <reporting>
+        <plugins>
+          <!-- remove this when using mojo-parent 33 -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-project-info-reports-plugin</artifactId>
+            <version>2.7</version>
+            <reportSets>
+              <reportSet>
+                <reports>
+                  <report>cim</report>
+                  <report>dependencies</report>
+                  <report>dependency-convergence</report>
+                  <report>dependency-info</report>
+                  <report>dependency-management</report>
+                  <report>index</report>
+                  <report>issue-tracking</report>
+                  <report>license</report>
+                  <report>mailing-list</report>
+                  <report>plugin-management</report>
+                  <report>project-team</report>
+                  <report>scm</report>
+                  <report>summary</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
     </profile>
 
   </profiles>
@@ -351,7 +390,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
-
         <executions>
           <execution>
             <goals>
