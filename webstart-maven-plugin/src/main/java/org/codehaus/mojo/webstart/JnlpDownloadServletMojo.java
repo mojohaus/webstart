@@ -245,7 +245,6 @@ public class JnlpDownloadServletMojo
         throws MojoExecutionException
     {
         checkDependencyFilenameStrategy();
-        checkPack200();
 
         if ( CollectionUtils.isEmpty( jnlpFiles ) )
         {

@@ -1,4 +1,4 @@
-package org.codehaus.mojo.webstart;
+package org.codehaus.mojo.webstart.pack200;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

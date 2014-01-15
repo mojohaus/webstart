@@ -19,14 +19,13 @@ package org.codehaus.mojo.webstart.dependency.task;
  * under the License.
  */
 
-import org.codehaus.mojo.webstart.Pack200Tool;
+import org.codehaus.mojo.webstart.pack200.Pack200Tool;
 import org.codehaus.mojo.webstart.dependency.JnlpDependencyConfig;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * To pack200 a dependency.
@@ -43,14 +42,8 @@ public class Pack200Task
 
     public static final String ROLE_HINT = "Pack200Task";
 
-    /**
-     * All available pack200 tools.
-     * <p/>
-     * We use a plexus list injection instead of a direct component injection since for a jre 1.4, we will at the
-     * moment have no implementation of this tool.
-     */
     @Requirement( role = Pack200Tool.class )
-    private List<Pack200Tool> pack200Tools;
+    private Pack200Tool pack200Tool;
 
     /**
      * {@inheritDoc}
@@ -69,7 +62,8 @@ public class Pack200Task
         {
             throw new NullPointerException( "config.artifact.file can't be null" );
         }
-        if (!config.isPack200()) {
+        if ( !config.isPack200() )
+        {
             throw new IllegalStateException( "Can't unpack200 if config.isPack200 is false" );
         }
     }
@@ -84,7 +78,7 @@ public class Pack200Task
         verboseLog( config, "Pack200 file: " + file );
         try
         {
-            File result = getPack200Tool().packJar( file, config.isGzip(), config.getPack200PassFiles() );
+            File result = pack200Tool.packJar( file, config.isGzip(), config.getPack200PassFiles() );
             getLogger().debug( "packed200 file: " + result );
             return result;
         }
@@ -94,8 +88,4 @@ public class Pack200Task
         }
     }
 
-    protected Pack200Tool getPack200Tool()
-    {
-        return pack200Tools.get( 0 );
-    }
 }

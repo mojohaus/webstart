@@ -2,7 +2,7 @@
   <parent>
     <artifactId>mojo-parent</artifactId>
     <groupId>org.codehaus.mojo</groupId>
-    <version>32</version>
+    <version>34-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>webstart</artifactId>
@@ -91,7 +91,6 @@
   </contributors>
 
   <modules>
-    <module>webstart-pack200-api</module>
     <module>webstart-jnlp-servlet</module>
     <module>webstart-maven-plugin</module>
   </modules>
@@ -101,91 +100,15 @@
   </prerequisites>
 
   <properties>
-    <mavenVersion>2.0.10</mavenVersion>
+    <mavenVersion>2.2.1</mavenVersion>
     <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
     <keytoolVersion>1.4</keytoolVersion>
-    <sitePluginVersion>3.3</sitePluginVersion>
 
     <!-- release plugin configuration -->
 
     <!-- all modules shares the same version in our projects -->
     <autoVersionSubmodules>true</autoVersionSubmodules>
   </properties>
-
-  <profiles>
-    <profile>
-      <id>jdk15</id>
-      <activation>
-        <jdk>1.5</jdk>
-      </activation>
-
-      <modules>
-        <module>webstart-pack200-impl</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>jdk16</id>
-      <activation>
-        <jdk>1.6</jdk>
-      </activation>
-
-      <modules>
-        <module>webstart-pack200-impl</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>jdk17</id>
-      <activation>
-        <jdk>1.7</jdk>
-      </activation>
-
-      <modules>
-        <module>webstart-pack200-impl</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>reporting</id>
-      <activation>
-        <property>
-          <name>skipReports</name>
-          <value>!true</value>
-        </property>
-      </activation>
-      <reporting>
-        <plugins>
-          <!-- remove this when using mojo-parent 33 -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-project-info-reports-plugin</artifactId>
-            <version>2.7</version>
-            <reportSets>
-              <reportSet>
-                <reports>
-                  <report>cim</report>
-                  <report>dependencies</report>
-                  <report>dependency-convergence</report>
-                  <report>dependency-info</report>
-                  <report>dependency-management</report>
-                  <report>index</report>
-                  <report>issue-tracking</report>
-                  <report>license</report>
-                  <report>mailing-list</report>
-                  <report>plugin-management</report>
-                  <report>project-team</report>
-                  <report>scm</report>
-                  <report>summary</report>
-                </reports>
-              </reportSet>
-            </reportSets>
-          </plugin>
-        </plugins>
-      </reporting>
-    </profile>
-
-  </profiles>
 
   <dependencyManagement>
     <dependencies>
@@ -324,12 +247,6 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>keytool-api-1.7</artifactId>
         <version>${keytoolVersion}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.ant</groupId>
-        <artifactId>ant</artifactId>
-        <version>1.7.0</version>
       </dependency>
 
       <dependency>

@@ -19,14 +19,13 @@ package org.codehaus.mojo.webstart.dependency.task;
  * under the License.
  */
 
-import org.codehaus.mojo.webstart.Pack200Tool;
+import org.codehaus.mojo.webstart.pack200.Pack200Tool;
 import org.codehaus.mojo.webstart.dependency.JnlpDependencyConfig;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * To unpack200 a dependency.
@@ -53,7 +52,7 @@ public class UnPack200Task
      * moment have no implementation of this tool.
      */
     @Requirement( role = Pack200Tool.class )
-    private List<Pack200Tool> pack200Tools;
+    private Pack200Tool pack200Tool;
 
     /**
      * {@inheritDoc}
@@ -87,7 +86,7 @@ public class UnPack200Task
         verboseLog( config, "Unpack 200 file: " + file );
         try
         {
-            File result = getPack200Tool().unpackJar( file );
+            File result = pack200Tool.unpackJar( file );
             getLogger().debug( "Unpacked 200 file: " + result );
             return result;
         }
@@ -97,8 +96,4 @@ public class UnPack200Task
         }
     }
 
-    protected Pack200Tool getPack200Tool()
-    {
-        return pack200Tools.get( 0 );
-    }
 }

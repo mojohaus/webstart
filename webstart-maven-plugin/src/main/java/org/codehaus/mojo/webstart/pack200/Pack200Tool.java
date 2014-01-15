@@ -1,4 +1,4 @@
-package org.codehaus.mojo.webstart;
+package org.codehaus.mojo.webstart.pack200;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -27,8 +27,6 @@ import java.util.Map;
 
 /**
  * Tool api for pack200 operations.
- * <p/>
- * <strong>Note: </strong>A such tool can only be used for a jre > 1.4.
  *
  * @author tchemit <chemit@codelutin.com>
  * @since 1.0-beta-2

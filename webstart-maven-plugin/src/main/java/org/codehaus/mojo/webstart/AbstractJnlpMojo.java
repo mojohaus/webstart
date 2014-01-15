@@ -719,7 +719,6 @@ public abstract class AbstractJnlpMojo
 
         checkJnlpConfig();
         checkDependencyFilenameStrategy();
-        checkPack200();
         checkDependencies();
 
         findDefaultTemplateURL(jnlp.getType());

@@ -21,7 +21,6 @@ package org.codehaus.mojo.webstart;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -29,6 +28,8 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.webstart.dependency.filenaming.DependencyFilenameStrategy;
+import org.codehaus.mojo.webstart.pack200.Pack200Config;
+import org.codehaus.mojo.webstart.pack200.Pack200Tool;
 import org.codehaus.mojo.webstart.sign.SignConfig;
 import org.codehaus.mojo.webstart.sign.SignTool;
 import org.codehaus.mojo.webstart.util.ArtifactUtil;
@@ -246,7 +247,7 @@ public abstract class AbstractBaseJnlpMojo
      * @since 1.0-beta-2
      */
     @Component( role = Pack200Tool.class )
-    private List<Pack200Tool> pack200Tools;
+    private Pack200Tool pack200Tool;
 
     /**
      * Artifact helper.
@@ -575,32 +576,6 @@ public abstract class AbstractBaseJnlpMojo
     }
 
     /**
-     * Confirms that if Pack200 is enabled, the MOJO is being executed in at least a Java 1.5 JVM.
-     *
-     * @throws MojoExecutionException if can not foind pack200 tool or jdk is before 5.0
-     */
-    protected void checkPack200()
-        throws MojoExecutionException
-    {
-        if ( isPack200() )
-        {
-
-            final float javaVersion5 = 1.5f;
-            if ( SystemUtils.JAVA_VERSION_FLOAT < javaVersion5 )
-            {
-                throw new MojoExecutionException(
-                    "Configuration error: Pack200 compression is only available on SDK 5.0 or above." );
-            }
-
-            // check the pack200Tool exists
-            if ( pack200Tools.isEmpty() )
-            {
-                throw new MojoExecutionException( "Configuration error: No Pack200Tool found." );
-            }
-        }
-    }
-
-    /**
      * Conditionally copy the jar file into the target directory.
      * The operation is not performed when a signed target file exists and is up to date.
      * The signed target file name is taken from the <code>sourceFile</code> name.E
@@ -772,7 +747,7 @@ public abstract class AbstractBaseJnlpMojo
 
     protected Pack200Tool getPack200Tool()
     {
-        return pack200Tools.get( 0 );
+        return pack200Tool;
     }
 
     /**
