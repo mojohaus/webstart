@@ -2,7 +2,7 @@
   <parent>
     <artifactId>mojo-parent</artifactId>
     <groupId>org.codehaus.mojo</groupId>
-    <version>34-SNAPSHOT</version>
+    <version>32</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>webstart</artifactId>
@@ -100,7 +100,7 @@
   </prerequisites>
 
   <properties>
-    <mavenVersion>2.2.1</mavenVersion>
+    <mavenVersion>2.0.11</mavenVersion>
     <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
     <keytoolVersion>1.4</keytoolVersion>
 
