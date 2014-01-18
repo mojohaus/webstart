@@ -27,6 +27,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.webstart.JarResource;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -71,6 +72,6 @@ public interface ArtifactUtil
 
     Set<Artifact> resolveTransitively( Set<Artifact> jarResourceArtifacts, Set<MavenProject> siblingProjects,
                                        Artifact artifact, ArtifactRepository localRepository,
-                                       List<ArtifactRepository> remoteRepositories, ArtifactFilter artifactFilter )
+                                       List<ArtifactRepository> remoteRepositories, ArtifactFilter artifactFilter, Map managedVersions)
         throws MojoExecutionException;
 }

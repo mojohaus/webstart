@@ -515,7 +515,7 @@ public class JnlpDownloadServletMojo
 
             Set<Artifact> transitiveArtifacts =
                 getArtifactUtil().resolveTransitively( artifacts, siblingProjects, getProject().getArtifact(),
-                                                       getLocalRepository(), getRemoteRepositories(), artifactFilter );
+                                                       getLocalRepository(), getRemoteRepositories(), artifactFilter, getProject().getManagedVersionMap());
 
             // for each transitive dependency, wrap it in a JarResource and add it to the collection of
             // existing jar resources (if not already in)

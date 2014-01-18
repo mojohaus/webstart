@@ -40,6 +40,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -144,7 +145,7 @@ public class DefaultArtifactUtil
     public Set<Artifact> resolveTransitively( Set<Artifact> jarResourceArtifacts, Set<MavenProject> siblingProjects,
                                               Artifact originateArtifact, ArtifactRepository localRepository,
                                               List<ArtifactRepository> remoteRepositories,
-                                              ArtifactFilter artifactFilter )
+                                              ArtifactFilter artifactFilter, Map managedVersions)
         throws MojoExecutionException
     {
 
@@ -170,8 +171,8 @@ public class DefaultArtifactUtil
         try
         {
             ArtifactResolutionResult result =
-                artifactResolver.resolveTransitively( jarResourceArtifacts, originateArtifact, null,
-                                                      //managedVersions
+                artifactResolver.resolveTransitively( jarResourceArtifacts, originateArtifact,
+                                                      managedVersions,
                                                       localRepository, remoteRepositories, this.artifactMetadataSource,
                                                       artifactFilter );
 
