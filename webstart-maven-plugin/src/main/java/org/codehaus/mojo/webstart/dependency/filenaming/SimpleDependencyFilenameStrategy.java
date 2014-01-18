@@ -48,7 +48,7 @@ public class SimpleDependencyFilenameStrategy
     /**
      * {@inheritDoc}
      */
-    public String getDependencyFileBasename( Artifact artifact, Boolean outputJarVersion )
+    public String getDependencyFileBasename( Artifact artifact, Boolean outputJarVersion, Boolean useUniqueVersions )
     {
         String filename = artifact.getArtifactId();
 
@@ -68,7 +68,15 @@ public class SimpleDependencyFilenameStrategy
             {
                 filename += "-";
             }
-            filename += artifact.getVersion();
+            
+            if ( useUniqueVersions != null && useUniqueVersions ) 
+            {
+            	filename += artifact.getBaseVersion();
+            }
+            else 
+            {
+            	filename += artifact.getVersion();
+            }
         }
         return filename;
     }

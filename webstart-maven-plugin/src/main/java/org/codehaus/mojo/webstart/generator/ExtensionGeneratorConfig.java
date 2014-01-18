@@ -44,12 +44,12 @@ public class ExtensionGeneratorConfig
     private final String codebase;
 
     public ExtensionGeneratorConfig( String libPath, boolean pack200, boolean outputJarVersions,
-                                     Artifact artifactWithMainClass,
+    		                         boolean useUniqueVersions, Artifact artifactWithMainClass,
                                      DependencyFilenameStrategy dependencyFilenameStrategy,
                                      Map<JnlpExtension, List<Artifact>> extensionsJnlpArtifacts, String codebase,
                                      JnlpExtension extension )
     {
-        super( libPath, pack200, outputJarVersions, artifactWithMainClass, dependencyFilenameStrategy );
+        super( libPath, pack200, outputJarVersions, useUniqueVersions, artifactWithMainClass, dependencyFilenameStrategy );
         this.extensionsJnlpArtifacts = extensionsJnlpArtifacts;
         this.extension = extension;
         this.codebase = codebase;

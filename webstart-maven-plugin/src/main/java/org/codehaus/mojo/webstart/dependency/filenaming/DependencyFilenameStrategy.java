@@ -41,18 +41,20 @@ public interface DependencyFilenameStrategy
      *
      * @param artifact         the artifact of the dependency
      * @param outputJarVersion flag if outputJarVersion is used
+     * @param useUniqueVersions flag if useUniqueVersions is used
      * @return dependency file basename (filename without extension) for the given artifact.
      */
-    String getDependencyFileBasename( Artifact artifact, Boolean outputJarVersion );
+    String getDependencyFileBasename( Artifact artifact, Boolean outputJarVersion, Boolean useUniqueVersions );
 
     /**
      * Get the dependency file name for the given artifact.
      *
      * @param artifact         the artifact of the dependency
      * @param outputJarVersion flag if outputJarVersion is used
+     * @param useUniqueVersions flag if useUniqueVersions is used
      * @return dependency file name for the given artifact.
      */
-    String getDependencyFilename( Artifact artifact, Boolean outputJarVersion );
+    String getDependencyFilename( Artifact artifact, Boolean outputJarVersion, Boolean useUniqueVersions );
 
     /**
      * Get the dependency file extension for the given artifact.

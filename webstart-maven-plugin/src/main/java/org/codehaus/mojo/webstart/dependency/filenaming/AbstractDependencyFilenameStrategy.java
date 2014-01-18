@@ -34,9 +34,9 @@ public abstract class AbstractDependencyFilenameStrategy
     /**
      * {@inheritDoc}
      */
-    public String getDependencyFilename( Artifact artifact, Boolean outputJarVersion )
+    public String getDependencyFilename( Artifact artifact, Boolean outputJarVersion, Boolean useUniqueVersions )
     {
-        String filename = getDependencyFileBasename( artifact, outputJarVersion );
+        String filename = getDependencyFileBasename( artifact, outputJarVersion, useUniqueVersions );
 
         filename += "." + getDependencyFileExtension( artifact );
 

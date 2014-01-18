@@ -35,5 +35,5 @@ public interface JnlpDependencyRequestBuilder
 
     JnlpDependencyRequests createRequests();
 
-    JnlpDependencyRequest createRequest( Artifact artifact, boolean outputJarVersion );
+    JnlpDependencyRequest createRequest( Artifact artifact, boolean outputJarVersion, boolean useUniqueVersions );
 }

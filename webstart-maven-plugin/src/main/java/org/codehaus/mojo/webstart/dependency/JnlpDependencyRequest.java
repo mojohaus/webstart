@@ -90,7 +90,7 @@ public class JnlpDependencyRequest
 
         Artifact artifact = config.getArtifact();
 
-        String fileName = config.getDependencyFilenameStrategy().getDependencyFilename( artifact, false );
+        String fileName = config.getDependencyFilenameStrategy().getDependencyFilename( artifact, false, false );
 
         return new File( workingDirectory, fileName );
     }
@@ -100,7 +100,8 @@ public class JnlpDependencyRequest
 
         File finalDirectory = config.getFinalDirectory();
         String filename = config.getDependencyFilenameStrategy().getDependencyFilename( config.getArtifact(),
-                                                                                        config.isOutputJarVersion() );
+                                                                                        config.isOutputJarVersion(),
+                                                                                        config.isUseUniqueVersions());
         if ( config.isPack200() )
         {
             filename += ".pack";

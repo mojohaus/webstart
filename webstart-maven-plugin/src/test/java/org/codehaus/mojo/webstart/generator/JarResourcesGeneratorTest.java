@@ -21,6 +21,7 @@ package org.codehaus.mojo.webstart.generator;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
 import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.apache.maven.plugin.testing.stubs.ArtifactStub;
 import org.apache.maven.project.MavenProject;
@@ -39,6 +40,7 @@ import java.util.List;
 public class JarResourcesGeneratorTest
     extends TestCase
 {
+    public static final String EOL = System.getProperty( "line.separator" );
 
     public void testGetDependenciesText()
         throws Exception
@@ -82,9 +84,9 @@ public class JarResourcesGeneratorTest
         jarResources.add( jarResource3 );
         jarResources.add( jarResource4 );
 
-        String expectedText =
-            "\n<jar href=\"href1\" version=\"1.1\" main=\"true\"/>\n" + "<jar href=\"href2\" version=\"1.2\"/>\n" +
-                "<jar href=\"href3\"/>\n";
+        String expectedText =EOL + "<jar href=\"href1\" version=\"1.1\" main=\"true\"/>" + 
+        		EOL + "<jar href=\"href2\" version=\"1.2\"/>" +
+        		EOL + "<jar href=\"href3\"/>" + EOL;
 
         String actualText = generator.getDependenciesText();
 
@@ -99,8 +101,9 @@ public class JarResourcesGeneratorTest
 //                                       "default-jnlp-template.vm", outputFile, templateFile.getName(), jarResources,
 //                                       mainClass, "jar:file:/tmp/path/to/webstart-plugin.jar", "myLib", "utf-8" );
 
-        String expectedText2 = "\n<jar href=\"myLib/href1\" version=\"1.1\" main=\"true\"/>\n" +
-            "<jar href=\"myLib/href2\" version=\"1.2\"/>\n" + "<jar href=\"myLib/href3\"/>\n";
+        String expectedText2 = EOL + "<jar href=\"myLib/href1\" version=\"1.1\" main=\"true\"/>" +
+        		EOL + "<jar href=\"myLib/href2\" version=\"1.2\"/>" + 
+        		EOL + "<jar href=\"myLib/href3\"/>" + EOL;
 
         String actualText2 = generator2.getDependenciesText();
 

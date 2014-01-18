@@ -45,7 +45,7 @@ public class FullDependencyFilenameStrategy
     /**
      * {@inheritDoc}
      */
-    public String getDependencyFileBasename( Artifact artifact, Boolean outputJarVersion )
+    public String getDependencyFileBasename( Artifact artifact, Boolean outputJarVersion, Boolean useUniqueVersions )
     {
         String filename = artifact.getGroupId() + "-" + artifact.getArtifactId();
 
@@ -65,7 +65,14 @@ public class FullDependencyFilenameStrategy
             {
                 filename += "-";
             }
-            filename += artifact.getVersion();
+            
+            if (useUniqueVersions != null && useUniqueVersions.booleanValue()) 
+            {
+            	filename += artifact.getBaseVersion();
+            }
+            else {
+            	filename += artifact.getVersion();
+            }
         }
         return filename;
     }

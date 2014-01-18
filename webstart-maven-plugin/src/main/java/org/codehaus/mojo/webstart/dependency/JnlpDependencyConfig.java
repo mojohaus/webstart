@@ -51,6 +51,11 @@ public class JnlpDependencyConfig
      * Should we use the outputJarVersion convention?
      */
     private final boolean outputJarVersion;
+    
+    /**
+     * Should we use unique versions?
+     */
+    private final boolean useUniqueVersions;
 
     /**
      * Working directory to process this jnlp dependency.
@@ -58,11 +63,12 @@ public class JnlpDependencyConfig
     private File workingDirectory;
 
     public JnlpDependencyConfig( JnlpDependencyGlobalConfig globalConfig, Artifact artifact, String finalName,
-                                 boolean outputJarVersion )
+                                 boolean outputJarVersion, boolean useUniqueVersions)
     {
         this.globalConfig = globalConfig;
         this.artifact = artifact;
         this.outputJarVersion = outputJarVersion;
+        this.useUniqueVersions = useUniqueVersions;
         this.workingDirectory = new File( globalConfig.getWorkingDirectory(), finalName );
     }
 
@@ -81,7 +87,11 @@ public class JnlpDependencyConfig
         return outputJarVersion;
     }
 
-    public DependencyFilenameStrategy getDependencyFilenameStrategy()
+    public boolean isUseUniqueVersions() {
+		return useUniqueVersions;
+	}
+
+	public DependencyFilenameStrategy getDependencyFilenameStrategy()
     {
         return globalConfig.getDependencyFilenameStrategy();
     }

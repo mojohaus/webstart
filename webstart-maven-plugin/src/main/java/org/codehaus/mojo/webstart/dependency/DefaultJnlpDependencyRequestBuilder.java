@@ -80,7 +80,7 @@ public class DefaultJnlpDependencyRequestBuilder
     /**
      * {@inheritDoc}
      */
-    public JnlpDependencyRequest createRequest( Artifact artifact, boolean outputJarVersion )
+    public JnlpDependencyRequest createRequest( Artifact artifact, boolean outputJarVersion, boolean useUniqueVersions )
     {
 
         if ( globalConfig == null )
@@ -88,7 +88,7 @@ public class DefaultJnlpDependencyRequestBuilder
             throw new IllegalStateException( "No config found, use init method before creating a request" );
         }
 
-        JnlpDependencyConfig config = createConfig( artifact, outputJarVersion );
+        JnlpDependencyConfig config = createConfig( artifact, outputJarVersion, useUniqueVersions );
 
         JnlpDependencyTask[] tasks = createTasks( config );
 
@@ -96,12 +96,12 @@ public class DefaultJnlpDependencyRequestBuilder
         return request;
     }
 
-    private JnlpDependencyConfig createConfig( Artifact artifact, boolean outputJarVersion )
+    private JnlpDependencyConfig createConfig( Artifact artifact, boolean outputJarVersion, boolean useUniqueVersions )
     {
 
-        String finalName = globalConfig.getDependencyFilenameStrategy().getDependencyFileBasename( artifact, false );
+        String finalName = globalConfig.getDependencyFilenameStrategy().getDependencyFileBasename( artifact, false, false );
 
-        return new JnlpDependencyConfig( globalConfig, artifact, finalName, outputJarVersion );
+        return new JnlpDependencyConfig( globalConfig, artifact, finalName, outputJarVersion, useUniqueVersions );
     }
 
     private JnlpDependencyTask[] createTasks( JnlpDependencyConfig config )

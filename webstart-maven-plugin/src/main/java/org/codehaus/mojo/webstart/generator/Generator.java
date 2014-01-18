@@ -113,15 +113,22 @@ public class Generator
 //                    String filename = artifact.getFile().getName();
                 if ( config.isOutputJarVersions() )
                 {
-                    String filename = config.getDependencyFilename( artifact, null );
+                    String filename = config.getDependencyFilename( artifact, null, config.isUseUniqueVersions() );
 //                      String extension = filename.substring( filename.lastIndexOf( "." ) );
 //                    buffer.append( artifact.getArtifactId() ).append( extension ).append( "\"" );
                     buffer.append( filename ).append( "\"" );
-                    buffer.append( " version=\"" ).append( artifact.getVersion() ).append( "\"" );
+                    if (config.isUseUniqueVersions()) 
+                    {
+                    	buffer.append( " version=\"" ).append( artifact.getBaseVersion() ).append( "\"" );
+                    }
+                    else 
+                    {
+                    	buffer.append( " version=\"" ).append( artifact.getVersion() ).append( "\"" );
+                    }
                 }
                 else
                 {
-                    String filename = config.getDependencyFilename( artifact, false );
+                    String filename = config.getDependencyFilename( artifact, false, config.isUseUniqueVersions() );
                     buffer.append( filename ).append( "\"" );
                 }
 
