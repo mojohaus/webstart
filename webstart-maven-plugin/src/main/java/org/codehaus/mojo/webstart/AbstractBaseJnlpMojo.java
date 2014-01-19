@@ -226,6 +226,14 @@ public abstract class AbstractBaseJnlpMojo
     @Parameter( property = "jnlp.filenameMapping", defaultValue = "simple", required = true)
     private String filenameMapping;
 
+    /**
+     * Use unique version for any snapshot dependency, or just use the {@code -SNAPSHOT} version suffix.
+     *
+     * @since 1.0-beta-7
+     */
+    @Parameter( property = "jnlp.useUniqueVersions", defaultValue = "false" )
+    private boolean useUniqueVersions;
+
     // ----------------------------------------------------------------------
     // Components
     // ----------------------------------------------------------------------
@@ -560,6 +568,11 @@ public abstract class AbstractBaseJnlpMojo
             dependencyFilenameStrategy = dependencyFilenameStrategyMap.get(filenameMapping );
         }
         return dependencyFilenameStrategy;
+    }
+
+    protected boolean isUseUniqueVersions()
+    {
+        return useUniqueVersions;
     }
 
     protected void  checkDependencyFilenameStrategy()

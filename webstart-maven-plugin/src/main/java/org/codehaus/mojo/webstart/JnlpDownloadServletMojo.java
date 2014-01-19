@@ -537,8 +537,8 @@ public class JnlpDownloadServletMojo
         {
             Artifact artifact = jarResource.getArtifact();
 
-            // TODO check if we must use useUniqueVersions here too ...
-            String filenameWithVersion = getDependencyFilenameStrategy().getDependencyFilename( artifact, false, false );
+            String filenameWithVersion =
+                getDependencyFilenameStrategy().getDependencyFilename( artifact, false, isUseUniqueVersions() );
 
             boolean copied = copyJarAsUnprocessedToDirectoryIfNecessary( artifact.getFile(), getLibDirectory(),
                                                                          filenameWithVersion );
@@ -551,18 +551,12 @@ public class JnlpDownloadServletMojo
                 getModifiedJnlpArtifacts().add( name.substring( 0, name.lastIndexOf( '.' ) ) );
             }
 
-            // TODO check if we must use useUniqueVersions here too ...
             String filename = getDependencyFilenameStrategy().getDependencyFilename( artifact,
                                                                                      jarResource.isOutputJarVersion()
                                                                                          ? null
-                                                                                         : false, false );
+                                                                                         : false,
+                                                                                     isUseUniqueVersions() );
             jarResource.setHrefValue( filename );
-//            if ( jarResource.isOutputJarVersion() )
-//            {
-//                // Create and set a version-less href for jarResource
-//                String hrefValue = buildHrefValue( artifact );
-//                jarResource.setHrefValue( hrefValue );
-//            }
         }
         return collectedJarResources;
     }
