@@ -12,10 +12,16 @@
   <description>Webstart Maven Plugin and related modules</description>
   <url>http://mojo.codehaus.org/webstart</url>
 
+  <scm>
+    <connection>scm:git:git@github.com:mojohaus/webstart.git</connection>
+    <developerConnection>scm:git:git@github.com:mojohaus/webstart.git</developerConnection>
+    <url>https://github.com/mojohaus/webstart</url>
+  </scm>
   <issueManagement>
-    <system>jira</system>
-    <url>http://jira.codehaus.org/browse/MWEBSTART</url>
+    <system>github</system>
+    <url>https://github.com/mojohaus/webstart/</url>
   </issueManagement>
+
   <ciManagement>
     <system>bamboo</system>
     <url>http://bamboo.ci.codehaus.org/browse/MOJO-MWEBSTART</url>
@@ -30,12 +36,6 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
-  <scm>
-    <url>https://svn.codehaus.org/mojo/trunk/mojo/webstart</url>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/webstart</developerConnection>
-  </scm>
 
   <developers>
     <developer>
