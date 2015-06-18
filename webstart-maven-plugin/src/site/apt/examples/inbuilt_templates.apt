@@ -1,0 +1,45 @@
+ ------
+ Using the Inbuilt Velocity Templates
+ ------
+ Jerome Lacoste
+ ------
+ 2008-09-23
+ ------
+
+Using the Inbuilt Velocity Templates
+
+  As described in the usage, the JNLP mojos depend on Velocity templates.
+  If you don't provide one, an inbuilt template will be picked up. They are accessible below for reference.
+
+  * {{{./default-jnlp-template.vm}JNLP Mojos inbuilt template}} (when type is <<<application>>>)
+
+  * {{{./default-jnlp-component-template.vm}JNLP Mojos inbuilt component template}} (when type is <<<component>>>)
+
+  * {{{./default-jnlp-installer-template.vm}JNLP Mojos inbuilt installer template}} (when type is <<<installer>>>)
+
+  * {{{./default-jnlp-extension-template.vm}JNLP Mojos inbuilt extension template}}
+
+  * {{{./default-jnlp-servlet-template.vm}JNLP Download Servlet Mojo inbuilt template}}
+
+  []
+
+Use your own templates
+
+  If you do want to provide your own template, consider placing it in the default location
+  (see the <templateDirectory> parameter) to minimize the plugin configuration.
+
+  You can then sue the default names:
+
+  * <jnlp-template.vm> for JNLP Mojos template
+
+  * <extension-template.vm> for JNLP Mojos extension template
+
+  * <servlet-template.vm> for JNLP Download Servlet Mojo template
+
+  []
+
+Use your own templates (by each jnlp file)
+
+  You can also provide a directory or/and template for each jnlp, extension and servlet file by filling the
+  <inputTemplateResourcePath> and <inputTemplate> in the Jnlp/Extension config.
+

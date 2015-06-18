@@ -1,0 +1,73 @@
+<!-- Test project which creates and signs a jar artifact -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.codehaus.mojo.webstart.it007</groupId>
+  <artifactId>webstart-it007</artifactId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+  <name>Webstart it007</name>
+  <description>Test Case for MWEBSTART-86. jnlp plugin work out of the box without jnlp template file.</description>
+
+  <organization>
+    <name>CoffeeBreaks</name>
+  </organization>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>webstart-maven-plugin</artifactId>
+        <version>@project.version@</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jnlp-inline</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+
+          <jnlp>
+            <mainClass>org.codehaus.groovy.tools.shell.Main</mainClass>
+          </jnlp>
+
+          <sign>
+            <keystore>${basedir}/src/main/jnlp/keystore</keystore>
+            <keypass>m2m2m2</keypass>
+            <storepass>m2m2m2</storepass>
+            <alias>alias</alias>
+
+            <!-- those where used to generate the keystore -->
+            <!--validity>10000</validity-->
+
+            <!--dnameCn>www.example.com</dnameCn>
+            <dnameOu>None</dnameOu>
+            <dnameO>ExampleOrg</dnameO>
+            <dnameL>Seattle</dnameL>
+            <dnameSt>Washington</dnameSt>
+            <dnameC>US</dnameC>
+
+            <verify>false</verify-->
+
+            <!--keystoreConfig>
+              <delete>false</delete>
+              <gen>true</gen>
+            </keystoreConfig-->
+          </sign>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all-minimal</artifactId>
+      <version>1.1-rc-3</version>
+    </dependency>
+  </dependencies>
+</project>

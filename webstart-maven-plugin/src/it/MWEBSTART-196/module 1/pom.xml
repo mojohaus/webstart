@@ -1,0 +1,55 @@
+<!-- Test project which creates and signs a jar artifact in a module with space name inside it-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>MWEBSTART-196</artifactId>
+    <version>1.0</version>
+  </parent>
+  <artifactId>MWEBSTART-196-child</artifactId>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>webstart-maven-plugin</artifactId>
+        <executions>
+
+          <execution>
+            <goals>
+              <goal>jnlp-download-servlet</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <jnlpFiles>
+                <jnlpFile>
+                  <templateFilename>app.vm</templateFilename>
+                  <outputFilename>app.jnlp</outputFilename>
+                  <jarResources>
+                    <jarResource>
+                      <groupId>commons-cli</groupId>
+                      <artifactId>commons-cli</artifactId>
+                      <version>1.1</version>
+                      <mainClass>org.apache.commons.cli.BasicParser</mainClass>
+                    </jarResource>
+                  </jarResources>
+                </jnlpFile>
+              </jnlpFiles>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+      <version>1.1</version>
+    </dependency>
+  </dependencies>
+</project>

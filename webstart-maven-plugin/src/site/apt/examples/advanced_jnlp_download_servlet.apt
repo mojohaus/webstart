@@ -1,0 +1,159 @@
+   ------
+   Advanced JnlpDownloadServlet Example
+   ------
+   Kevin Stembridge
+   ------
+   2008-09-23
+   ------
+
+Advanced JnlpDownloadServlet Example
+
+    This example shows how to configure the <<<jnlp-download-servlet>>> goal for its more advanced features. 
+    
+    * Multiple JNLP applications.
+    
+    * Sharing JAR resources between applications.
+    
+    * Deploying multiple versions of some artifacts.
+    
+
+*The web.xml
+
+    The <<<web.xml>>> file of your web application must include the appropriate servlet mapping for the JnlpDownloadServlet
+    as described in the {{{http://java.sun.com/javase/6/docs/technotes/guides/javaws/developersguide/downloadservletguide.html}JnlpDownloadServlet Guide}}.
+    For convenience, a basic but complete example is provided below.
+    
+   
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC 
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+
+  <servlet>
+    <servlet-name>JnlpDownloadServlet</servlet-name>
+    <servlet-class>jnlp.sample.servlet.JnlpDownloadServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>JnlpDownloadServlet</servlet-name>
+    <url-pattern>/applications/*</url-pattern>
+  </servlet-mapping>
+
+</web-app>
+---
+
+
+*The Plugin Configuration
+
+---
+<project>
+  ...
+  <build>
+    ...  
+    <plugins>
+    
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>webstart-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>jnlp-download-servlet</goal>
+            </goals>
+          </execution>
+        </executions>
+
+        <configuration>
+        
+          <!-- 
+          This is the directory containing the Velocity templates from which the JNLP files 
+          will be generated. The default location is 'src/main/jnlp'.
+          -->
+          <templateDirectory>src/main/jnlp/my-templates</templateDirectory>
+          
+          <!--
+          This is the name of the directory within which the processed JNLP artifacts 
+          will be placed. This directory will reside in the root of the WAR file 
+          produced by the enclosing project. The name provided here must match the 
+          servlet-mapping url-pattern provided in the web.xml file. The default value is 'webstart'. 
+          -->
+          <outputDirectoryName>applications</outputDirectoryName>
+
+          <jnlpFiles>
+          
+            <jnlpFile>
+              <templateFilename>app1Template.vm</templateFilename>
+              <outputFilename>application1.jnlp</outputFilename>
+              <jarResources>
+                <jarResource>
+                  <groupId>[some groupId]</groupId>
+                  <artifactId>[some artifactId]</artifactId>
+                  <version>[some version]</version>
+                  <classifier>[some optional classifier]</classifier>
+                  <!-- A mainClass element must be specified on one, and only one, jarResource per jnlpFile -->
+                  <mainClass>[app1 main class]</mainClass>
+                </jarResource>
+                <jarResource>
+                  <groupId>[some groupId]</groupId>
+                  <artifactId>[some artifactId]</artifactId>
+                  <version>[some version]</version>
+                </jarResource>
+              </jarResources>
+            </jnlpFile>
+          
+            <jnlpFile>
+              <templateFilename>app2Template.vm</templateFilename>
+              <outputFilename>application2.jnlp</outputFilename>
+              <jarResources>
+                <jarResource>
+                  <groupId>[some groupId]</groupId>
+                  <artifactId>[some artifactId]</artifactId>
+                  <version>[some version]</version>
+                  <mainClass>[app2 main class]</mainClass>
+                </jarResource>
+              </jarResources>
+            </jnlpFile>
+          
+          </jnlpFiles>
+          
+          <!-- 
+          Jar resources that are to be included in all generated JNLP files are specified here. 
+          If specified here, they cannot also be included in a jnlpFile configuration element.   
+          -->
+          <commonJarResources>
+            <jarResource>
+              <groupId>commons-lang</groupId>
+              <artifactId>commons-lang</artifactId>
+              <version>2.3</version>
+            </jarResource>
+            <jarResource>
+              <groupId>commons-lang</groupId>
+              <artifactId>commons-lang</artifactId>
+              <version>2.2</version>
+              <!-- 
+              When deploying multiple versions of an artifact, only one of them can be 
+              included in the generated JNLP file.
+              -->
+              <includeInJnlp>false</includeInJnlp>
+            </jarResource>
+          </commonJarResources>
+          
+          <!--
+          Set to true to exclude all transitive dependencies from the JNLP bundle. Default is false.
+          -->
+          <excludeTransitive>false</excludeTransitive>
+
+        </configuration>
+
+      </plugin>
+    </plugins>
+
+  </build>
+  ...
+</project>
+
+---
+

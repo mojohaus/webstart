@@ -1,0 +1,141 @@
+ ------
+ Example WAR Bundle #2
+ ------
+ Jerome Lacoste
+ ------
+ 2008-09-23
+ ------
+
+Example WAR Bundle #2
+
+  * Place each of your webstart app in a particular project
+
+  * Use Webstart Plugin as shown above to generate and install the zip in the local repository
+
+  * Generate your webapp using a project with <<<war>>> packaging
+
+  * Use a project to combine the WAR + n zip files
+
+  []
+
+  E.g.
+
+-------------------------------
+jnlp-project1/pom.xml - pom or jar packaging. Uses Webstart Plugin to package the generated files into a zip
+jnlp-project2/pom.xml - pom or jar packaging. Uses Webstart Plugin to package the generated files into another zip
+webapp/pom.xml        - war packaging. Creates a WAR file.
+webapp-bundle/pom.xml - pom packaging. Uses user defined assembly to combines the jnlp-project* resulting zip and the WAR into its own WAR.
+-------------------------------
+
+  In webapp-bundle:
+
+-------------------------------
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>yourproject</groupId>
+    <artifactId>project-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>full-webapp</artifactId>
+  <packaging>pom</packaging>
+  <name>Project Full WebApp</name>
+  <description>Webapp + Webstart Clients</description>
+  <dependencies>
+
+    <dependency>
+      <groupId>yourproject</groupId>
+      <artifactId>webapp</artifactId>
+      <version>${version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>yourproject</groupId>
+      <artifactId>clients-webstart-1</artifactId>
+      <version>${version}</version>
+      <type>zip</type>
+    </dependency>
+
+    <dependency>
+      <groupId>yourproject</groupId>
+      <artifactId>clients-webstart-2</artifactId>
+      <version>${version}</version>
+      <type>zip</type>
+    </dependency>
+
+    <dependency> <!-- required to support MNG-1274 -->
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-archiver</artifactId>
+      <version>1.0-alpha-4</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.1</version>
+        <executions>
+          <execution>
+            <phase>verify</phase> <!-- FIXME should be package, but inifinte loop see MNG-1311 -->
+            <goals><goal>assembly</goal></goals>
+          </execution>
+        </executions>
+        <configuration>
+          <descriptor>src/assemble/main.xml</descriptor>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+-------------------------------
+
+  and
+
+-------------------------------
+<assembly>
+  <id>main</id>
+  <formats>
+    <format>war</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>yourproject:webapp</include>
+      </includes>
+      <unpack>true</unpack>
+      <scope>runtime</scope>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>ws1</outputDirectory>
+      <includes>
+        <include>yourproject:clients-webstart-1</include>
+      </includes>
+      <unpack>true</unpack>
+      <scope>runtime</scope>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>ws1</outputDirectory>
+      <includes>
+        <include>yourproject:clients-webstart-2</include>
+      </includes>
+      <unpack>true</unpack>
+      <scope>runtime</scope>
+    </dependencySet>
+    <!--dependencySet> NOT YET IN CENTRAL REPOSITORY
+      <outputDirectory>WEB-INF/lib</outputDirectory>
+      <includes>
+        <include>com.sun.java.jnlp:jnlp-servlet</include>
+      </includes>
+      <scope>runtime</scope>
+    </dependencySet-->
+  </dependencySets>
+</assembly>
+-------------------------------
+

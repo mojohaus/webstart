@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp
+    spec="1.0+"
+    codebase="http://www.domaine.com/webstart/"
+    href="$outputFile">
+  <information>
+    <title>Title</title>
+    <homepage href="http://www.domain.com"/>
+    <description kind="one-line">OneLineDescription</description>
+    <description kind="short">Short Description.
+                   Multi-line.</description>
+    <description kind="tooltip">Tooltip Description</description>
+    <icon
+      width="35"
+      height="26"
+      href="images/icon.gif"/>
+    <icon
+      kind="splash"
+      href="images/icon.jpg"/>
+  </information>
+  <information>
+    <title>French</title>
+    <vendor>Pauses Cafees</vendor>
+    <homepage href="http://www.domaine.com"/>
+    <description kind="one-line">DescriptionEnUneLigne</description>
+    <description kind="short">Description courte.
+                   Multi-ligne.</description>
+    <description kind="tooltip">Description pour Tooltip</description>
+  </information>
+  <security>
+     <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.4+"
+     initial-heap-size="32m"
+     max-heap-size="128m"
+     />
+     $dependencies
+  </resources>
+  <application-desc main-class="$mainClass">
+    <argument>1</argument>
+    <argument>2</argument>
+  </application-desc>
+</jnlp>

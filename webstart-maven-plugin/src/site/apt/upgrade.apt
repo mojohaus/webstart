@@ -1,0 +1,191 @@
+ ------
+ Upgrade from a previous version
+ ------
+ Jerome Lacoste
+ ------
+ 2008-09-23
+ ------
+
+Upgrade from a previous version
+
+  Because we're adding new features, and the plugin wasn't designed sufficiently in the start, we've slightly evolved the configuration.
+
+  This document should help you update your POM if you want to upgrade between stable releases.
+
+  <<Note:>> we may further change the POM configuration, especially if we fix {{{http://jira.codehaus.org/browse/MWEBSTART-58} MWEBSTART-58}}.
+
+* Important changes since 1.0-beta-5
+
+  Changes that affect the use and configuration of the plugin.
+
+** 2014-01-06
+
+  Introduce the <<<filenameMapping>>> parameter and set default value to <<<simple>>>.
+
+  For more details, see {{{https://jira.codehaus.org/browse/MWEBSTART-195}MWEBSTART-195}}.
+
+** 2013-12-27
+
+  Remove verifyjar parameter (was not used ever!). (see {{{https://jira.codehaus.org/browse/MWEBSTART-238}MWEBSTART-238}}).
+
+* Important changes since 1.0-beta-4
+
+  Changes that affect the use and configuration of the plugin.
+
+** 2013-11-08
+
+  jnlpFile (for <jnlp-download-servlet> mojo) has changed, you can now defined the input resource path (like jnlp and
+  extension files does).
+
+  Use then the <inputTemplateResourcePath> property to override the default template directory for a specific jnlp file
+  to generate, use also the <inputTemplate> (the previous configuration <templateFilename> is still available but is deprecated).
+
+* Important changes since 1.0-beta-3
+
+  Changes that affect the use and configuration of the plugin.
+
+** 2013-10-26
+
+  The pack200 has changed (see {{{http://jira.codehaus.org/browse/MWEBSTART-212} MWEBSTART-212}}).
+
+  Must change from
+
+-------------
+<pack200>true</pack200>
+-------------
+
+  to
+
+-------------
+<pack200>
+  <enabled>true</enabled>
+</pack200>
+-------------
+
+  You can now also add to the pack200 some passFiles not to be pack like this:
+
+-------------
+<pack200>
+  <enabled>true</enabled>
+  <passFiles>
+    <passFile>com/sun/codemodel/</passFile>
+    <passFile>com/sun/tools/xjc/reader/xmlschema/ct/</passFile>
+  </passFiles>
+</pack200>
+-------------
+
+* Important changes since 1.0-beta-3
+
+  Changes that affect the use and configuration of the plugin.
+
+** 2012-02-04
+
+  The groupId has been changed. You should replace:
+
+-------------
+      <groupId>org.codehaus.mojo.webstart</groupId>
+      <artifactId>webstart-maven-plugin</artifactId>
+-------------
+
+  with
+
+-------------
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>webstart-maven-plugin</artifactId>
+-------------
+
+  As all mojo plugins are using this groupId, let's do the same.
+
+* Important changes since 1.0-alpha-1
+
+  Changes that affect the use and configuration of the plugin.
+
+** 2008-01-25
+
+  The groupId has been changed. You should replace:
+
+-------------
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>webstart-maven-plugin</artifactId>
+-------------
+
+  with
+
+-------------
+      <groupId>org.codehaus.mojo.webstart</groupId>
+      <artifactId>webstart-maven-plugin</artifactId>
+-------------
+
+
+  See {{{http://jira.codehaus.org/browse/MWEBSTART-81} MWEBSTART-81}} for discussion.
+
+
+** 2008-01-19
+
+  Renamed the <<<\<jnlp\>>>>/<<<\<resources\>>>> configuration element of the JNLP goals to <<<\<resourcesDirectory\>>>>
+  for consistency. See {{{http://jira.codehaus.org/browse/MWEBSTART-81} MWEBSTART-81}} for discussion.
+
+** 2007-03-11
+
+  The default sign configuration triggers a sign procedure that relies on the JarSigningMojo (from the Maven JAR Plugin). Implementing {{{http://jira.codehaus.org/browse/MWEBSTART-18} MWEBSTART-18}} allows us to define an external signing process. This forced some changes to the configuration of the plugin: <<<\<keystore\>>>> management was renamed to <<<\<keystoreConfig\>>>> and moved inside the <<<\<sign\>>>> configuration.
+  Here's an example of that change applied to an existing POM for the transition from 1.0-alpha-1 to 1.0-alpha-2:
+
+---------------
+  Index: project1/pom.xml
+  ===================================================================
+  --- project1/pom.xml    (revision 3560)
+  +++ project1/pom.xml    (working copy)
+  @@ -60,13 +60,14 @@
+               <dnameC>US</dnameC>
+
+               <verify>true</verify>
+  +
+  +            <keystoreConfig>
+  +              <delete>true</delete>
+  +              <gen>true</gen>
+  +            </keystoreConfig>
+  +
+             </sign>
+
+  -          <keystore>
+  -            <delete>true</delete>
+  -            <gen>true</gen>
+  -          </keystore>
+  -
+             <verbose>false</verbose>
+           </configuration>
+         </plugin>
+---------------
+
+
+** 2007-01-03
+
+  The 1.0-alpha-1 version of the plugin required you to create one module just for
+  the bundling of the webstart elements into its own zip file. To get your current
+  project sources JARed, signed and packaged into a Web Start application, you
+  should now be able to do something like:
+
+------------------------------
+mvn install webstart:jnlp
+------------------------------
+
+  on the command line or attach the appropriate goal (e.g. <<<jnlp-inline>>>) to your <<<package>>>
+  phase and do something like
+
+------------
+mvn install
+------------
+
+  Any failure should be reported to the {{{http://jira.codehaus.org/browse/MWEBSTART-13} MWEBSTART-13}} issue. The API may change before 1.0-alpha-2 is released.
+
+  The documentation has not been fully updated to reflect this change.
+
+  Multi-project setup (one for the JAR, one for the Web Start bundle) is still possible.
+
+
+** 2006-12-28
+
+  The default location for the template and resources have changed.
+  See {{{http://jira.codehaus.org/browse/MWEBSTART-16} MWEBSTART-16}} for discussion.
+
+

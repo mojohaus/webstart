@@ -1,0 +1,58 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>org.codehaus.mojo.webstart.it006</groupId>
+    <artifactId>webstart-it006-parent</artifactId>
+    <version>1.0</version>
+  </parent>
+  
+  <artifactId>sign-one</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0</version>
+  <name>Core Module</name>
+  <url>http://maven.apache.org</url>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>keytool-maven-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+           <execution>
+              <goals>
+                 <goal>genkey</goal>
+              </goals>
+              <phase>validate</phase> <!-- should really be pre-package... -->
+           </execution>
+        </executions>
+        <configuration>
+           <alias>webstart-plugin</alias>
+           <keystore>${project.build.directory}/tmpkeystore</keystore>
+           <dname>cn=www.example.com, ou=None, L=Seattle, ST=Washington, o=ExampleOrg, c=US</dname>
+           <storepass>foobar2</storepass>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <keystore>${project.build.directory}/tmpkeystore</keystore>
+          <alias>webstart-plugin</alias>
+          <storepass>foobar2</storepass>
+          <verify>true</verify>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
+</project>

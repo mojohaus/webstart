@@ -1,0 +1,99 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.codehaus.mojo.webstart.it006</groupId>
+    <artifactId>webstart-it006-parent</artifactId>
+    <version>1.0</version>
+  </parent>
+  
+
+  <artifactId>webapp</artifactId>
+  <packaging>war</packaging>
+  <version>1.0</version>
+  <name>WebstartDemoWebApplication</name>
+  <url>http://maven.apache.org</url>
+
+  <description>
+    Web-application to demonstrate the WebstartMavenPlugin.
+  </description>
+  
+  
+  <organization>
+    <name>MyCompany</name>
+    <url>http://www.mycompany.org</url>
+  </organization>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.mojo.webstart.it006</groupId>
+      <artifactId>sign-one</artifactId>
+      <version>1.0</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>webstart-maven-plugin</artifactId>
+            <version>@project.version@</version>
+            <executions>
+                <execution>
+                    <phase>process-resources</phase>
+                    <goals>
+                        <goal>jnlp-download-servlet</goal>
+                    </goals>
+                </execution>
+            </executions>
+
+            <configuration>
+                <outputDirectoryName>webstart</outputDirectoryName>
+                <jnlpFiles>
+                    <jnlpFile>
+                        <templateFilename>jnlpTemplate.vm</templateFilename>
+                        <outputFilename>launch1.jnlp</outputFilename>
+                        <jarResources>
+                            <jarResource>
+                                <groupId>org.codehaus.mojo.webstart.it006</groupId>
+                                <artifactId>sign-one</artifactId>
+                                <version>1.0</version>
+                                <mainClass>org.mycompany.webstart.HelloWorld</mainClass>
+                            </jarResource>
+                        </jarResources>
+                    </jnlpFile>
+                </jnlpFiles>
+
+                <sign>
+                    <keystore>${project.build.directory}/keyStore</keystore> <!-- path or URI (if empty, the default keystore ".keystore"-file in the user-homedir is used) -->
+                    <keypass>password</keypass>  <!-- we need to override passwords easily from the command line. ${keypass} -->
+                    <storepass>password</storepass> <!-- ${storepass} -->
+                    <alias>webstart</alias> <!-- alias of the key to  use -->
+                    <!-- the following key-settings are only used if the keystore and key has to be generated at build-time -->
+                    <storetype>jks</storetype>
+                    <validity>365</validity>
+                    <dnameCn>Firstname Lastname</dnameCn>
+                    <dnameOu>OrganisationalUnit</dnameOu>
+                    <dnameO>Organisation</dnameO>
+                    <dnameL>Location</dnameL>
+                    <dnameSt>State</dnameSt>
+                    <dnameC>CountryCode</dnameC>
+
+                    <!-- KEYSTORE MANGEMENT -->
+                    <keystoreConfig>
+                        <delete>true</delete> <!-- delete the keystore at build time -->
+                        <gen>true</gen>       <!-- generate keystore and key at build time -->
+                    </keystoreConfig>
+
+                    <verify>false</verify> <!-- verify the signature after signing -->
+                </sign>
+                <unsignAlreadySignedJars>true</unsignAlreadySignedJars> <!-- unsign already signed packages and sign them with own key -->
+                <verifyjar>false</verifyjar>
+            </configuration>
+        </plugin>
+      </plugins>
+            
+    <finalName>webapp</finalName>
+  </build>
+</project>

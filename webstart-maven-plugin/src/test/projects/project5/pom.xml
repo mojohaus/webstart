@@ -1,0 +1,17 @@
+<!-- Test project which signs a jar artifact using a separate signer -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>webstart-test-5</artifactId>
+  <groupId>org.apache.maven.plugins</groupId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+  <name>Manual test Case #5 for MWEBSTART-18</name>
+  <description>Check that the separate signer is used for signing jars</description>
+
+  <modules>
+    <module>mysigner</module>
+    <module>test</module>
+  </modules>
+</project>

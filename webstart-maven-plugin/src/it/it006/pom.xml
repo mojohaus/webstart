@@ -1,0 +1,19 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.codehaus.mojo.webstart.it006</groupId>
+  <artifactId>webstart-it006-parent</artifactId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+  <name>Webstart it006</name>
+  <description>Webstart JNLP to test unsigning of signed dependencies before signing. The first module creates a signed
+    dependency reused in the second module, which uses the jnlp download servlet mojo.
+  </description>
+
+  <modules>
+    <module>sign-one</module>
+    <module>webstart</module>
+  </modules>
+
+</project>

@@ -1,0 +1,99 @@
+ ------
+ Example WAR Bundle #1
+ ------
+ Jerome Lacoste
+ ------
+ 2008-09-23
+ ------
+
+
+
+Example WAR Bundle #1
+
+    It is fairly common practice to make JNLP applications available to users 
+    by deploying them in web applications, with possibly many JNLP apps in a 
+    single WAR. This example shows how to include the output of two JNLP 
+    projects in a packaged web application that is defined in a separate project. 
+
+* The Projects
+
+    For this example, we require two webstart projects. In practice, the same 
+    procedure can be applied to any number of webstart projects for a given 
+    WAR project. Our sample projects will have the following <groupId:artifactId:version> attributes:
+    
+    * someGroupId:sample-jnlp1:1.0
+    
+    * someGroupId:sample-jnlp2:1.0
+    
+    * someGroupId:sample-webapp:1.0
+
+	[]
+    
+    The relationship between these projects is that the webapp project is aware of 
+    the JNLP projects and the JNLP projects have no knowledge of the webapp project. 
+    There is no requirement for these projects to exist under the same parent, they 
+    can all exist in independent project hierarchies.
+
+* The JNLP Projects
+
+    Because the JNLP projects have no knowledge of the webapp project, they don't need
+    to be treated any differently from a normal standalone JNLP project as described
+    in the {{{./single_webstart_app.html}Single webstart application example}}. Follow the instructions in that example
+    to create the <sample-jnlp1> and <sample-jnlp2> projects. They can be deployed
+    to any repository that the webapp project will have access to.
+        
+    
+* The WAR project
+
+    Create the <sample-webapp> project as per any standard Maven web application project. 
+    Once created, add the following plugin configuration, which uses the 
+    {{{http://maven.apache.org/plugins/maven-dependency-plugin}Maven Dependency Plugin}} 
+    to retrieve the JNLP bundles and unpack them into the web application project. This 
+    example will result in the JNLP applications being placed in the <<</webstart>>> directory
+    of your web application.
+
+-------------------------------
+<project>
+  ...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>dependency-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- 
+              Copy the webstart bundle in as a resource
+              before packaging starts.
+            -->
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <artifactItems>
+            <artifactItem>
+              <groupId>someGroupId</groupId>
+              <artifactId>sample-jnlp1</artifactId>
+              <version>1.0</version>
+              <type>zip</type>                            
+            </artifactItem>
+            <artifactItem>
+              <groupId>someGroupId</groupId>
+              <artifactId>sample-jnlp2</artifactId>
+              <version>1.0</version>
+              <type>zip</type>                            
+            </artifactItem>
+          </artifactItems>
+          <outputDirectory>${project.build.directory}/${project.build.finalName}/webstart</outputDirectory>
+        </configuration>
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+-------------------------------

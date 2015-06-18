@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<faqs id="FAQ" title="Frequently Asked Questions">
+
+  <part id="General">
+
+    <faq id="security_since_jdk1_7u45">
+      <question>Why generated jnlp fail to start since jdk1.7u45?</question>
+      <answer>
+        <p>
+          Oracle put more strict rules on jnlp (see https://blogs.oracle.com/thejavatutorials/entry/jdk_7u45_and_javafx_2)
+          for more informations
+        </p>
+        <p>
+          To fix this, you need to add some manifest entries to all the jars used in the jnlp file.
+          This can be done by simply adding something like this in your pluging configuration:
+          <pre>
+           &lt;updateManifestEntries&gt;
+             &lt;Permissions&gt;all-permissions&lt;/Permissions&gt;
+             &lt;Codebase&gt;*&lt;/Codebase&gt;
+           &lt;/updateManifestEntries&gt;
+          </pre>
+        </p>
+      </answer>
+    </faq>
+
+    <faq id="obfuscation_question">
+      <question>Can the Webstart plugin obfuscate JARs and deploy them?</question>
+      <answer>
+        <p>
+          The plugin doesn't obfuscate JARs but it can deploy JARs that have already been obfuscated. 
+        </p>
+        <p>
+          One approach would be to use the <a href="http://pyx4me.com/pyx4me-maven-plugins/proguard-maven-plugin/introduction.html">proguard-maven-plugin</a>
+          to obfuscate the JARs and the <a href="http://mojo.codehaus.org/build-helper-maven-plugin/">build-helper-maven-plugin</a>
+          to attach the obfuscated artifact to the project along with the unobfuscated JAR and install them both in 
+          your local repository. Then when you configure the Webstart Plugin with the dependencies to be deployed in 
+          your JNLP bundle, you can choose between the obfuscated or unobfuscated JARs.
+        </p>
+      </answer>
+    </faq>
+
+    <faq id="get_jnlp_download_servlet">
+      <question>Where can I get the JNLP Download Servlet?</question>
+      <answer>
+        <p>
+          The servlet cannot yet be found on an central Maven repository. For demonstration purposes, the webstart project packages one version under the (currently) following identifiers
+<pre>
+      &lt;groupId&gt;org.codehaus.mojo.webstart-maven-plugin&lt;/groupId&gt;
+      &lt;!--groupId&gt;com.sun.java.jnlp&lt;/groupId--&gt;
+      &lt;artifactId&gt;jnlp-servlet&lt;/artifactId&gt;
+      &lt;version&gt;1.0-6.0-02_ea_b02-SNAPSHOT&lt;/version&gt;
+</pre>
+         but most probably you will have to retrieve it from Sun's web site or from your local SDK installation (>= Java 5). See also the <a href="jnlp101.html">JNLP 101</a>.
+        </p>
+      </answer>
+    </faq>
+
+    <faq id="deploy_jnlp">
+      <question>How can I deploy my JNLP application to my server?</question>
+      <answer>
+        <p>
+          Right now, deployment is not supported out of the box by the plugin. We may add the support in the near future (See <a href="http://jira.codehaus.org/browse/MWEBSTART-25">MWEBSTART-25</a>). You may want to use the <a href="http://myfaces.apache.org/wagon-maven-plugin/usage.html">Wagon Maven Plugin</a> in the mean time. 
+        </p>
+      </answer>
+    </faq>
+
+    <faq id="pack200_and_signed_jars">
+      <question>Can I use the pack200  option with some already signed artifacts?</question>
+      <answer>
+        <p>
+          For technical reason this is not possible unless you owns also the
+          certificate used to signed jar.
+        </p>
+        <p>You could then just unsign all signed jar, but <strong>this is
+        not reccomended,
+        since then you are atesting to the other partys code, and may be
+        violating several agreements.</strong>.</p>
+        <p>
+        For more informations see this thread :
+        https://forums.oracle.com/forums/thread.jspa?threadID=1304857
+        </p>
+      </answer>
+    </faq>
+
+    <faq id="difference_between_jnlp_jnlp_inline_and_jnlp_single">
+          <question>What is the difference between jnlp, jnlp-inline and jnlp-single mojos?</question>
+          <answer>
+            <ul>
+              <li>The <strong>jnlp</strong> mojo is
+                <ul>
+                <li>aggregator</li>
+                <li><strong>FORKS</strong> a build lifecycle and won't install the zip packages in your local repository</li>
+                <li>attached to the <strong>package</strong> phase, so you can invoke it from commandline</li>
+                </ul>
+              </li>
+              <li>The <strong>jnlp-inline</strong> mojo is
+              <ul>
+                <li>aggregator</li>
+                <li>does <strong>NOT</strong> fork a build lifecycle and won't install the zip packages in your local repository</li>
+                <li><strong>NOT</strong> attached to any phase (you can't invoke it from commandline)</li>
+                </ul>
+              </li>
+              <li>The <strong>jnlp-single</strong> mojo is
+              <ul>
+                <li><strong>NOT</strong> aggregator</li>
+                <li>does <strong>NOT</strong> a build lifecycle and won't install the zip packages in your local repository</li>
+                <li><strong>NOT</strong> attached to any phase (you can't invoke it from commandline)</li>
+              </ul>
+              </li>
+            </ul>
+            To choose which mojo then to use, ask yourself those questions:
+            <ul>
+              <li>Do I need a aggregator mode?</li>
+              <li>Do I need to invoke it from commandline?</li>
+              <li>Do I need to execute the mojo in a forked build lifecycle?</li>
+            </ul>
+          </answer>
+        </faq>
+
+  </part>
+
+</faqs>
+

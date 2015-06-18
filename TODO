@@ -1,0 +1,20 @@
+Personal TODO list
+
+- deal with double signed jars:
+  + ignore them (patch sent to jira, jar plugin (MJAR-24)
+  - remove signatures (patch in local svn, need to cleanup and submit, then refactor for MJAR-26)
+  See emails
+  + follow up MJAR-21 to MJAR-24
+  - basically follow up MJAR-25
++ change path for default location of template and resources (patch to clean)
+- do not do in place pack200 (patch to clean)
+- ENH add default templates and allow user to specify a templateId.
+- make sure user can specify user/password sign information on the command line
+  - what about a way to put that info inside settings.xml? (this should be achievable using properties. Add doc section)
+- document best practises (unsign jars outside of the webstart build, ...)
++ fix broken "Main Class" jar auto detection (should be fixed)
+- JnlpReportMojo.java
+- Rewrite the pack200 support (do not depend on pack200 ant tasks, they seem unsupported).
+- make sure pack200-jdk15 are have correct groupId and artifactId
+- conform with http://mojo.codehaus.org/development/guidelines.html
+- show an example of template from the docs.

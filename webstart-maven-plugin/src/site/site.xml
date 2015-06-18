@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+ <body>
+  <menu ref="parent" />
+
+  <menu name="Overview">
+    <item name="Introduction" href="index.html" />
+    <item name="Goals" href="plugin-info.html"/>
+    <item name="Usage" href="usage.html"/>
+    <item name="FAQ" href="faq.html"/>
+
+    <item name="Cookbook recipe" href="cookbook.html"/>
+    <item name="JNLP goals overview" href="jnlp-mojos-overview.html"/>
+    <item name="Plugin Upgrades" href="upgrade.html"/>
+    <item name="Notes to users and contributors" href="contributors.html"/>
+    <item name="JNLP 101" href="jnlp101.html"/>
+  </menu>
+
+  <menu name="Examples">
+    <item name="Getting Started" collapse="false" href="./index.html">
+      <item name="Default inbuilt templates" href="examples/inbuilt_templates.html" />
+      <item name="Keystore generation and usage" href="examples/keystore_gen.html" />
+    </item>
+    <item name="Static web site" href="examples/single_webstart_app.html" />
+    <item name="WAR bundling" collapse="false" href="./index.html">
+      <item name="Bundle JNLP apps within a new WAR" href="examples/war_bundle_1.html" />
+      <item name="Add JNLPs apps to an existing WAR" href="examples/war_bundle_2.html" />
+    </item>
+    <item name="JNLP Download Servlet" collapse="false" href="./index.html">
+      <item name="Simple" href="examples/simple_jnlp_download_servlet.html" />
+      <item name="Advanced" href="examples/advanced_jnlp_download_servlet.html" />
+    </item>
+    <!--item name="Advanced" collapse="false"-->
+      <!--item name="Advanced: Pluggable JAR signing" href="examples/pluggable_jar_signing.html" /-->
+    <!--/item-->
+    <item name="More examples" href="examples/more_examples.html" />
+  </menu>
+
+  <menu name="Links">
+    <item name="Java Webstart" href="http://java.sun.com/products/javawebstart/" />
+    <item name="Security" collapse="false" href="./index.html">
+      <item name="Java Security Tools" href="http://java.sun.com/j2se/1.5.0/docs/tooldocs/#security" />
+      <item name="Keytool Maven Plugin" href="http://mojo.codehaus.org/keytool-maven-plugin/" />
+      <item name="JAR signing with Maven" href="http://maven.apache.org/plugins/maven-jar-plugin/" />
+    </item>
+    <item name="Sun's Download Servlet Guide" href="http://java.sun.com/j2se/1.5.0/docs/guide/javaws/developersguide/downloadservletguide.html" />
+    <item name="Velocity user guide" href="http://velocity.apache.org/engine/releases/velocity-1.5/user-guide.html" />
+  </menu>
+ </body>
+</project>

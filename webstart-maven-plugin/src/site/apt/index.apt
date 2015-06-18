@@ -1,0 +1,84 @@
+   ------
+   Introduction
+   ------
+   TBC
+   ------
+   2010-06-08
+   ------
+
+
+Webstart Maven Plugin
+
+  The Webstart Maven Plugin generates application bundles that can be deployed via Web Start.
+  The plugin can be used to prepare standalone Web Start applications or Web Start applications bundled in WAR
+  files (with or without Sun's Download Servlet).
+  It handles the generation of JNLP files and optional <<<version.xml>>> files, using Velocity templates.
+  It also handles the selection and preparation of the dependencies, performing signing, unsigning and Pack200
+  compression when required.
+
+  Although not yet at version 1.0, the plugin is approaching maturity and can be used in a production environment.
+
+  It requires Maven 2 (version 2.0.6 or later) to work correctly.
+
+* Changes since 1.0-beta-4
+
+** To use with jdk >= 1.7u45
+
+  See the FAQ for more informations. Fixed in {{{http://jira.codehaus.org/browse/MWEBSTART-213} MWEBSTART-213}}
+
+** Use a keystore from an url
+
+  You can now use a keystore in classpath, or more generally from a url. Fixes in
+  {{{http://jira.codehaus.org/browse/MWEBSTART-39} MWEBSTART-39}}
+
+* Note since version 1.0-beta-3
+
+  The groupId of the plugin has been changed from
+  <<org.codehaus.mojo.webstart>> to <<org.codehaus.mojo>>. Please fix this in
+  your pom before using the 1.0-beta-3 (or later versions).
+
+* Features
+
+   * JNLP file generation where information is inserted into a user
+     defined {{{http://velocity.apache.org/}Velocity template}}. Inbuilt default templates
+
+   * Transitive dependencies
+
+      * Possibilities to include/exclude dependencies
+
+   * Key generation (thanks to the {{{http://mojo.codehaus.org/keytool/keytool-api/}Keytool Api}})
+
+   * JAR signing and signing verification
+
+   * Unsign already signed JARs
+
+   * Pack200 support for compressed versions of the JAR files resulting in
+     faster network downloads of your Webstart application
+
+   * Pluggable API for JAR signer
+
+
+* Long time users: upgrading from older releases
+
+  Settings are <<incompatible with 1.0-alpha-1>> ! See the {{{./upgrade.html}upgrade documentation}}.
+
+* New users: getting started
+
+  Read the {{{./cookbook.html}cookbook recipe}}.
+
+* Usage
+
+  Instructions on how to use the Webstart Maven Plugin can be found on the {{{./usage.html}usage page}}.
+
+* Examples
+
+  To provide you with a better understanding of some usages of the Webstart Maven Plugin, the documentation contains several examples. See the menu on the left.
+
+
+* Links
+
+  * {{{http://docs.codehaus.org/display/MOJO/Webstart+Plugin} Confluence wiki page for the plugin}}
+
+  * {{{http://sun-jnlp-servlet.dev.java.net/} http://sun-jnlp-servlet.dev.java.net/}}
+
+  * {{{http://deployment.dev.java.net/} http://deployment.dev.java.net/}}

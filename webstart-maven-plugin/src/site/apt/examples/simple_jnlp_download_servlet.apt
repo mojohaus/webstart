@@ -1,0 +1,93 @@
+   ------
+   Simple JnlpDownloadServlet Example
+   ------
+   Kevin Stembridge
+   ------
+   2008-09-23
+   ------
+
+Simple JnlpDownloadServlet Example
+
+    In this example, we show how to use the plugin to deploy a single JNLP application within a WAR that uses
+    the JnlpDownloadServlet. Only the most basic features are described. For a more complex example that includes 
+    multiple JNLP applications in the same WAR, and other more advanced features, see the {{{./advanced_jnlp_download_servlet.html}Advanced JnlpDownloadServlet Example}}.
+
+*The web.xml
+
+    The <<<web.xml>>> file of your web application must include the appropriate servlet mapping for the JnlpDownloadServlet
+    as described in the {{{http://java.sun.com/javase/6/docs/technotes/guides/javaws/developersguide/downloadservletguide.html}JnlpDownloadServlet Guide}}.
+    For convenience, a basic but complete example is provided below. Note the <<<url-pattern>>> provided in the <<<servlet-mapping>>>. 
+    The Webstart Plugin uses a default value of <<webstart>> for the name of the directory that contains the JNLP file
+    and its associated resources.
+    
+    
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC 
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+
+  <servlet>
+    <servlet-name>JnlpDownloadServlet</servlet-name>
+    <servlet-class>jnlp.sample.servlet.JnlpDownloadServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>JnlpDownloadServlet</servlet-name>
+    <url-pattern>/webstart/*</url-pattern>
+  </servlet-mapping>
+
+</web-app>
+---
+
+*The Plugin Configuration
+
+    The sample <<<pom.xml>>> file below shows the configuration for a webstart bundle that contains a single
+    JAR, and generates a JNLP file called <<<launch.jnlp>>> (by default) from a template called <<<clientTemplate.vm>>>.
+
+---
+<project>
+  ...
+  <build>
+    ...  
+    <plugins>
+    
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>webstart-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>jnlp-download-servlet</goal>
+            </goals>
+          </execution>
+        </executions>
+
+        <configuration>
+
+          <jnlpFiles>
+            <jnlpFile>
+              <templateFilename>clientTemplate.vm</templateFilename>
+              <jarResources>
+                <jarResource>
+                  <groupId>[some groupId]</groupId>
+                  <artifactId>[some artifactId]</artifactId>
+                  <version>[some version]</version>
+                  <mainClass>[some main class]</mainClass>
+                </jarResource>
+              </jarResources>
+            </jnlpFile>
+          </jnlpFiles>
+
+        </configuration>
+
+      </plugin>
+    </plugins>
+
+  </build>
+  ...
+</project>
+
+---

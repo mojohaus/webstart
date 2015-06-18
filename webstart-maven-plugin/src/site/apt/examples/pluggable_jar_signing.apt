@@ -1,0 +1,16 @@
+ ------
+ Using an external JAR signer
+ ------
+ Jerome Lacoste
+ ------
+ 2008-09-23
+ ------
+
+Using an external JAR signer
+
+  The JAR signer is pluggable, so that one can adapt the signing to their own needs. For example, one may want for example to use a server side JAR signing solution ({{{http://jira.codehaus.org/browse/MWEBSTART-88} provides an example of such a signing implementation}}).
+
+  See {{{http://svn.mojo.codehaus.org/browse/mojo/trunk/mojo/webstart/webstart-maven-plugin/src/test/projects/project5}src/test/projects/project5}} as an example on how to use an external JAR signer.
+
+  This was deprecated, since 1.0-beta-2, perharps I did not see the point ?
+~~ FIXME further describe here and move to an integration test
