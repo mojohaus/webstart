@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<rss version="0.91">
+  <channel>
+    <title>MWEBSTART :: JNLP Servlet - Checkstyle report</title>
+    <link>http:///jdk6.dev.java.net/</link>
+    <description>MWEBSTART :: JNLP Servlet - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2005 - 2015 Sun Microsystems</copyright>
+    <item>
+      <title>File: 20,
+             Errors: 213,
+             Warnings: 178,
+             Infos: 27
+      </title>
+            <link>http:///jdk6.dev.java.net//checkstyle.html</link>
+      <description>
+        <p>Click <a href="http:///jdk6.dev.java.net//checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.XMLNode.java">jnlp/sample/servlet/XMLNode.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  21
+                </td>
+                <td>
+                  10
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.ErrorResponseException.java">jnlp/sample/servlet/ErrorResponseException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  3
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.jardiff.Patcher.java">jnlp/sample/jardiff/Patcher.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+                <td>
+                  4
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.resources.strings.properties">jnlp/sample/servlet/resources/strings.properties</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.JnlpFileHandler.java">jnlp/sample/servlet/JnlpFileHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  13
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.util.VersionString.java">jnlp/sample/util/VersionString.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  13
+                </td>
+                <td>
+                  8
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.jardiff.JarDiffConstants.java">jnlp/sample/jardiff/JarDiffConstants.java</a>
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.ResourceCatalog.java">jnlp/sample/servlet/ResourceCatalog.java</a>
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  10
+                </td>
+                <td>
+                  12
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.jardiff.JarDiff.java">jnlp/sample/jardiff/JarDiff.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+                <td>
+                  13
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.XMLAttribute.java">jnlp/sample/servlet/XMLAttribute.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.DownloadRequest.java">jnlp/sample/servlet/DownloadRequest.java</a>
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  15
+                </td>
+                <td>
+                  21
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.JarDiffHandler.java">jnlp/sample/servlet/JarDiffHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+                <td>
+                  15
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.util.VersionID.java">jnlp/sample/util/VersionID.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
+                </td>
+                <td>
+                  8
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.JnlpDownloadServlet.java">jnlp/sample/servlet/JnlpDownloadServlet.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
+                </td>
+                <td>
+                  7
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.XMLParsing.java">jnlp/sample/servlet/XMLParsing.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  27
+                </td>
+                <td>
+                  13
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.Logger.java">jnlp/sample/servlet/Logger.java</a>
+                </td>
+                <td>
+                  10
+                </td>
+                <td>
+                  12
+                </td>
+                <td>
+                  15
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.jardiff.resources.strings.properties">jnlp/sample/jardiff/resources/strings.properties</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.JnlpResource.java">jnlp/sample/servlet/JnlpResource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  18
+                </td>
+                <td>
+                  25
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.jardiff.JarDiffPatcher.java">jnlp/sample/jardiff/JarDiffPatcher.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  3
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.DownloadResponse.java">jnlp/sample/servlet/DownloadResponse.java</a>
+                </td>
+                <td>
+                  11
+                </td>
+                <td>
+                  5
+                </td>
+                <td>
+                  27
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+
