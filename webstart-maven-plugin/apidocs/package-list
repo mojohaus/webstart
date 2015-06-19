@@ -1,0 +1,7 @@
+org.codehaus.mojo.webstart
+org.codehaus.mojo.webstart.dependency
+org.codehaus.mojo.webstart.dependency.filenaming
+org.codehaus.mojo.webstart.dependency.task
+org.codehaus.mojo.webstart.generator
+org.codehaus.mojo.webstart.sign
+org.codehaus.mojo.webstart.util

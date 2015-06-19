@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="$encoding"?>
+<jnlp
+    spec="$jnlpspec"
+    codebase="$jnlpCodebase"
+    href="$outputFile">
+  <information>
+    <title>$extension.Title</title>
+    <vendor>$extension.Vendor</vendor>
+#if($extension.Homepage) 
+    <homepage href="$extension.Homepage"/>
+#end
+#if($extension.Description)
+    <description>$extension.Description</description>
+#end
+#if($offlineAllowed)
+    <offline-allowed/>
+#end
+  </information>
+#if($allPermissions)
+  <security>
+     <all-permissions/>
+  </security>
+#end
+  <resources>
+    <j2se version="$j2seVersion"/>
+     $dependencies
+  </resources>
+  <component-desc/>
+</jnlp>
+
