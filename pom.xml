@@ -1,34 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <artifactId>mojo-parent</artifactId>
     <groupId>org.codehaus.mojo</groupId>
     <version>32</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
+
   <artifactId>webstart</artifactId>
-  <packaging>pom</packaging>
   <version>1.0-beta-7-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
   <name>MWEBSTART :: Project</name>
   <description>Webstart Maven Plugin and related modules</description>
-  <url>http://mojo.codehaus.org/webstart</url>
-
-  <scm>
-    <connection>scm:git:git@github.com:mojohaus/webstart.git</connection>
-    <developerConnection>scm:git:git@github.com:mojohaus/webstart.git</developerConnection>
-    <url>https://github.com/mojohaus/webstart</url>
-  </scm>
-  <issueManagement>
-    <system>github</system>
-    <url>https://github.com/mojohaus/webstart/</url>
-  </issueManagement>
-
-  <ciManagement>
-    <system>bamboo</system>
-    <url>http://bamboo.ci.codehaus.org/browse/MOJO-MWEBSTART</url>
-  </ciManagement>
-
+  <url>http://mojohaus.org/webstart</url>
   <inceptionYear>2005</inceptionYear>
-
   <licenses>
     <license>
       <name>Apache License 2</name>
@@ -90,14 +77,34 @@
     </contributor>
   </contributors>
 
+  <prerequisites>
+    <maven>${mavenVersion}</maven>
+  </prerequisites>
+
   <modules>
     <module>webstart-jnlp-servlet</module>
     <module>webstart-maven-plugin</module>
   </modules>
 
-  <prerequisites>
-    <maven>${mavenVersion}</maven>
-  </prerequisites>
+  <scm>
+    <connection>scm:git:git@github.com:mojohaus/webstart.git</connection>
+    <developerConnection>scm:git:git@github.com:mojohaus/webstart.git</developerConnection>
+    <url>https://github.com/mojohaus/webstart</url>
+  </scm>
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/mojohaus/webstart/</url>
+  </issueManagement>
+  <ciManagement>
+    <system>bamboo</system>
+    <url>http://bamboo.ci.codehaus.org/browse/MOJO-MWEBSTART</url>
+  </ciManagement>
+  <distributionManagement>
+    <site>
+      <id>github</id>
+      <url>scm:git:git@github.com:mojohaus/webstart.git</url>
+    </site>
+  </distributionManagement>
 
   <properties>
     <mavenVersion>2.0.11</mavenVersion>
@@ -109,6 +116,17 @@
     <!-- all modules shares the same version in our projects -->
     <autoVersionSubmodules>true</autoVersionSubmodules>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>apache.maven.org</id>
+      <name>Maven Central Development Repository</name>
+      <url>https://repository.apache.org/content/groups/snapshots-group/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
 
   <dependencyManagement>
     <dependencies>
@@ -302,28 +320,6 @@
   </dependencyManagement>
 
   <build>
-
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>animal-sniffer-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <configuration>
-              <signature>
-              <groupId>org.codehaus.mojo.signature</groupId>
-              <artifactId>java15</artifactId>
-              <version>1.0</version>
-            </signature>
-          </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-
     <pluginManagement>
       <plugins>
         <plugin>
@@ -365,19 +361,47 @@
           <artifactId>plexus-component-metadata</artifactId>
           <version>1.5.5</version>
         </plugin>
+        <!-- TODO Move this to mojo-parent ? -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.4</version>
+          <configuration>
+            <!-- FIXME-tchemit-2015-06-19 The stage is not correct with this -->
+            <!--<topSiteURL>${project.distributionManagement.site.url}</topSiteURL>-->
+            <skipDeploy>true</skipDeploy><!-- don't deploy site with maven-site-plugin -->
+          </configuration>
+        </plugin>
+        <!-- TODO Move this to mojo-parent ? -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-publish-plugin</artifactId>
+          <version>1.1</version>
+          <configuration>
+            <scmBranch>gh-pages</scmBranch> <!-- branch where to deploy -->
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <signature>
+              <groupId>org.codehaus.mojo.signature</groupId>
+              <artifactId>java15</artifactId>
+              <version>1.0</version>
+            </signature>
+          </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
-
-  <repositories>
-    <repository>
-      <id>apache.maven.org</id>
-      <name>Maven Central Development Repository</name>
-      <url>https://repository.apache.org/content/groups/snapshots-group/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
-
 </project>
