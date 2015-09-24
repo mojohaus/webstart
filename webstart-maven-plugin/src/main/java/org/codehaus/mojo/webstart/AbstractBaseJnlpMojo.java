@@ -291,8 +291,13 @@ public abstract class AbstractBaseJnlpMojo
     @Component( hint = "default" )
     private JarUtil jarUtil;
 
+    public JarUtil getJarUtil()
+    {
+        return jarUtil;
+    }
+
     /**
-     * All dependency filename strategy indexed by theire role-hint.
+     * All dependency filename strategy indexed by their role-hint.
      *
      * @since 1.0-beta-5
      */
@@ -894,7 +899,7 @@ public abstract class AbstractBaseJnlpMojo
 
 		ExecutorService ex = Executors.newFixedThreadPool(sign.getParallel());
 
-		ArrayList<Future> signRequests = new ArrayList<Future>();
+		ArrayList<Future<?>> signRequests = new ArrayList<Future<?>>();
 		for (final File unprocessedJarFile : jarFiles) {
 			signRequests.add(ex.submit(new Callable<Object>() {
 
@@ -971,7 +976,7 @@ public abstract class AbstractBaseJnlpMojo
                 }
                 verboseLog( "Remove signature " + toProcessFile( jarFile ).getName() );
 
-                signTool.unsign( jarFile, isVerbose() );
+                unsign(jarFile);
             }
             else
             {
@@ -983,6 +988,12 @@ public abstract class AbstractBaseJnlpMojo
         ioUtil.removeDirectory( tempDir );
 
         return jarFiles.length; // FIXME this is wrong. Not all jars are signed.
+    }
+
+    protected void unsign(File jarFile)
+        throws MojoExecutionException
+    {
+        signTool.unsign(jarFile, isVerbose());
     }
 
     private ClassLoader getCompileClassLoader()
@@ -998,7 +1009,7 @@ public abstract class AbstractBaseJnlpMojo
         return new URLClassLoader( urls );
     }
 
-    private File toUnprocessFile( File targetDirectory, String sourceName )
+    protected File toUnprocessFile(File targetDirectory, String sourceName)
     {
         if ( sourceName.startsWith( UNPROCESSED_PREFIX ) )
         {

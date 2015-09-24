@@ -41,6 +41,7 @@ import org.codehaus.mojo.webstart.util.ArtifactUtil;
 import org.codehaus.mojo.webstart.util.IOUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -75,6 +76,11 @@ public class JnlpDownloadServletMojo
      */
     private static final String SERVLET_TEMPLATE_FILENAME = "servlet-template.vm";
 
+    /**
+     * Name of the jnlp file that represents signed version of the main jnlp file
+     */
+    private static final String APPLICATION_TEMPLATE_JNLP = "APPLICATION_TEMPLATE.JNLP";
+
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
@@ -86,6 +92,9 @@ public class JnlpDownloadServletMojo
      */
     @Parameter( property = "jnlp.outputDirectoryName", defaultValue = "webstart" )
     private String outputDirectoryName;
+
+    @Parameter(property = "jnlp.signJnlp", defaultValue = "false")
+    private boolean signJnlp;
 
     /**
      * The collection of JnlpFile configuration elements. Each one represents a
@@ -185,13 +194,22 @@ public class JnlpDownloadServletMojo
             // create the resolved jnlp file
             ResolvedJnlpFile resolvedJnlpFile = new ResolvedJnlpFile( jnlpFile, resolvedJarResources );
             resolvedJnlpFiles.add( resolvedJnlpFile );
+
+            if (signJnlp && StringUtils.isNotBlank(jnlpFile.getMainClass()) && getSign() != null)
+            {
+                JnlpFile singedJnlpFile = new JnlpFile();
+                singedJnlpFile.setInputTemplate(jnlpFile.getInputTemplate());
+                singedJnlpFile.setInputTemplateResourcePath(jnlpFile.getInputTemplateResourcePath());
+                singedJnlpFile.setJarResources(new ArrayList<JarResource>(jnlpFile.getJarResources()));
+                singedJnlpFile.setMainClass(jnlpFile.getMainClass());
+                singedJnlpFile.setProperties(jnlpFile.getProperties());
+                singedJnlpFile.setArguments(jnlpFile.getArguments());
+                singedJnlpFile.setOutputFilename(APPLICATION_TEMPLATE_JNLP);
+
+                resolvedJnlpFile = new ResolvedJnlpFile(singedJnlpFile, resolvedJarResources);
+                resolvedJnlpFiles.add(resolvedJnlpFile);
+            }
         }
-
-        // ---
-        // Process collected jars
-        // ---
-
-        signOrRenameJars();
 
         // ---
         // Generate jnlp files
@@ -199,8 +217,59 @@ public class JnlpDownloadServletMojo
 
         for ( ResolvedJnlpFile jnlpFile : resolvedJnlpFiles )
         {
-            generateJnlpFile( jnlpFile, getLibPath() );
+            if (jnlpFile.getOutputFilename().equals(APPLICATION_TEMPLATE_JNLP))
+            {
+                generateJnlpFile(jnlpFile, getLibPath(), "*");
+                // Search for main jar archive
+                for (ResolvedJarResource jarResource : jnlpFile.getJarResources())
+                {
+                    if (StringUtils.isNotBlank(jarResource.getMainClass()))
+                    {
+                        File file = new File(getWorkDirectory(), jnlpFile.getOutputFilename());
+                        File jarFile = new File(getLibDirectory(), jarResource.getArtifact().getFile().getName());
+
+                        if (!jarFile.exists())
+                        {
+                            jarFile = toUnprocessFile(getLibDirectory(),
+                                jarResource.getArtifact().getFile().getName());
+                        }
+
+                        if (getJarUtil().appendFileToJar(jarFile, file, "/JNLP-INF"))
+                        {
+                            File unprocessedFileName = null;
+                            try
+                            {
+                                unprocessedFileName = toUnprocessFile(getLibDirectory(), jarFile.getName());
+                                ioUtil.renameTo(jarFile, unprocessedFileName);
+                                String name = jarFile.getName();
+                                getModifiedJnlpArtifacts().add(name.substring(0, name.lastIndexOf('.')));
+                            }
+                            catch (IllegalStateException e)
+                            {
+                                unprocessedFileName = jarFile;
+                            }
+
+                            if (isJarSigned(unprocessedFileName))
+                            {
+                                unsign(unprocessedFileName);
+                            }
+                        }
+                        ioUtil.deleteFile(file);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                generateJnlpFile(jnlpFile, getLibPath(), getCodebase());
+            }
         }
+
+        // ---
+        // Process collected jars
+        // ---
+
+        signOrRenameJars();
 
         // ---
         // Generate version xml file
@@ -562,7 +631,7 @@ public class JnlpDownloadServletMojo
         return collectedJarResources;
     }
 
-    private void generateJnlpFile( ResolvedJnlpFile jnlpFile, String libPath )
+    private void generateJnlpFile(ResolvedJnlpFile jnlpFile, String libPath, String codebase)
         throws MojoExecutionException
     {
 
@@ -626,7 +695,7 @@ public class JnlpDownloadServletMojo
             new GeneratorTechnicalConfig( getProject(), templateDirectory, BUILT_IN_SERVLET_TEMPLATE_FILENAME,
                                           jnlpOutputFile, templateFileName, jnlpFile.getMainClass(),
                                           getWebstartJarURLForVelocity(), getEncoding() );
-        JarResourceGeneratorConfig jarResourceGeneratorConfig = new JarResourceGeneratorConfig( jarResources, libPath, getCodebase(), jnlpFile.getProperties(), jnlpFile.getArguments() );
+        JarResourceGeneratorConfig jarResourceGeneratorConfig = new JarResourceGeneratorConfig( jarResources, libPath, codebase, jnlpFile.getProperties(), jnlpFile.getArguments() );
         JarResourcesGenerator jnlpGenerator =
             new JarResourcesGenerator( getLog(), generatorTechnicalConfig, jarResourceGeneratorConfig );
 
