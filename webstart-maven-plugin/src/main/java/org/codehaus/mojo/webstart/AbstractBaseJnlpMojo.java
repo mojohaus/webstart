@@ -45,6 +45,10 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * The superclass for all JNLP generating MOJOs.
@@ -886,29 +890,46 @@ public abstract class AbstractBaseJnlpMojo
             return 0;
         }
 
-        boolean signVerify = sign.isVerify();
+        final boolean signVerify = sign.isVerify();
 
-        for ( File unprocessedJarFile : jarFiles )
-        {
+		ExecutorService ex = Executors.newFixedThreadPool(sign.getParallel());
 
-            File signedJar = toProcessFile( unprocessedJarFile );
-            ioUtil.deleteFile( signedJar );
+		ArrayList<Future> signRequests = new ArrayList<Future>();
+		for (final File unprocessedJarFile : jarFiles) {
+			signRequests.add(ex.submit(new Callable<Object>() {
 
-            verboseLog( "Sign " + signedJar.getName() );
-            signTool.sign( sign, unprocessedJarFile, signedJar );
+				public Object call() throws Exception {
+					File signedJar = toProcessFile(unprocessedJarFile);
+					ioUtil.deleteFile(signedJar);
 
-            getLog().debug( "lastModified signedJar:" + signedJar.lastModified() + " unprocessed signed Jar:" +
-                                unprocessedJarFile.lastModified() );
+					verboseLog("Sign " + signedJar.getName());
+					signTool.sign(sign, unprocessedJarFile, signedJar);
 
-            if ( signVerify )
-            {
-                verboseLog( "Verify signature of " + signedJar.getName() );
-                signTool.verify( sign, signedJar, isVerbose() );
-            }
-            // remove unprocessed files
-            // TODO wouldn't have to do that if we copied the unprocessed jar files in a temporary area
-            ioUtil.deleteFile( unprocessedJarFile );
-        }
+					getLog().debug("lastModified signedJar:" + signedJar.lastModified() + " unprocessed signed Jar:"
+							+ unprocessedJarFile.lastModified());
+
+					if (signVerify) {
+						verboseLog("Verify signature of " + signedJar.getName());
+						signTool.verify(sign, signedJar, isVerbose());
+					}
+					// remove unprocessed files
+					// TODO wouldn't have to do that if we copied the
+					// unprocessed jar files in a temporary area
+					ioUtil.deleteFile(unprocessedJarFile);
+					return null;
+				}
+			}));
+		}
+
+		while (!signRequests.isEmpty()) {
+			for (int i = signRequests.size() - 1; i >= 0; i--) {
+				if (signRequests.get(i).isDone()) {
+					signRequests.remove(i);
+				}
+			}
+		}
+
+        ex.shutdown();
 
         return jarFiles.length;
     }

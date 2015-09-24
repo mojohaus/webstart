@@ -137,6 +137,11 @@ public class SignConfig
     private String tsaLocation;
 
     /**
+     * Specify number of threads to use for signing process
+     */
+    private int parallel = 1;
+
+    /**
      * Called before any Jars get signed or verified.
      * <p/>
      * This method allows you to create any keys or perform any initialisation that the
@@ -505,5 +510,15 @@ public class SignConfig
             buffer.append( property.replaceAll( ",", "\\\\," ) );
         }
     }
+
+
+	public int getParallel() {
+		return parallel;
+	}
+
+
+	public void setParallel(int parallel) {
+		this.parallel = parallel;
+	}
 
 }
