@@ -61,7 +61,7 @@ public class JarResourcesGeneratorTest
             new GeneratorTechnicalConfig( mavenProject, resourceLoaderPath, "default-jnlp-template.vm",
                                           outputFile, templateFile.getName(), mainClass,
                                           "jar:file:/tmp/path/to/webstart-plugin.jar", "utf-8" );
-        JarResourceGeneratorConfig jarResourceGeneratorConfig = new JarResourceGeneratorConfig( jarResources, null, null, null );
+        JarResourceGeneratorConfig jarResourceGeneratorConfig = new JarResourceGeneratorConfig( jarResources, null, null, null, null );
         JarResourcesGenerator generator  =
             new JarResourcesGenerator( new SystemStreamLog(), generatorTechnicalConfig, jarResourceGeneratorConfig );
 
@@ -84,7 +84,7 @@ public class JarResourcesGeneratorTest
         jarResources.add( jarResource3 );
         jarResources.add( jarResource4 );
 
-        String expectedText =EOL + "<jar href=\"href1\" version=\"1.1\" main=\"true\"/>" + 
+        String expectedText =EOL + "<jar href=\"href1\" version=\"1.1\" main=\"true\"/>" +
         		EOL + "<jar href=\"href2\" version=\"1.2\"/>" +
         		EOL + "<jar href=\"href3\"/>" + EOL;
 
@@ -92,7 +92,7 @@ public class JarResourcesGeneratorTest
 
         Assert.assertEquals( expectedText, actualText );
 
-        JarResourceGeneratorConfig jarResourceGeneratorConfig2 = new JarResourceGeneratorConfig( jarResources, "myLib", null, null );
+        JarResourceGeneratorConfig jarResourceGeneratorConfig2 = new JarResourceGeneratorConfig( jarResources, "myLib", null, null, null );
         JarResourcesGenerator generator2  =
             new JarResourcesGenerator( new SystemStreamLog(), generatorTechnicalConfig, jarResourceGeneratorConfig2 );
 
@@ -102,7 +102,7 @@ public class JarResourcesGeneratorTest
 //                                       mainClass, "jar:file:/tmp/path/to/webstart-plugin.jar", "myLib", "utf-8" );
 
         String expectedText2 = EOL + "<jar href=\"myLib/href1\" version=\"1.1\" main=\"true\"/>" +
-        		EOL + "<jar href=\"myLib/href2\" version=\"1.2\"/>" + 
+        		EOL + "<jar href=\"myLib/href2\" version=\"1.2\"/>" +
         		EOL + "<jar href=\"myLib/href3\"/>" + EOL;
 
         String actualText2 = generator2.getDependenciesText();
