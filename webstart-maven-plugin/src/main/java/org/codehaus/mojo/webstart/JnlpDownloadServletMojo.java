@@ -513,7 +513,8 @@ public class JnlpDownloadServletMojo
 
             // get all transitive dependencies
 
-            Set<Artifact> transitiveArtifacts =
+            @SuppressWarnings("unchecked")
+			Set<Artifact> transitiveArtifacts =
                 getArtifactUtil().resolveTransitively( artifacts, siblingProjects, getProject().getArtifact(),
                                                        getLocalRepository(), getRemoteRepositories(), artifactFilter, getProject().getManagedVersionMap());
 

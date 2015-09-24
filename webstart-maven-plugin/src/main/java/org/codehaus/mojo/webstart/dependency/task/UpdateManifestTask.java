@@ -22,7 +22,6 @@ package org.codehaus.mojo.webstart.dependency.task;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.mojo.webstart.dependency.JnlpDependencyConfig;
 import org.codehaus.mojo.webstart.util.IOUtil;
-import org.codehaus.mojo.webstart.util.JarUtil;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 

@@ -99,7 +99,7 @@ public class VersionXmlGeneratorTest
 
         try
         {
-            new VersionXmlGenerator( "utf-8" ).generate( null, new ArrayList() );
+            new VersionXmlGenerator( "utf-8" ).generate( null, new ArrayList<ResolvedJarResource>() );
             Assert.fail( "Should have thrown an IllegalArgumentException" );
         }
         catch ( IllegalArgumentException e )
