@@ -40,6 +40,6 @@ public interface JarUtil
      */
     String ROLE = JarUtil.class.getName();
 
-    void updateManifestEntries( File jar, Map<String, String> updateManifestEntries )
+    void updateManifestEntries( File jar, Map<String, String> updateManifestEntries, boolean overrideDuplicateKeys )
         throws MojoExecutionException;
 }

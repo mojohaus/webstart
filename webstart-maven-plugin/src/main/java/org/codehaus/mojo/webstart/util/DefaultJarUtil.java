@@ -58,11 +58,11 @@ public class DefaultJarUtil
     /**
      * {@inheritDoc}
      */
-    public void updateManifestEntries( File jar, Map<String, String> manifestentries )
+    public void updateManifestEntries(File jar, Map<String, String> manifestentries, boolean overrideDuplicateKeys)
         throws MojoExecutionException
     {
 
-        Manifest manifest = createManifest( jar, manifestentries );
+        Manifest manifest = createManifest(jar, manifestentries, overrideDuplicateKeys);
 
         File updatedUnprocessedJarFile = new File( jar.getParent(), jar.getName() + "_updateManifestEntriesJar" );
 
@@ -134,7 +134,7 @@ public class DefaultJarUtil
      * @return Manifest
      * @throws MojoExecutionException
      */
-    protected Manifest createManifest( File jar, Map<String, String> manifestentries )
+    protected Manifest createManifest(File jar, Map<String, String> manifestentries, boolean overrideDuplicateKeys)
         throws MojoExecutionException
     {
         JarFile jarFile = null;
@@ -155,6 +155,10 @@ public class DefaultJarUtil
             Set<Entry<String, String>> entrySet = manifestentries.entrySet();
             for ( Entry<String, String> entry : entrySet )
             {
+                if (!overrideDuplicateKeys && manifest.getMainAttributes().containsKey(new Name(entry.getKey())))
+                {
+                    continue;
+                }
                 manifest.getMainAttributes().putValue( entry.getKey(), entry.getValue() );
             }
 

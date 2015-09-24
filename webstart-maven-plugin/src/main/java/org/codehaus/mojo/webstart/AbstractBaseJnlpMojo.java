@@ -200,6 +200,12 @@ public abstract class AbstractBaseJnlpMojo
     private Map<String, String> updateManifestEntries;
 
     /**
+     * Controls how to treat existing keys in jar manifest.
+     */
+    @Parameter(defaultValue = "true")
+    private boolean overrideDuplicateManifestKeys;
+
+    /**
      * Compile class-path elements used to search for the keystore
      * (if kestore location was prefixed by {@code classpath:}).
      *
@@ -853,7 +859,11 @@ public abstract class AbstractBaseJnlpMojo
         {
             verboseLog( "Update manifest " + toProcessFile( unprocessedJarFile ).getName() );
 
-            jarUtil.updateManifestEntries( unprocessedJarFile, updateManifestEntries );
+            if (canUnsign || !isJarSigned(unprocessedJarFile))
+            {
+                jarUtil.updateManifestEntries(unprocessedJarFile, updateManifestEntries,
+                    overrideDuplicateManifestKeys);
+            }
         }
     }
 
