@@ -54,16 +54,16 @@ public abstract class AbstractJnlpMojoTest
 
         // -- TODO why can't this be read/set from the pom.xml file?
         AbstractJnlpMojo.Dependencies deps = new AbstractJnlpMojo.Dependencies();
-        List includes = new ArrayList();
+        List<String> includes = new ArrayList<String>();
         includes.add( "tatatata" );
         includes.add( "titititi" );
-        List excludes = new ArrayList();
+        List<String> excludes = new ArrayList<String>();
         excludes.add( "commons-lang:commons-lang" );
         excludes.add( "totototo" );
         deps.setIncludes( includes );
         deps.setExcludes( excludes );
         setVariableValueToObject( mojo, "dependencies", deps );
-        // -- 
+        // --
 
         assertTrue( "dependencies not null", mojo.getDependencies() != null );
         assertEquals( "2 includes", 2, mojo.getDependencies().getIncludes().size() );
@@ -90,11 +90,11 @@ public abstract class AbstractJnlpMojoTest
 
         // -- TODO why can't this be read/set from the pom.xml file?
         AbstractJnlpMojo.Dependencies deps = new AbstractJnlpMojo.Dependencies();
-        List excludes = new ArrayList();
+        List<String> excludes = new ArrayList<String>();
         excludes.add( "commons-lang:commons-lang" );
         deps.setExcludes( excludes );
         setVariableValueToObject( mojo, "dependencies", deps );
-        // -- 
+        // --
 
         assertTrue( "dependencies not null", mojo.getDependencies() != null );
         assertNull( "no include", mojo.getDependencies().getIncludes() );

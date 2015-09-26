@@ -384,7 +384,8 @@ public abstract class AbstractJnlpMojo
 
         boolean failed = false;
 
-        Collection<Artifact> artifacts = getProject().getArtifacts();
+        @SuppressWarnings("unchecked")
+		Collection<Artifact> artifacts = getProject().getArtifacts();
 
         getLog().debug( "artifacts: " + artifacts.size() );
 
@@ -477,7 +478,8 @@ public abstract class AbstractJnlpMojo
             filter.add( new ExcludesArtifactFilter( dependencies.getExcludes() ) );
         }
 
-        Collection<Artifact> artifacts =
+        @SuppressWarnings("unchecked")
+		Collection<Artifact> artifacts =
             isExcludeTransitive() ? getProject().getDependencyArtifacts() : getProject().getArtifacts();
 
         for ( Artifact artifact : artifacts )
@@ -823,7 +825,8 @@ public abstract class AbstractJnlpMojo
         throws MojoExecutionException
     {
 
-        Collection<Artifact> artifacts =
+        @SuppressWarnings("unchecked")
+		Collection<Artifact> artifacts =
             isExcludeTransitive() ? getProject().getDependencyArtifacts() : getProject().getArtifacts();
 
         for ( JnlpExtension extension : jnlpExtensions )

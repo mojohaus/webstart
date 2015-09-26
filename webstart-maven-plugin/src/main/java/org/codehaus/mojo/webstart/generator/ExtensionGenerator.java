@@ -39,6 +39,11 @@ public class ExtensionGenerator
         super( log, technicalConfig, extraConfig );
     }
 
+    protected String getArgumentsText()
+    {
+        return "";
+    }
+
     /**
      * {@inheritDoc}
      */

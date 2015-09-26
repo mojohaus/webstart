@@ -42,6 +42,11 @@ public class Generator
         super( log, technicalConfig, extraConfig );
     }
 
+    protected String getArgumentsText()
+    {
+        return "";
+    }
+
     /**
      * {@inheritDoc}
      */

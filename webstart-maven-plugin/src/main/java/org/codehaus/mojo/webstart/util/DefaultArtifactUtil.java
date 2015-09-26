@@ -121,7 +121,7 @@ public class DefaultArtifactUtil
     /**
      * {@inheritDoc}
      */
-    public void resolveFromRepositories( Artifact artifact, List remoteRepositories,
+    public void resolveFromRepositories( Artifact artifact, List<ArtifactRepository> remoteRepositories,
                                          ArtifactRepository localRepository )
         throws MojoExecutionException
     {
@@ -142,10 +142,11 @@ public class DefaultArtifactUtil
     /**
      * {@inheritDoc}
      */
-    public Set<Artifact> resolveTransitively( Set<Artifact> jarResourceArtifacts, Set<MavenProject> siblingProjects,
+    @SuppressWarnings("unchecked")
+	public Set<Artifact> resolveTransitively( Set<Artifact> jarResourceArtifacts, Set<MavenProject> siblingProjects,
                                               Artifact originateArtifact, ArtifactRepository localRepository,
                                               List<ArtifactRepository> remoteRepositories,
-                                              ArtifactFilter artifactFilter, Map managedVersions)
+                                              ArtifactFilter artifactFilter, Map<String, String> managedVersions)
         throws MojoExecutionException
     {
 
