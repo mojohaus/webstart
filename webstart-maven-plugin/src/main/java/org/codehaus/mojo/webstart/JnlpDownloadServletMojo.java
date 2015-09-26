@@ -234,7 +234,7 @@ public class JnlpDownloadServletMojo
                                 jarResource.getArtifact().getFile().getName());
                         }
 
-                        if (getJarUtil().appendFileToJar(jarFile, file, "/JNLP-INF"))
+                        if (getJarUtil().appendFileToJar(jarFile, file, "JNLP-INF"))
                         {
                             File unprocessedFileName = null;
                             try
