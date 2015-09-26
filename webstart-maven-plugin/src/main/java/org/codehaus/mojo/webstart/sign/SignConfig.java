@@ -1,5 +1,7 @@
 package org.codehaus.mojo.webstart.sign;
 
+import org.apache.commons.lang.StringUtils;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -26,6 +28,7 @@ import org.apache.maven.shared.jarsigner.JarSignerVerifyRequest;
 import org.codehaus.mojo.keytool.requests.KeyToolGenerateKeyPairRequest;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Bean that represents the JarSigner configuration.
@@ -142,9 +145,14 @@ public class SignConfig
     private int parallel = 1;
 
     /**
+     * Provides means to specify digest algorithm to use when signing jar files
+     */
+    private String digestalg;
+
+    /**
      * Called before any Jars get signed or verified.
      * <p/>
-     * This method allows you to create any keys or perform any initialisation that the
+     * This method allows you to create any keys or perform any initialization that the
      * method of signature that you're implementing requires.
      *
      * @param workDirectory working directory
@@ -217,6 +225,18 @@ public class SignConfig
         request.setArchive( jarToSign );
         request.setSignedjar( signedJar );
         request.setTsaLocation( getTsaLocation() );
+
+        ArrayList<String> arguments = new ArrayList<String>();
+
+        if (!StringUtils.isEmpty(digestalg)) {
+        	arguments.add("-digestalg");
+        	arguments.add(digestalg);
+        }
+
+        if (!arguments.isEmpty()) {
+        	request.setArguments(arguments.toArray(new String[]{}));
+        }
+
         return request;
     }
 
@@ -519,6 +539,16 @@ public class SignConfig
 
 	public void setParallel(int parallel) {
 		this.parallel = parallel;
+	}
+
+
+	public String getDigestalg() {
+		return digestalg;
+	}
+
+
+	public void setDigestalg(String digestalg) {
+		this.digestalg = digestalg;
 	}
 
 }
