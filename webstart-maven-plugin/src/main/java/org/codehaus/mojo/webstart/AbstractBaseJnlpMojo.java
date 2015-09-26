@@ -810,9 +810,9 @@ public abstract class AbstractBaseJnlpMojo extends AbstractMojo {
 		}
 
 		for (File unprocessedJarFile : jarFiles) {
-			verboseLog("Update manifest " + toProcessFile(unprocessedJarFile).getName());
-
 			if (canUnsign || !isJarSigned(unprocessedJarFile)) {
+				verboseLog("Update manifest " + toProcessFile(unprocessedJarFile).getName());
+
 				jarUtil.updateManifestEntries(unprocessedJarFile, updateManifestEntries, overrideDuplicateManifestKeys);
 			}
 		}
