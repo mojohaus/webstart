@@ -138,89 +138,84 @@ public class SignConfig {
     private String tsaLocation;
 
     /**
-	 * Optional host name of the HTTP proxy host used for accessing the
-	 * {@link #tsaLocation trusted timestamping server}.
-	 * 
-	 * @since 1.0-beta-7
-	 */
-	private String httpProxyHost;
+     * Optional host name of the HTTP proxy host used for accessing the
+     * {@link #tsaLocation trusted timestamping server}.
+     *
+     * @since 1.0-beta-7
+     */
+    private String httpProxyHost;
 
-	/**
-	 * Optional port of the HTTP proxy host used for accessing the
-	 * {@link #tsaLocation trusted timestamping server}.
-	 * 
-	 * @since 1.0-beta-7
-	 */
-	private String httpProxyPort;
+    /**
+     * Optional port of the HTTP proxy host used for accessing the
+     * {@link #tsaLocation trusted timestamping server}.
+     *
+     * @since 1.0-beta-7
+     */
+    private String httpProxyPort;
 
-	/**
-	 * Optional host name of the HTTPS proxy host used for accessing the
-	 * {@link #tsaLocation trusted timestamping server}.
-	 * 
-	 * @since 1.0-beta-7
-	 */
-	private String httpsProxyHost;
+    /**
+     * Optional host name of the HTTPS proxy host used for accessing the
+     * {@link #tsaLocation trusted timestamping server}.
+     *
+     * @since 1.0-beta-7
+     */
+    private String httpsProxyHost;
 
-	/**
-	 * Optional port of the HTTPS proxy host used for accessing the
-	 * {@link #tsaLocation trusted timestamping server}.
-	 * 
-	 * @since 1.0-beta-7
-	 */
-	private String httpsProxyPort;
+    /**
+     * Optional port of the HTTPS proxy host used for accessing the
+     * {@link #tsaLocation trusted timestamping server}.
+     *
+     * @since 1.0-beta-7
+     */
+    private String httpsProxyPort;
 
-	/**
+    /**
      * Called before any Jars get signed or verified.
      * <p/>
-	 * This method allows you to create any keys or perform any initialisation
-	 * that the method of signature that you're implementing requires.
+     * This method allows you to create any keys or perform any initialisation
+     * that the method of signature that you're implementing requires.
      *
-	 * @param workDirectory
-	 *            working directory
-	 * @param verbose
-	 *            verbose flag coming from the mojo configuration
-	 * @param signTool
-	 *            the sign tool used eventually to create or delete key store
-	 * @param classLoader
-	 *            classloader where to find keystore (if not generating a new
-	 *            one)
-	 * @throws MojoExecutionException
-	 *             if something wrong occurs while init (mainly when preparing
-	 *             keys)
+     * @param workDirectory working directory
+     * @param verbose       verbose flag coming from the mojo configuration
+     * @param signTool      the sign tool used eventually to create or delete key store
+     * @param classLoader   classloader where to find keystore (if not generating a new
+     *                      one)
+     * @throws MojoExecutionException if something wrong occurs while init (mainly when preparing
+     *                                keys)
      */
-	public void init(File workDirectory, boolean verbose, SignTool signTool,
-			ClassLoader classLoader) throws MojoExecutionException {
+    public void init(File workDirectory, boolean verbose, SignTool signTool,
+                     ClassLoader classLoader) throws MojoExecutionException {
         this.workDirectory = workDirectory;
-        setVerbose( verbose );
+        setVerbose(verbose);
 
-		if (workingKeystore == null) {
+        if (workingKeystore == null) {
             // use a default workingKeystore file
-            workingKeystore = new File( workDirectory, "workingKeystore" );
+            workingKeystore = new File(workDirectory, "workingKeystore");
         }
 
-		if (keystoreConfig != null && keystoreConfig.isGen()) {
-            File keystoreFile = new File( getKeystore() );
+        if (keystoreConfig != null && keystoreConfig.isGen()) {
+            File keystoreFile = new File(getKeystore());
 
-			if (keystoreConfig.isDelete()) {
-                signTool.deleteKeyStore( keystoreFile, isVerbose() );
+            if (keystoreConfig.isDelete()) {
+                signTool.deleteKeyStore(keystoreFile, isVerbose());
             }
 
-            signTool.generateKey( this, keystoreFile );
-		} else {
+            signTool.generateKey(this, keystoreFile);
+        } else {
             // try to locate key store from any location
-			File keystoreFile = signTool.getKeyStoreFile(getKeystore(),
-					workingKeystore, classLoader);
+            File keystoreFile = signTool.getKeyStoreFile(getKeystore(),
+                    workingKeystore, classLoader);
 
             // now we will use this key store path
-            setKeystore( keystoreFile.getAbsolutePath() );
+            setKeystore(keystoreFile.getAbsolutePath());
         }
 
         // at the end keystore file must exists
-        File keystoreFile = new File( getKeystore() );
+        File keystoreFile = new File(getKeystore());
 
-		if (!keystoreFile.exists()) {
-			throw new MojoExecutionException(
-					"Could not obtain key store location at " + keystore);
+        if (!keystoreFile.exists()) {
+            throw new MojoExecutionException(
+                    "Could not obtain key store location at " + keystore);
         }
     }
 
@@ -228,51 +223,49 @@ public class SignConfig {
     /**
      * Creates a jarsigner request to do a sign operation.
      *
-	 * @param jarToSign
-	 *            the location of the jar to sign
-	 * @param signedJar
-	 *            the optional location of the signed jar to produce (if not
-	 *            set, will use the original location)
+     * @param jarToSign the location of the jar to sign
+     * @param signedJar the optional location of the signed jar to produce (if not
+     *                  set, will use the original location)
      * @return the jarsigner request
      */
-	public JarSignerRequest createSignRequest(File jarToSign, File signedJar) {
+    public JarSignerRequest createSignRequest(File jarToSign, File signedJar) {
         JarSignerSignRequest request = new JarSignerSignRequest();
-        request.setAlias( getAlias() );
-        request.setKeypass( getKeypass() );
-        request.setKeystore( getKeystore() );
-        request.setSigfile( getSigfile() );
-        request.setStorepass( getStorepass() );
-        request.setStoretype( getStoretype() );
-        request.setWorkingDirectory( workDirectory );
-        request.setMaxMemory( getMaxMemory() );
-        request.setVerbose( isVerbose() );
-        request.setArchive( jarToSign );
-        request.setSignedjar( signedJar );
-        request.setTsaLocation( getTsaLocation() );
+        request.setAlias(getAlias());
+        request.setKeypass(getKeypass());
+        request.setKeystore(getKeystore());
+        request.setSigfile(getSigfile());
+        request.setStorepass(getStorepass());
+        request.setStoretype(getStoretype());
+        request.setWorkingDirectory(workDirectory);
+        request.setMaxMemory(getMaxMemory());
+        request.setVerbose(isVerbose());
+        request.setArchive(jarToSign);
+        request.setSignedjar(signedJar);
+        request.setTsaLocation(getTsaLocation());
 
-		// TODO: add support for proxy parameters to JarSigner /
-		// JarSignerSignRequest
-		// instead of using implementation-specific additional arguments
-		List<String> additionalArguments = new ArrayList<String>(4);
-		if (httpProxyHost != null) {
-			additionalArguments.add("-J-Dhttp.proxyHost=" + httpProxyHost);
-		}
+        // TODO: add support for proxy parameters to JarSigner /
+        // JarSignerSignRequest
+        // instead of using implementation-specific additional arguments
+        List<String> additionalArguments = new ArrayList<String>(4);
+        if (httpProxyHost != null) {
+            additionalArguments.add("-J-Dhttp.proxyHost=" + httpProxyHost);
+        }
 
-		if (httpProxyPort != null) {
-			additionalArguments.add("-J-Dhttp.proxyPort=" + httpProxyPort);
-		}
+        if (httpProxyPort != null) {
+            additionalArguments.add("-J-Dhttp.proxyPort=" + httpProxyPort);
+        }
 
-		if (httpsProxyHost != null) {
-			additionalArguments.add("-J-Dhttps.proxyHost=" + httpsProxyHost);
-		}
+        if (httpsProxyHost != null) {
+            additionalArguments.add("-J-Dhttps.proxyHost=" + httpsProxyHost);
+        }
 
-		if (httpsProxyPort != null) {
-			additionalArguments.add("-J-Dhttps.proxyPort=" + httpsProxyPort);
-		}
+        if (httpsProxyPort != null) {
+            additionalArguments.add("-J-Dhttps.proxyPort=" + httpsProxyPort);
+        }
 
-		if (!additionalArguments.isEmpty()) {
-			request.setArguments(additionalArguments.toArray(new String[0]));
-		}
+        if (!additionalArguments.isEmpty()) {
+            request.setArguments(additionalArguments.toArray(new String[0]));
+        }
 
         return request;
     }
@@ -280,43 +273,40 @@ public class SignConfig {
     /**
      * Creates a jarsigner request to do a verify operation.
      *
-	 * @param jarFile
-	 *            the location of the jar to sign
-	 * @param certs
-	 *            flag to show certificats details
+     * @param jarFile the location of the jar to sign
+     * @param certs   flag to show certificats details
      * @return the jarsigner request
      */
-	public JarSignerRequest createVerifyRequest(File jarFile, boolean certs) {
+    public JarSignerRequest createVerifyRequest(File jarFile, boolean certs) {
         JarSignerVerifyRequest request = new JarSignerVerifyRequest();
-        request.setCerts( certs );
-        request.setWorkingDirectory( workDirectory );
-        request.setMaxMemory( getMaxMemory() );
-        request.setVerbose( isVerbose() );
-        request.setArchive( jarFile );
+        request.setCerts(certs);
+        request.setWorkingDirectory(workDirectory);
+        request.setMaxMemory(getMaxMemory());
+        request.setVerbose(isVerbose());
+        request.setArchive(jarFile);
         return request;
     }
 
     /**
      * Creates a keytool request to do a key store generation operation.
      *
-	 * @param keystoreFile
-	 *            the location of the key store file to generate
+     * @param keystoreFile the location of the key store file to generate
      * @return the keytool request
      */
-	public KeyToolGenerateKeyPairRequest createKeyGenRequest(File keystoreFile) {
+    public KeyToolGenerateKeyPairRequest createKeyGenRequest(File keystoreFile) {
         KeyToolGenerateKeyPairRequest request = new KeyToolGenerateKeyPairRequest();
-        request.setAlias( getAlias() );
-        request.setDname( getDname() );
-        request.setKeyalg( getKeyalg() );
-        request.setKeypass( getKeypass() );
-        request.setKeysize( getKeysize() );
-        request.setKeystore( getKeystore() );
-        request.setSigalg( getSigalg() );
-        request.setStorepass( getStorepass() );
-        request.setStoretype( getStoretype() );
-        request.setValidity( getValidity() );
-        request.setVerbose( isVerbose() );
-        request.setWorkingDirectory( workDirectory );
+        request.setAlias(getAlias());
+        request.setDname(getDname());
+        request.setKeyalg(getKeyalg());
+        request.setKeypass(getKeypass());
+        request.setKeysize(getKeysize());
+        request.setKeystore(getKeystore());
+        request.setSigalg(getSigalg());
+        request.setStorepass(getStorepass());
+        request.setStoretype(getStoretype());
+        request.setValidity(getValidity());
+        request.setVerbose(isVerbose());
+        request.setWorkingDirectory(workDirectory);
         return request;
     }
 
@@ -324,236 +314,236 @@ public class SignConfig {
     /**
      * Gets the verbose state of the configuration.
      *
-	 * @return {@code true} if configuration state is on, {@code false}
-	 *         otherwise.
+     * @return {@code true} if configuration state is on, {@code false}
+     * otherwise.
      */
-	public boolean isVerbose() {
+    public boolean isVerbose() {
         return verbose;
     }
 
-	public void setWorkDirectory(File workDirectory) {
+    public void setWorkDirectory(File workDirectory) {
         this.workDirectory = workDirectory;
     }
 
-	public void setVerbose(boolean verbose) {
+    public void setVerbose(boolean verbose) {
         this.verbose = verbose;
     }
 
-	public void setMaxMemory(String maxMemory) {
+    public void setMaxMemory(String maxMemory) {
         this.maxMemory = maxMemory;
     }
 
-	public void setKeystoreConfig(KeystoreConfig keystoreConfig) {
+    public void setKeystoreConfig(KeystoreConfig keystoreConfig) {
         this.keystoreConfig = keystoreConfig;
     }
 
-	public void setKeystore(String keystore) {
+    public void setKeystore(String keystore) {
         this.keystore = keystore;
     }
 
-	public void setWorkingKeystore(File workingKeystore) {
+    public void setWorkingKeystore(File workingKeystore) {
         this.workingKeystore = workingKeystore;
     }
 
-	public void setKeyalg(String keyalg) {
+    public void setKeyalg(String keyalg) {
         this.keyalg = keyalg;
     }
 
-	public void setKeysize(String keysize) {
+    public void setKeysize(String keysize) {
         this.keysize = keysize;
     }
 
-	public void setSigalg(String sigalg) {
+    public void setSigalg(String sigalg) {
         this.sigalg = sigalg;
     }
 
-	public void setSigfile(String sigfile) {
+    public void setSigfile(String sigfile) {
         this.sigfile = sigfile;
     }
 
-	public void setStoretype(String storetype) {
+    public void setStoretype(String storetype) {
         this.storetype = storetype;
     }
 
-	public void setStorepass(String storepass) {
+    public void setStorepass(String storepass) {
         this.storepass = storepass;
     }
 
-	public void setKeypass(String keypass) {
+    public void setKeypass(String keypass) {
         this.keypass = keypass;
     }
 
-	public void setValidity(String validity) {
+    public void setValidity(String validity) {
         this.validity = validity;
     }
 
-	public void setDnameCn(String dnameCn) {
+    public void setDnameCn(String dnameCn) {
         this.dnameCn = dnameCn;
     }
 
-	public void setDnameOu(String dnameOu) {
+    public void setDnameOu(String dnameOu) {
         this.dnameOu = dnameOu;
     }
 
-	public void setDnameL(String dnameL) {
+    public void setDnameL(String dnameL) {
         this.dnameL = dnameL;
     }
 
-	public void setDnameSt(String dnameSt) {
+    public void setDnameSt(String dnameSt) {
         this.dnameSt = dnameSt;
     }
 
-	public void setDnameO(String dnameO) {
+    public void setDnameO(String dnameO) {
         this.dnameO = dnameO;
     }
 
-	public void setDnameC(String dnameC) {
+    public void setDnameC(String dnameC) {
         this.dnameC = dnameC;
     }
 
-	public void setAlias(String alias) {
+    public void setAlias(String alias) {
         this.alias = alias;
     }
 
-	public void setVerify(boolean verify) {
+    public void setVerify(boolean verify) {
         this.verify = verify;
     }
 
-	public void setTsaLocation(String tsaLocation) {
+    public void setTsaLocation(String tsaLocation) {
         this.tsaLocation = tsaLocation;
     }
 
-	public String getKeystore() {
+    public String getKeystore() {
         return keystore;
     }
 
-	public String getKeyalg() {
+    public String getKeyalg() {
         return keyalg;
     }
 
-	public String getKeysize() {
+    public String getKeysize() {
         return keysize;
     }
 
-	public String getSigalg() {
+    public String getSigalg() {
         return sigalg;
     }
 
-	public String getSigfile() {
+    public String getSigfile() {
         return sigfile;
     }
 
-	public String getStoretype() {
+    public String getStoretype() {
         return storetype;
     }
 
-	public String getStorepass() {
+    public String getStorepass() {
         return storepass;
     }
 
-	public String getKeypass() {
+    public String getKeypass() {
         return keypass;
     }
 
-	public String getValidity() {
+    public String getValidity() {
         return validity;
     }
 
-	public String getDnameCn() {
+    public String getDnameCn() {
         return dnameCn;
     }
 
-	public String getDnameOu() {
+    public String getDnameOu() {
         return dnameOu;
     }
 
-	public String getDnameL() {
+    public String getDnameL() {
         return dnameL;
     }
 
-	public String getDnameSt() {
+    public String getDnameSt() {
         return dnameSt;
     }
 
-	public String getDnameO() {
+    public String getDnameO() {
         return dnameO;
     }
 
-	public String getDnameC() {
+    public String getDnameC() {
         return dnameC;
     }
 
-	public String getAlias() {
+    public String getAlias() {
         return alias;
     }
 
-	public boolean isVerify() {
+    public boolean isVerify() {
         return verify;
     }
 
-	public String getTsaLocation() {
+    public String getTsaLocation() {
         return tsaLocation;
     }
 
-	public String getMaxMemory() {
+    public String getMaxMemory() {
         return maxMemory;
     }
 
-	public String getHttpProxyHost() {
-		return httpProxyHost;
-	}
+    public String getHttpProxyHost() {
+        return httpProxyHost;
+    }
 
-	public void setHttpProxyHost(String httpProxyHost) {
-		this.httpProxyHost = httpProxyHost;
-	}
+    public void setHttpProxyHost(String httpProxyHost) {
+        this.httpProxyHost = httpProxyHost;
+    }
 
-	public String getHttpProxyPort() {
-		return httpProxyPort;
-	}
+    public String getHttpProxyPort() {
+        return httpProxyPort;
+    }
 
-	public void setHttpProxyPort(String httpProxyPort) {
-		this.httpProxyPort = httpProxyPort;
-	}
+    public void setHttpProxyPort(String httpProxyPort) {
+        this.httpProxyPort = httpProxyPort;
+    }
 
-	public String getHttpsProxyHost() {
-		return httpsProxyHost;
-	}
+    public String getHttpsProxyHost() {
+        return httpsProxyHost;
+    }
 
-	public void setHttpsProxyHost(String httpsProxyHost) {
-		this.httpsProxyHost = httpsProxyHost;
-	}
+    public void setHttpsProxyHost(String httpsProxyHost) {
+        this.httpsProxyHost = httpsProxyHost;
+    }
 
-	public String getHttpsProxyPort() {
-		return httpsProxyPort;
-	}
+    public String getHttpsProxyPort() {
+        return httpsProxyPort;
+    }
 
-	public void setHttpsProxyPort(String httpsProxyPort) {
-		this.httpsProxyPort = httpsProxyPort;
-	}
+    public void setHttpsProxyPort(String httpsProxyPort) {
+        this.httpsProxyPort = httpsProxyPort;
+    }
 
-	public String getDname() {
-        StringBuffer buffer = new StringBuffer( 128 );
+    public String getDname() {
+        StringBuffer buffer = new StringBuffer(128);
 
-        appendToDnameBuffer( dnameCn, buffer, "CN" );
-        appendToDnameBuffer( dnameOu, buffer, "OU" );
-        appendToDnameBuffer( dnameL, buffer, "L" );
-        appendToDnameBuffer( dnameSt, buffer, "ST" );
-        appendToDnameBuffer( dnameO, buffer, "O" );
-        appendToDnameBuffer( dnameC, buffer, "C" );
+        appendToDnameBuffer(dnameCn, buffer, "CN");
+        appendToDnameBuffer(dnameOu, buffer, "OU");
+        appendToDnameBuffer(dnameL, buffer, "L");
+        appendToDnameBuffer(dnameSt, buffer, "ST");
+        appendToDnameBuffer(dnameO, buffer, "O");
+        appendToDnameBuffer(dnameC, buffer, "C");
 
         return buffer.toString();
     }
 
-	private void appendToDnameBuffer(final String property,
-			StringBuffer buffer, final String prefix) {
-		if (property != null) {
-			if (buffer.length() > 0) {
-                buffer.append( ", " );
+    private void appendToDnameBuffer(final String property,
+                                     StringBuffer buffer, final String prefix) {
+        if (property != null) {
+            if (buffer.length() > 0) {
+                buffer.append(", ");
             }
-			// http://jira.codehaus.org/browse/MWEBSTART-112 : have commas in
-			// parts of dName (but them must be espace)
-            buffer.append( prefix ).append( "=" );
-            buffer.append( property.replaceAll( ",", "\\\\," ) );
+            // http://jira.codehaus.org/browse/MWEBSTART-112 : have commas in
+            // parts of dName (but them must be espace)
+            buffer.append(prefix).append("=");
+            buffer.append(property.replaceAll(",", "\\\\,"));
         }
     }
 
