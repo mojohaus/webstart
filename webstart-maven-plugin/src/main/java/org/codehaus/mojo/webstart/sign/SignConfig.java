@@ -137,6 +137,11 @@ public class SignConfig
     private String tsaLocation;
 
     /**
+     * Provides custom arguements to pass to the signtool.
+     */
+    private String[] arguments;
+
+    /**
      * Called before any Jars get signed or verified.
      * <p/>
      * This method allows you to create any keys or perform any initialisation that the
@@ -212,6 +217,7 @@ public class SignConfig
         request.setArchive( jarToSign );
         request.setSignedjar( signedJar );
         request.setTsaLocation( getTsaLocation() );
+        request.setArguments( getArguments() );
         return request;
     }
 
@@ -383,6 +389,11 @@ public class SignConfig
         this.tsaLocation = tsaLocation;
     }
 
+    public void setArguments(String[] arguments)
+    {
+        this.arguments = arguments;
+    }
+
     public String getKeystore()
     {
         return keystore;
@@ -476,6 +487,11 @@ public class SignConfig
     public String getMaxMemory()
     {
         return maxMemory;
+    }
+
+    public String[] getArguments()
+    {
+        return arguments;
     }
 
     public String getDname()
