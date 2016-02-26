@@ -29,6 +29,7 @@ import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -146,6 +147,12 @@ public class SignConfig
     private SecDispatcher securityDispatcher;
 
     /**
+     * Provides custom arguements to pass to the signtool.
+     */
+    private List<String> arguments;
+
+
+    /**
      * Optional host name of the HTTP proxy host used for accessing the
      * {@link #tsaLocation trusted timestamping server}.
      *
@@ -230,6 +237,9 @@ public class SignConfig
         {
             throw new MojoExecutionException( "Could not obtain key store location at " + keystore );
         }
+
+        // reset arguments
+        arguments = new ArrayList<String>();
     }
 
 
@@ -241,7 +251,8 @@ public class SignConfig
      * @return the jarsigner request
      * @throws MojoExecutionException if something wrong occurs
      */
-    public JarSignerRequest createSignRequest( File jarToSign, File signedJar ) throws MojoExecutionException
+    public JarSignerRequest createSignRequest( File jarToSign, File signedJar )
+        throws MojoExecutionException
     {
         JarSignerSignRequest request = new JarSignerSignRequest();
         request.setAlias( getAlias() );
@@ -256,31 +267,29 @@ public class SignConfig
         request.setTsaLocation( getTsaLocation() );
 
         // Special handling for passwords through the Maven Security Dispatcher
-        request.setKeypass(decrypt(keypass));
-        request.setStorepass(decrypt(storepass));
+        request.setKeypass( decrypt( keypass ) );
+        request.setStorepass( decrypt( storepass ) );
 
-        // TODO: add support for proxy parameters to JarSigner /
-        // JarSignerSignRequest
+        // TODO: add support for proxy parameters to JarSigner / JarSignerSignRequest
         // instead of using implementation-specific additional arguments
-        List<String> additionalArguments = new ArrayList<String>(4);
-        if (httpProxyHost != null) {
-            additionalArguments.add("-J-Dhttp.proxyHost=" + httpProxyHost);
+         if (httpProxyHost != null) {
+            arguments.add("-J-Dhttp.proxyHost=" + httpProxyHost);
         }
 
         if (httpProxyPort != null) {
-            additionalArguments.add("-J-Dhttp.proxyPort=" + httpProxyPort);
+            arguments.add("-J-Dhttp.proxyPort=" + httpProxyPort);
         }
 
         if (httpsProxyHost != null) {
-            additionalArguments.add("-J-Dhttps.proxyHost=" + httpsProxyHost);
+            arguments.add("-J-Dhttps.proxyHost=" + httpsProxyHost);
         }
 
         if (httpsProxyPort != null) {
-            additionalArguments.add("-J-Dhttps.proxyPort=" + httpsProxyPort);
+            arguments.add("-J-Dhttps.proxyPort=" + httpsProxyPort);
         }
 
-        if (!additionalArguments.isEmpty()) {
-            request.setArguments(additionalArguments.toArray(new String[0]));
+        if (!arguments.isEmpty()) {
+            request.setArguments(arguments.toArray(new String[0]));
         }
 
         return request;
@@ -454,6 +463,11 @@ public class SignConfig
         this.tsaLocation = tsaLocation;
     }
 
+    public void setArguments( String[] arguments )
+    {
+        Collections.addAll(this.arguments, arguments);
+    }
+
     public String getKeystore()
     {
         return keystore;
@@ -547,6 +561,11 @@ public class SignConfig
     public String getMaxMemory()
     {
         return maxMemory;
+    }
+
+    public String[] getArguments()
+    {
+        return arguments.toArray(new String[arguments.size()]);
     }
 
     public String getHttpProxyHost() {
