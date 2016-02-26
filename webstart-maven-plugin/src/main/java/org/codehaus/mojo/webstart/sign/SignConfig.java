@@ -24,6 +24,8 @@ import org.apache.maven.shared.jarsigner.JarSignerRequest;
 import org.apache.maven.shared.jarsigner.JarSignerSignRequest;
 import org.apache.maven.shared.jarsigner.JarSignerVerifyRequest;
 import org.codehaus.mojo.keytool.requests.KeyToolGenerateKeyPairRequest;
+import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
+import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 
 import java.io.File;
 
@@ -137,6 +139,11 @@ public class SignConfig
     private String tsaLocation;
 
     /**
+     * @since 1.0-beta-7
+     */
+    private SecDispatcher securityDispatcher;
+
+    /**
      * Called before any Jars get signed or verified.
      * <p/>
      * This method allows you to create any keys or perform any initialisation that the
@@ -145,13 +152,15 @@ public class SignConfig
      * @param workDirectory working directory
      * @param verbose       verbose flag coming from the mojo configuration
      * @param signTool      the sign tool used eventually to create or delete key store
+     * @param securityDispatcher component to decrypt a string, passed to it
      * @param classLoader   classloader where to find keystore (if not generating a new one)
      * @throws MojoExecutionException if something wrong occurs while init (mainly when preparing keys)
      */
-    public void init( File workDirectory, boolean verbose, SignTool signTool, ClassLoader classLoader )
+    public void init(File workDirectory, boolean verbose, SignTool signTool, SecDispatcher securityDispatcher, ClassLoader classLoader)
         throws MojoExecutionException
     {
         this.workDirectory = workDirectory;
+        this.securityDispatcher = securityDispatcher;
         setVerbose( verbose );
 
         if ( workingKeystore == null )
@@ -196,15 +205,14 @@ public class SignConfig
      * @param jarToSign the location of the jar to sign
      * @param signedJar the optional location of the signed jar to produce (if not set, will use the original location)
      * @return the jarsigner request
+     * @throws MojoExecutionException if something wrong occurs
      */
-    public JarSignerRequest createSignRequest( File jarToSign, File signedJar )
+    public JarSignerRequest createSignRequest( File jarToSign, File signedJar ) throws MojoExecutionException
     {
         JarSignerSignRequest request = new JarSignerSignRequest();
         request.setAlias( getAlias() );
-        request.setKeypass( getKeypass() );
         request.setKeystore( getKeystore() );
         request.setSigfile( getSigfile() );
-        request.setStorepass( getStorepass() );
         request.setStoretype( getStoretype() );
         request.setWorkingDirectory( workDirectory );
         request.setMaxMemory( getMaxMemory() );
@@ -212,6 +220,11 @@ public class SignConfig
         request.setArchive( jarToSign );
         request.setSignedjar( signedJar );
         request.setTsaLocation( getTsaLocation() );
+
+        // Special handling for passwords through the Maven Security Dispatcher
+        request.setKeypass(decrypt(keypass));
+        request.setStorepass(decrypt(storepass));
+
         return request;
     }
 
@@ -219,7 +232,7 @@ public class SignConfig
      * Creates a jarsigner request to do a verify operation.
      *
      * @param jarFile the location of the jar to sign
-     * @param certs   flag to show certificats details
+     * @param certs   flag to show certificates details
      * @return the jarsigner request
      */
     public JarSignerRequest createVerifyRequest( File jarFile, boolean certs )
@@ -506,4 +519,11 @@ public class SignConfig
         }
     }
 
+    private String decrypt(String encoded) throws MojoExecutionException {
+      try {
+        return securityDispatcher.decrypt(encoded);
+      } catch (SecDispatcherException e) {
+        throw new MojoExecutionException("error using security dispatcher: " + e.getMessage(), e);
+      }
+    }
 }
