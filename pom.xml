@@ -109,7 +109,7 @@
   <properties>
     <mavenVersion>2.0.11</mavenVersion>
     <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
-    <keytoolVersion>1.4</keytoolVersion>
+    <keytoolVersion>1.5</keytoolVersion>
 
     <!-- release plugin configuration -->
 
@@ -213,6 +213,13 @@
         <groupId>org.apache.maven.shared</groupId>
         <artifactId>maven-shared-utils</artifactId>
         <version>0.5</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.sonatype.plexus</groupId>
+        <artifactId>plexus-sec-dispatcher</artifactId>
+        <version>1.4</version>
+        <scope>compile</scope>
       </dependency>
 
       <dependency>
@@ -394,11 +401,11 @@
             </goals>
             <configuration>
               <signature>
-              <groupId>org.codehaus.mojo.signature</groupId>
-              <artifactId>java15</artifactId>
-              <version>1.0</version>
-            </signature>
-          </configuration>
+                <groupId>org.codehaus.mojo.signature</groupId>
+                <artifactId>java15</artifactId>
+                <version>1.0</version>
+              </signature>
+            </configuration>
           </execution>
         </executions>
       </plugin>

@@ -10,3 +10,7 @@
 /*/*.iws
 /*~
 /*/*~
+bin/
+.settings/
+.project
+.classpath
