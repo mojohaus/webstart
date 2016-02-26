@@ -98,7 +98,7 @@ public class GeneratorTest
             new GeneratorConfig( null, false, false, false, artifact1, dependencyFilenameStrategy, artifacts, null, codebase,
                                  jnlp );
 
-        assertEquals( EOL + "<jar href=\"artifact1-classifier-1.0.jar\" main=\"true\"/>" + 
+        assertEquals( EOL + "<jar href=\"artifact1-1.0-classifier.jar\" main=\"true\"/>" +
         				EOL + "<jar href=\"artifact2-1.5.jar\"/>" + 
         				EOL +"<jar href=\"artifact3-1.5-SNAPSHOT.jar\"/>" + EOL,
             Generator.getDependenciesText( generatorConfig ) );
@@ -133,7 +133,7 @@ public class GeneratorTest
             new GeneratorConfig( null, false, false, false, artifact1, dependencyFilenameStrategy, artifacts, null, codebase,
                                  jnlp );
 
-        assertEquals( EOL + "<jar href=\"groupId-artifact1-classifier-1.0.jar\" main=\"true\"/>" +
+        assertEquals( EOL + "<jar href=\"groupId-artifact1-1.0-classifier.jar\" main=\"true\"/>" +
         				EOL +"<jar href=\"groupId-artifact2-1.5.jar\"/>" + 
         				EOL +"<jar href=\"groupId-artifact3-1.5-SNAPSHOT.jar\"/>" + EOL,
                       Generator.getDependenciesText( generatorConfig ) );
@@ -169,7 +169,7 @@ public class GeneratorTest
                                  jnlp );
 
         assertEquals( EOL + "<property name=\"jnlp.packEnabled\" value=\"true\" />" +
-        				EOL + "<jar href=\"artifact1-classifier-1.0.jar\" main=\"true\"/>" +
+        				EOL + "<jar href=\"artifact1-1.0-classifier.jar\" main=\"true\"/>" +
         				EOL + "<jar href=\"artifact2-1.5.jar\"/>" + 
         				EOL +"<jar href=\"artifact3-1.5-SNAPSHOT.jar\"/>" + EOL, Generator.getDependenciesText( generatorConfig ) );
 
@@ -204,7 +204,7 @@ public class GeneratorTest
             new GeneratorConfig( "lib", false, false, false, artifact1, dependencyFilenameStrategy, artifacts, null, codebase,
                                  jnlp );
 
-        assertEquals( EOL + "<jar href=\"lib/artifact1-classifier-1.0.jar\" main=\"true\"/>" +
+        assertEquals( EOL + "<jar href=\"lib/artifact1-1.0-classifier.jar\" main=\"true\"/>" +
         				EOL + "<jar href=\"lib/artifact2-1.5.jar\"/>" + 
         				EOL +"<jar href=\"lib/artifact3-1.5-SNAPSHOT.jar\"/>" + EOL,
                       Generator.getDependenciesText( generatorConfig ) );
@@ -240,7 +240,7 @@ public class GeneratorTest
                                  jnlp );
 
         assertEquals(
-        		EOL + "<jar href=\"artifact1-classifier-1.0.jar\" main=\"true\"/>" + EOL + "<jar href=\"artifact2-1.5.jar\"/>" + 
+        		EOL + "<jar href=\"artifact1-1.0-classifier.jar\" main=\"true\"/>" + EOL + "<jar href=\"artifact2-1.5.jar\"/>" +
         				EOL + "<jar href=\"artifact3-1.5-15012014121212.jar\"/>" + EOL,
             Generator.getDependenciesText( generatorConfig ) );
 
@@ -258,7 +258,7 @@ public class GeneratorTest
                 new GeneratorConfig( null, false, false, true, artifact1, dependencyFilenameStrategy, artifacts, null, codebase,
                                      jnlp );
 
-            assertEquals( EOL + "<jar href=\"artifact1-classifier-1.0.jar\" main=\"true\"/>" +
+            assertEquals( EOL + "<jar href=\"artifact1-1.0-classifier.jar\" main=\"true\"/>" +
             				EOL + "<jar href=\"artifact2-1.5.jar\"/>"  +
             				EOL + "<jar href=\"artifact3-1.5-15012014121212.jar\"/>" + EOL,
                           Generator.getDependenciesText( generatorConfig3 ) );
