@@ -144,6 +144,11 @@ public class SignConfig
     private SecDispatcher securityDispatcher;
 
     /**
+     * Provides custom arguements to pass to the signtool.
+     */
+    private String[] arguments;
+
+    /**
      * Called before any Jars get signed or verified.
      * <p/>
      * This method allows you to create any keys or perform any initialisation that the
@@ -207,7 +212,8 @@ public class SignConfig
      * @return the jarsigner request
      * @throws MojoExecutionException if something wrong occurs
      */
-    public JarSignerRequest createSignRequest( File jarToSign, File signedJar ) throws MojoExecutionException
+    public JarSignerRequest createSignRequest( File jarToSign, File signedJar )
+        throws MojoExecutionException
     {
         JarSignerSignRequest request = new JarSignerSignRequest();
         request.setAlias( getAlias() );
@@ -220,10 +226,11 @@ public class SignConfig
         request.setArchive( jarToSign );
         request.setSignedjar( signedJar );
         request.setTsaLocation( getTsaLocation() );
+        request.setArguments( getArguments() );
 
         // Special handling for passwords through the Maven Security Dispatcher
-        request.setKeypass(decrypt(keypass));
-        request.setStorepass(decrypt(storepass));
+        request.setKeypass( decrypt( keypass ) );
+        request.setStorepass( decrypt( storepass ) );
 
         return request;
     }
@@ -396,6 +403,11 @@ public class SignConfig
         this.tsaLocation = tsaLocation;
     }
 
+    public void setArguments( String[] arguments )
+    {
+        this.arguments = arguments;
+    }
+
     public String getKeystore()
     {
         return keystore;
@@ -489,6 +501,11 @@ public class SignConfig
     public String getMaxMemory()
     {
         return maxMemory;
+    }
+
+    public String[] getArguments()
+    {
+        return arguments;
     }
 
     public String getDname()
