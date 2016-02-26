@@ -186,18 +186,19 @@ public class SignConfig
 
     /**
      * Called before any Jars get signed or verified.
-     * <p/>
+     * <p>
      * This method allows you to create any keys or perform any initialisation that the
      * method of signature that you're implementing requires.
      *
-     * @param workDirectory working directory
-     * @param verbose       verbose flag coming from the mojo configuration
-     * @param signTool      the sign tool used eventually to create or delete key store
+     * @param workDirectory      working directory
+     * @param verbose            verbose flag coming from the mojo configuration
+     * @param signTool           the sign tool used eventually to create or delete key store
      * @param securityDispatcher component to decrypt a string, passed to it
-     * @param classLoader   classloader where to find keystore (if not generating a new one)
+     * @param classLoader        classloader where to find keystore (if not generating a new one)
      * @throws MojoExecutionException if something wrong occurs while init (mainly when preparing keys)
      */
-    public void init(File workDirectory, boolean verbose, SignTool signTool, SecDispatcher securityDispatcher, ClassLoader classLoader)
+    public void init( File workDirectory, boolean verbose, SignTool signTool, SecDispatcher securityDispatcher,
+                      ClassLoader classLoader )
         throws MojoExecutionException
     {
         this.workDirectory = workDirectory;
@@ -272,24 +273,29 @@ public class SignConfig
 
         // TODO: add support for proxy parameters to JarSigner / JarSignerSignRequest
         // instead of using implementation-specific additional arguments
-         if (httpProxyHost != null) {
-            arguments.add("-J-Dhttp.proxyHost=" + httpProxyHost);
+        if ( httpProxyHost != null )
+        {
+            arguments.add( "-J-Dhttp.proxyHost=" + httpProxyHost );
         }
 
-        if (httpProxyPort != null) {
-            arguments.add("-J-Dhttp.proxyPort=" + httpProxyPort);
+        if ( httpProxyPort != null )
+        {
+            arguments.add( "-J-Dhttp.proxyPort=" + httpProxyPort );
         }
 
-        if (httpsProxyHost != null) {
-            arguments.add("-J-Dhttps.proxyHost=" + httpsProxyHost);
+        if ( httpsProxyHost != null )
+        {
+            arguments.add( "-J-Dhttps.proxyHost=" + httpsProxyHost );
         }
 
-        if (httpsProxyPort != null) {
-            arguments.add("-J-Dhttps.proxyPort=" + httpsProxyPort);
+        if ( httpsProxyPort != null )
+        {
+            arguments.add( "-J-Dhttps.proxyPort=" + httpsProxyPort );
         }
 
-        if (!arguments.isEmpty()) {
-            request.setArguments(arguments.toArray(new String[0]));
+        if ( !arguments.isEmpty() )
+        {
+            request.setArguments( arguments.toArray( new String[0] ) );
         }
 
         return request;
@@ -465,7 +471,7 @@ public class SignConfig
 
     public void setArguments( String[] arguments )
     {
-        Collections.addAll(this.arguments, arguments);
+        Collections.addAll( this.arguments, arguments );
     }
 
     public String getKeystore()
@@ -565,43 +571,52 @@ public class SignConfig
 
     public String[] getArguments()
     {
-        return arguments.toArray(new String[arguments.size()]);
+        return arguments.toArray( new String[arguments.size()] );
     }
 
-    public String getHttpProxyHost() {
+    public String getHttpProxyHost()
+    {
         return httpProxyHost;
     }
 
-    public void setHttpProxyHost(String httpProxyHost) {
+    public void setHttpProxyHost( String httpProxyHost )
+    {
         this.httpProxyHost = httpProxyHost;
     }
 
-    public String getHttpProxyPort() {
+    public String getHttpProxyPort()
+    {
         return httpProxyPort;
     }
 
-    public void setHttpProxyPort(String httpProxyPort) {
+    public void setHttpProxyPort( String httpProxyPort )
+    {
         this.httpProxyPort = httpProxyPort;
     }
 
-    public String getHttpsProxyHost() {
+    public String getHttpsProxyHost()
+    {
         return httpsProxyHost;
     }
 
-    public void setHttpsProxyHost(String httpsProxyHost) {
+    public void setHttpsProxyHost( String httpsProxyHost )
+    {
         this.httpsProxyHost = httpsProxyHost;
     }
 
-    public String getHttpsProxyPort() {
+    public String getHttpsProxyPort()
+    {
         return httpsProxyPort;
     }
 
-    public void setHttpsProxyPort(String httpsProxyPort) {
+    public void setHttpsProxyPort( String httpsProxyPort )
+    {
         this.httpsProxyPort = httpsProxyPort;
     }
 
-    public String getDname() {
-        StringBuffer buffer = new StringBuffer(128);
+    public String getDname()
+    {
+        StringBuffer buffer = new StringBuffer( 128 );
 
         appendToDnameBuffer( dnameCn, buffer, "CN" );
         appendToDnameBuffer( dnameOu, buffer, "OU" );
@@ -627,11 +642,16 @@ public class SignConfig
         }
     }
 
-    private String decrypt(String encoded) throws MojoExecutionException {
-      try {
-        return securityDispatcher.decrypt(encoded);
-      } catch (SecDispatcherException e) {
-        throw new MojoExecutionException("error using security dispatcher: " + e.getMessage(), e);
-      }
+    private String decrypt( String encoded )
+        throws MojoExecutionException
+    {
+        try
+        {
+            return securityDispatcher.decrypt( encoded );
+        }
+        catch ( SecDispatcherException e )
+        {
+            throw new MojoExecutionException( "error using security dispatcher: " + e.getMessage(), e );
+        }
     }
 }
