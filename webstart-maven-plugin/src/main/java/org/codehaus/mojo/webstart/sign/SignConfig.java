@@ -186,7 +186,7 @@ public class SignConfig
 
     /**
      * Called before any Jars get signed or verified.
-     * <p>
+     * <p/>
      * This method allows you to create any keys or perform any initialisation that the
      * method of signature that you're implementing requires.
      *
@@ -295,7 +295,7 @@ public class SignConfig
 
         if ( !arguments.isEmpty() )
         {
-            request.setArguments( arguments.toArray( new String[0] ) );
+            request.setArguments( arguments.toArray( new String[arguments.size()] ) );
         }
 
         return request;
