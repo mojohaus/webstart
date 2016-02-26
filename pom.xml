@@ -109,7 +109,7 @@
   <properties>
     <mavenVersion>2.0.11</mavenVersion>
     <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
-    <keytoolVersion>1.4</keytoolVersion>
+    <keytoolVersion>1.5</keytoolVersion>
 
     <!-- release plugin configuration -->
 
