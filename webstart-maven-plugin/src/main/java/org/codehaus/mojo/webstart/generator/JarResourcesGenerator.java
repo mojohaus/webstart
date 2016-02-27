@@ -42,6 +42,21 @@ public class JarResourcesGenerator
         super( log, technicalConfig, extraConfig );
     }
 
+    protected String getArgumentsText()
+    {
+        StringBuilder buffer = new StringBuilder();
+
+        if (getExtraConfig().getArguments() != null)
+        {
+            for (String argument : getExtraConfig().getArguments())
+            {
+                buffer.append("<argument>").append(argument).append("</argument>").append(EOL);
+            }
+        }
+
+        return buffer.toString();
+    }
+
     /**
      * {@inheritDoc}
      */

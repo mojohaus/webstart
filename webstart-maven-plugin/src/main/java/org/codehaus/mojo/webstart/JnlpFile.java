@@ -44,6 +44,8 @@ public class JnlpFile
 
     private List<JarResource> jarResources;
 
+    private List<String> arguments;
+
     private String mainClass;
 
     private Map<String, String> properties;
@@ -170,5 +172,14 @@ public class JnlpFile
         this.properties = properties;
     }
 
+    public List<String> getArguments()
+    {
+        return arguments;
+    }
+
+    public void setArguments(List<String> arguments)
+    {
+        this.arguments = arguments;
+    }
 
 }

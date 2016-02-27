@@ -19,6 +19,7 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -65,6 +66,11 @@ public class ResolvedJnlpFile
     public Map<String, String> getProperties()
     {
         return config.getProperties();
+    }
+
+    public List<String> getArguments()
+    {
+        return config.getArguments();
     }
 
     public String getInputTemplateResourcePath()

@@ -30,6 +30,8 @@
      $dependencies
      $extensions
   </resources>
-  <application-desc main-class="$mainClass"/>
+  <application-desc main-class="$mainClass">
+      $arguments
+  </application-desc>
 </jnlp>
 

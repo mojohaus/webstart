@@ -61,7 +61,7 @@ public class JarResourcesGeneratorTest
             new GeneratorTechnicalConfig( mavenProject, resourceLoaderPath, "default-jnlp-template.vm",
                                           outputFile, templateFile.getName(), mainClass,
                                           "jar:file:/tmp/path/to/webstart-plugin.jar", "utf-8" );
-        JarResourceGeneratorConfig jarResourceGeneratorConfig = new JarResourceGeneratorConfig( jarResources, null, null, null );
+        JarResourceGeneratorConfig jarResourceGeneratorConfig = new JarResourceGeneratorConfig( jarResources, null, null, null, null );
         JarResourcesGenerator generator  =
             new JarResourcesGenerator( new SystemStreamLog(), generatorTechnicalConfig, jarResourceGeneratorConfig );
 
@@ -92,7 +92,7 @@ public class JarResourcesGeneratorTest
 
         Assert.assertEquals( expectedText, actualText );
 
-        JarResourceGeneratorConfig jarResourceGeneratorConfig2 = new JarResourceGeneratorConfig( jarResources, "myLib", null, null );
+        JarResourceGeneratorConfig jarResourceGeneratorConfig2 = new JarResourceGeneratorConfig( jarResources, "myLib", null, null, null );
         JarResourcesGenerator generator2  =
             new JarResourcesGenerator( new SystemStreamLog(), generatorTechnicalConfig, jarResourceGeneratorConfig2 );
 
