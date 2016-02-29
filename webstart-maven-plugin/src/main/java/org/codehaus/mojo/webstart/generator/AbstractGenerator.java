@@ -193,6 +193,8 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
 
         context.put( "dependencies", getDependenciesText() );
 
+        context.put("arguments", getArgumentsText());
+
         // Note: properties that contain dots will not be properly parsed by Velocity. 
         // Should we replace dots with underscores ?        
         addPropertiesToContext( System.getProperties(), context );
@@ -236,7 +238,9 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
         return context;
     }
 
-    private void addPropertiesToContext( Map properties, VelocityContext context )
+    protected abstract String getArgumentsText();
+
+    private void addPropertiesToContext( Map<?, ?> properties, VelocityContext context )
     {
         if ( properties != null )
         {

@@ -625,7 +625,7 @@ public class JnlpDownloadServletMojo
             new GeneratorTechnicalConfig( getProject(), templateDirectory, BUILT_IN_SERVLET_TEMPLATE_FILENAME,
                                           jnlpOutputFile, templateFileName, jnlpFile.getMainClass(),
                                           getWebstartJarURLForVelocity(), getEncoding() );
-        JarResourceGeneratorConfig jarResourceGeneratorConfig = new JarResourceGeneratorConfig( jarResources, libPath, getCodebase(), jnlpFile.getProperties() );
+        JarResourceGeneratorConfig jarResourceGeneratorConfig = new JarResourceGeneratorConfig( jarResources, libPath, getCodebase(), jnlpFile.getProperties(), jnlpFile.getArguments() );
         JarResourcesGenerator jnlpGenerator =
             new JarResourcesGenerator( getLog(), generatorTechnicalConfig, jarResourceGeneratorConfig );
 

@@ -193,7 +193,7 @@ public abstract class AbstractBaseJnlpMojo
      * <p/>
      * <strong>Note:</strong> Won't affect any already signed jar resources if you configuration does not authorize it.
      * <p/>
-     * Si parameters {@link #unsignAlreadySignedJars} and {@link #canUnsign}.
+     * See parameters {@link #unsignAlreadySignedJars} and {@link #canUnsign}.
      *
      * @since 1.0-beta-4
      */

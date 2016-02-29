@@ -85,7 +85,7 @@ assert jnlpLib.list().length ==  expectedJnlpLibFiles.length + expectedJnlpFiles
 File applicationJnlpFile  = new File( jnlpDirectory, "test-application.jnlp" )
 assert assertContains( applicationJnlpFile.text,  "<jar href=\"commons-cli.jar\" version=\"1.1\"/>" )
 assert assertContains( applicationJnlpFile.text,  "<jar href=\"MWEBSTART-11.jar\" version=\"1.0\" main=\"true\"/>" )
-assert assertContains( applicationJnlpFile.text,  "<application-desc main-class=\"org.codehaus.mojo.webstart.Main\"/>" )
+assert assertContains( applicationJnlpFile.text,  "<application-desc main-class=\"org.codehaus.mojo.webstart.Main\">" )
 
 File componentJnlpFile  = new File( jnlpDirectory, "test-component.jnlp" )
 assert assertContains( componentJnlpFile .text,  "<jar href=\"commons-cli.jar\" version=\"1.1\"/>" )
