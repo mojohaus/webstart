@@ -185,6 +185,11 @@ public class SignConfig
     private String httpsProxyPort;
 
     /**
+     * Specify number of threads to use for signing process
+     */
+    private int parallel = 1;
+
+    /**
      * Called before any Jars get signed or verified.
      * <p/>
      * This method allows you to create any keys or perform any initialisation that the
@@ -614,6 +619,14 @@ public class SignConfig
         this.httpsProxyPort = httpsProxyPort;
     }
 
+    public int getParallel() {
+		return parallel;
+    }
+
+
+    public void setParallel(int parallel) {
+		this.parallel = parallel;
+    }
     public String getDname()
     {
         StringBuffer buffer = new StringBuffer( 128 );
