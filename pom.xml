@@ -5,7 +5,7 @@
   <parent>
     <artifactId>mojo-parent</artifactId>
     <groupId>org.codehaus.mojo</groupId>
-    <version>32</version>
+    <version>38</version>
   </parent>
 
   <artifactId>webstart</artifactId>
@@ -87,8 +87,8 @@
   </modules>
 
   <scm>
-    <connection>scm:git:git@github.com:mojohaus/webstart.git</connection>
-    <developerConnection>scm:git:git@github.com:mojohaus/webstart.git</developerConnection>
+    <connection>scm:git:https://github.com/mojohaus/webstart.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/mojohaus/webstart.git</developerConnection>
     <url>https://github.com/mojohaus/webstart</url>
   </scm>
   <issueManagement>
