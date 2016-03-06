@@ -25,6 +25,7 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.shared.jarsigner.JarSignerUtil;
 import org.codehaus.mojo.webstart.sign.SignTool;
 
 import java.io.File;
@@ -38,7 +39,7 @@ import java.io.File;
  * @author <a href="mailto:andrius@pivotcapital.com">Andrius Šabanas</a>
  * @version $Id$
  */
-@Mojo( name = "unsign", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true )
+@Mojo( name = "unsign", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = false )
 public class JarUnsignMojo
     extends AbstractMojo
 {
@@ -62,9 +63,10 @@ public class JarUnsignMojo
     private File tempDirectory;
 
     /**
-     * Path of the jar to unsign. When specified, the finalName is ignored.
+     * Path of the jar to unsign. Will unsign all archives in case folder was specified here.
+     * When specified, the finalName is ignored.
      */
-    @Parameter( alias = "jarpath",
+    @Parameter( alias = "jarpath", property = "maven.jar.unsign.jarpath",
                 defaultValue = "${project.build.directory}/${project.build.finalName}.${project.packaging}" )
     private File jarPath;
 
@@ -99,8 +101,22 @@ public class JarUnsignMojo
             getLog().info( "Skipping JAR unsigning for file: " + jarPath.getAbsolutePath() );
             return;
         }
-
-        signTool.unsign( this.jarPath, verbose );
+        if ( jarPath.isDirectory() )
+        {
+            for ( File jar : jarPath.listFiles() ) {
+                if ( JarSignerUtil.isZipFile( jar ) ) {
+                    signTool.unsign( jar, verbose );
+                }
+                else
+                {
+                    getLog().info( "Skipping JAR unsigning for file: " + jar.getAbsolutePath() );
+                }
+            }
+        }
+        else
+        {
+            signTool.unsign( this.jarPath, verbose );
+        }
     }
 
     // ----------------------------------------------------------------------
