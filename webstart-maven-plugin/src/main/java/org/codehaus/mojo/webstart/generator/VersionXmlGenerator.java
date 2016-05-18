@@ -103,9 +103,6 @@ public class VersionXmlGenerator {
         writer.newLine();
 
         for (ResolvedJarResource jarResource : jarResources) {
-            if (!jarResource.isOutputJarVersion()) {
-                continue;
-            }
             writer.write("  <resource>");
             writer.newLine();
             writer.write("    <pattern>");
