@@ -230,7 +230,7 @@ public abstract class AbstractBaseJnlpMojo
      *     <li><strong>full</strong>: groupId-artifactId[-classifier]-version.jar</li>
      * </ul>
      *
-     * Default value is {@code full} which avoid any colision of naming.
+     * Default value is {@code simple} which avoid any collision of naming.
      *
      * @since 1.0-beta-5
      */

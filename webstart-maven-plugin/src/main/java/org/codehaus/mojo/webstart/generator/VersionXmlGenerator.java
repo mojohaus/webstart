@@ -19,14 +19,14 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.codehaus.mojo.webstart.ResolvedJarResource;
-import org.codehaus.plexus.util.WriterFactory;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+
+import org.apache.maven.plugin.MojoExecutionException;
+import org.codehaus.mojo.webstart.ResolvedJarResource;
+import org.codehaus.plexus.util.WriterFactory;
 
 /**
  * This class generates a <code>version.xml</code> file for a given collection of
