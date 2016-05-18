@@ -90,7 +90,10 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo {
      * This parameter enables jnlp signing
      */
     @Parameter(property = "jnlp.signJnlp", defaultValue = "false")
-    private boolean signJnlp;
+    private boolean signJnlp = false;
+
+    @Parameter(property = "jnlp.transitiveOutputVersion", defaultValue = "false")
+    private boolean transitiveVersions = false;
 
     /**
      * The collection of JnlpFile configuration elements. Each one represents a
@@ -481,6 +484,8 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo {
         // sibling projects hit from a jar resources (need a special transitive resolution)
         Set<MavenProject> siblingProjects = new LinkedHashSet<MavenProject>();
 
+        System.out.println("transitiveVersions = " + transitiveVersions);
+
         // for each configured JarResource, create and resolve the corresponding artifact and
         // check it for the mainClass if specified
         for (JarResource jarResource : configuredJarResources) {
@@ -492,7 +497,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo {
             if (siblingProject == null) {
                 // try to resolve from repositories
                 artifactUtil.resolveFromRepositories(artifact, getRemoteRepositories(), getLocalRepository());
-                if (jarResource.isOutputJarVersion()) {
+                if (jarResource.isOutputJarVersion() || !transitiveVersions) {
                     versionedArtifacts.add(artifact);
                 } else {
                     unversionedArtifacts.add(artifact);
@@ -500,7 +505,7 @@ public class JnlpDownloadServletMojo extends AbstractBaseJnlpMojo {
             } else {
                 artifact = siblingProject.getArtifact();
                 siblingProjects.add(siblingProject);
-                if (jarResource.isOutputJarVersion()) {
+                if (jarResource.isOutputJarVersion() || !transitiveVersions) {
                     versionedArtifacts.add(artifact);
                 } else {
                     unversionedArtifacts.add(artifact);
