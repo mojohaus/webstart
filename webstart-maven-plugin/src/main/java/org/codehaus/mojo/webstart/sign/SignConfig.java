@@ -252,6 +252,39 @@ public class SignConfig
 
         // reset arguments
         arguments = new ArrayList<String>();
+
+        generateArguments();
+    }
+
+    private void generateArguments()
+    {
+        // TODO: add support for proxy parameters to JarSigner / JarSignerSignRequest
+        // instead of using implementation-specific additional arguments
+        if ( httpProxyHost != null )
+        {
+            arguments.add( "-J-Dhttp.proxyHost=" + httpProxyHost );
+        }
+
+        if ( httpProxyPort != null )
+        {
+            arguments.add( "-J-Dhttp.proxyPort=" + httpProxyPort );
+        }
+
+        if ( httpsProxyHost != null )
+        {
+            arguments.add( "-J-Dhttps.proxyHost=" + httpsProxyHost );
+        }
+
+        if ( httpsProxyPort != null )
+        {
+            arguments.add( "-J-Dhttps.proxyPort=" + httpsProxyPort );
+        }
+
+        if ( !StringUtils.isEmpty( this.digestalg ) )
+        {
+            arguments.add( "-digestalg" );
+            arguments.add( this.digestalg );
+        }
     }
 
 
@@ -281,34 +314,6 @@ public class SignConfig
         // Special handling for passwords through the Maven Security Dispatcher
         request.setKeypass( decrypt( keypass ) );
         request.setStorepass( decrypt( storepass ) );
-
-        // TODO: add support for proxy parameters to JarSigner / JarSignerSignRequest
-        // instead of using implementation-specific additional arguments
-        if ( httpProxyHost != null )
-        {
-            arguments.add( "-J-Dhttp.proxyHost=" + httpProxyHost );
-        }
-
-        if ( httpProxyPort != null )
-        {
-            arguments.add( "-J-Dhttp.proxyPort=" + httpProxyPort );
-        }
-
-        if ( httpsProxyHost != null )
-        {
-            arguments.add( "-J-Dhttps.proxyHost=" + httpsProxyHost );
-        }
-
-        if ( httpsProxyPort != null )
-        {
-            arguments.add( "-J-Dhttps.proxyPort=" + httpsProxyPort );
-        }
-
-        if ( !StringUtils.isEmpty( this.digestalg ) )
-        {
-            arguments.add( "-digestalg" );
-            arguments.add( this.digestalg );
-        }
 
         if ( !arguments.isEmpty() )
         {
