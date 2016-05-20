@@ -23,6 +23,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.shared.jarsigner.JarSignerRequest;
 import org.apache.maven.shared.jarsigner.JarSignerSignRequest;
 import org.apache.maven.shared.jarsigner.JarSignerVerifyRequest;
+import org.apache.maven.shared.utils.StringUtils;
 import org.codehaus.mojo.keytool.requests.KeyToolGenerateKeyPairRequest;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
@@ -151,7 +152,6 @@ public class SignConfig
      */
     private List<String> arguments;
 
-
     /**
      * Optional host name of the HTTP proxy host used for accessing the
      * {@link #tsaLocation trusted timestamping server}.
@@ -183,6 +183,16 @@ public class SignConfig
      * @since 1.0-beta-7
      */
     private String httpsProxyPort;
+
+    /**
+     * Specify number of threads to use for signing process
+     */
+    private int parallel = 1;
+
+    /**
+     * Specify digest algorithm to use
+     */
+    private String digestalg;
 
     /**
      * Called before any Jars get signed or verified.
@@ -243,7 +253,6 @@ public class SignConfig
         arguments = new ArrayList<String>();
     }
 
-
     /**
      * Creates a jarsigner request to do a sign operation.
      *
@@ -291,6 +300,12 @@ public class SignConfig
         if ( httpsProxyPort != null )
         {
             arguments.add( "-J-Dhttps.proxyPort=" + httpsProxyPort );
+        }
+
+        if ( !StringUtils.isEmpty( this.digestalg ) )
+        {
+            arguments.add( "-digestalg" );
+            arguments.add( this.digestalg );
         }
 
         if ( !arguments.isEmpty() )
@@ -342,7 +357,6 @@ public class SignConfig
         request.setWorkingDirectory( workDirectory );
         return request;
     }
-
 
     /**
      * Gets the verbose state of the configuration.
@@ -614,6 +628,16 @@ public class SignConfig
         this.httpsProxyPort = httpsProxyPort;
     }
 
+    public int getParallel()
+    {
+        return parallel;
+    }
+
+    public void setParallel( int parallel )
+    {
+        this.parallel = parallel;
+    }
+
     public String getDname()
     {
         StringBuffer buffer = new StringBuffer( 128 );
@@ -626,6 +650,16 @@ public class SignConfig
         appendToDnameBuffer( dnameC, buffer, "C" );
 
         return buffer.toString();
+    }
+
+    public String getDigestalg()
+    {
+        return this.digestalg;
+    }
+
+    public void setDigestalg( String digestalg )
+    {
+        this.digestalg = digestalg;
     }
 
     private void appendToDnameBuffer( final String property, StringBuffer buffer, final String prefix )

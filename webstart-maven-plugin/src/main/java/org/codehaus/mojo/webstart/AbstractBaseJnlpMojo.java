@@ -44,8 +44,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * The superclass for all JNLP generating MOJOs.
@@ -201,6 +207,12 @@ public abstract class AbstractBaseJnlpMojo
     private Map<String, String> updateManifestEntries;
 
     /**
+     * Controls how to treat existing keys in jar manifest.
+     */
+    @Parameter( defaultValue = "true" )
+    private boolean overrideDuplicateManifestKeys;
+
+    /**
      * Compile class-path elements used to search for the keystore
      * (if kestore location was prefixed by {@code classpath:}).
      *
@@ -211,20 +223,20 @@ public abstract class AbstractBaseJnlpMojo
 
     /**
      * Naming strategy for dependencies of a jnlp application.
-     *
+     * <p>
      * The strategy purpose is to transform the name of the dependency file.
-     *
+     * <p>
      * The actual authorized values are:
      * <ul>
-     *     <li><strong>simple</strong>: artifactId[-classifier]-version.jar</li>
-     *     <li><strong>full</strong>: groupId-artifactId[-classifier]-version.jar</li>
+     * <li><strong>simple</strong>: artifactId[-classifier]-version.jar</li>
+     * <li><strong>full</strong>: groupId-artifactId[-classifier]-version.jar</li>
      * </ul>
-     *
-     * Default value is {@code full} which avoid any colision of naming.
+     * <p>
+     * Default value is {@code simple} which avoid any collision of naming.
      *
      * @since 1.0-beta-5
      */
-    @Parameter( property = "jnlp.filenameMapping", defaultValue = "simple", required = true)
+    @Parameter( property = "jnlp.filenameMapping", defaultValue = "simple", required = true )
     private String filenameMapping;
 
     /**
@@ -282,8 +294,13 @@ public abstract class AbstractBaseJnlpMojo
     @Component( hint = "default" )
     private JarUtil jarUtil;
 
+    public JarUtil getJarUtil()
+    {
+        return jarUtil;
+    }
+
     /**
-     * All dependency filename strategy indexed by theire role-hint.
+     * All dependency filename strategy indexed by their role-hint.
      *
      * @since 1.0-beta-5
      */
@@ -293,7 +310,7 @@ public abstract class AbstractBaseJnlpMojo
     /**
      * @since 1.0-beta-7
      */
-    @Component(hint = "mng-4384")
+    @Component( hint = "mng-4384" )
     private SecDispatcher securityDispatcher;
 
     // ----------------------------------------------------------------------
@@ -341,7 +358,7 @@ public abstract class AbstractBaseJnlpMojo
             public boolean accept( File pathname )
             {
                 return pathname.isFile() && pathname.getName().endsWith( JAR_SUFFIX ) &&
-                    !pathname.getName().startsWith( UNPROCESSED_PREFIX );
+                       !pathname.getName().startsWith( UNPROCESSED_PREFIX );
             }
         };
 
@@ -353,7 +370,7 @@ public abstract class AbstractBaseJnlpMojo
             public boolean accept( File pathname )
             {
                 return pathname.isFile() && pathname.getName().startsWith( UNPROCESSED_PREFIX ) &&
-                    pathname.getName().endsWith( JAR_SUFFIX );
+                       pathname.getName().endsWith( JAR_SUFFIX );
             }
         };
 
@@ -365,8 +382,8 @@ public abstract class AbstractBaseJnlpMojo
             public boolean accept( File pathname )
             {
                 return pathname.isFile() && pathname.getName().startsWith( UNPROCESSED_PREFIX ) &&
-                    ( pathname.getName().endsWith( JAR_SUFFIX + Pack200Tool.PACK_GZ_EXTENSION ) ||
-                        pathname.getName().endsWith( JAR_SUFFIX + Pack200Tool.PACK_EXTENSION ) );
+                       (pathname.getName().endsWith( JAR_SUFFIX + Pack200Tool.PACK_GZ_EXTENSION ) ||
+                        pathname.getName().endsWith( JAR_SUFFIX + Pack200Tool.PACK_EXTENSION ));
             }
         };
     }
@@ -572,7 +589,7 @@ public abstract class AbstractBaseJnlpMojo
     {
         if ( dependencyFilenameStrategy == null )
         {
-            dependencyFilenameStrategy = dependencyFilenameStrategyMap.get(filenameMapping );
+            dependencyFilenameStrategy = dependencyFilenameStrategyMap.get( filenameMapping );
         }
         return dependencyFilenameStrategy;
     }
@@ -582,15 +599,18 @@ public abstract class AbstractBaseJnlpMojo
         return useUniqueVersions;
     }
 
-    protected void  checkDependencyFilenameStrategy()
+    protected void checkDependencyFilenameStrategy()
         throws MojoExecutionException
     {
         if ( getDependencyFilenameStrategy() == null )
         {
 
-            dependencyFilenameStrategy = dependencyFilenameStrategyMap.get(filenameMapping );
-            if (dependencyFilenameStrategy==null) {
-                throw new MojoExecutionException( "Could not find filenameMapping named '"+filenameMapping+"', use one of the following one: "+ dependencyFilenameStrategyMap.keySet());
+            dependencyFilenameStrategy = dependencyFilenameStrategyMap.get( filenameMapping );
+            if ( dependencyFilenameStrategy == null )
+            {
+                throw new MojoExecutionException( "Could not find filenameMapping named '" + filenameMapping
+                                                  + "', use one of the following one: " + dependencyFilenameStrategyMap
+                                                      .keySet() );
             }
         }
     }
@@ -630,11 +650,11 @@ public abstract class AbstractBaseJnlpMojo
 
         File unsignedTargetFile = toUnprocessFile( targetDirectory, targetFilename );
 
-        boolean shouldCopy =
-            !signedTargetFile.exists() || ( signedTargetFile.lastModified() < sourceFile.lastModified() );
+        boolean shouldCopy = !signedTargetFile.exists() || (signedTargetFile.lastModified() < sourceFile
+            .lastModified());
 
-        shouldCopy &=
-            ( !unsignedTargetFile.exists() || ( unsignedTargetFile.lastModified() < sourceFile.lastModified() ) );
+        shouldCopy &= (!unsignedTargetFile.exists() || (unsignedTargetFile.lastModified() < sourceFile
+            .lastModified()));
 
         if ( shouldCopy )
         {
@@ -643,13 +663,12 @@ public abstract class AbstractBaseJnlpMojo
         }
         else
         {
-            getLog().debug(
-                "Source file hasn't changed. Do not reprocess " + signedTargetFile + " with " + sourceFile + "." );
+            getLog().debug( "Source file hasn't changed. Do not reprocess " + signedTargetFile + " with "
+                            + sourceFile + "." );
         }
 
         return shouldCopy;
     }
-
 
     /**
      * If sign is enabled, sign the jars, otherwise rename them into final jars
@@ -704,7 +723,7 @@ public abstract class AbstractBaseJnlpMojo
             {
                 throw new IllegalStateException(
                     "The number of signed artifacts (" + signedJars + ") differ from the number of modified " +
-                        "artifacts (" + getModifiedJnlpArtifacts().size() + "). Implementation error" );
+                    "artifacts (" + getModifiedJnlpArtifacts().size() + "). Implementation error" );
             }
 
         }
@@ -720,7 +739,6 @@ public abstract class AbstractBaseJnlpMojo
         }
     }
 
-
     protected void pack200Jars( File directory, FileFilter filter )
         throws MojoExecutionException
     {
@@ -734,7 +752,7 @@ public abstract class AbstractBaseJnlpMojo
         }
     }
 
-    protected URL findDefaultTemplateURL(JnlpFileType fileType)
+    protected URL findDefaultTemplateURL( JnlpFileType fileType )
     {
         return getClass().getClassLoader().getResource( fileType.getDefaultTemplateName() );
     }
@@ -744,7 +762,7 @@ public abstract class AbstractBaseJnlpMojo
      */
     protected String getWebstartJarURLForVelocity()
     {
-        String url = findDefaultTemplateURL(JnlpFileType.application).toString();
+        String url = findDefaultTemplateURL( JnlpFileType.application ).toString();
         return url.substring( 0, url.indexOf( "!" ) + 2 );
     }
 
@@ -796,8 +814,7 @@ public abstract class AbstractBaseJnlpMojo
     {
         getLog().info( "-- Unpack jars before sign operation " );
 
-        verboseLog(
-            "see http://docs.oracle.com/javase/7/docs/technotes/guides/deployment/deployment-guide/pack200.html" );
+        verboseLog( "see http://docs.oracle.com/javase/7/docs/technotes/guides/deployment/deployment-guide/pack200.html" );
 
         // pack
         pack200Jars( directory, unprocessedJarFileFilter );
@@ -818,8 +835,8 @@ public abstract class AbstractBaseJnlpMojo
     {
         File[] jarFiles = directory.listFiles( unprocessedJarFileFilter );
 
-        getLog().debug(
-            "makeUnprocessedFilesFinal in " + directory + " found " + jarFiles.length + " file(s) to rename" );
+        getLog().debug( "makeUnprocessedFilesFinal in " + directory + " found " + jarFiles.length
+                        + " file(s) to rename" );
 
         if ( jarFiles.length == 0 )
         {
@@ -849,7 +866,8 @@ public abstract class AbstractBaseJnlpMojo
         File[] jarFiles = directory.listFiles( unprocessedJarFileFilter );
 
         getLog().info( "-- Update manifest entries" );
-        getLog().debug( "updateManifestEntries in " + directory + " found " + jarFiles.length + " jar(s) to treat" );
+        getLog().debug( "updateManifestEntries in " + directory + " found " + jarFiles.length
+                        + " jar(s) to treat" );
 
         if ( jarFiles.length == 0 )
         {
@@ -860,7 +878,11 @@ public abstract class AbstractBaseJnlpMojo
         {
             verboseLog( "Update manifest " + toProcessFile( unprocessedJarFile ).getName() );
 
-            jarUtil.updateManifestEntries( unprocessedJarFile, updateManifestEntries );
+            if ( canUnsign || !isJarSigned( unprocessedJarFile ) )
+            {
+                jarUtil.updateManifestEntries( unprocessedJarFile, updateManifestEntries,
+                    overrideDuplicateManifestKeys );
+            }
         }
     }
 
@@ -883,29 +905,74 @@ public abstract class AbstractBaseJnlpMojo
             return 0;
         }
 
-        boolean signVerify = sign.isVerify();
+        final boolean signVerify = sign.isVerify();
 
-        for ( File unprocessedJarFile : jarFiles )
+        ExecutorService ex = Executors.newFixedThreadPool( sign.getParallel() );
+
+        HashMap<File, Future<?>> signRequests = new HashMap<>();
+        for ( final File unprocessedJarFile : jarFiles )
         {
-
-            File signedJar = toProcessFile( unprocessedJarFile );
-            ioUtil.deleteFile( signedJar );
-
-            verboseLog( "Sign " + signedJar.getName() );
-            signTool.sign( sign, unprocessedJarFile, signedJar );
-
-            getLog().debug( "lastModified signedJar:" + signedJar.lastModified() + " unprocessed signed Jar:" +
-                                unprocessedJarFile.lastModified() );
-
-            if ( signVerify )
+            signRequests.put( unprocessedJarFile, ex.submit( new Callable<Object>()
             {
-                verboseLog( "Verify signature of " + signedJar.getName() );
-                signTool.verify( sign, signedJar, isVerbose() );
-            }
-            // remove unprocessed files
-            // TODO wouldn't have to do that if we copied the unprocessed jar files in a temporary area
-            ioUtil.deleteFile( unprocessedJarFile );
+                public Object call()
+                    throws Exception
+                {
+                    try
+                    {
+                        File signedJar = toProcessFile( unprocessedJarFile );
+                        ioUtil.deleteFile( signedJar );
+
+                        verboseLog( "Sign " + signedJar.getName() );
+                        signTool.sign( sign, unprocessedJarFile, signedJar );
+
+                        getLog().debug(
+                            "lastModified signedJar:" + signedJar.lastModified() + " unprocessed signed Jar:" +
+                            unprocessedJarFile.lastModified() );
+
+                        if ( signVerify )
+                        {
+                            verboseLog( "Verify signature of " + signedJar.getName() );
+                            signTool.verify( sign, signedJar, isVerbose() );
+                        }
+                        // remove unprocessed files
+                        // TODO wouldn't have to do that if we copied the
+                        // unprocessed jar files in a temporary area
+                        ioUtil.deleteFile( unprocessedJarFile );
+                    }
+                    catch ( Exception e )
+                    {
+                        throw e;
+                    }
+                    return null;
+                }
+            } ) );
         }
+
+        while (!signRequests.isEmpty())
+        {
+            for ( final File file : new ArrayList<>( signRequests.keySet() ) )
+            {
+                if ( signRequests.get( file ).isDone() )
+                {
+                    try
+                    {
+                        signRequests.get( file ).get();
+                    }
+                    catch ( ExecutionException ee )
+                    {
+                        throw new MojoExecutionException(
+                            "Error while signing resource " + file.toString(), ee.getCause() );
+                    }
+                    catch ( InterruptedException e )
+                    {
+                        e.printStackTrace();
+                    }
+                    signRequests.remove( file );
+                }
+            }
+        }
+
+        ex.shutdown();
 
         return jarFiles.length;
     }
@@ -941,13 +1008,13 @@ public abstract class AbstractBaseJnlpMojo
                 {
                     throw new MojoExecutionException(
                         "neverUnsignAlreadySignedJar is set to true and a jar file [" + jarFile +
-                            " was asked to be unsign,\n please prefer use in this case an extension for " +
-                            "signed jars or not set to true the neverUnsignAlreadySignedJar parameter, Make " +
-                            "your choice:)" );
+                        " was asked to be unsign,\n please prefer use in this case an extension for " +
+                        "signed jars or not set to true the neverUnsignAlreadySignedJar parameter, Make " +
+                        "your choice:)" );
                 }
                 verboseLog( "Remove signature " + toProcessFile( jarFile ).getName() );
 
-                signTool.unsign( jarFile, isVerbose() );
+                unsign( jarFile );
             }
             else
             {
@@ -959,6 +1026,12 @@ public abstract class AbstractBaseJnlpMojo
         ioUtil.removeDirectory( tempDir );
 
         return jarFiles.length; // FIXME this is wrong. Not all jars are signed.
+    }
+
+    protected void unsign( File jarFile )
+        throws MojoExecutionException
+    {
+        signTool.unsign( jarFile, isVerbose() );
     }
 
     private ClassLoader getCompileClassLoader()
@@ -974,7 +1047,7 @@ public abstract class AbstractBaseJnlpMojo
         return new URLClassLoader( urls );
     }
 
-    private File toUnprocessFile( File targetDirectory, String sourceName )
+    protected File toUnprocessFile( File targetDirectory, String sourceName )
     {
         if ( sourceName.startsWith( UNPROCESSED_PREFIX ) )
         {

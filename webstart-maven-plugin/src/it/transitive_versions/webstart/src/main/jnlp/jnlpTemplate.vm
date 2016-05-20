@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Java Webstart JNLP Velocity Template for use with Webstart Maven Plugin -->
+<jnlp
+  spec="1.0+"
+  codebase="$$codebase"
+  context="$$context" 
+  href="$$name">
+  <information>
+    <title>${informationTitle}</title>
+    <vendor>${informationVendor}</vendor>
+    <homepage href="${informationHomepage}"/>
+    <description>${informationDescription}</description>
+    <icon href="images/icon.gif"/>
+    <offline-allowed/>
+    <shortcut online="true">
+        <desktop/> <!-- create shortcut on desktop -->
+        <menu submenu="${informationVendor}"/> <!-- create shortcut in startmenu -->
+    </shortcut>
+  </information>
+  <security>
+    <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.5+" /> <!-- define required Java runtime version -->
+    $dependencies
+  </resources>
+  <application-desc main-class="$mainClass"/>
+</jnlp>

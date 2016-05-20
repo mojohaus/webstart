@@ -20,6 +20,7 @@ package org.codehaus.mojo.webstart;
  */
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * This class represents a &lt;jarResource&gt; configuration element from the
@@ -31,8 +32,7 @@ import org.apache.commons.lang.StringUtils;
  * @version $Revision$
  * @since 19 May 2007
  */
-public class JarResource
-{
+public class JarResource {
 
     private String groupId;
 
@@ -46,6 +46,9 @@ public class JarResource
 
     private boolean outputJarVersion = true;
 
+    @Parameter( defaultValue = "true" )
+    private boolean transitiveOutputVersions = true;
+
     private boolean includeInJnlp = true;
 
     private String type;
@@ -55,13 +58,19 @@ public class JarResource
      */
     private String hrefValue;
 
+    public JarResource() {
+    }
+
+    public JarResource(boolean outputJarVersion) {
+        this.outputJarVersion = outputJarVersion;
+    }
+
     /**
      * Returns the value of the artifactId field.
      *
      * @return Returns the value of the artifactId field.
      */
-    public String getArtifactId()
-    {
+    public String getArtifactId() {
         return artifactId;
     }
 
@@ -70,8 +79,7 @@ public class JarResource
      *
      * @return Returns the value of the type field.
      */
-    public String getType()
-    {
+    public String getType() {
         return type;
     }
 
@@ -80,8 +88,7 @@ public class JarResource
      *
      * @return Returns the value of the classifier field.
      */
-    public String getClassifier()
-    {
+    public String getClassifier() {
         return classifier;
     }
 
@@ -90,8 +97,7 @@ public class JarResource
      *
      * @return Returns the value of the groupId field.
      */
-    public String getGroupId()
-    {
+    public String getGroupId() {
         return groupId;
     }
 
@@ -100,8 +106,7 @@ public class JarResource
      *
      * @return Returns the value of the version field.
      */
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
@@ -114,16 +119,14 @@ public class JarResource
      * @return Returns the value of the mainClass field, or null if the jar represented
      * by this instance is not the one that contains the application's main class.
      */
-    public String getMainClass()
-    {
+    public String getMainClass() {
         return mainClass;
     }
 
-    public boolean isMandatoryField()
-    {
-        return StringUtils.isNotBlank( getGroupId() ) &&
-            StringUtils.isNotBlank( getArtifactId() ) &&
-            StringUtils.isNotBlank( getVersion() );
+    public boolean isMandatoryField() {
+        return StringUtils.isNotBlank(getGroupId()) &&
+                        StringUtils.isNotBlank(getArtifactId()) &&
+                        StringUtils.isNotBlank(getVersion());
     }
 
     /**
@@ -133,8 +136,7 @@ public class JarResource
      *
      * @param outputJarVersion new value of field {@link #outputJarVersion}
      */
-    protected void setOutputJarVersion( boolean outputJarVersion )
-    {
+    protected void setOutputJarVersion(boolean outputJarVersion) {
         this.outputJarVersion = outputJarVersion;
     }
 
@@ -145,8 +147,7 @@ public class JarResource
      *
      * @return Returns the value of the outputJarVersion field.
      */
-    public boolean isOutputJarVersion()
-    {
+    public boolean isOutputJarVersion() {
         return this.outputJarVersion;
     }
 
@@ -157,8 +158,7 @@ public class JarResource
      *
      * @return Returns the value of the includeInJnlp field.
      */
-    public boolean isIncludeInJnlp()
-    {
+    public boolean isIncludeInJnlp() {
         return this.includeInJnlp;
     }
 
@@ -169,18 +169,28 @@ public class JarResource
      *
      * @return The href attribute to be output for this jar resource in the generated JNLP file definied by user.
      */
-    public String getHrefValue()
-    {
+    public String getHrefValue() {
         return hrefValue;
     }
 
     /**
      * {@inheritDoc}
      */
-    public String toString()
+    public String toString() {
+        return "JarResource[ groupId='" + this.groupId + "', artifactId='" + this.artifactId + "', version='"
+                        +
+                        this.version + "', classifier='" + this.classifier + "', mainClass='" + this.mainClass
+                        +
+                        "', outputJarVersion='" + this.outputJarVersion + "', transitiveOutputVersions='" + transitiveOutputVersions + "' ]";
+    }
+
+    public boolean isTransitiveOutputVersions()
     {
-        return "JarResource[ groupId='" + this.groupId + "', artifactId='" + this.artifactId + "', version='" +
-            this.version + "', classifier='" + this.classifier + "', mainClass='" + this.mainClass +
-            "', outputJarVersion='" + this.outputJarVersion + "' ]";
+        return transitiveOutputVersions;
+    }
+
+    public void setTransitiveOutputVersions( boolean transitiveOutputVersions )
+    {
+        this.transitiveOutputVersions = transitiveOutputVersions;
     }
 }
