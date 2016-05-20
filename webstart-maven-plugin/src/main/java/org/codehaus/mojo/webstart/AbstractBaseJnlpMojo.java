@@ -595,8 +595,11 @@ public abstract class AbstractBaseJnlpMojo
         {
 
             dependencyFilenameStrategy = dependencyFilenameStrategyMap.get( filenameMapping );
-            if (dependencyFilenameStrategy==null) {
-                throw new MojoExecutionException( "Could not find filenameMapping named '"+filenameMapping+"', use one of the following one: "+ dependencyFilenameStrategyMap.keySet());
+            if ( dependencyFilenameStrategy == null )
+            {
+                throw new MojoExecutionException(
+                    "Could not find filenameMapping named '" + filenameMapping + "', use one of the following one: " +
+                    dependencyFilenameStrategyMap.keySet() );
             }
         }
     }
@@ -637,10 +640,10 @@ public abstract class AbstractBaseJnlpMojo
         File unsignedTargetFile = toUnprocessFile( targetDirectory, targetFilename );
 
         boolean shouldCopy =
-            !signedTargetFile.exists() || ( signedTargetFile.lastModified() < sourceFile.lastModified() );
+            !signedTargetFile.exists() || (signedTargetFile.lastModified() < sourceFile.lastModified());
 
         shouldCopy &=
-            ( !unsignedTargetFile.exists() || ( unsignedTargetFile.lastModified() < sourceFile.lastModified() ) );
+            (!unsignedTargetFile.exists() || (unsignedTargetFile.lastModified() < sourceFile.lastModified()));
 
         if ( shouldCopy )
         {
@@ -901,32 +904,26 @@ public abstract class AbstractBaseJnlpMojo
                 public Object call()
                     throws Exception
                 {
-                    try
+                    File signedJar = toProcessFile( unprocessedJarFile );
+                    ioUtil.deleteFile( signedJar );
+
+                    verboseLog( "Sign " + signedJar.getName() );
+                    signTool.sign( sign, unprocessedJarFile, signedJar );
+
+                    getLog().debug(
+                        "lastModified signedJar:" + signedJar.lastModified() + " unprocessed signed Jar:" +
+                        unprocessedJarFile.lastModified() );
+
+                    if ( signVerify )
                     {
-                        File signedJar = toProcessFile( unprocessedJarFile );
-                        ioUtil.deleteFile( signedJar );
-
-                        verboseLog( "Sign " + signedJar.getName() );
-                        signTool.sign( sign, unprocessedJarFile, signedJar );
-
-                        getLog().debug(
-                            "lastModified signedJar:" + signedJar.lastModified() + " unprocessed signed Jar:" +
-                            unprocessedJarFile.lastModified() );
-
-                        if ( signVerify )
-                        {
-                            verboseLog( "Verify signature of " + signedJar.getName() );
-                            signTool.verify( sign, signedJar, isVerbose() );
-                        }
-                        // remove unprocessed files
-                        // TODO wouldn't have to do that if we copied the
-                        // unprocessed jar files in a temporary area
-                        ioUtil.deleteFile( unprocessedJarFile );
+                        verboseLog( "Verify signature of " + signedJar.getName() );
+                        signTool.verify( sign, signedJar, isVerbose() );
                     }
-                    catch ( Exception e )
-                    {
-                        throw e;
-                    }
+                    // remove unprocessed files
+                    // TODO wouldn't have to do that if we copied the
+                    // unprocessed jar files in a temporary area
+                    ioUtil.deleteFile( unprocessedJarFile );
+
                     return null;
                 }
             } ) );
