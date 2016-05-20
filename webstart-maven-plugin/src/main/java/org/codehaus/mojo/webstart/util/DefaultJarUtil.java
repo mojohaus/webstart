@@ -59,11 +59,11 @@ public class DefaultJarUtil
     /**
      * {@inheritDoc}
      */
-    public void updateManifestEntries(File jar, Map<String, String> manifestentries, boolean overrideDuplicateKeys)
+    public void updateManifestEntries( File jar, Map<String, String> manifestentries )
         throws MojoExecutionException
     {
 
-        Manifest manifest = createManifest(jar, manifestentries, overrideDuplicateKeys);
+        Manifest manifest = createManifest( jar, manifestentries );
 
         File updatedUnprocessedJarFile = new File( jar.getParent(), jar.getName() + "_updateManifestEntriesJar" );
 
@@ -75,47 +75,6 @@ public class DefaultJarUtil
             originalJar = new ZipFile( jar );
             targetJar = new JarOutputStream( new FileOutputStream( updatedUnprocessedJarFile ), manifest );
 
-            copyJarEntries(originalJar, targetJar, new ManifestZipEntry());
-            targetJar.close();
-            originalJar.close();
-        }
-        catch (IOException e)
-        {
-            throw new MojoExecutionException("Error while updating manifest of " + jar.getName(), e);
-        } finally
-        {
-            org.apache.maven.shared.utils.io.IOUtil.close(targetJar);
-            ioUtil.close(originalJar);
-        }
-
-        // delete incoming jar file
-        ioUtil.deleteFile(jar);
-
-        // rename patched jar to incoming jar file
-        ioUtil.renameTo(updatedUnprocessedJarFile, jar);
-    }
-
-    abstract class ZipEntryCheck
-    {
-
-        abstract boolean skipEntry(ZipFile zipFile, ZipEntry entry)
-            throws IOException;
-    }
-
-    class ManifestZipEntry
-        extends ZipEntryCheck
-    {
-
-        @Override
-        boolean skipEntry(ZipFile zipFile, ZipEntry entry)
-        {
-            return JarFile.MANIFEST_NAME.equals(entry.getName());
-        }
-    }
-
-    private void copyJarEntries(ZipFile originalJar, JarOutputStream targetJar, ZipEntryCheck checkCallBack)
-        throws IOException
-    {
             // add all other entries from the original jar file
             Enumeration<? extends ZipEntry> entries = originalJar.entries();
             while ( entries.hasMoreElements() )
@@ -123,7 +82,7 @@ public class DefaultJarUtil
                 ZipEntry entry = entries.nextElement();
 
                 // skip the original manifest
-            if (checkCallBack.skipEntry(originalJar, entry))
+                if ( JarFile.MANIFEST_NAME.equals( entry.getName() ) )
                 {
                     continue;
                 }
@@ -148,6 +107,24 @@ public class DefaultJarUtil
                 }
                 targetJar.closeEntry();
             }
+            targetJar.close();
+            originalJar.close();
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException( "Error while updating manifest of " + jar.getName(), e );
+        }
+        finally
+        {
+            org.apache.maven.shared.utils.io.IOUtil.close( targetJar );
+            ioUtil.close( originalJar );
+        }
+
+        // delete incoming jar file
+        ioUtil.deleteFile( jar );
+
+        // rename patched jar to incoming jar file
+        ioUtil.renameTo( updatedUnprocessedJarFile, jar );
     }
 
     /**
@@ -158,7 +135,7 @@ public class DefaultJarUtil
      * @return Manifest
      * @throws MojoExecutionException
      */
-    protected Manifest createManifest(File jar, Map<String, String> manifestentries, boolean overrideDuplicateKeys)
+    protected Manifest createManifest( File jar, Map<String, String> manifestentries )
         throws MojoExecutionException
     {
         JarFile jarFile = null;
@@ -179,10 +156,6 @@ public class DefaultJarUtil
             Set<Entry<String, String>> entrySet = manifestentries.entrySet();
             for ( Entry<String, String> entry : entrySet )
             {
-                if (!overrideDuplicateKeys && manifest.getMainAttributes().containsKey(new Name(entry.getKey())))
-                {
-                    continue;
-                }
                 manifest.getMainAttributes().putValue( entry.getKey(), entry.getValue() );
             }
 
@@ -196,103 +169,5 @@ public class DefaultJarUtil
         {
             ioUtil.close( jarFile );
         }
-    }
-
-    abstract class SignedJnlpFileCheck
-        extends ZipEntryCheck
-    {
-
-        protected boolean same = false;
-
-        public boolean isSame()
-        {
-            return same;
-        }
-    };
-
-    public boolean appendFileToJar(File jar, final File file, final String pathInJar)
-        throws MojoExecutionException
-    {
-
-        File updatedUnprocessedJarFile = new File(jar.getParent(), jar.getName() + "_appendJnlpForSigning");
-
-        final String jnlpEntryPath = pathInJar + "/" + file.getName();
-
-        ZipFile originalJar = null;
-        JarOutputStream targetJar = null;
-
-        try
-        {
-            originalJar = new ZipFile(jar);
-
-            targetJar = new JarOutputStream(new FileOutputStream(updatedUnprocessedJarFile));
-
-            final FileInputStream fis = new FileInputStream(file);
-            try
-            {
-                SignedJnlpFileCheck jnlpFileCheck = new SignedJnlpFileCheck()
-                {
-
-                    @Override
-                    boolean skipEntry(ZipFile zipFile, ZipEntry entry)
-                        throws IOException
-                    {
-                        if (jnlpEntryPath.equals(entry.getName()))
-                        {
-                            same = org.apache.maven.shared.utils.io.IOUtil.contentEquals(fis,
-                                zipFile.getInputStream(entry));
-
-                            return !same;
-                        }
-                        return false;
-                    }
-                };
-
-                copyJarEntries(originalJar, targetJar, jnlpFileCheck);
-
-                if (jnlpFileCheck.isSame())
-                {
-                    return false;
-                }
-            } finally
-            {
-                fis.close();
-            }
-
-            ZipEntry newEntry = new ZipEntry(jnlpEntryPath);
-            targetJar.putNextEntry(newEntry);
-            InputStream inputStream = null;
-
-            try
-            {
-                inputStream = new FileInputStream(file);
-                org.codehaus.plexus.util.IOUtil.copy(inputStream, targetJar);
-                inputStream.close();
-            } finally
-            {
-                org.apache.maven.shared.utils.io.IOUtil.close(inputStream);
-            }
-            targetJar.closeEntry();
-
-            targetJar.close();
-            originalJar.close();
-        }
-        catch (IOException e)
-        {
-            throw new MojoExecutionException("Error while adding entry to " + jar.getName(), e);
-        } finally
-        {
-            org.apache.maven.shared.utils.io.IOUtil.close(targetJar);
-            ioUtil.close(originalJar);
-        }
-
-        // delete incoming jar file
-        ioUtil.deleteFile(jar);
-
-        // rename patched jar to incoming jar file
-        ioUtil.renameTo(updatedUnprocessedJarFile, jar);
-
-        return true;
-
     }
 }

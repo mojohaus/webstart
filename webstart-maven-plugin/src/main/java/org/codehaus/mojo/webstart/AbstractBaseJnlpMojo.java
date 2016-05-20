@@ -207,12 +207,6 @@ public abstract class AbstractBaseJnlpMojo
     private Map<String, String> updateManifestEntries;
 
     /**
-     * Controls how to treat existing keys in jar manifest.
-     */
-    @Parameter( defaultValue = "true" )
-    private boolean overrideDuplicateManifestKeys;
-
-    /**
      * Compile class-path elements used to search for the keystore
      * (if kestore location was prefixed by {@code classpath:}).
      *
@@ -293,11 +287,6 @@ public abstract class AbstractBaseJnlpMojo
      */
     @Component( hint = "default" )
     private JarUtil jarUtil;
-
-    public JarUtil getJarUtil()
-    {
-        return jarUtil;
-    }
 
     /**
      * All dependency filename strategy indexed by their role-hint.
@@ -606,11 +595,8 @@ public abstract class AbstractBaseJnlpMojo
         {
 
             dependencyFilenameStrategy = dependencyFilenameStrategyMap.get( filenameMapping );
-            if ( dependencyFilenameStrategy == null )
-            {
-                throw new MojoExecutionException( "Could not find filenameMapping named '" + filenameMapping
-                                                  + "', use one of the following one: " + dependencyFilenameStrategyMap
-                                                      .keySet() );
+            if (dependencyFilenameStrategy==null) {
+                throw new MojoExecutionException( "Could not find filenameMapping named '"+filenameMapping+"', use one of the following one: "+ dependencyFilenameStrategyMap.keySet());
             }
         }
     }
@@ -650,11 +636,11 @@ public abstract class AbstractBaseJnlpMojo
 
         File unsignedTargetFile = toUnprocessFile( targetDirectory, targetFilename );
 
-        boolean shouldCopy = !signedTargetFile.exists() || (signedTargetFile.lastModified() < sourceFile
-            .lastModified());
+        boolean shouldCopy =
+            !signedTargetFile.exists() || ( signedTargetFile.lastModified() < sourceFile.lastModified() );
 
-        shouldCopy &= (!unsignedTargetFile.exists() || (unsignedTargetFile.lastModified() < sourceFile
-            .lastModified()));
+        shouldCopy &=
+            ( !unsignedTargetFile.exists() || ( unsignedTargetFile.lastModified() < sourceFile.lastModified() ) );
 
         if ( shouldCopy )
         {
@@ -663,12 +649,13 @@ public abstract class AbstractBaseJnlpMojo
         }
         else
         {
-            getLog().debug( "Source file hasn't changed. Do not reprocess " + signedTargetFile + " with "
-                            + sourceFile + "." );
+            getLog().debug(
+                "Source file hasn't changed. Do not reprocess " + signedTargetFile + " with " + sourceFile + "." );
         }
 
         return shouldCopy;
     }
+
 
     /**
      * If sign is enabled, sign the jars, otherwise rename them into final jars
@@ -738,6 +725,7 @@ public abstract class AbstractBaseJnlpMojo
             pack200Jars( getLibDirectory(), processedJarFileFilter );
         }
     }
+
 
     protected void pack200Jars( File directory, FileFilter filter )
         throws MojoExecutionException
@@ -814,7 +802,8 @@ public abstract class AbstractBaseJnlpMojo
     {
         getLog().info( "-- Unpack jars before sign operation " );
 
-        verboseLog( "see http://docs.oracle.com/javase/7/docs/technotes/guides/deployment/deployment-guide/pack200.html" );
+        verboseLog(
+            "see http://docs.oracle.com/javase/7/docs/technotes/guides/deployment/deployment-guide/pack200.html" );
 
         // pack
         pack200Jars( directory, unprocessedJarFileFilter );
@@ -835,8 +824,8 @@ public abstract class AbstractBaseJnlpMojo
     {
         File[] jarFiles = directory.listFiles( unprocessedJarFileFilter );
 
-        getLog().debug( "makeUnprocessedFilesFinal in " + directory + " found " + jarFiles.length
-                        + " file(s) to rename" );
+        getLog().debug(
+            "makeUnprocessedFilesFinal in " + directory + " found " + jarFiles.length + " file(s) to rename" );
 
         if ( jarFiles.length == 0 )
         {
@@ -866,8 +855,7 @@ public abstract class AbstractBaseJnlpMojo
         File[] jarFiles = directory.listFiles( unprocessedJarFileFilter );
 
         getLog().info( "-- Update manifest entries" );
-        getLog().debug( "updateManifestEntries in " + directory + " found " + jarFiles.length
-                        + " jar(s) to treat" );
+        getLog().debug( "updateManifestEntries in " + directory + " found " + jarFiles.length + " jar(s) to treat" );
 
         if ( jarFiles.length == 0 )
         {
@@ -878,11 +866,7 @@ public abstract class AbstractBaseJnlpMojo
         {
             verboseLog( "Update manifest " + toProcessFile( unprocessedJarFile ).getName() );
 
-            if ( canUnsign || !isJarSigned( unprocessedJarFile ) )
-            {
-                jarUtil.updateManifestEntries( unprocessedJarFile, updateManifestEntries,
-                    overrideDuplicateManifestKeys );
-            }
+            jarUtil.updateManifestEntries( unprocessedJarFile, updateManifestEntries );
         }
     }
 
@@ -1014,7 +998,7 @@ public abstract class AbstractBaseJnlpMojo
                 }
                 verboseLog( "Remove signature " + toProcessFile( jarFile ).getName() );
 
-                unsign( jarFile );
+                signTool.unsign( jarFile, isVerbose() );
             }
             else
             {
@@ -1026,12 +1010,6 @@ public abstract class AbstractBaseJnlpMojo
         ioUtil.removeDirectory( tempDir );
 
         return jarFiles.length; // FIXME this is wrong. Not all jars are signed.
-    }
-
-    protected void unsign( File jarFile )
-        throws MojoExecutionException
-    {
-        signTool.unsign( jarFile, isVerbose() );
     }
 
     private ClassLoader getCompileClassLoader()
@@ -1047,7 +1025,7 @@ public abstract class AbstractBaseJnlpMojo
         return new URLClassLoader( urls );
     }
 
-    protected File toUnprocessFile( File targetDirectory, String sourceName )
+    private File toUnprocessFile( File targetDirectory, String sourceName )
     {
         if ( sourceName.startsWith( UNPROCESSED_PREFIX ) )
         {

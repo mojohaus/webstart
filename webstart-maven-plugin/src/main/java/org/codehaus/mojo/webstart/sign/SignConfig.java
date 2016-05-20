@@ -152,6 +152,7 @@ public class SignConfig
      */
     private List<String> arguments;
 
+
     /**
      * Optional host name of the HTTP proxy host used for accessing the
      * {@link #tsaLocation trusted timestamping server}.
@@ -252,6 +253,7 @@ public class SignConfig
         // reset arguments
         arguments = new ArrayList<String>();
     }
+
 
     /**
      * Creates a jarsigner request to do a sign operation.
@@ -357,6 +359,7 @@ public class SignConfig
         request.setWorkingDirectory( workDirectory );
         return request;
     }
+
 
     /**
      * Gets the verbose state of the configuration.
