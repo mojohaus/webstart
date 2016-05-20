@@ -20,6 +20,7 @@ package org.codehaus.mojo.webstart;
  */
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * This class represents a &lt;jarResource&gt; configuration element from the
@@ -44,6 +45,9 @@ public class JarResource {
     private String mainClass;
 
     private boolean outputJarVersion = true;
+
+    @Parameter( defaultValue = "true" )
+    private boolean transitiveOutputVersions = true;
 
     private boolean includeInJnlp = true;
 
@@ -177,6 +181,16 @@ public class JarResource {
                         +
                         this.version + "', classifier='" + this.classifier + "', mainClass='" + this.mainClass
                         +
-                        "', outputJarVersion='" + this.outputJarVersion + "' ]";
+                        "', outputJarVersion='" + this.outputJarVersion + "', transitiveOutputVersions='" + transitiveOutputVersions + "' ]";
+    }
+
+    public boolean isTransitiveOutputVersions()
+    {
+        return transitiveOutputVersions;
+    }
+
+    public void setTransitiveOutputVersions( boolean transitiveOutputVersions )
+    {
+        this.transitiveOutputVersions = transitiveOutputVersions;
     }
 }

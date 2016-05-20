@@ -99,9 +99,6 @@ public class JnlpDownloadServletMojo
     @Parameter( property = "jnlp.signJnlp", defaultValue = "false" )
     private boolean signJnlp = false;
 
-    @Parameter( property = "jnlp.transitiveOutputVersion", defaultValue = "false" )
-    private boolean transitiveVersions = false;
-
     /**
      * The collection of JnlpFile configuration elements. Each one represents a
      * JNLP file that is to be generated and deployed within the enclosing
@@ -524,14 +521,13 @@ public class JnlpDownloadServletMojo
         ArtifactUtil artifactUtil = getArtifactUtil();
 
         // artifacts resolved from repositories with version attribute in final jnlp file
-        Set<Artifact> versionedArtifacts = new LinkedHashSet<Artifact>();
+        Set<Artifact> transitiveVersionArtifacts = new LinkedHashSet<Artifact>();
         // artifacts resolved from repositories without version aatribute in final jnlp file
-        Set<Artifact> unversionedArtifacts = new LinkedHashSet<Artifact>();
+        Set<Artifact> transitiveUnversionedArtifacts = new LinkedHashSet<Artifact>();
 
         // sibling projects hit from a jar resources (need a special transitive resolution)
-        Set<MavenProject> siblingProjects = new LinkedHashSet<MavenProject>();
-
-        System.out.println( "transitiveVersions = " + transitiveVersions );
+        Set<MavenProject> versionedSiblingProjects = new LinkedHashSet<MavenProject>();
+        Set<MavenProject> unversionedSiblingProjects = new LinkedHashSet<MavenProject>();
 
         // for each configured JarResource, create and resolve the corresponding artifact and
         // check it for the mainClass if specified
@@ -546,26 +542,27 @@ public class JnlpDownloadServletMojo
             {
                 // try to resolve from repositories
                 artifactUtil.resolveFromRepositories( artifact, getRemoteRepositories(), getLocalRepository() );
-                if ( jarResource.isOutputJarVersion() || !transitiveVersions )
+                if ( jarResource.isTransitiveOutputVersions() )
                 {
-                    versionedArtifacts.add( artifact );
+                    transitiveVersionArtifacts.add( artifact );
                 }
                 else
                 {
-                    unversionedArtifacts.add( artifact );
+                    transitiveUnversionedArtifacts.add( artifact );
                 }
             }
             else
             {
                 artifact = siblingProject.getArtifact();
-                siblingProjects.add( siblingProject );
-                if ( jarResource.isOutputJarVersion() || !transitiveVersions )
+                if ( jarResource.isTransitiveOutputVersions() )
                 {
-                    versionedArtifacts.add( artifact );
+                    transitiveVersionArtifacts.add( artifact );
+                    versionedSiblingProjects.add( siblingProject );
                 }
                 else
                 {
-                    unversionedArtifacts.add( artifact );
+                    transitiveUnversionedArtifacts.add( artifact );
+                    unversionedSiblingProjects.add( siblingProject );
                 }
 
                 artifact.setResolved( true );
@@ -611,16 +608,17 @@ public class JnlpDownloadServletMojo
             // get all transitive dependencies
 
             Set<Artifact> versionedTransitiveArtifacts = getArtifactUtil()
-                .resolveTransitively( versionedArtifacts, siblingProjects,
+                .resolveTransitively( transitiveVersionArtifacts, versionedSiblingProjects,
                     getProject().getArtifact(), getLocalRepository(),
                     getRemoteRepositories(), artifactFilter,
                     getProject().getManagedVersionMap() );
 
             Set<Artifact> unversionedTransitiveArtifacts = getArtifactUtil()
-                .resolveTransitively( unversionedArtifacts, siblingProjects,
+                .resolveTransitively( transitiveUnversionedArtifacts, unversionedSiblingProjects,
                     getProject().getArtifact(), getLocalRepository(),
                     getRemoteRepositories(), artifactFilter,
                     getProject().getManagedVersionMap() );
+
             // for each transitive dependency, wrap it in a JarResource and add it to the collection of
             // existing jar resources (if not already in)
             collectResources( collectedJarResources, versionedTransitiveArtifacts, true );
@@ -655,9 +653,9 @@ public class JnlpDownloadServletMojo
     }
 
     private void collectResources( Set<ResolvedJarResource> collectedJarResources,
-                                   Set<Artifact> versionedTransitiveArtifacts, boolean outputVersionInJnlp )
+                                   Set<Artifact> transitiveArtifacts, boolean outputVersionInJnlp )
     {
-        for ( Artifact resolvedArtifact : versionedTransitiveArtifacts )
+        for ( Artifact resolvedArtifact : transitiveArtifacts )
         {
 
             ResolvedJarResource newJarResource = new ResolvedJarResource( new JarResource( outputVersionInJnlp ),
@@ -665,7 +663,7 @@ public class JnlpDownloadServletMojo
 
             if ( !collectedJarResources.contains( newJarResource ) )
             {
-                getLog().debug( "Add jarResource (transitive): " + newJarResource );
+                getLog().debug("Add jarResource (transitive)(versioned): " + newJarResource + " " + outputVersionInJnlp);
                 collectedJarResources.add( newJarResource );
             }
         }
