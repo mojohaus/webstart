@@ -67,11 +67,11 @@ public interface ArtifactUtil
         throws MojoExecutionException;
 
 
-    void resolveFromRepositories( Artifact artifact, List<ArtifactRepository> remoteRepositories, ArtifactRepository localRepository )
+    void resolveFromRepositories( Artifact artifact, List remoteRepositories, ArtifactRepository localRepository )
         throws MojoExecutionException;
 
     Set<Artifact> resolveTransitively( Set<Artifact> jarResourceArtifacts, Set<MavenProject> siblingProjects,
                                        Artifact artifact, ArtifactRepository localRepository,
-                                       List<ArtifactRepository> remoteRepositories, ArtifactFilter artifactFilter, Map<String, String> managedVersions)
+                                       List<ArtifactRepository> remoteRepositories, ArtifactFilter artifactFilter, Map managedVersions)
         throws MojoExecutionException;
 }

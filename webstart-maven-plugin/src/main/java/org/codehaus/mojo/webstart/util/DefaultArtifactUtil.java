@@ -121,7 +121,7 @@ public class DefaultArtifactUtil
     /**
      * {@inheritDoc}
      */
-    public void resolveFromRepositories( Artifact artifact, List<ArtifactRepository> remoteRepositories,
+    public void resolveFromRepositories( Artifact artifact, List remoteRepositories,
                                          ArtifactRepository localRepository )
         throws MojoExecutionException
     {
@@ -145,7 +145,7 @@ public class DefaultArtifactUtil
     public Set<Artifact> resolveTransitively( Set<Artifact> jarResourceArtifacts, Set<MavenProject> siblingProjects,
                                               Artifact originateArtifact, ArtifactRepository localRepository,
                                               List<ArtifactRepository> remoteRepositories,
-                                              ArtifactFilter artifactFilter, Map<String, String> managedVersions)
+                                              ArtifactFilter artifactFilter, Map managedVersions)
         throws MojoExecutionException
     {
 

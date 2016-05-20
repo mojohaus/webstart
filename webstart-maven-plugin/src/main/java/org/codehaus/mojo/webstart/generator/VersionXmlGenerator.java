@@ -19,14 +19,14 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.codehaus.mojo.webstart.ResolvedJarResource;
+import org.codehaus.plexus.util.WriterFactory;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-
-import org.apache.maven.plugin.MojoExecutionException;
-import org.codehaus.mojo.webstart.ResolvedJarResource;
-import org.codehaus.plexus.util.WriterFactory;
 
 /**
  * This class generates a <code>version.xml</code> file for a given collection of
@@ -42,7 +42,8 @@ import org.codehaus.plexus.util.WriterFactory;
  * @version $Revision$
  * @since 1.0-alpha-2
  */
-public class VersionXmlGenerator {
+public class VersionXmlGenerator
+{
 
     private final String encoding;
 
@@ -51,7 +52,8 @@ public class VersionXmlGenerator {
      *
      * @param encoding encoding used to write version.xml file
      */
-    public VersionXmlGenerator(String encoding) {
+    public VersionXmlGenerator( String encoding )
+    {
         this.encoding = encoding;
     }
 
@@ -65,28 +67,39 @@ public class VersionXmlGenerator {
      *                     element will be created in the generated file.
      * @throws MojoExecutionException if an error occurs generating the file.
      */
-    public void generate(File outputDir, Collection<ResolvedJarResource> jarResources)
-                    throws MojoExecutionException {
+    public void generate( File outputDir, Collection<ResolvedJarResource> jarResources )
+        throws MojoExecutionException
+    {
 
-        if (outputDir == null) {
-            throw new IllegalArgumentException("outputDir must not be null");
+        if ( outputDir == null )
+        {
+            throw new IllegalArgumentException( "outputDir must not be null" );
         }
 
         BufferedWriter writer = null;
 
-        try {
-            File versionXmlFile = new File(outputDir, "version.xml");
-            writer = new BufferedWriter(WriterFactory.newWriter(versionXmlFile, encoding));
+        try
+        {
+            File versionXmlFile = new File( outputDir, "version.xml" );
+            writer = new BufferedWriter( WriterFactory.newWriter( versionXmlFile, encoding ) );
 
-            generateXml(writer, jarResources);
+            generateXml( writer, jarResources );
 
-        } catch (IOException e) {
-            throw new MojoExecutionException("Unable to create the version.xml file", e);
-        } finally {
-            if (writer != null) {
-                try {
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException( "Unable to create the version.xml file", e );
+        }
+        finally
+        {
+            if ( writer != null )
+            {
+                try
+                {
                     writer.close();
-                } catch (IOException e) {
+                }
+                catch ( IOException e )
+                {
                     // do nothing
                 }
             }
@@ -94,38 +107,40 @@ public class VersionXmlGenerator {
 
     }
 
-    private void generateXml(BufferedWriter writer, Collection<ResolvedJarResource> jarResources)
-                    throws IOException {
+    private void generateXml( BufferedWriter writer, Collection<ResolvedJarResource> jarResources )
+        throws IOException
+    {
 
-        writer.write("<?xml version=\"1.0\"?>");
+        writer.write( "<?xml version=\"1.0\"?>" );
         writer.newLine();
-        writer.write("<jnlp-versions>");
+        writer.write( "<jnlp-versions>" );
         writer.newLine();
 
-        for (ResolvedJarResource jarResource : jarResources) {
-            writer.write("  <resource>");
+        for ( ResolvedJarResource jarResource : jarResources )
+        {
+            writer.write( "  <resource>" );
             writer.newLine();
-            writer.write("    <pattern>");
+            writer.write( "    <pattern>" );
             writer.newLine();
-            writer.write("      <name>");
-            writer.write(jarResource.getHrefValue());
-            writer.write("</name>");
+            writer.write( "      <name>" );
+            writer.write( jarResource.getHrefValue() );
+            writer.write( "</name>" );
             writer.newLine();
-            writer.write("      <version-id>");
-            writer.write(jarResource.getVersion());
-            writer.write("</version-id>");
+            writer.write( "      <version-id>" );
+            writer.write( jarResource.getVersion() );
+            writer.write( "</version-id>" );
             writer.newLine();
-            writer.write("    </pattern>");
+            writer.write( "    </pattern>" );
             writer.newLine();
-            writer.write("    <file>");
-            writer.write(jarResource.getArtifact().getFile().getName());
-            writer.write("</file>");
+            writer.write( "    <file>" );
+            writer.write( jarResource.getArtifact().getFile().getName() );
+            writer.write( "</file>" );
             writer.newLine();
-            writer.write("  </resource>");
+            writer.write( "  </resource>" );
             writer.newLine();
         }
 
-        writer.write("</jnlp-versions>");
+        writer.write( "</jnlp-versions>" );
         writer.newLine();
     }
 }
