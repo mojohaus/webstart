@@ -110,7 +110,6 @@
 
     <!-- all modules shares the same version in our projects -->
     <autoVersionSubmodules>true</autoVersionSubmodules>
-    <scmpublish.content>target/staging/${project.artifactId}</scmpublish.content>
   </properties>
 
   <repositories>
@@ -363,6 +362,13 @@
           <groupId>org.codehaus.plexus</groupId>
           <artifactId>plexus-component-metadata</artifactId>
           <version>1.5.5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-publish-plugin</artifactId>
+          <configuration>
+            <content>${project.build.directory}/staging/${project.artifactId}</content>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
