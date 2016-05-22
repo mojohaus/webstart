@@ -94,7 +94,7 @@
   </scm>
   <issueManagement>
     <system>github</system>
-    <url>https://github.com/mojohaus/webstart/</url>
+    <url>https://github.com/mojohaus/webstart/issues</url>
   </issueManagement>
   <ciManagement>
     <system>bamboo</system>
