@@ -5,7 +5,7 @@
   <parent>
     <artifactId>mojo-parent</artifactId>
     <groupId>org.codehaus.mojo</groupId>
-    <version>38</version>
+    <version>39</version>
   </parent>
 
   <artifactId>webstart</artifactId>
@@ -100,12 +100,6 @@
     <system>bamboo</system>
     <url>http://bamboo.ci.codehaus.org/browse/MOJO-MWEBSTART</url>
   </ciManagement>
-  <distributionManagement>
-    <site>
-      <id>github</id>
-      <url>scm:git:git@github.com:mojohaus/webstart.git</url>
-    </site>
-  </distributionManagement>
 
   <properties>
     <mavenVersion>2.0.11</mavenVersion>
@@ -116,6 +110,7 @@
 
     <!-- all modules shares the same version in our projects -->
     <autoVersionSubmodules>true</autoVersionSubmodules>
+    <scmpublish.content>target/staging/${project.artifactId}</scmpublish.content>
   </properties>
 
   <repositories>
@@ -368,26 +363,6 @@
           <groupId>org.codehaus.plexus</groupId>
           <artifactId>plexus-component-metadata</artifactId>
           <version>1.5.5</version>
-        </plugin>
-        <!-- TODO Move this to mojo-parent ? -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>3.4</version>
-          <configuration>
-            <!-- FIXME-tchemit-2015-06-19 The stage is not correct with this -->
-            <!--<topSiteURL>${project.distributionManagement.site.url}</topSiteURL>-->
-            <skipDeploy>true</skipDeploy><!-- don't deploy site with maven-site-plugin -->
-          </configuration>
-        </plugin>
-        <!-- TODO Move this to mojo-parent ? -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-scm-publish-plugin</artifactId>
-          <version>1.1</version>
-          <configuration>
-            <scmBranch>gh-pages</scmBranch> <!-- branch where to deploy -->
-          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
