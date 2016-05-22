@@ -52,12 +52,12 @@
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String codebase;
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../org/codehaus/mojo/webstart/generator/ExtensionGeneratorConfig.html">ExtensionGeneratorConfig</a>( String libPath, <strong class="jxr_keyword">boolean</strong> pack200, <strong class="jxr_keyword">boolean</strong> outputJarVersions,
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>                                       Artifact artifactWithMainClass,
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      		                         <strong class="jxr_keyword">boolean</strong> useUniqueVersions, Artifact artifactWithMainClass,
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>                                       <a href="../../../../../org/codehaus/mojo/webstart/dependency/filenaming/DependencyFilenameStrategy.html">DependencyFilenameStrategy</a> dependencyFilenameStrategy,
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>                                       Map&lt;JnlpExtension, List&lt;Artifact&gt;&gt; extensionsJnlpArtifacts, String codebase,
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>                                       <a href="../../../../../org/codehaus/mojo/webstart/JnlpExtension.html">JnlpExtension</a> extension )
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>      {
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>          <strong class="jxr_keyword">super</strong>( libPath, pack200, outputJarVersions, artifactWithMainClass, dependencyFilenameStrategy );
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          <strong class="jxr_keyword">super</strong>( libPath, pack200, outputJarVersions, useUniqueVersions, artifactWithMainClass, dependencyFilenameStrategy );
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>          <strong class="jxr_keyword">this</strong>.extensionsJnlpArtifacts = extensionsJnlpArtifacts;
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>          <strong class="jxr_keyword">this</strong>.extension = extension;
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>          <strong class="jxr_keyword">this</strong>.codebase = codebase;
@@ -146,6 +146,6 @@
 <a class="jxr_linenumber" name="L138" href="#L138">138</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2005&#x2013;2015 <a href="http://codehaus.org">Codehaus</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2005&#x2013;2016 <a href="http://www.mojohaus.org">MojoHaus</a>. All rights reserved.</div>
 </body>
 </html>

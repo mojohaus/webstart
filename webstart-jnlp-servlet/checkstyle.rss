@@ -23,11 +23,11 @@ under the License.
     <link>http:///jdk6.dev.java.net/</link>
     <description>MWEBSTART :: JNLP Servlet - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2005 - 2015 Sun Microsystems</copyright>
+    <copyright>&#169;2005 - 2016 Sun Microsystems</copyright>
     <item>
       <title>File: 20,
              Errors: 213,
-             Warnings: 178,
+             Warnings: 177,
              Infos: 27
       </title>
             <link>http:///jdk6.dev.java.net//checkstyle.html</link>
@@ -144,6 +144,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.XMLAttribute.java">jnlp/sample/servlet/XMLAttribute.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.ResourceCatalog.java">jnlp/sample/servlet/ResourceCatalog.java</a>
                 </td>
                 <td>
@@ -168,20 +182,6 @@ under the License.
                 </td>
                 <td>
                   13
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.XMLAttribute.java">jnlp/sample/servlet/XMLAttribute.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  8
-                </td>
-                <td>
-                  6
                 </td>
               </tr>
                           <tr>
@@ -228,20 +228,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.JnlpDownloadServlet.java">jnlp/sample/servlet/JnlpDownloadServlet.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  8
-                </td>
-                <td>
-                  7
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.XMLParsing.java">jnlp/sample/servlet/XMLParsing.java</a>
                 </td>
                 <td>
@@ -252,6 +238,20 @@ under the License.
                 </td>
                 <td>
                   13
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http:///jdk6.dev.java.net//checkstyle.html#jnlp.sample.servlet.JnlpDownloadServlet.java">jnlp/sample/servlet/JnlpDownloadServlet.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
+                </td>
+                <td>
+                  7
                 </td>
               </tr>
                           <tr>
@@ -318,7 +318,7 @@ under the License.
                   11
                 </td>
                 <td>
-                  5
+                  4
                 </td>
                 <td>
                   27
