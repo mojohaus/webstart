@@ -60,20 +60,15 @@ public class FullDependencyFilenameStrategy
             {
                 filename += "-";
             }
-            
-            if (useUniqueVersions != null && useUniqueVersions.booleanValue()) 
-            {
-            	filename += artifact.getBaseVersion();
-            }
-            else {
-            	filename += artifact.getVersion();
-            }
+
+            filename += getDependencyFileVersion( artifact, useUniqueVersions );
         }
 
         if ( StringUtils.isNotEmpty( artifact.getClassifier() ) )
         {
             filename += "-" + artifact.getClassifier();
         }
+
         return filename;
     }
 }
