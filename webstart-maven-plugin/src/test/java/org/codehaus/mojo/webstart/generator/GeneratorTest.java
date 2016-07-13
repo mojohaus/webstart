@@ -263,7 +263,7 @@ public class GeneratorTest
         		EOL + "<jar href=\"artifact1-1.0-classifier.jar\" main=\"true\"/>" + 
         				EOL + "<jar href=\"artifact2-1.5.jar\"/>" +
         				EOL + "<jar href=\"artifact3-1.5-15012014.121212-1.jar\"/>" +
-        				EOL + "<jar href=\"artifact4-1.5-19700101.010000-0.jar\"/>" + EOL,
+        				EOL + "<jar href=\"artifact4-1.5-19700101.000000-0.jar\"/>" + EOL,
             Generator.getDependenciesText( generatorConfig ) );
 
         GeneratorConfig generatorConfig2 =
@@ -274,7 +274,7 @@ public class GeneratorTest
         				EOL + "<jar href=\"artifact1-classifier.jar\" version=\"1.0\" main=\"true\"/>" +
         				EOL + "<jar href=\"artifact2.jar\" version=\"1.5\"/>"  +
         				EOL + "<jar href=\"artifact3.jar\" version=\"1.5-15012014.121212-1\"/>" +
-        				EOL + "<jar href=\"artifact4.jar\" version=\"1.5-19700101.010000-0\"/>" + EOL,
+        				EOL + "<jar href=\"artifact4.jar\" version=\"1.5-19700101.000000-0\"/>" + EOL,
                       Generator.getDependenciesText( generatorConfig2 ) );
         
         GeneratorConfig generatorConfig3 =
@@ -284,7 +284,7 @@ public class GeneratorTest
             assertEquals( EOL + "<jar href=\"artifact1-1.0-classifier.jar\" main=\"true\"/>" +
             				EOL + "<jar href=\"artifact2-1.5.jar\"/>"  +
             				EOL + "<jar href=\"artifact3-1.5-15012014.121212-1.jar\"/>" +
-            				EOL + "<jar href=\"artifact4-1.5-19700101.010000-0.jar\"/>" + EOL,
+            				EOL + "<jar href=\"artifact4-1.5-19700101.000000-0.jar\"/>" + EOL,
                           Generator.getDependenciesText( generatorConfig3 ) );
     }
 }

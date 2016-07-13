@@ -22,6 +22,7 @@ package org.codehaus.mojo.webstart.dependency.filenaming;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,6 +40,7 @@ public class UniqueVersionsHelper {
             // version is not unique, replace SNAPSHOT with file modification timestamp
             Date d = new Date( artifact.getFile().lastModified() );
             DateFormat df = new SimpleDateFormat( "yyyyMMdd.HHmmss" );
+            df.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
             return m.group( 1 ) + "-" + df.format( d ) + "-0";
         }
         else
