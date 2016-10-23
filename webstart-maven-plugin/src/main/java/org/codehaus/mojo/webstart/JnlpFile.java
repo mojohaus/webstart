@@ -177,7 +177,7 @@ public class JnlpFile
         return arguments;
     }
 
-    public void setArguments(List<String> arguments)
+    public void setArguments( List<String> arguments )
     {
         this.arguments = arguments;
     }

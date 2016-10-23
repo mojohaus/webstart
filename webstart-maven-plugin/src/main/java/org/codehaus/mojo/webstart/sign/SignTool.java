@@ -52,7 +52,7 @@ public interface SignTool
      * @since 1.0-beta-4
      */
     File getKeyStoreFile( String keystore, File workingKeystore, ClassLoader classLoader )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
     /**
      * Generate a key store using keytool.
@@ -62,7 +62,7 @@ public interface SignTool
      * @throws MojoExecutionException if something wrong occurs
      */
     void generateKey( SignConfig config, File keystoreFile )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
     /**
      * Sign a jar using jarsigner.
@@ -73,7 +73,7 @@ public interface SignTool
      * @throws MojoExecutionException if something wrong occurs
      */
     void sign( SignConfig config, File jarFile, File signedJar )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
     /**
      * Verify a jar file using jarsigner.
@@ -84,7 +84,7 @@ public interface SignTool
      * @throws MojoExecutionException if something wrong occurs
      */
     void verify( SignConfig config, File jarFile, boolean certs )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
     /**
      * Tests if the given jar is signed.
@@ -95,7 +95,7 @@ public interface SignTool
      * @since 1.0-beta-4
      */
     boolean isJarSigned( File jarFile )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
     /**
      * Unsign a jar.
@@ -106,7 +106,7 @@ public interface SignTool
      * @since 1.0-beta-4
      */
     void unsign( File jarFile, boolean verbose )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
     /**
      * Delete an existing key store

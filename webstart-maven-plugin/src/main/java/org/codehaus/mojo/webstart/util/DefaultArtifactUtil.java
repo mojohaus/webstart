@@ -51,8 +51,8 @@ import java.util.Set;
  */
 @Component( role = ArtifactUtil.class, hint = "default" )
 public class DefaultArtifactUtil
-    extends AbstractLogEnabled
-    implements ArtifactUtil
+        extends AbstractLogEnabled
+        implements ArtifactUtil
 {
 
     /**
@@ -95,7 +95,7 @@ public class DefaultArtifactUtil
      * {@inheritDoc}
      */
     public MavenProject resolveFromReactor( Artifact artifact, MavenProject mp, List<MavenProject> reactorProjects )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         MavenProject result = null;
 
@@ -107,7 +107,7 @@ public class DefaultArtifactUtil
             for ( MavenProject reactorProject : reactorProjects )
             {
                 if ( reactorProject.getArtifactId().equals( artifactId ) &&
-                    reactorProject.getGroupId().equals( groupId ) )
+                        reactorProject.getGroupId().equals( groupId ) )
                 {
                     result = reactorProject;
                     break;
@@ -123,7 +123,7 @@ public class DefaultArtifactUtil
      */
     public void resolveFromRepositories( Artifact artifact, List remoteRepositories,
                                          ArtifactRepository localRepository )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         try
         {
@@ -145,8 +145,8 @@ public class DefaultArtifactUtil
     public Set<Artifact> resolveTransitively( Set<Artifact> jarResourceArtifacts, Set<MavenProject> siblingProjects,
                                               Artifact originateArtifact, ArtifactRepository localRepository,
                                               List<ArtifactRepository> remoteRepositories,
-                                              ArtifactFilter artifactFilter, Map managedVersions)
-        throws MojoExecutionException
+                                              ArtifactFilter artifactFilter, Map managedVersions )
+            throws MojoExecutionException
     {
 
         Set<Artifact> resultArtifacts = new LinkedHashSet<Artifact>();
@@ -171,10 +171,10 @@ public class DefaultArtifactUtil
         try
         {
             ArtifactResolutionResult result =
-                artifactResolver.resolveTransitively( jarResourceArtifacts, originateArtifact,
-                                                      managedVersions,
-                                                      localRepository, remoteRepositories, this.artifactMetadataSource,
-                                                      artifactFilter );
+                    artifactResolver.resolveTransitively( jarResourceArtifacts, originateArtifact,
+                                                          managedVersions,
+                                                          localRepository, remoteRepositories, this.artifactMetadataSource,
+                                                          artifactFilter );
 
             resultArtifacts.addAll( result.getArtifacts() );
 
@@ -200,7 +200,7 @@ public class DefaultArtifactUtil
      */
 
     public boolean artifactContainsClass( Artifact artifact, final String mainClass )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         boolean containsClass = true;
 
@@ -214,7 +214,7 @@ public class DefaultArtifactUtil
         {
             throw new MojoExecutionException( "Could not get artifact url: " + artifact.getFile(), e );
         }
-        ClassLoader cl = new java.net.URLClassLoader( new URL[]{ url } );
+        ClassLoader cl = new java.net.URLClassLoader( new URL[]{url} );
         Class<?> c = null;
         try
         {
@@ -228,7 +228,7 @@ public class DefaultArtifactUtil
         catch ( Throwable t )
         {
             getLogger().info( "artifact " + artifact + " seems to contain the main class: " + mainClass +
-                                  " but the jar doesn't seem to contain all dependencies " + t.getMessage() );
+                                      " but the jar doesn't seem to contain all dependencies " + t.getMessage() );
         }
 
         if ( c != null )
@@ -242,8 +242,8 @@ public class DefaultArtifactUtil
             catch ( NoSuchMethodException e )
             {
                 getLogger().warn(
-                    "The specified main class (" + mainClass + ") doesn't seem to contain a main method... " +
-                        "Please check your configuration." + e.getMessage() );
+                        "The specified main class (" + mainClass + ") doesn't seem to contain a main method... " +
+                                "Please check your configuration." + e.getMessage() );
             }
             catch ( NoClassDefFoundError e )
             {
@@ -251,15 +251,15 @@ public class DefaultArtifactUtil
                 // thus making this a case tackled by the JVM Spec (Ref 5.3.5)!
                 // Reported as Incident 633981 to Sun just in case ...
                 getLogger().warn( "Something failed while checking if the main class contains the main() method. " +
-                                      "This is probably due to the limited classpath we have provided to the class loader. " +
-                                      "The specified main class (" + mainClass +
-                                      ") found in the jar is *assumed* to contain a main method... " + e.getMessage() );
+                                          "This is probably due to the limited classpath we have provided to the class loader. " +
+                                          "The specified main class (" + mainClass +
+                                          ") found in the jar is *assumed* to contain a main method... " + e.getMessage() );
             }
             catch ( Throwable t )
             {
                 getLogger().error( "Unknown error: Couldn't check if the main class has a main method. " +
-                                       "The specified main class (" + mainClass +
-                                       ") found in the jar is *assumed* to contain a main method...", t );
+                                           "The specified main class (" + mainClass +
+                                           ") found in the jar is *assumed* to contain a main method...", t );
             }
         }
 

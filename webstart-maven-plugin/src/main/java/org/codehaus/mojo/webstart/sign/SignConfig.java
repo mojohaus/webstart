@@ -210,7 +210,7 @@ public class SignConfig
      */
     public void init( File workDirectory, boolean verbose, SignTool signTool, SecDispatcher securityDispatcher,
                       ClassLoader classLoader )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         this.workDirectory = workDirectory;
         this.securityDispatcher = securityDispatcher;
@@ -297,7 +297,7 @@ public class SignConfig
      * @throws MojoExecutionException if something wrong occurs
      */
     public JarSignerRequest createSignRequest( File jarToSign, File signedJar )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         JarSignerSignRequest request = new JarSignerSignRequest();
         request.setAlias( getAlias() );
@@ -685,7 +685,7 @@ public class SignConfig
     }
 
     private String decrypt( String encoded )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         try
         {

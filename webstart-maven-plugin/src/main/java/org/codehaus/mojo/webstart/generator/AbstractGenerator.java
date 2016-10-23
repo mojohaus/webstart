@@ -106,7 +106,7 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
             if ( !engine.templateExists( inputFileTemplatePath ) )
             {
                 log.error( "Inbuilt template not found!! " + config.getDefaultTemplateResourceName() +
-                               " Will probably fail." );
+                                   " Will probably fail." );
             }
         }
 
@@ -117,7 +117,7 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
         catch ( Exception e )
         {
             IllegalArgumentException iae =
-                new IllegalArgumentException( "Could not load the template file from '" + inputFileTemplatePath + "'" );
+                    new IllegalArgumentException( "Could not load the template file from '" + inputFileTemplatePath + "'" );
             iae.initCause( e );
             throw iae;
         }
@@ -150,7 +150,7 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
      * @throws Exception
      */
     public final void generate()
-        throws Exception
+            throws Exception
     {
         VelocityContext context = createAndPopulateContext();
 
@@ -164,7 +164,7 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
         catch ( Exception e )
         {
             throw new Exception(
-                "Could not generate the template " + velocityTemplate.getName() + ": " + e.getMessage(), e );
+                    "Could not generate the template " + velocityTemplate.getName() + ": " + e.getMessage(), e );
         }
         finally
         {
@@ -193,7 +193,7 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
 
         context.put( "dependencies", getDependenciesText() );
 
-        context.put("arguments", getArgumentsText());
+        context.put( "arguments", getArgumentsText() );
 
         // Note: properties that contain dots will not be properly parsed by Velocity. 
         // Should we replace dots with underscores ?        

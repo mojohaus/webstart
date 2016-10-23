@@ -56,9 +56,9 @@ import java.util.Set;
  * @since 1.0-alpha-2
  */
 @Mojo( name = "jnlp-download-servlet", requiresProject = true, inheritByDefault = true,
-       requiresDependencyResolution = ResolutionScope.RUNTIME )
+        requiresDependencyResolution = ResolutionScope.RUNTIME )
 public class JnlpDownloadServletMojo
-    extends AbstractBaseJnlpMojo
+        extends AbstractBaseJnlpMojo
 {
 
     // ----------------------------------------------------------------------
@@ -127,7 +127,7 @@ public class JnlpDownloadServletMojo
      * {@inheritDoc}
      */
     public void execute()
-        throws MojoExecutionException, MojoFailureException
+            throws MojoExecutionException, MojoFailureException
     {
 
         // ---
@@ -177,7 +177,7 @@ public class JnlpDownloadServletMojo
 
             // resolve jar resources of the jnpl file
             Set<ResolvedJarResource> resolvedJarResources =
-                resolveJarResources( jnlpFile.getJarResources(), resolvedCommonJarResources );
+                    resolveJarResources( jnlpFile.getJarResources(), resolvedCommonJarResources );
 
             // keep them (to generate the versions.xml file)
             allResolvedJarResources.addAll( resolvedJarResources );
@@ -214,7 +214,7 @@ public class JnlpDownloadServletMojo
 
         //FIXME Should be able to configure this
         File outputDir = new File( getProject().getBuild().getDirectory(),
-            getProject().getBuild().getFinalName() + File.separator + outputDirectoryName );
+                                   getProject().getBuild().getFinalName() + File.separator + outputDirectoryName );
 
         ioUtil.copyDirectoryStructure( getWorkDirectory(), outputDir );
     }
@@ -242,20 +242,20 @@ public class JnlpDownloadServletMojo
      * @throws MojoExecutionException if any user configuration is invalid.
      */
     private void checkConfiguration()
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         checkDependencyFilenameStrategy();
 
         if ( CollectionUtils.isEmpty( jnlpFiles ) )
         {
             throw new MojoExecutionException(
-                "Configuration error: At least one <jnlpFile> element must be specified" );
+                    "Configuration error: At least one <jnlpFile> element must be specified" );
         }
 
         if ( jnlpFiles.size() == 1 && StringUtils.isEmpty( jnlpFiles.get( 0 ).getOutputFilename() ) )
         {
             getLog().debug( "Jnlp output file name not specified in single set of jnlpFiles. " +
-                                "Using default output file name: launch.jnlp." );
+                                    "Using default output file name: launch.jnlp." );
             jnlpFiles.get( 0 ).setOutputFilename( "launch.jnlp" );
         }
 
@@ -270,8 +270,8 @@ public class JnlpDownloadServletMojo
             if ( !filenames.add( jnlpFile.getOutputFilename() ) )
             {
                 throw new MojoExecutionException( "Configuration error: Unique JNLP filenames must be provided. " +
-                    "The following file name appears more than once [" +
-                    jnlpFile.getOutputFilename() + "]." );
+                                                          "The following file name appears more than once [" +
+                                                          jnlpFile.getOutputFilename() + "]." );
             }
 
             checkJnlpFileConfiguration( jnlpFile );
@@ -291,7 +291,7 @@ public class JnlpDownloadServletMojo
                 if ( jarResource.getMainClass() != null )
                 {
                     throw new MojoExecutionException( "Configuration Error: A mainClass must not be specified " +
-                                                          "on a JarResource in the commonJarResources collection." );
+                                                              "on a JarResource in the commonJarResources collection." );
                 }
             }
 
@@ -308,9 +308,9 @@ public class JnlpDownloadServletMojo
                     if ( commonJarResources.contains( jarResource ) )
                     {
                         String message = "Configuration Error: The jar resource element for artifact " + jarResource +
-                                         " defined in common jar resources is duplicated in the jar " +
-                                         "resources configuration of the jnlp file identified by the template file " +
-                                         jnlpFile.getInputTemplate() + ".";
+                                " defined in common jar resources is duplicated in the jar " +
+                                "resources configuration of the jnlp file identified by the template file " +
+                                jnlpFile.getInputTemplate() + ".";
 
                         throw new MojoExecutionException( message );
                     }
@@ -326,19 +326,19 @@ public class JnlpDownloadServletMojo
      * @throws MojoExecutionException if the config element is invalid.
      */
     private void checkJnlpFileConfiguration( JnlpFile jnlpFile )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
 
         if ( StringUtils.isBlank( jnlpFile.getOutputFilename() ) )
         {
             throw new MojoExecutionException(
-                "Configuration error: An outputFilename must be specified for each jnlpFile element" );
+                    "Configuration error: An outputFilename must be specified for each jnlpFile element" );
         }
 
         if ( StringUtils.isNotBlank( jnlpFile.getTemplateFilename() ) )
         {
             getLog().warn(
-                "jnlpFile.templateFilename is deprecated (since 1.0-beta-5), use now the jnlpFile.inputTemplate instead." );
+                    "jnlpFile.templateFilename is deprecated (since 1.0-beta-5), use now the jnlpFile.inputTemplate instead." );
             jnlpFile.setInputTemplate( jnlpFile.getTemplateFilename() );
         }
         //        if ( StringUtils.isBlank( jnlpFile.getInputTemplate() ) )
@@ -362,8 +362,8 @@ public class JnlpDownloadServletMojo
         if ( CollectionUtils.isEmpty( jnlpJarResources ) )
         {
             throw new MojoExecutionException(
-                "Configuration error: A non-empty <jarResources> element must be specified in the plugin " +
-                "configuration for the JNLP file named [" + jnlpFile.getOutputFilename() + "]" );
+                    "Configuration error: A non-empty <jarResources> element must be specified in the plugin " +
+                            "configuration for the JNLP file named [" + jnlpFile.getOutputFilename() + "]" );
         }
 
         // ---
@@ -383,10 +383,10 @@ public class JnlpDownloadServletMojo
 
                     // alreay found
                     throw new MojoExecutionException(
-                        "Configuration error: More than one <jarResource> element has been declared " +
-                        "with a <mainClass> element in the configuration for JNLP file [" +
-                            jnlpFile.getOutputFilename() +
-                            "]" );
+                            "Configuration error: More than one <jarResource> element has been declared " +
+                                    "with a <mainClass> element in the configuration for JNLP file [" +
+                                    jnlpFile.getOutputFilename() +
+                                    "]" );
                 }
 
                 jnlpFile.setMainClass( jarResource.getMainClass() );
@@ -397,8 +397,8 @@ public class JnlpDownloadServletMojo
         if ( mainJarResource == null )
         {
             throw new MojoExecutionException( "Configuration error: Exactly one <jarResource> element must " +
-                "be declared with a <mainClass> element in the configuration for JNLP file [" +
-                jnlpFile.getOutputFilename() + "]" );
+                                                      "be declared with a <mainClass> element in the configuration for JNLP file [" +
+                                                      jnlpFile.getOutputFilename() + "]" );
         }
     }
 
@@ -409,13 +409,13 @@ public class JnlpDownloadServletMojo
      * @throws MojoExecutionException if one of the mandatory field is missing
      */
     private void checkMandatoryJarResourceFields( JarResource jarResource )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
 
         if ( !jarResource.isMandatoryField() )
         {
             throw new MojoExecutionException(
-                "Configuration error: groupId, artifactId or version missing for jarResource[" + jarResource + "]." );
+                    "Configuration error: groupId, artifactId or version missing for jarResource[" + jarResource + "]." );
         }
 
     }
@@ -435,7 +435,7 @@ public class JnlpDownloadServletMojo
      */
     private Set<ResolvedJarResource> resolveJarResources( Collection<JarResource> configuredJarResources,
                                                           Set<ResolvedJarResource> commonJarResources )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
 
         Set<ResolvedJarResource> collectedJarResources = new LinkedHashSet<ResolvedJarResource>();
@@ -482,17 +482,17 @@ public class JnlpDownloadServletMojo
                 if ( artifact == null )
                 {
                     throw new IllegalStateException(
-                        "Implementation Error: The given jarResource cannot be checked for " +
-                        "a main class until the underlying artifact has been resolved: [" +
-                        jarResource + "]" );
+                            "Implementation Error: The given jarResource cannot be checked for " +
+                                    "a main class until the underlying artifact has been resolved: [" +
+                                    jarResource + "]" );
                 }
 
                 boolean containsMainClass = artifactUtil.artifactContainsClass( artifact, jarResource.getMainClass() );
                 if ( !containsMainClass )
                 {
                     throw new MojoExecutionException(
-                        "The jar specified by the following jarResource does not contain the declared main class:" +
-                            jarResource );
+                            "The jar specified by the following jarResource does not contain the declared main class:" +
+                                    jarResource );
                 }
             }
             ResolvedJarResource resolvedJarResource = new ResolvedJarResource( jarResource, artifact );
@@ -514,8 +514,8 @@ public class JnlpDownloadServletMojo
             // get all transitive dependencies
 
             Set<Artifact> transitiveArtifacts =
-                getArtifactUtil().resolveTransitively( artifacts, siblingProjects, getProject().getArtifact(),
-                                                       getLocalRepository(), getRemoteRepositories(), artifactFilter, getProject().getManagedVersionMap());
+                    getArtifactUtil().resolveTransitively( artifacts, siblingProjects, getProject().getArtifact(),
+                                                           getLocalRepository(), getRemoteRepositories(), artifactFilter, getProject().getManagedVersionMap() );
 
             // for each transitive dependency, wrap it in a JarResource and add it to the collection of
             // existing jar resources (if not already in)
@@ -538,10 +538,10 @@ public class JnlpDownloadServletMojo
             Artifact artifact = jarResource.getArtifact();
 
             String filenameWithVersion =
-                getDependencyFilenameStrategy().getDependencyFilename( artifact, false, isUseUniqueVersions() );
+                    getDependencyFilenameStrategy().getDependencyFilename( artifact, false, isUseUniqueVersions() );
 
             boolean copied = copyJarAsUnprocessedToDirectoryIfNecessary( artifact.getFile(), getLibDirectory(),
-                filenameWithVersion );
+                                                                         filenameWithVersion );
 
             if ( copied )
             {
@@ -553,16 +553,16 @@ public class JnlpDownloadServletMojo
 
             String filename = getDependencyFilenameStrategy().getDependencyFilename( artifact,
                                                                                      jarResource.isOutputJarVersion()
-                                                                                         ? null
-                                                                                         : false,
-                    isUseUniqueVersions() );
+                                                                                             ? null
+                                                                                             : false,
+                                                                                     isUseUniqueVersions() );
             jarResource.setHrefValue( filename );
         }
         return collectedJarResources;
     }
 
     private void generateJnlpFile( ResolvedJnlpFile jnlpFile, String libPath )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
 
         File jnlpOutputFile = new File( getWorkDirectory(), jnlpFile.getOutputFilename() );
@@ -594,8 +594,8 @@ public class JnlpDownloadServletMojo
         if ( StringUtils.isBlank( jnlpFile.getInputTemplate() ) )
         {
             getLog().debug(
-                "Jnlp servlet template file name not specified. Checking if default output file name exists: " +
-                    SERVLET_TEMPLATE_FILENAME );
+                    "Jnlp servlet template file name not specified. Checking if default output file name exists: " +
+                            SERVLET_TEMPLATE_FILENAME );
 
             File templateFile = new File( templateDirectory, SERVLET_TEMPLATE_FILENAME );
 
@@ -615,19 +615,19 @@ public class JnlpDownloadServletMojo
             if ( !templateFile.isFile() )
             {
                 throw new MojoExecutionException(
-                    "The specified JNLP servlet template does not exist: [" + templateFile + "]" );
+                        "The specified JNLP servlet template does not exist: [" + templateFile + "]" );
             }
         }
 
         String templateFileName = jnlpFile.getInputTemplate();
 
         GeneratorTechnicalConfig generatorTechnicalConfig =
-            new GeneratorTechnicalConfig( getProject(), templateDirectory, BUILT_IN_SERVLET_TEMPLATE_FILENAME,
-                                          jnlpOutputFile, templateFileName, jnlpFile.getMainClass(),
-                                          getWebstartJarURLForVelocity(), getEncoding() );
+                new GeneratorTechnicalConfig( getProject(), templateDirectory, BUILT_IN_SERVLET_TEMPLATE_FILENAME,
+                                              jnlpOutputFile, templateFileName, jnlpFile.getMainClass(),
+                                              getWebstartJarURLForVelocity(), getEncoding() );
         JarResourceGeneratorConfig jarResourceGeneratorConfig = new JarResourceGeneratorConfig( jarResources, libPath, getCodebase(), jnlpFile.getProperties(), jnlpFile.getArguments() );
         JarResourcesGenerator jnlpGenerator =
-            new JarResourcesGenerator( getLog(), generatorTechnicalConfig, jarResourceGeneratorConfig );
+                new JarResourcesGenerator( getLog(), generatorTechnicalConfig, jarResourceGeneratorConfig );
 
         //        jnlpGenerator.setExtraConfig( new SimpleGeneratorExtraConfig( jnlpFile.getProperties(), getCodebase() ) );
 
@@ -638,7 +638,7 @@ public class JnlpDownloadServletMojo
         catch ( Exception e )
         {
             throw new MojoExecutionException(
-                "The following error occurred attempting to generate " + "the JNLP deployment descriptor: " + e, e );
+                    "The following error occurred attempting to generate " + "the JNLP deployment descriptor: " + e, e );
         }
 
     }
@@ -650,7 +650,7 @@ public class JnlpDownloadServletMojo
      * @throws MojoExecutionException if could not generate the xml version file
      */
     private void generateVersionXml( Set<ResolvedJarResource> jarResources )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
 
         VersionXmlGenerator generator = new VersionXmlGenerator( getEncoding() );

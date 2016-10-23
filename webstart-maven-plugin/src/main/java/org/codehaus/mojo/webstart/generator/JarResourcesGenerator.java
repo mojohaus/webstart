@@ -33,7 +33,7 @@ import java.util.Collection;
  * @author Kevin Stembridge
  */
 public class JarResourcesGenerator
-    extends AbstractGenerator<JarResourceGeneratorConfig>
+        extends AbstractGenerator<JarResourceGeneratorConfig>
 {
 
     public JarResourcesGenerator( Log log, GeneratorTechnicalConfig technicalConfig,
@@ -46,11 +46,11 @@ public class JarResourcesGenerator
     {
         StringBuilder buffer = new StringBuilder();
 
-        if (getExtraConfig().getArguments() != null)
+        if ( getExtraConfig().getArguments() != null )
         {
-            for (String argument : getExtraConfig().getArguments())
+            for ( String argument : getExtraConfig().getArguments() )
             {
-                buffer.append("<argument>").append(argument).append("</argument>").append(EOL);
+                buffer.append( "<argument>" ).append( argument ).append( "</argument>" ).append( EOL );
             }
         }
 

@@ -45,8 +45,8 @@ import java.net.URI;
  */
 @Component( role = SignTool.class, hint = "default" )
 public class DefaultSignTool
-    extends AbstractLogEnabled
-    implements SignTool
+        extends AbstractLogEnabled
+        implements SignTool
 {
 
     /**
@@ -71,7 +71,7 @@ public class DefaultSignTool
      * {@inheritDoc}
      */
     public void generateKey( SignConfig config, File keystoreFile )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         KeyToolGenerateKeyPairRequest request = config.createKeyGenRequest( keystoreFile );
 
@@ -88,7 +88,7 @@ public class DefaultSignTool
             if ( exitCode != 0 )
             {
                 throw new MojoExecutionException(
-                    "Could not generate key store " + keystoreFile + ", use -X to have detail of error" );
+                        "Could not generate key store " + keystoreFile + ", use -X to have detail of error" );
             }
         }
         catch ( JavaToolException e )
@@ -101,7 +101,7 @@ public class DefaultSignTool
      * {@inheritDoc}
      */
     public void sign( SignConfig config, File jarFile, File signedJar )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
 
         JarSignerRequest request = config.createSignRequest( jarFile, signedJar );
@@ -119,7 +119,7 @@ public class DefaultSignTool
             if ( exitCode != 0 )
             {
                 throw new MojoExecutionException(
-                    "Could not sign jar " + jarFile + ", use -X to have detail of error" );
+                        "Could not sign jar " + jarFile + ", use -X to have detail of error" );
             }
         }
         catch ( JavaToolException e )
@@ -132,7 +132,7 @@ public class DefaultSignTool
      * {@inheritDoc}
      */
     public void verify( SignConfig config, File jarFile, boolean certs )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
 
         JarSignerRequest request = config.createVerifyRequest( jarFile, certs );
@@ -150,7 +150,7 @@ public class DefaultSignTool
             if ( exitCode != 0 )
             {
                 throw new MojoExecutionException(
-                    "Could not verify jar " + jarFile + ", use -X to have detail of error" );
+                        "Could not verify jar " + jarFile + ", use -X to have detail of error" );
             }
         }
         catch ( JavaToolException e )
@@ -163,7 +163,7 @@ public class DefaultSignTool
      * {@inheritDoc}
      */
     public boolean isJarSigned( File jarFile )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         try
         {
@@ -180,7 +180,7 @@ public class DefaultSignTool
      * {@inheritDoc}
      */
     public void unsign( File jarFile, boolean verbose )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
 
         if ( isJarSigned( jarFile ) )
@@ -233,7 +233,7 @@ public class DefaultSignTool
      * {@inheritDoc}
      */
     public File getKeyStoreFile( String keystore, File workingKeystore, ClassLoader classLoader )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
 
         File result;

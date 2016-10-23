@@ -28,7 +28,7 @@ import java.util.List;
  * @version $Id$
  */
 public class JnlpExtension
-    extends JnlpConfig
+        extends JnlpConfig
 {
 
     private List<String> includes;

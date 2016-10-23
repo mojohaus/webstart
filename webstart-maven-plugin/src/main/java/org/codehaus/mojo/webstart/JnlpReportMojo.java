@@ -42,7 +42,7 @@ import java.util.ResourceBundle;
  */
 @Mojo( name = "report", defaultPhase = LifecyclePhase.SITE, requiresReports = true )
 public class JnlpReportMojo
-    extends AbstractMavenReport
+        extends AbstractMavenReport
 {
     // ----------------------------------------------------------------------
     // Mojo Parameters
@@ -110,7 +110,7 @@ public class JnlpReportMojo
      * {@inheritDoc}
      */
     public void executeReport( Locale locale )
-        throws MavenReportException
+            throws MavenReportException
     {
         copyJnlpFiles();
         fillReport( locale );
@@ -173,7 +173,7 @@ public class JnlpReportMojo
     // ----------------------------------------------------------------------
 
     private void copyJnlpFiles()
-        throws MavenReportException
+            throws MavenReportException
     {
         if ( !jnlpSourceDirectory.exists() )
         {

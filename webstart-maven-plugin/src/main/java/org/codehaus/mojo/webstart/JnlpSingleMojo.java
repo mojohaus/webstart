@@ -36,9 +36,9 @@ import org.apache.maven.project.MavenProject;
  * @version $Id$
  */
 @Mojo( name = "jnlp-single", requiresProject = true, inheritByDefault = true,
-       requiresDependencyResolution = ResolutionScope.RUNTIME )
+        requiresDependencyResolution = ResolutionScope.RUNTIME )
 public class JnlpSingleMojo
-    extends AbstractJnlpMojo
+        extends AbstractJnlpMojo
 {
     // ----------------------------------------------------------------------
     // Mojo Parameters

@@ -51,7 +51,7 @@ public class JnlpConfig
 
     private String mainClass;
 
-    private Map<String,String> properties;
+    private Map<String, String> properties;
 
     /**
      * The path containing any resources which will be added to the webstart artifact

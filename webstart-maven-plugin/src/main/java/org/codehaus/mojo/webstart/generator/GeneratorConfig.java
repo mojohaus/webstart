@@ -38,7 +38,7 @@ import java.util.Map;
  * @since 1.0-beta-5
  */
 public class GeneratorConfig
-    extends AbstractGeneratorExtraConfigWithDeps
+        extends AbstractGeneratorExtraConfigWithDeps
 {
 
     private final Collection<Artifact> packagedJnlpArtifacts;
@@ -49,8 +49,8 @@ public class GeneratorConfig
 
     private final JnlpConfig jnlp;
 
-    public GeneratorConfig( String libPath, boolean pack200, boolean outputJarVersions, 
-    		                boolean useUniqueVersions, Artifact artifactWithMainClass,
+    public GeneratorConfig( String libPath, boolean pack200, boolean outputJarVersions,
+                            boolean useUniqueVersions, Artifact artifactWithMainClass,
                             DependencyFilenameStrategy dependencyFilenameStrategy,
                             Collection<Artifact> packagedJnlpArtifacts, List<JnlpExtension> jnlpExtensions,
                             String codebase, JnlpConfig jnlp )

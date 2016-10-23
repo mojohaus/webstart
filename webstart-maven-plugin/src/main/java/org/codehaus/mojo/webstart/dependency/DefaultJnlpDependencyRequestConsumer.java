@@ -40,8 +40,8 @@ import java.util.concurrent.TimeUnit;
  */
 @Component( role = JnlpDependencyRequestConsumer.class )
 public class DefaultJnlpDependencyRequestConsumer
-    extends AbstractLogEnabled
-    implements JnlpDependencyRequestConsumer
+        extends AbstractLogEnabled
+        implements JnlpDependencyRequestConsumer
 {
 
     @Requirement
@@ -65,7 +65,7 @@ public class DefaultJnlpDependencyRequestConsumer
     }
 
     private static class RequestExecutor
-        extends ThreadPoolExecutor
+            extends ThreadPoolExecutor
     {
 
         private final JnlpDependencyRequestConsumerConfig config;
@@ -155,7 +155,7 @@ public class DefaultJnlpDependencyRequestConsumer
                     if ( config.isVerbose() )
                     {
                         logger.info(
-                            "Skip up-to-date dependency: " + dependencyRequest.getConfig().getArtifact().getId() );
+                                "Skip up-to-date dependency: " + dependencyRequest.getConfig().getArtifact().getId() );
                     }
                     results.registerResult( newtask.request, result );
                 }
@@ -173,7 +173,7 @@ public class DefaultJnlpDependencyRequestConsumer
 
 
     private static class RequestTask
-        implements Runnable
+            implements Runnable
     {
 
         private final Logger logger;

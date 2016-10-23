@@ -53,7 +53,7 @@ public interface ArtifactUtil
      * @throws MojoExecutionException if artifact file url is mal formed
      */
     public boolean artifactContainsClass( Artifact artifact, final String mainClass )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
     /**
      * Creates from the given jar resource the underlying artifact.
@@ -64,14 +64,14 @@ public interface ArtifactUtil
     Artifact createArtifact( JarResource jarResource );
 
     MavenProject resolveFromReactor( Artifact artifact, MavenProject mavenProject, List<MavenProject> reactorProjects )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
 
     void resolveFromRepositories( Artifact artifact, List remoteRepositories, ArtifactRepository localRepository )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
     Set<Artifact> resolveTransitively( Set<Artifact> jarResourceArtifacts, Set<MavenProject> siblingProjects,
                                        Artifact artifact, ArtifactRepository localRepository,
-                                       List<ArtifactRepository> remoteRepositories, ArtifactFilter artifactFilter, Map managedVersions)
-        throws MojoExecutionException;
+                                       List<ArtifactRepository> remoteRepositories, ArtifactFilter artifactFilter, Map managedVersions )
+            throws MojoExecutionException;
 }

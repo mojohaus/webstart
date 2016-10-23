@@ -19,6 +19,8 @@ package org.codehaus.mojo.webstart.dependency.filenaming;
  * under the License.
  */
 
+import org.apache.maven.artifact.Artifact;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,16 +28,15 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.maven.artifact.Artifact;
+public class UniqueVersionsHelper
+{
 
-public class UniqueVersionsHelper {
-
-    private final static Pattern NONUNIQUE_SNAPSHOT_PATTERN = Pattern.compile("^(.*)-SNAPSHOT$");
+    private final static Pattern NONUNIQUE_SNAPSHOT_PATTERN = Pattern.compile( "^(.*)-SNAPSHOT$" );
 
     public static final String getUniqueVersion( Artifact artifact )
     {
         Matcher m = NONUNIQUE_SNAPSHOT_PATTERN.matcher( artifact.getVersion() );
-        if ( m.matches() ) 
+        if ( m.matches() )
         {
             // version is not unique, replace SNAPSHOT with file modification timestamp
             Date d = new Date( artifact.getFile().lastModified() );

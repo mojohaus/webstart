@@ -34,7 +34,7 @@ import java.util.List;
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  */
 public class Generator
-    extends AbstractGenerator<GeneratorConfig>
+        extends AbstractGenerator<GeneratorConfig>
 {
 
     public Generator( Log log, GeneratorTechnicalConfig technicalConfig, GeneratorConfig extraConfig )
@@ -62,7 +62,9 @@ public class Generator
         {
             // add extensions
             context.put( "extensions", indentText( 4, getExtensionsText( getExtraConfig() ) ) );
-        } else {
+        }
+        else
+        {
             context.put( "extensions", "" );
         }
         return context;

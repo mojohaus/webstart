@@ -41,5 +41,5 @@ public interface JarUtil
     String ROLE = JarUtil.class.getName();
 
     void updateManifestEntries( File jar, Map<String, String> updateManifestEntries )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 }

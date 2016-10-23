@@ -29,16 +29,16 @@ import org.apache.maven.project.MavenProject;
  * <p/>
  * The plugin tries to not re-sign/re-pack if the dependent jar hasn't changed.
  * As a consequence, if one modifies the pom jnlp config or a keystore, one should clean before rebuilding.
- *
+ * <p>
  * For more informations about how to choose the matching mojo see http://mojo.codehaus.org/webstart/webstart-maven-plugin/usage.html#Choices
  *
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
  */
 @Mojo( name = "jnlp-inline", requiresProject = true, inheritByDefault = true,
-       requiresDependencyResolution = ResolutionScope.RUNTIME, aggregator = true )
+        requiresDependencyResolution = ResolutionScope.RUNTIME, aggregator = true )
 public class JnlpInlineMojo
-    extends AbstractJnlpMojo
+        extends AbstractJnlpMojo
 {
     // ----------------------------------------------------------------------
     // Mojo Parameters

@@ -34,7 +34,7 @@ import java.util.Map;
  * @since 1.0-beta-5
  */
 public class ExtensionGeneratorConfig
-    extends AbstractGeneratorExtraConfigWithDeps
+        extends AbstractGeneratorExtraConfigWithDeps
 {
 
     private final Map<JnlpExtension, List<Artifact>> extensionsJnlpArtifacts;
@@ -44,7 +44,7 @@ public class ExtensionGeneratorConfig
     private final String codebase;
 
     public ExtensionGeneratorConfig( String libPath, boolean pack200, boolean outputJarVersions,
-    		                         boolean useUniqueVersions, Artifact artifactWithMainClass,
+                                     boolean useUniqueVersions, Artifact artifactWithMainClass,
                                      DependencyFilenameStrategy dependencyFilenameStrategy,
                                      Map<JnlpExtension, List<Artifact>> extensionsJnlpArtifacts, String codebase,
                                      JnlpExtension extension )

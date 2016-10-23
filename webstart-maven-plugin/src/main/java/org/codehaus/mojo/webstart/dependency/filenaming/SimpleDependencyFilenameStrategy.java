@@ -39,8 +39,8 @@ import org.codehaus.plexus.component.annotations.Component;
  */
 @Component( role = DependencyFilenameStrategy.class, hint = SimpleDependencyFilenameStrategy.ROLE_HINT )
 public class SimpleDependencyFilenameStrategy
-    extends AbstractDependencyFilenameStrategy
-    implements DependencyFilenameStrategy
+        extends AbstractDependencyFilenameStrategy
+        implements DependencyFilenameStrategy
 {
 
     public static final String ROLE_HINT = "simple";

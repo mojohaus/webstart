@@ -29,7 +29,7 @@ import org.codehaus.mojo.webstart.dependency.filenaming.DependencyFilenameStrate
  * @since 1.0-beta-5
  */
 public abstract class AbstractGeneratorExtraConfigWithDeps
-    implements GeneratorExtraConfigWithDeps
+        implements GeneratorExtraConfigWithDeps
 {
 
     private final String libPath;
@@ -37,7 +37,7 @@ public abstract class AbstractGeneratorExtraConfigWithDeps
     private final boolean pack200;
 
     private final boolean outputJarVersions;
-    
+
     private final boolean useUniqueVersions;
 
     private final Artifact artifactWithMainClass;
@@ -45,7 +45,7 @@ public abstract class AbstractGeneratorExtraConfigWithDeps
     private final DependencyFilenameStrategy dependencyFilenameStrategy;
 
     public AbstractGeneratorExtraConfigWithDeps( String libPath, boolean pack200, boolean outputJarVersions,
-            									 boolean useUniqueVersions, Artifact artifactWithMainClass,
+                                                 boolean useUniqueVersions, Artifact artifactWithMainClass,
                                                  DependencyFilenameStrategy dependencyFilenameStrategy )
     {
 
@@ -80,7 +80,7 @@ public abstract class AbstractGeneratorExtraConfigWithDeps
     {
         return useUniqueVersions;
     }
-    
+
     /**
      * {@inheritDoc}
      */

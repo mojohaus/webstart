@@ -52,7 +52,7 @@ import java.util.zip.GZIPOutputStream;
  */
 @Component( role = Pack200Tool.class, hint = "default" )
 public class DefaultPack200Tool
-    implements Pack200Tool
+        implements Pack200Tool
 {
 
     public static final String PACK_GZ_EXTENSION = ".pack.gz";
@@ -63,7 +63,7 @@ public class DefaultPack200Tool
      * {@inheritDoc}
      */
     public void pack( File source, File destination, Map<String, String> props, boolean gzip )
-        throws IOException
+            throws IOException
     {
         JarFile jar = null;
         OutputStream out = null;
@@ -101,7 +101,7 @@ public class DefaultPack200Tool
      * {@inheritDoc}
      */
     public void repack( File source, File destination, Map<String, String> props )
-        throws IOException
+            throws IOException
     {
         File tempFile = new File( source.toString() + ".tmp" );
 
@@ -120,7 +120,7 @@ public class DefaultPack200Tool
      * {@inheritDoc}
      */
     public void unpack( File source, File destination, Map<String, String> props )
-        throws IOException
+            throws IOException
     {
         InputStream in = null;
         JarOutputStream out = null;
@@ -150,7 +150,7 @@ public class DefaultPack200Tool
      * {@inheritDoc}
      */
     public void packJars( File directory, FileFilter jarFileFilter, boolean gzip, List<String> passFiles )
-        throws IOException
+            throws IOException
     {
         // getLog().debug( "packJars for " + directory );
         File[] jarFiles = directory.listFiles( jarFileFilter );
@@ -188,7 +188,7 @@ public class DefaultPack200Tool
      * {@inheritDoc}
      */
     public File packJar( File jarFile, boolean gzip, List<String> passFiles )
-        throws IOException
+            throws IOException
     {
         final String extension = gzip ? PACK_GZ_EXTENSION : PACK_EXTENSION;
 
@@ -219,7 +219,7 @@ public class DefaultPack200Tool
      * {@inheritDoc}
      */
     public void unpackJars( File directory, FileFilter pack200FileFilter )
-        throws IOException
+            throws IOException
     {
         // getLog().debug( "unpackJars for " + directory );
         File[] packFiles = directory.listFiles( pack200FileFilter );
@@ -241,7 +241,7 @@ public class DefaultPack200Tool
      * {@inheritDoc}
      */
     public File unpackJar( File packFile )
-        throws IOException
+            throws IOException
     {
         final String packedJarPath = packFile.getAbsolutePath();
         int extensionLength = packedJarPath.endsWith( PACK_GZ_EXTENSION ) ? 8 : 5;
@@ -256,7 +256,7 @@ public class DefaultPack200Tool
     }
 
     private void deleteFile( File file )
-        throws IOException
+            throws IOException
     {
         if ( file.exists() )
         {
@@ -269,7 +269,7 @@ public class DefaultPack200Tool
     }
 
     private void setLastModified( File file, long modifi )
-        throws IOException
+            throws IOException
     {
         boolean b = file.setLastModified( modifi );
         if ( !b )
@@ -284,7 +284,7 @@ public class DefaultPack200Tool
      * @param file the file to test
      */
     private static boolean isGzipped( File file )
-        throws IOException
+            throws IOException
     {
         DataInputStream is = new DataInputStream( new FileInputStream( file ) );
         int i = is.readInt();

@@ -19,8 +19,8 @@ package org.codehaus.mojo.webstart.dependency.task;
  * under the License.
  */
 
-import org.codehaus.mojo.webstart.pack200.Pack200Tool;
 import org.codehaus.mojo.webstart.dependency.JnlpDependencyConfig;
+import org.codehaus.mojo.webstart.pack200.Pack200Tool;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 
@@ -37,7 +37,7 @@ import java.io.IOException;
  */
 @Component( role = JnlpDependencyTask.class, hint = Pack200Task.ROLE_HINT, instantiationStrategy = "per-lookup" )
 public class Pack200Task
-    extends AbstractJnlpTask
+        extends AbstractJnlpTask
 {
 
     public static final String ROLE_HINT = "Pack200Task";
@@ -72,7 +72,7 @@ public class Pack200Task
      * {@inheritDoc}
      */
     public File execute( JnlpDependencyConfig config, File file )
-        throws JnlpDependencyTaskException
+            throws JnlpDependencyTaskException
     {
 
         verboseLog( config, "Pack200 file: " + file );

@@ -40,10 +40,10 @@ import org.apache.maven.project.MavenProject;
  * @version $Id$
  */
 @Mojo( name = "jnlp", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, inheritByDefault = true,
-       requiresDependencyResolution = ResolutionScope.RUNTIME, aggregator = true )
+        requiresDependencyResolution = ResolutionScope.RUNTIME, aggregator = true )
 @Execute( phase = LifecyclePhase.PACKAGE )
 public class JnlpMojo
-    extends AbstractJnlpMojo
+        extends AbstractJnlpMojo
 {
     // ----------------------------------------------------------------------
     // Mojo Parameters

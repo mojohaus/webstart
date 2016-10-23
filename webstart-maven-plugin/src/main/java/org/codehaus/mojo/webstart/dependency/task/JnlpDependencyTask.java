@@ -47,5 +47,5 @@ public interface JnlpDependencyTask
      * @return the new produced file
      */
     File execute( JnlpDependencyConfig config, File file )
-        throws JnlpDependencyTaskException;
+            throws JnlpDependencyTaskException;
 }

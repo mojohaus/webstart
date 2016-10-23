@@ -47,8 +47,8 @@ import java.util.zip.ZipFile;
  */
 @Component( role = IOUtil.class, hint = "default" )
 public class DefaultIOUtil
-    extends AbstractLogEnabled
-    implements IOUtil
+        extends AbstractLogEnabled
+        implements IOUtil
 {
 
     /**
@@ -61,7 +61,7 @@ public class DefaultIOUtil
      * {@inheritDoc}
      */
     public void copyResources( File sourceDirectory, File targetDirectory )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         if ( !sourceDirectory.exists() )
         {
@@ -89,7 +89,7 @@ public class DefaultIOUtil
      * {@inheritDoc}
      */
     public void copyFile( File sourceFile, File targetFile )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         makeDirectoryIfNecessary( targetFile.getParentFile() );
         try
@@ -107,7 +107,7 @@ public class DefaultIOUtil
      * {@inheritDoc}
      */
     public void copyDirectoryStructure( File sourceDirectory, File targetDirectory )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
 
         makeDirectoryIfNecessary( targetDirectory );
@@ -120,7 +120,7 @@ public class DefaultIOUtil
         catch ( IOException e )
         {
             throw new MojoExecutionException(
-                "Could not copy directory structure from " + sourceDirectory + " to " + targetDirectory, e );
+                    "Could not copy directory structure from " + sourceDirectory + " to " + targetDirectory, e );
         }
     }
 
@@ -137,7 +137,7 @@ public class DefaultIOUtil
      * {@inheritDoc}
      */
     public boolean copyFileToDirectoryIfNecessary( File sourceFile, File targetDirectory )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
 
         if ( sourceFile == null )
@@ -158,13 +158,13 @@ public class DefaultIOUtil
             catch ( IOException e )
             {
                 throw new MojoExecutionException(
-                    "Could not copy file " + sourceFile + " to directory " + targetDirectory, e );
+                        "Could not copy file " + sourceFile + " to directory " + targetDirectory, e );
             }
         }
         else
         {
             getLogger().debug(
-                "Source file hasn't changed. Do not overwrite " + targetFile + " with " + sourceFile + "." );
+                    "Source file hasn't changed. Do not overwrite " + targetFile + " with " + sourceFile + "." );
 
         }
 
@@ -175,7 +175,7 @@ public class DefaultIOUtil
      * {@inheritDoc}
      */
     public void removeDirectory( File dir )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         if ( dir != null )
         {
@@ -198,7 +198,7 @@ public class DefaultIOUtil
      * {@inheritDoc}
      */
     public void makeDirectoryIfNecessary( File dir )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
 
         if ( !dir.exists() && !dir.mkdirs() )
@@ -212,7 +212,7 @@ public class DefaultIOUtil
      * {@inheritDoc}
      */
     public int deleteFiles( File directory, FileFilter fileFilter )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         File[] files = directory.listFiles( fileFilter );
 
@@ -237,7 +237,7 @@ public class DefaultIOUtil
      * {@inheritDoc}
      */
     public void deleteFile( File file )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         if ( file.exists() && !file.delete() )
         {
@@ -249,7 +249,7 @@ public class DefaultIOUtil
      * {@inheritDoc}
      */
     public void renameTo( File source, File target )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         boolean result = source.renameTo( target );
         if ( !result )
@@ -262,7 +262,7 @@ public class DefaultIOUtil
      * {@inheritDoc}
      */
     public void copyResources( URI uri, ClassLoader classLoader, File target )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         URL url;
 
@@ -366,7 +366,7 @@ public class DefaultIOUtil
      * {@inheritDoc}
      */
     public void createArchive( File directory, File archive )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
 
         // package the zip. Note this is very simple. Look at the JarMojo which does more things.
@@ -391,7 +391,7 @@ public class DefaultIOUtil
 
     private void copyDirectoryStructure( File sourceDirectory, File destinationDirectory, String includes,
                                          String excludes )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         if ( !sourceDirectory.exists() )
         {

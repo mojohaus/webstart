@@ -19,8 +19,8 @@ package org.codehaus.mojo.webstart.dependency.task;
  * under the License.
  */
 
-import org.codehaus.mojo.webstart.pack200.Pack200Tool;
 import org.codehaus.mojo.webstart.dependency.JnlpDependencyConfig;
+import org.codehaus.mojo.webstart.pack200.Pack200Tool;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 
@@ -40,7 +40,7 @@ import java.io.IOException;
  */
 @Component( role = JnlpDependencyTask.class, hint = UnPack200Task.ROLE_HINT, instantiationStrategy = "per-lookup" )
 public class UnPack200Task
-    extends AbstractJnlpTask
+        extends AbstractJnlpTask
 {
 
     public static final String ROLE_HINT = "UnPack200Task";
@@ -71,7 +71,8 @@ public class UnPack200Task
         {
             throw new NullPointerException( "config.artifact.file can't be null" );
         }
-        if (!config.isPack200()) {
+        if ( !config.isPack200() )
+        {
             throw new IllegalStateException( "Can't pack200 if config.isPack200 is false" );
         }
     }
@@ -80,7 +81,7 @@ public class UnPack200Task
      * {@inheritDoc}
      */
     public File execute( JnlpDependencyConfig config, File file )
-        throws JnlpDependencyTaskException
+            throws JnlpDependencyTaskException
     {
 
         verboseLog( config, "Unpack 200 file: " + file );

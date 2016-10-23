@@ -29,8 +29,8 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
  * @since XXX
  */
 public abstract class AbstractJnlpTask
-    extends AbstractLogEnabled
-    implements JnlpDependencyTask
+        extends AbstractLogEnabled
+        implements JnlpDependencyTask
 {
 
     protected void verboseLog( JnlpDependencyConfig config, String msg )

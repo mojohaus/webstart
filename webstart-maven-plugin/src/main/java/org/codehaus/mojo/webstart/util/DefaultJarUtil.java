@@ -24,7 +24,6 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,7 +46,7 @@ import java.util.zip.ZipFile;
  */
 @Component( role = JarUtil.class, hint = "default" )
 public class DefaultJarUtil
-    implements JarUtil
+        implements JarUtil
 {
 
     /**
@@ -60,7 +59,7 @@ public class DefaultJarUtil
      * {@inheritDoc}
      */
     public void updateManifestEntries( File jar, Map<String, String> manifestentries )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
 
         Manifest manifest = createManifest( jar, manifestentries );
@@ -136,7 +135,7 @@ public class DefaultJarUtil
      * @throws MojoExecutionException
      */
     protected Manifest createManifest( File jar, Map<String, String> manifestentries )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         JarFile jarFile = null;
         try

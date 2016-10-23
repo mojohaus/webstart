@@ -32,7 +32,7 @@ import java.util.Map;
  * @since 1.0-beta-5
  */
 public class JarResourceGeneratorConfig
-    implements GeneratorExtraConfig
+        implements GeneratorExtraConfig
 {
 
     private final Collection<ResolvedJarResource> jarResources;

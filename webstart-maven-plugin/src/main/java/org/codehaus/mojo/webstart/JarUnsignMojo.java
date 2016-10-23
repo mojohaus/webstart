@@ -41,7 +41,7 @@ import java.io.File;
  */
 @Mojo( name = "unsign", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = false )
 public class JarUnsignMojo
-    extends AbstractMojo
+        extends AbstractMojo
 {
     // ----------------------------------------------------------------------
     // Mojo Parameters
@@ -67,7 +67,7 @@ public class JarUnsignMojo
      * When specified, the finalName is ignored.
      */
     @Parameter( alias = "jarpath", property = "maven.jar.unsign.jarpath",
-                defaultValue = "${project.build.directory}/${project.build.finalName}.${project.packaging}" )
+            defaultValue = "${project.build.directory}/${project.build.finalName}.${project.packaging}" )
     private File jarPath;
 
     /**
@@ -94,7 +94,7 @@ public class JarUnsignMojo
      * {@inheritDoc}
      */
     public void execute()
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         if ( skip )
         {
@@ -103,8 +103,10 @@ public class JarUnsignMojo
         }
         if ( jarPath.isDirectory() )
         {
-            for ( File jar : jarPath.listFiles() ) {
-                if ( JarSignerUtil.isZipFile( jar ) ) {
+            for ( File jar : jarPath.listFiles() )
+            {
+                if ( JarSignerUtil.isZipFile( jar ) )
+                {
                     signTool.unsign( jar, verbose );
                 }
                 else

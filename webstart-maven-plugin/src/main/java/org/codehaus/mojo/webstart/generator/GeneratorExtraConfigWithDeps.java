@@ -28,7 +28,7 @@ import org.apache.maven.artifact.Artifact;
  * @since 1.0-beta-5
  */
 public interface GeneratorExtraConfigWithDeps
-    extends GeneratorExtraConfig
+        extends GeneratorExtraConfig
 {
 
     public boolean isPack200();

@@ -20,8 +20,8 @@ package org.codehaus.mojo.webstart.dependency;
  */
 
 import org.apache.commons.collections.MapUtils;
-import org.codehaus.mojo.webstart.pack200.Pack200Config;
 import org.codehaus.mojo.webstart.dependency.filenaming.DependencyFilenameStrategy;
+import org.codehaus.mojo.webstart.pack200.Pack200Config;
 import org.codehaus.mojo.webstart.sign.SignConfig;
 
 import java.io.File;

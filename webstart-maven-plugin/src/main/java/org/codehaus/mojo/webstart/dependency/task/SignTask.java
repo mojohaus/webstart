@@ -37,7 +37,7 @@ import java.io.File;
  */
 @Component( role = JnlpDependencyTask.class, hint = SignTask.ROLE_HINT, instantiationStrategy = "per-lookup" )
 public class SignTask
-    extends AbstractJnlpTask
+        extends AbstractJnlpTask
 {
     public static final String ROLE_HINT = "SignTask";
 
@@ -91,7 +91,7 @@ public class SignTask
      * {@inheritDoc}
      */
     public File execute( JnlpDependencyConfig config, File file )
-        throws JnlpDependencyTaskException
+            throws JnlpDependencyTaskException
     {
 
         SignConfig sign = config.getSign();
@@ -120,7 +120,7 @@ public class SignTask
         }
 
         getLogger().debug( "lastModified signedJar:" + signedJar.lastModified() + " not signed Jar:" +
-                               file.lastModified() );
+                                   file.lastModified() );
 
         if ( signVerify )
         {

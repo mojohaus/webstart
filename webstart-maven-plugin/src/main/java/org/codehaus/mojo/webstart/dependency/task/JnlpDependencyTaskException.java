@@ -26,7 +26,7 @@ package org.codehaus.mojo.webstart.dependency.task;
  * @since 1.0-beta-5
  */
 public class JnlpDependencyTaskException
-    extends Exception
+        extends Exception
 {
     private static final long serialVersionUID = -2891103651265072561L;
 

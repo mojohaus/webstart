@@ -55,7 +55,7 @@ public class JnlpDependencyRequest
 
         long limitDate = incomingFile.lastModified();
         uptodate = originalFile.exists() && originalFile.lastModified() > limitDate &&
-            finalFile.exists() && finalFile.lastModified() > limitDate;
+                finalFile.exists() && finalFile.lastModified() > limitDate;
     }
 
     public JnlpDependencyConfig getConfig()
@@ -101,7 +101,7 @@ public class JnlpDependencyRequest
         File finalDirectory = config.getFinalDirectory();
         String filename = config.getDependencyFilenameStrategy().getDependencyFilename( config.getArtifact(),
                                                                                         config.isOutputJarVersion(),
-                                                                                        config.isUseUniqueVersions());
+                                                                                        config.isUseUniqueVersions() );
         if ( config.isPack200() )
         {
             filename += ".pack";

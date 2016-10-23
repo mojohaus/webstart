@@ -38,7 +38,7 @@ import java.io.IOException;
  */
 @Component( role = JnlpDependencyTask.class, hint = UnsignTask.ROLE_HINT, instantiationStrategy = "per-lookup" )
 public class UnsignTask
-    extends AbstractJnlpTask
+        extends AbstractJnlpTask
 {
     public static final String ROLE_HINT = "UnsignTask";
 
@@ -92,7 +92,7 @@ public class UnsignTask
      * {@inheritDoc}
      */
     public File execute( JnlpDependencyConfig config, File jarFile )
-        throws JnlpDependencyTaskException
+            throws JnlpDependencyTaskException
     {
 
         boolean jarSigned;

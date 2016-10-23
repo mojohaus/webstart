@@ -19,14 +19,14 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.codehaus.mojo.webstart.ResolvedJarResource;
+import org.codehaus.plexus.util.WriterFactory;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-
-import org.apache.maven.plugin.MojoExecutionException;
-import org.codehaus.mojo.webstart.ResolvedJarResource;
-import org.codehaus.plexus.util.WriterFactory;
 
 /**
  * This class generates a <code>version.xml</code> file for a given collection of
@@ -68,7 +68,7 @@ public class VersionXmlGenerator
      * @throws MojoExecutionException if an error occurs generating the file.
      */
     public void generate( File outputDir, Collection<ResolvedJarResource> jarResources )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
 
         if ( outputDir == null )
@@ -108,7 +108,7 @@ public class VersionXmlGenerator
     }
 
     private void generateXml( BufferedWriter writer, Collection<ResolvedJarResource> jarResources )
-        throws IOException
+            throws IOException
     {
 
         writer.write( "<?xml version=\"1.0\"?>" );
@@ -133,8 +133,8 @@ public class VersionXmlGenerator
             writer.write( "    </pattern>" );
             writer.newLine();
             writer.write( "    <file>" );
-            writer.write(String.format("%s-%s%s.%s", jarResource.getArtifactId(), jarResource.getVersion(),
-                jarResource.getClassifier() == null ? "" : "-" + jarResource.getClassifier(), jarResource.getType()));
+            writer.write( String.format( "%s-%s%s.%s", jarResource.getArtifactId(), jarResource.getVersion(),
+                                         jarResource.getClassifier() == null ? "" : "-" + jarResource.getClassifier(), jarResource.getType() ) );
             writer.write( "</file>" );
             writer.newLine();
             writer.write( "  </resource>" );

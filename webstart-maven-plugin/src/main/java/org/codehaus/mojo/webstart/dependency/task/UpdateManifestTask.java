@@ -22,7 +22,6 @@ package org.codehaus.mojo.webstart.dependency.task;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.mojo.webstart.dependency.JnlpDependencyConfig;
 import org.codehaus.mojo.webstart.util.IOUtil;
-import org.codehaus.mojo.webstart.util.JarUtil;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 
@@ -46,9 +45,9 @@ import java.util.zip.ZipFile;
  * @author Tony Chemit <chemit@codelutin.com>
  * @since 1.0-beta-5
  */
-@Component(role = JnlpDependencyTask.class, hint = UpdateManifestTask.ROLE_HINT, instantiationStrategy = "per-lookup")
+@Component( role = JnlpDependencyTask.class, hint = UpdateManifestTask.ROLE_HINT, instantiationStrategy = "per-lookup" )
 public class UpdateManifestTask
-    extends AbstractJnlpTask
+        extends AbstractJnlpTask
 {
     public static final String ROLE_HINT = "UpdateManifestTask";
 
@@ -82,7 +81,7 @@ public class UpdateManifestTask
      * {@inheritDoc}
      */
     public File execute( JnlpDependencyConfig config, File file )
-        throws JnlpDependencyTaskException
+            throws JnlpDependencyTaskException
     {
 
         verboseLog( config, "Update manifest " + file.getName() );
@@ -99,7 +98,7 @@ public class UpdateManifestTask
     }
 
     private File updateManifestEntries( File jar, Map<String, String> manifestentries )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
 
         Manifest manifest = createManifest( jar, manifestentries );
@@ -171,7 +170,7 @@ public class UpdateManifestTask
      * @throws MojoExecutionException
      */
     private Manifest createManifest( File jar, Map<String, String> manifestentries )
-        throws MojoExecutionException
+            throws MojoExecutionException
     {
         JarFile jarFile = null;
         try

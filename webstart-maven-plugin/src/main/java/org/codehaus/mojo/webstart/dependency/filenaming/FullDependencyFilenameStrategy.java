@@ -34,10 +34,10 @@ import org.codehaus.plexus.component.annotations.Component;
  * @author Tony Chemit <chemit@codelutin.com>
  * @since 1.0-beta-5
  */
-@Component(role = DependencyFilenameStrategy.class, hint = FullDependencyFilenameStrategy.ROLE_HINT)
+@Component( role = DependencyFilenameStrategy.class, hint = FullDependencyFilenameStrategy.ROLE_HINT )
 public class FullDependencyFilenameStrategy
-    extends AbstractDependencyFilenameStrategy
-    implements DependencyFilenameStrategy
+        extends AbstractDependencyFilenameStrategy
+        implements DependencyFilenameStrategy
 {
 
     public static final String ROLE_HINT = "full";

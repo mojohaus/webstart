@@ -19,12 +19,12 @@ package org.codehaus.mojo.webstart.util;
  * under the License.
  */
 
+import org.apache.maven.plugin.MojoExecutionException;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URI;
 import java.util.zip.ZipFile;
-
-import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * Helper for all IO operations.
@@ -48,7 +48,7 @@ public interface IOUtil
      * @throws MojoExecutionException if could not perform operation
      */
     void copyResources( File sourceDirectory, File targetDirectory )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
     /**
      * Copy directory structure from {@code sourceDirectory} to {@code targetDirectory}.
@@ -58,7 +58,7 @@ public interface IOUtil
      * @throws MojoExecutionException if could not perform operation
      */
     void copyDirectoryStructure( File sourceDirectory, File targetDirectory )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
     /**
      * @param sourceFile source file
@@ -78,10 +78,10 @@ public interface IOUtil
      * @throws MojoExecutionException if an error occurs attempting to copy the file.
      */
     boolean copyFileToDirectoryIfNecessary( File sourceFile, File targetDirectory )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
     void copyFile( File sourceFile, File targetFile )
-    throws MojoExecutionException;
+            throws MojoExecutionException;
 
     /**
      * Delete the specified directory.
@@ -90,7 +90,7 @@ public interface IOUtil
      * @throws MojoExecutionException if could not delete directory
      */
     void removeDirectory( File dir )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
     /**
      * Create the given directory if it does not exist.
@@ -101,7 +101,7 @@ public interface IOUtil
      * @throws MojoExecutionException if could not create directory
      */
     void makeDirectoryIfNecessary( File dir )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
     /**
      * @param directory  location of directory where to delete some files
@@ -110,7 +110,7 @@ public interface IOUtil
      * @throws MojoExecutionException if could not delete files
      */
     int deleteFiles( File directory, FileFilter fileFilter )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
     /**
      * Delete a file.
@@ -121,7 +121,7 @@ public interface IOUtil
      * @throws MojoExecutionException if could not delete file
      */
     void deleteFile( File file )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
     /**
      * Rename a file.
@@ -133,7 +133,7 @@ public interface IOUtil
      * @throws MojoExecutionException if could not rename file
      */
     void renameTo( File source, File target )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
     /**
      * Copy a resource from the given uri to {@code target} file.
@@ -147,7 +147,7 @@ public interface IOUtil
      * @throws MojoExecutionException if something wrong happen
      */
     void copyResources( URI uri, ClassLoader classLoader, File target )
-        throws MojoExecutionException;
+            throws MojoExecutionException;
 
     /**
      * Silently closes the resource
@@ -156,6 +156,6 @@ public interface IOUtil
      */
     void close( ZipFile closeable );
 
-    void createArchive(File directory, File archive)
-        throws MojoExecutionException;
+    void createArchive( File directory, File archive )
+            throws MojoExecutionException;
 }

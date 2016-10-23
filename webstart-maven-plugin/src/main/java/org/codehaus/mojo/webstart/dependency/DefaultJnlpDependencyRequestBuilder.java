@@ -49,8 +49,8 @@ import java.util.List;
  */
 @Component( role = JnlpDependencyRequestBuilder.class, instantiationStrategy = "per-lookup" )
 public class DefaultJnlpDependencyRequestBuilder
-    extends AbstractLogEnabled
-    implements JnlpDependencyRequestBuilder, Contextualizable
+        extends AbstractLogEnabled
+        implements JnlpDependencyRequestBuilder, Contextualizable
 {
 
     private PlexusContainer container;
@@ -171,7 +171,7 @@ public class DefaultJnlpDependencyRequestBuilder
      * {@inheritDoc}
      */
     public void contextualize( final Context context )
-        throws ContextException
+            throws ContextException
     {
         container = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
     }

@@ -31,7 +31,7 @@ import java.util.List;
  * @author chemit
  */
 public class ExtensionGenerator
-    extends AbstractGenerator<ExtensionGeneratorConfig>
+        extends AbstractGenerator<ExtensionGeneratorConfig>
 {
 
     public ExtensionGenerator( Log log, GeneratorTechnicalConfig technicalConfig, ExtensionGeneratorConfig extraConfig )

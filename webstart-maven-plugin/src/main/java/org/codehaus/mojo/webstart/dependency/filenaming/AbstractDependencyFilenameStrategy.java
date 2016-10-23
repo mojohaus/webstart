@@ -28,7 +28,7 @@ import org.apache.maven.artifact.Artifact;
  * @since 1.0-beta-5
  */
 public abstract class AbstractDependencyFilenameStrategy
-    implements DependencyFilenameStrategy
+        implements DependencyFilenameStrategy
 {
 
     /**
