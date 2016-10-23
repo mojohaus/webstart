@@ -38,10 +38,8 @@
     </developer>
     <developer>
       <name>Tony chemit</name>
-      <email>chemit@codelutin.com</email>
-      <organization>Codelutin</organization>
-      <organizationUrl>http://www.codelutin.com</organizationUrl>
-      <timezone>+1</timezone>
+      <email>dev@tchemit.fr</email>
+      <timezone>Eurepose/Paris</timezone>
       <roles>
         <role>Java Developer</role>
       </roles>
@@ -98,9 +96,15 @@
     <url>https://github.com/mojohaus/webstart/issues</url>
   </issueManagement>
   <ciManagement>
-    <system>bamboo</system>
-    <url>http://bamboo.ci.codehaus.org/browse/MOJO-MWEBSTART</url>
+    <system>Travis CI</system>
+    <url>https://travis-ci.org/mojohaus/webstart</url>
   </ciManagement>
+  <distributionManagement>
+    <site>
+      <id>github</id>
+      <url>scm:git:git@github.com:mojohaus/webstart.git</url>
+    </site>
+  </distributionManagement>
 
   <properties>
     <mavenVersion>2.0.11</mavenVersion>
