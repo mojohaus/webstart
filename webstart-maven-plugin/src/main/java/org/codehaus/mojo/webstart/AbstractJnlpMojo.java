@@ -188,6 +188,14 @@ public abstract class AbstractJnlpMojo
     @Parameter( property = "jnlp.outputJarVersions", defaultValue = "false" )
     private boolean outputJarVersions;
 
+    /**
+     * Flag to skip dependencies (this can be usefull if you use a shaded jar).
+     *
+     * @since 1.0.0
+     */
+    @Parameter( property = "jnlp.skipDependencies", defaultValue = "false" )
+    private boolean skipDependencies;
+
     // ----------------------------------------------------------------------
     // Components
     // ----------------------------------------------------------------------
@@ -205,12 +213,12 @@ public abstract class AbstractJnlpMojo
     /**
      * the artifacts packaged in the webstart app
      */
-    private List<Artifact> packagedJnlpArtifacts = new ArrayList<Artifact>();
+    private List<Artifact> packagedJnlpArtifacts = new ArrayList<>();
 
     /**
      * the artifacts associated to each jnlp extension
      */
-    private Map<JnlpExtension, List<Artifact>> extensionsJnlpArtifacts = new HashMap<JnlpExtension, List<Artifact>>();
+    private Map<JnlpExtension, List<Artifact>> extensionsJnlpArtifacts = new HashMap<>();
 
     private Artifact artifactWithMainClass;
 
@@ -432,7 +440,7 @@ public abstract class AbstractJnlpMojo
      */
     private boolean ensurePatternMatchesAtLeastOneArtifact( String pattern, Collection<Artifact> artifacts )
     {
-        List<String> onePatternList = new ArrayList<String>();
+        List<String> onePatternList = new ArrayList<>();
         onePatternList.add( pattern );
         ArtifactFilter filter = new IncludesArtifactFilter( onePatternList );
 
@@ -503,6 +511,37 @@ public abstract class AbstractJnlpMojo
             if ( "jar".equals( type ) || "ejb-client".equals( type ) )
             {
 
+                boolean mainArtifact = false;
+                if ( jnlp.isRequireMainClass() )
+                {
+
+                    // try to find if this dependency contains the main class
+                    boolean containsMainClass =
+                            getArtifactUtil().artifactContainsClass( artifact, jnlp.getMainClass() );
+
+                    if ( containsMainClass )
+                    {
+                        if ( artifactWithMainClass == null )
+                        {
+                            mainArtifact = true;
+                            artifactWithMainClass = artifact;
+                            getLog().debug(
+                                    "Found main jar. Artifact " + artifactWithMainClass + " contains the main class: " +
+                                            jnlp.getMainClass() );
+                        }
+                        else
+                        {
+                            getLog().warn(
+                                    "artifact " + artifact + " also contains the main class: " + jnlp.getMainClass() +
+                                            ". IGNORED." );
+                        }
+                    }
+                }
+
+                if (skipDependencies && !mainArtifact) {
+                    return;
+                }
+
                 // FIXME when signed, we should update the manifest.
                 // see http://www.mail-archive.com/turbine-maven-dev@jakarta.apache.org/msg08081.html
                 // and maven1: maven-plugins/jnlp/src/main/org/apache/maven/jnlp/UpdateManifest.java
@@ -532,31 +571,6 @@ public abstract class AbstractJnlpMojo
                 }
 
                 packagedJnlpArtifacts.add( artifact );
-
-                if ( jnlp.isRequireMainClass() )
-                {
-
-                    // try to find if this dependency contains the main class
-                    boolean containsMainClass =
-                            getArtifactUtil().artifactContainsClass( artifact, jnlp.getMainClass() );
-
-                    if ( containsMainClass )
-                    {
-                        if ( artifactWithMainClass == null )
-                        {
-                            artifactWithMainClass = artifact;
-                            getLog().debug(
-                                    "Found main jar. Artifact " + artifactWithMainClass + " contains the main class: " +
-                                            jnlp.getMainClass() );
-                        }
-                        else
-                        {
-                            getLog().warn(
-                                    "artifact " + artifact + " also contains the main class: " + jnlp.getMainClass() +
-                                            ". IGNORED." );
-                        }
-                    }
-                }
 
             }
             else
@@ -775,7 +789,7 @@ public abstract class AbstractJnlpMojo
     private void prepareExtensions()
             throws MojoExecutionException
     {
-        List<String> includes = new ArrayList<String>();
+        List<String> includes = new ArrayList<>();
         for ( JnlpExtension extension : jnlpExtensions )
         {
             // Check extensions (mandatory name, title and vendor and at least one include)
@@ -899,7 +913,7 @@ public abstract class AbstractJnlpMojo
                 List<Artifact> deps = extensionsJnlpArtifacts.get( extension );
                 if ( deps == null )
                 {
-                    deps = new ArrayList<Artifact>();
+                    deps = new ArrayList<>();
                     extensionsJnlpArtifacts.put( extension, deps );
                 }
                 deps.add( artifact );
