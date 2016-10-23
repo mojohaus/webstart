@@ -422,9 +422,9 @@ public class JnlpDownloadServletMojo
 
     /**
      * Resolve artifact of incoming jar resources (user configured ones), check their main class.
-     * <p/>
+     * <p>
      * If must include transitive dependencies, collect them and wrap them as new jar resources.
-     * <p/>
+     * <p>
      * For each collected jar resource, copy his artifact file to lib directory (if it has changed),
      * fill also his hrefValue if required (jar resource with outputJarVersion filled).
      *

@@ -33,7 +33,7 @@ import java.io.IOException;
  * To unsign a already sign
  * Created on 1/4/14.
  *
- * @author Tony Chemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
 @Component( role = JnlpDependencyTask.class, hint = UnsignTask.ROLE_HINT, instantiationStrategy = "per-lookup" )

@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Created on 1/4/14.
  *
- * @author Tony Chemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
 public class JnlpDependencyRequests

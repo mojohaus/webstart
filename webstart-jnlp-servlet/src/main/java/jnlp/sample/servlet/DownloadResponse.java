@@ -95,12 +95,17 @@ abstract public class DownloadResponse
 
     /**
      * Post information to an HttpResponse
+     *
+     * @param response TODO
+     * @throws IOException TODO
      */
     abstract void sendRespond( HttpServletResponse response )
-        throws IOException;
+            throws IOException;
 
     /**
      * Factory methods for error responses
+     *
+     * @return TODO
      */
     static DownloadResponse getNotFoundResponse()
     {
@@ -152,37 +157,37 @@ abstract public class DownloadResponse
     //
 
     static private class NotModifiedResponse
-        extends DownloadResponse
+            extends DownloadResponse
     {
         public void sendRespond( HttpServletResponse response )
-            throws IOException
+                throws IOException
         {
             response.sendError( HttpServletResponse.SC_NOT_MODIFIED );
         }
     }
 
     static private class NotFoundResponse
-        extends DownloadResponse
+            extends DownloadResponse
     {
         public void sendRespond( HttpServletResponse response )
-            throws IOException
+                throws IOException
         {
             response.sendError( HttpServletResponse.SC_NOT_FOUND );
         }
     }
 
     static private class NoContentResponse
-        extends DownloadResponse
+            extends DownloadResponse
     {
         public void sendRespond( HttpServletResponse response )
-            throws IOException
+                throws IOException
         {
             response.sendError( HttpServletResponse.SC_NO_CONTENT );
         }
     }
 
     static private class HeadRequestResponse
-        extends DownloadResponse
+            extends DownloadResponse
     {
         private String _mimeType;
 
@@ -204,7 +209,7 @@ abstract public class DownloadResponse
          * Post information to an HttpResponse
          */
         public void sendRespond( HttpServletResponse response )
-            throws IOException
+                throws IOException
         {
             // Set header information
             response.setContentType( _mimeType );
@@ -222,7 +227,7 @@ abstract public class DownloadResponse
     }
 
     static public class JnlpErrorResponse
-        extends DownloadResponse
+            extends DownloadResponse
     {
         private String _message;
 
@@ -240,7 +245,7 @@ abstract public class DownloadResponse
         }
 
         public void sendRespond( HttpServletResponse response )
-            throws IOException
+                throws IOException
         {
             response.setContentType( JNLP_ERROR_MIMETYPE );
             PrintWriter pw = response.getWriter();
@@ -256,7 +261,7 @@ abstract public class DownloadResponse
     }
 
     static private abstract class FileDownloadResponse
-        extends DownloadResponse
+            extends DownloadResponse
     {
         private String _mimeType;
 
@@ -302,16 +307,16 @@ abstract public class DownloadResponse
         }
 
         abstract int getContentLength()
-            throws IOException;
+                throws IOException;
 
         abstract InputStream getContent()
-            throws IOException;
+                throws IOException;
 
         /**
          * Post information to an HttpResponse
          */
         public void sendRespond( HttpServletResponse response )
-            throws IOException
+                throws IOException
         {
             // Set header information
             response.setContentType( getMimeType() );
@@ -372,12 +377,12 @@ abstract public class DownloadResponse
             catch ( IOException ioe )
             { /* ignore */ }
             return "Mimetype=" + getMimeType() + " VersionId=" + getVersionId() + " Timestamp=" +
-                new Date( getLastModified() ) + " Length=" + length;
+                    new Date( getLastModified() ) + " Length=" + length;
         }
     }
 
     static private class ByteArrayFileDownloadResponse
-        extends FileDownloadResponse
+            extends FileDownloadResponse
     {
         private byte[] _content;
 
@@ -404,7 +409,7 @@ abstract public class DownloadResponse
     }
 
     static private class ResourceFileDownloadResponse
-        extends FileDownloadResponse
+            extends FileDownloadResponse
     {
         URL _url;
 
@@ -415,13 +420,13 @@ abstract public class DownloadResponse
         }
 
         int getContentLength()
-            throws IOException
+                throws IOException
         {
             return _url.openConnection().getContentLength();
         }
 
         InputStream getContent()
-            throws IOException
+                throws IOException
         {
             return _url.openConnection().getInputStream();
         }
@@ -433,7 +438,7 @@ abstract public class DownloadResponse
     }
 
     static private class DiskFileDownloadResponse
-        extends FileDownloadResponse
+            extends FileDownloadResponse
     {
         private File _file;
 
@@ -444,13 +449,13 @@ abstract public class DownloadResponse
         }
 
         int getContentLength()
-            throws IOException
+                throws IOException
         {
             return (int) _file.length();
         }
 
         InputStream getContent()
-            throws IOException
+                throws IOException
         {
             return new BufferedInputStream( new FileInputStream( _file ) );
         }

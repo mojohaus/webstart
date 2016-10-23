@@ -89,6 +89,9 @@ public class Logger
     /**
      * Initialize logging object. It reads the logLevel and pathLevel init parameters.
      * Default is logging level FATAL, and logging using the ServletContext.log
+     *
+     * @param config    TODO
+     * @param resources TODO
      */
     public Logger( ServletConfig config, ResourceBundle resources )
     {
@@ -224,19 +227,19 @@ public class Logger
 
     private void logL10N( int level, String key, String arg, Throwable e )
     {
-        Object[] messageArguments = { arg };
+        Object[] messageArguments = {arg};
         logEvent( level, applyPattern( key, messageArguments ), e );
     }
 
     private void logL10N( int level, String key, String arg1, String arg2 )
     {
-        Object[] messageArguments = { arg1, arg2 };
+        Object[] messageArguments = {arg1, arg2};
         logEvent( level, applyPattern( key, messageArguments ), null );
     }
 
     private void logL10N( int level, String key, String arg1, String arg2, String arg3 )
     {
-        Object[] messageArguments = { arg1, arg2, arg3 };
+        Object[] messageArguments = {arg1, arg2, arg3};
         logEvent( level, applyPattern( key, messageArguments ), null );
     }
 

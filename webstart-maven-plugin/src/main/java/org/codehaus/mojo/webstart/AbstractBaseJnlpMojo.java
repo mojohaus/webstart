@@ -166,7 +166,7 @@ public abstract class AbstractBaseJnlpMojo
 
     /**
      * Encoding used to read and write jnlp files.
-     * <p/>
+     * <p>
      * <strong>Note:</strong> If this property is not defined, then will use a default value {@code utf-8}.
      *
      * @since 1.0-beta-2
@@ -182,7 +182,7 @@ public abstract class AbstractBaseJnlpMojo
 
     /**
      * To authorize or not to unsign some already signed jar.
-     * <p/>
+     * <p>
      * If set to false and the {@code unsign} parameter is set to {@code true} then the build will fail if there is
      * a jar to unsign, to avoid this use then the extension jnlp component.
      *
@@ -193,12 +193,12 @@ public abstract class AbstractBaseJnlpMojo
 
     /**
      * To update manifest entries of all jar resources.
-     * <p/>
+     * <p>
      * Since jdk 1.7u45, you need to add some entries to be able to open jnlp files in High security level.
      * See http://www.oracle.com/technetwork/java/javase/7u45-relnotes-2016950.html
-     * <p/>
+     * <p>
      * <strong>Note:</strong> Won't affect any already signed jar resources if you configuration does not authorize it.
-     * <p/>
+     * <p>
      * See parameters {@link #unsignAlreadySignedJars} and {@link #canUnsign}.
      *
      * @since 1.0-beta-4
@@ -253,10 +253,10 @@ public abstract class AbstractBaseJnlpMojo
 
     /**
      * All available pack200 tools.
-     * <p/>
+     * <p>
      * We use a plexus list injection instead of a direct component injection since for a jre 1.4, we will at the
      * moment have no implementation of this tool.
-     * <p/>
+     * <p>
      * Later in the execute of mojo, we will check if at least one implementation is available if required.
      *
      * @since 1.0-beta-2

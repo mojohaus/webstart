@@ -42,7 +42,7 @@ package jnlp.sample.servlet;
  * the message that should be returned in the HTTP respond
  */
 public class ErrorResponseException
-    extends Exception
+        extends Exception
 {
     private DownloadResponse _downloadResponse;
 

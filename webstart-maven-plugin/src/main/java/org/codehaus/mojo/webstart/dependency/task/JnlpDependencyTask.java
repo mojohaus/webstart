@@ -26,7 +26,7 @@ import java.io.File;
 /**
  * Created on 1/4/14.
  *
- * @author Tony Chemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
 public interface JnlpDependencyTask
@@ -45,6 +45,7 @@ public interface JnlpDependencyTask
      * @param config configuration of the dependency to treat.
      * @param file   the file to treat
      * @return the new produced file
+     * @throws JnlpDependencyTaskException TODO
      */
     File execute( JnlpDependencyConfig config, File file )
             throws JnlpDependencyTaskException;

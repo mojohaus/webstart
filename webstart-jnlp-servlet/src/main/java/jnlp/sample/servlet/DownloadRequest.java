@@ -324,10 +324,10 @@ public class DownloadRequest
     public String toString()
     {
         return "DownloadRequest[path=" + _path + showEntry( " encoding=", _encoding ) + showEntry( " query=", _query ) +
-            showEntry( " TestJRE=", _testJRE ) + showEntry( " version=", _version ) +
-            showEntry( " currentVersionId=", _currentVersionId ) + showEntry( " os=", _os ) +
-            showEntry( " arch=", _arch ) + showEntry( " locale=", _locale ) +
-            showEntry( " knownPlatforms=", _knownPlatforms ) + " isPlatformRequest=" + _isPlatformRequest + "]";
+                showEntry( " TestJRE=", _testJRE ) + showEntry( " version=", _version ) +
+                showEntry( " currentVersionId=", _currentVersionId ) + showEntry( " os=", _os ) +
+                showEntry( " arch=", _arch ) + showEntry( " locale=", _locale ) +
+                showEntry( " knownPlatforms=", _knownPlatforms ) + " isPlatformRequest=" + _isPlatformRequest + "]";
     }
 
     private String showEntry( String msg, String value )

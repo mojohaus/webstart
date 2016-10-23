@@ -23,10 +23,10 @@ import org.apache.maven.artifact.Artifact;
 
 /**
  * Represents a resolved jarResource.
- * <p/>
+ * <p>
  * Created on 10/29/13.
  *
- * @author Tony Chemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-4
  */
 public class ResolvedJarResource

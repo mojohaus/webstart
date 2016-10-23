@@ -31,7 +31,6 @@ import java.util.Collection;
 /**
  * This class generates a <code>version.xml</code> file for a given collection of
  * <code>JarResource</code> objects in the format expected by the <code>JnlpDownloadServlet</code>.
- * <p/>
  * <p>
  * For a full description of the version.xml syntax, refer to the
  * <a href="http://java.sun.com/javase/6/docs/technotes/guides/javaws/developersguide/downloadservletguide.html">

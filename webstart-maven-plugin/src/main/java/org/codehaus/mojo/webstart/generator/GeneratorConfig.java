@@ -31,10 +31,10 @@ import java.util.Map;
 
 /**
  * configuration of {@link Generator}.
- * <p/>
+ * <p>
  * Created on 1/5/14.
  *
- * @author Tony Chemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
 public class GeneratorConfig
@@ -63,9 +63,6 @@ public class GeneratorConfig
         this.jnlp = jnlp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Collection<Artifact> getPackagedJnlpArtifacts()
     {
         return packagedJnlpArtifacts;
@@ -81,9 +78,7 @@ public class GeneratorConfig
         return CollectionUtils.isNotEmpty( jnlpExtensions );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getJnlpSpec()
     {
         // shouldn't we automatically identify the spec based on the features used in the spec?
@@ -95,9 +90,7 @@ public class GeneratorConfig
         return "1.0+";
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getOfflineAllowed()
     {
         if ( jnlp.getOfflineAllowed() != null )
@@ -107,9 +100,7 @@ public class GeneratorConfig
         return "false";
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getAllPermissions()
     {
         if ( jnlp.getAllPermissions() != null )
@@ -119,9 +110,7 @@ public class GeneratorConfig
         return "true";
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getJ2seVersion()
     {
         if ( jnlp.getJ2seVersion() != null )
@@ -131,17 +120,13 @@ public class GeneratorConfig
         return "1.5+";
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getJnlpCodeBase()
     {
         return codebase;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public Map<String, String> getProperties()
     {
         return jnlp.getProperties();

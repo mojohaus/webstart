@@ -29,7 +29,7 @@ import java.util.zip.ZipFile;
 /**
  * Helper for all IO operations.
  *
- * @author tchemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-4
  */
 public interface IOUtil
@@ -94,7 +94,7 @@ public interface IOUtil
 
     /**
      * Create the given directory if it does not exist.
-     * <p/>
+     * <p>
      * will throw an exception if could not perform the operation.
      *
      * @param dir the dir to create if it does not exist
@@ -114,7 +114,7 @@ public interface IOUtil
 
     /**
      * Delete a file.
-     * <p/>
+     * <p>
      * will throw an exception if could not perform the operation.
      *
      * @param file the file to delete
@@ -125,7 +125,7 @@ public interface IOUtil
 
     /**
      * Rename a file.
-     * <p/>
+     * <p>
      * will throw an exception if could not perform the operation.
      *
      * @param source original file to renmae
@@ -137,7 +137,7 @@ public interface IOUtil
 
     /**
      * Copy a resource from the given uri to {@code target} file.
-     * <p/>
+     * <p>
      * The resource can come from class-path is the scheme is {@code classpath}, otherwise will try to get incoming
      * resource from the url obtained from the uri.
      *
@@ -152,7 +152,7 @@ public interface IOUtil
     /**
      * Silently closes the resource
      *
-     * @param closeable
+     * @param closeable the zip file to close
      */
     void close( ZipFile closeable );
 

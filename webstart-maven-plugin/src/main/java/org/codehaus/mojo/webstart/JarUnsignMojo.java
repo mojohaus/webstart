@@ -32,7 +32,7 @@ import java.io.File;
 
 /**
  * Unsigns a JAR, removing signatures.
- * <p/>
+ * <p>
  * This code will hopefully be moved into the jar plugin when stable enough.
  *
  * @author <a href="mailto:jerome@coffeebreaks.org">Jerome Lacoste</a>

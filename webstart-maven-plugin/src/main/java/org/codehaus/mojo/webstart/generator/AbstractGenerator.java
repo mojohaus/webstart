@@ -147,7 +147,7 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
     /**
      * Generate the JNLP file.
      *
-     * @throws Exception
+     * @throws Exception TODO
      */
     public final void generate()
             throws Exception

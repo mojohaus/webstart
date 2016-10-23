@@ -26,10 +26,10 @@ import java.util.Map;
 
 /**
  * Jar helper to update entries of manifest.
- * <p/>
+ * <p>
  * Created on 10/26/13.
  *
- * @author Tony Chemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-4
  */
 public interface JarUtil

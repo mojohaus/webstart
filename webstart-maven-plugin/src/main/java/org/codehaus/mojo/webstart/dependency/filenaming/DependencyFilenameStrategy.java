@@ -23,10 +23,10 @@ import org.apache.maven.artifact.Artifact;
 
 /**
  * Define the naming strategy for the file name of an jnlp dependency from his associated artifact.
- * <p/>
+ * <p>
  * Created on 1/6/14.
  *
- * @author Tony Chemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
 public interface DependencyFilenameStrategy
@@ -67,7 +67,8 @@ public interface DependencyFilenameStrategy
     /**
      * Get the dependency file version for the given artifact.
      *
-     * @param artifact origin of dependency
+     * @param artifact          origin of dependency
+     * @param useUniqueVersions flag if useUniqueVersions is used
      * @return dependency file version for the given artifact.
      */
     String getDependencyFileVersion( Artifact artifact, Boolean useUniqueVersions );

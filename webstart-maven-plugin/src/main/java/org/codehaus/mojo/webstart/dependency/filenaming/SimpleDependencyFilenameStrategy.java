@@ -25,16 +25,16 @@ import org.codehaus.plexus.component.annotations.Component;
 
 /**
  * Provide a simple dependency file naming strategy.
- * <p/>
+ * <p>
  * The syntax of this naming strategy:
  * <pre>artifactId[-classifier][(__V|.)version].extension</pre>
- * <p/>
+ * <p>
  * <strong>Note: </strong> be ware, this naming strategy can cause name colision if
  * artifactId is shared by artifacts with different groupId...).
  *
  * Created on 1/6/14.
  *
- * @author Tony Chemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
 @Component( role = DependencyFilenameStrategy.class, hint = SimpleDependencyFilenameStrategy.ROLE_HINT )

@@ -29,13 +29,13 @@ import java.io.IOException;
 
 /**
  * To unpack200 a dependency.
- * <p/>
+ * <p>
  * http://java.sun.com/j2se/1.5.0/docs/guide/deployment/deployment-guide/pack200.html
  * we need to pack then unpack the files before signing them
- * <p/>
+ * <p>
  * Created on 1/4/14.
  *
- * @author Tony Chemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
 @Component( role = JnlpDependencyTask.class, hint = UnPack200Task.ROLE_HINT, instantiationStrategy = "per-lookup" )
@@ -47,7 +47,7 @@ public class UnPack200Task
 
     /**
      * All available pack200 tools.
-     * <p/>
+     * <p>
      * We use a plexus list injection instead of a direct component injection since for a jre 1.4, we will at the
      * moment have no implementation of this tool.
      */

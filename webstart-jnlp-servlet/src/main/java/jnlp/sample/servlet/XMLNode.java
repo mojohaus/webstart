@@ -58,6 +58,8 @@ public class XMLNode
 
     /**
      * Creates a PCTEXT node
+     *
+     * @param name TODO
      */
     public XMLNode( String name )
     {
@@ -67,6 +69,9 @@ public class XMLNode
 
     /**
      * Creates a ELEMENT node
+     *
+     * @param name TODO
+     * @param attr TODO
      */
     public XMLNode( String name, XMLAttribute attr )
     {
@@ -75,6 +80,11 @@ public class XMLNode
 
     /**
      * Creates a ELEMENT node
+     *
+     * @param name   TODO
+     * @param attr   TODO
+     * @param nested TODO
+     * @param next   TODO
      */
     public XMLNode( String name, XMLAttribute attr, XMLNode nested, XMLNode next )
     {
@@ -139,8 +149,8 @@ public class XMLNode
         }
         XMLNode other = (XMLNode) o;
         boolean result =
-            match( _name, other._name ) && match( _attr, other._attr ) && match( _nested, other._nested ) &&
-                match( _next, other._next );
+                match( _name, other._name ) && match( _attr, other._attr ) && match( _nested, other._nested ) &&
+                        match( _next, other._next );
         return result;
     }
 

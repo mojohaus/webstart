@@ -40,7 +40,7 @@ import java.net.URI;
 /**
  * Default implementation of the {@link SignTool}.
  *
- * @author tchemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-3
  */
 @Component( role = SignTool.class, hint = "default" )

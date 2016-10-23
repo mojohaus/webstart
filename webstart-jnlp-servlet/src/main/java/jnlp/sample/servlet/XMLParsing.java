@@ -103,7 +103,9 @@ public class XMLParsing
     }
 
     /**
-     * Returns true if the path exists in the document, otherwise false
+     * @param root TODO
+     * @param path TODO
+     * @return true if the path exists in the document, otherwise false
      */
     static public boolean isElementPath( XMLNode root, String path )
     {
@@ -112,7 +114,8 @@ public class XMLParsing
 
 
     /**
-     * Returns a string describing the current location in the DOM
+     * @param e TODO
+     * @return a string describing the current location in the DOM
      */
     static public String getPathString( XMLNode e )
     {
@@ -121,7 +124,9 @@ public class XMLParsing
 
 
     /**
-     * Like getElementContents(...) but with a defaultValue of null
+     * @param root TODO
+     * @param path TODO
+     * @return Like getElementContents(...) but with a defaultValue of null
      */
     static public String getElementContent( XMLNode root, String path )
     {
@@ -130,6 +135,10 @@ public class XMLParsing
 
     /**
      * Like getElementContents(...) but with a defaultValue of null
+     *
+     * @param root TODO
+     * @param path TODO
+     * @return TODO
      */
     static public String[] getMultiElementContent( XMLNode root, String path )
     {
@@ -153,8 +162,11 @@ public class XMLParsing
     }
 
     /**
-     * Returns the value of the last element tag in the path, e.g.,  <..><tag>value</tag>. The DOM is assumes
-     * to be normalized. If no value is found, the defaultvalue is returned
+     * @param root         TODO
+     * @param path         TODO
+     * @param defaultvalue TODO
+     * @return the value of the last element tag in the path, e.g.,  &lt;..&gt;&lt;tag&gt;value&lt;/tag&gt;. The DOM is assumes
+     * to be normalized. If no value is found, the default value is returned
      */
     static public String getElementContent( XMLNode root, String path, String defaultvalue )
     {
@@ -172,7 +184,9 @@ public class XMLParsing
     }
 
     /**
-     * Parses a path string of the form <tag1><tag2><tag3> and returns the specific Element
+     * @param path TODO
+     * @param elem TODO
+     * @return Parses a path string of the form &lt;tag1&gt;&lt;tag2&gt;&lt;tag3&gt; and returns the specific Element
      * node for that tag, or null if it does not exist. If multiple elements exists with same
      * path the first is returned
      */
@@ -197,7 +211,9 @@ public class XMLParsing
     }
 
     /**
-     * Returns an child element with the current tag name or null.
+     * @param elem TODO
+     * @param tag  TODO
+     * @return an child element with the current tag name or null.
      */
     static public XMLNode findChildElement( XMLNode elem, String tag )
     {
@@ -222,8 +238,12 @@ public class XMLParsing
     }
 
     /**
-     * Visits all elements which matches the <path>. The iteration is only
-     * done on the last elment in the path.
+     * Visits all elements which matches the {@code path}. The iteration is only
+     * done on the last element in the path.
+     *
+     * @param root TODO
+     * @param path TODO
+     * @param ev   TODO
      */
     static public void visitElements( XMLNode root, String path, ElementVisitor ev )
     {

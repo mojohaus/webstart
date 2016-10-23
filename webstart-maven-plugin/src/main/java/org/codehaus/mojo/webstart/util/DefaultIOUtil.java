@@ -42,7 +42,7 @@ import java.util.zip.ZipFile;
 /**
  * Helper for all IO operations.
  *
- * @author tchemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-4
  */
 @Component( role = IOUtil.class, hint = "default" )

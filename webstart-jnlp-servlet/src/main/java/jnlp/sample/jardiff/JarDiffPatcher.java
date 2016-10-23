@@ -60,13 +60,13 @@ import java.util.zip.ZipEntry;
  * JarDiff is able to create a jar file containing the delta between two
  * jar files (old and new). The delta jar file can then be applied to the
  * old jar file to reconstruct the new jar file.
- * <p/>
+ * <p>
  * Refer to the JNLP spec for details on how this is done.
  *
  * @version 1.11, 06/26/03
  */
 public class JarDiffPatcher
-    implements JarDiffConstants, Patcher
+        implements JarDiffConstants, Patcher
 {
     private static final int DEFAULT_READ_SIZE = 2048;
 
@@ -82,7 +82,7 @@ public class JarDiffPatcher
     }
 
     public void applyPatch( Patcher.PatchDelegate delegate, String oldJarPath, String jarDiffPath, OutputStream result )
-        throws IOException
+            throws IOException
     {
         File oldFile = new File( oldJarPath );
         File diffFile = new File( jarDiffPath );
@@ -227,7 +227,7 @@ public class JarDiffPatcher
     }
 
     private void determineNameMapping( JarFile jarDiff, Set<String> ignoreSet, Map<String, String> renameMap )
-        throws IOException
+            throws IOException
     {
         InputStream is = jarDiff.getInputStream( jarDiff.getEntry( INDEX_NAME ) );
 
@@ -278,7 +278,7 @@ public class JarDiffPatcher
     }
 
     private void handleException( String errorMsg, String line )
-        throws IOException
+            throws IOException
     {
         try
         {
@@ -350,13 +350,13 @@ public class JarDiffPatcher
     }
 
     private void writeEntry( JarOutputStream jos, JarEntry entry, JarFile file )
-        throws IOException
+            throws IOException
     {
         writeEntry( jos, entry, file.getInputStream( entry ) );
     }
 
     private void writeEntry( JarOutputStream jos, JarEntry entry, InputStream data )
-        throws IOException
+            throws IOException
     {
         //Create a new ZipEntry to clear the compressed size. 5079423
         jos.putNextEntry( new ZipEntry( entry.getName() ) );

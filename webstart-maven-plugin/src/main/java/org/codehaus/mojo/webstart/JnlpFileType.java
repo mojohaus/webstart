@@ -21,10 +21,10 @@ package org.codehaus.mojo.webstart;
 
 /**
  * Which type of jnlp file to generate.
- * <p/>
+ * <p>
  * Created on 1/12/14.
  *
- * @author Tony Chemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-6
  */
 public enum JnlpFileType

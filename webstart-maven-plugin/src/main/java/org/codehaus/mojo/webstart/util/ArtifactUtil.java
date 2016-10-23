@@ -33,7 +33,7 @@ import java.util.Set;
 /**
  * Some usefull methods on artifacts.
  *
- * @author tchemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-4
  */
 public interface ArtifactUtil

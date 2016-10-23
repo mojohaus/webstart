@@ -28,7 +28,7 @@ import java.io.IOException;
 /**
  * Tests the {@link SignToolTest}.
  *
- * @author tchemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.1
  */
 public class SignToolTest

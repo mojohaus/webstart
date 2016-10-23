@@ -46,7 +46,7 @@ import java.util.Set;
 /**
  * Default implementation of {@link ArtifactUtil}.
  *
- * @author tchemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-4
  */
 @Component( role = ArtifactUtil.class, hint = "default" )

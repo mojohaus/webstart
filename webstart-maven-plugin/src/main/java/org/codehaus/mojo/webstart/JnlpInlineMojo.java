@@ -26,7 +26,7 @@ import org.apache.maven.project.MavenProject;
 
 /**
  * Packages a jnlp application without launching a parallel lifecycle build.
- * <p/>
+ * <p>
  * The plugin tries to not re-sign/re-pack if the dependent jar hasn't changed.
  * As a consequence, if one modifies the pom jnlp config or a keystore, one should clean before rebuilding.
  * <p>

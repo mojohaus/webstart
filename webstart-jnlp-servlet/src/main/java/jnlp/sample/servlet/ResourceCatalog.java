@@ -120,7 +120,7 @@ public class ResourceCatalog
 
 
     public JnlpResource lookupResource( DownloadRequest dreq )
-        throws ErrorResponseException
+            throws ErrorResponseException
     {
         // Split request up into path and name
         String path = dreq.getPath();
@@ -141,7 +141,7 @@ public class ResourceCatalog
         PathEntries pentries = (PathEntries) _entries.get( dir );
         JnlpResource xmlVersionResPath = new JnlpResource( _servletContext, dir + VERSION_XML_FILENAME );
         if ( pentries == null ||
-            ( xmlVersionResPath.exists() && xmlVersionResPath.getLastModified() > pentries.getLastModified() ) )
+                ( xmlVersionResPath.exists() && xmlVersionResPath.getLastModified() > pentries.getLastModified() ) )
         {
             _log.addInformational( "servlet.log.scandir", dir );
             List dirList = scanDirectory( dir, dreq );
@@ -184,7 +184,7 @@ public class ResourceCatalog
                     {
                         // Throw the most specific error code
                         throw new ErrorResponseException(
-                            DownloadResponse.getJnlpErrorResponse( Math.max( sts1, sts2 ) ) );
+                                DownloadResponse.getJnlpErrorResponse( Math.max( sts1, sts2 ) ) );
                     }
                 }
             }
@@ -195,14 +195,20 @@ public class ResourceCatalog
     /**
      * This method finds the best match, or return the best error code. The
      * result parameter must be an array with room for one element.
-     * <p/>
+     * <p>
      * If a match is found, the method returns DownloadResponse.STS_00_OK
      * If one or more entries matches on: name, version-id, os, arch, and locale,
      * then the one with the highest version-id is set in the result[0] field.
-     * <p/>
+     * <p>
      * If a match is not found, it returns an error code, either: ERR_10_NO_RESOURCE,
      * ERR_11_NO_VERSION, ERR_20_UNSUP_OS, ERR_21_UNSUP_ARCH, ERR_22_UNSUP_LOCALE,
      * ERR_23_UNSUP_JRE.
+     *
+     * @param list   TODO
+     * @param name   TODO
+     * @param dreq   TODO
+     * @param result TODO
+     * @return TODO
      */
     public int findMatch( List list, String name, DownloadRequest dreq, JnlpResource[] result )
     {
@@ -316,16 +322,19 @@ public class ResourceCatalog
      * This method scans the directory pointed to by the
      * given path and creates a list of ResourcePath elements
      * that contains information about all the entries
-     * <p/>
+     * <p>
      * The version-based information is encoded in the file name
      * given the following format:
-     * <p/>
+     * <p>
      * entry ::= <name> __ ( <options> ). <ext>
      * options ::= <option> ( __ <options>  )?
      * option  ::= V<version-id>
      * | O<os>
      * | A<arch>
      * | L<locale>
+     *
+     * @param dreq TODO
+     * @return TODO
      */
 
 
@@ -403,8 +412,8 @@ public class ResourceCatalog
             String name = dreq.getPath().substring( path.lastIndexOf( "/" ) + 1 );
 
             JnlpResource jnlpres =
-                new JnlpResource( _servletContext, name, dreq.getVersion(), dreq.getOS(), dreq.getArch(),
-                                  dreq.getLocale(), path, dreq.getVersion() );
+                    new JnlpResource( _servletContext, name, dreq.getVersion(), dreq.getOS(), dreq.getArch(),
+                                      dreq.getLocale(), path, dreq.getVersion() );
 
             // the file does not exist
             if ( jnlpres.getResource() == null )
@@ -588,8 +597,8 @@ public class ResourceCatalog
                     else
                     {
                         JnlpResource res =
-                            new JnlpResource( _servletContext, name, versionId, os, arch, locale, dir + file,
-                                              versionId );
+                                new JnlpResource( _servletContext, name, versionId, os, arch, locale, dir + file,
+                                                  versionId );
                         if ( res.exists() )
                         {
                             versionList.add( res );
@@ -636,8 +645,8 @@ public class ResourceCatalog
                     else
                     {
                         JnlpResource res =
-                            new JnlpResource( _servletContext, name, versionId, os, arch, locale, dir + file,
-                                              productId );
+                                new JnlpResource( _servletContext, name, versionId, os, arch, locale, dir + file,
+                                                  productId );
                         if ( res.exists() )
                         {
                             platformList.add( res );

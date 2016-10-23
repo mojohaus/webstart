@@ -25,13 +25,13 @@ import org.codehaus.plexus.component.annotations.Component;
 
 /**
  * Provide a safe naming strategy that avoid any colision name.
- * <p/>
+ * <p>
  * The syntax of this naming strategy:
  * <pre>groupdId-artifactId[-classifier][(__V|.)version].extension</pre>
- * <p/>
+ * <p>
  * Created on 1/6/14.
  *
- * @author Tony Chemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
 @Component( role = DependencyFilenameStrategy.class, hint = FullDependencyFilenameStrategy.ROLE_HINT )

@@ -63,13 +63,13 @@ import java.util.jar.JarOutputStream;
  * JarDiff is able to create a jar file containing the delta between two
  * jar files (old and new). The delta jar file can then be applied to the
  * old jar file to reconstruct the new jar file.
- * <p/>
+ * <p>
  * Refer to the JNLP spec for details on how this is done.
  *
  * @version 1.13, 06/26/03
  */
 public class JarDiff
-    implements JarDiffConstants
+        implements JarDiffConstants
 {
     private static final int DEFAULT_READ_SIZE = 2048;
 
@@ -96,9 +96,15 @@ public class JarDiff
     /**
      * Creates a patch from the two passed in files, writing the result
      * to <code>os</code>.
+     *
+     * @param oldPath TODO
+     * @param newPath TODO
+     * @param os      TODO
+     * @param minimal TODO
+     * @throws IOException TODO
      */
     public static void createPatch( String oldPath, String newPath, OutputStream os, boolean minimal )
-        throws IOException
+            throws IOException
     {
         JarFile2 oldJar = new JarFile2( oldPath );
         JarFile2 newJar = new JarFile2( newPath );
@@ -215,7 +221,7 @@ public class JarDiff
                     JarEntry oldEntry = (JarEntry) entries.next();
                     String oldName = oldEntry.getName();
                     if ( !implicit.contains( oldName ) && !moveSrc.contains( oldName ) &&
-                        !newEntries.contains( oldName ) )
+                            !newEntries.contains( oldName ) )
                     {
                         if ( _debug )
                         {
@@ -309,9 +315,14 @@ public class JarDiff
      * Writes the index file out to <code>jos</code>.
      * <code>oldEntries</code> gives the names of the files that were removed,
      * <code>movedMap</code> maps from the new name to the old name.
+     *
+     * @param jos        TODO
+     * @param oldEntries TODO
+     * @param movedMap   TODO
+     * @throws IOException TODO
      */
     private static void createIndex( JarOutputStream jos, List oldEntries, Map movedMap )
-        throws IOException
+            throws IOException
     {
         StringWriter writer = new StringWriter();
 
@@ -353,7 +364,7 @@ public class JarDiff
     }
 
     private static void writeEscapedString( Writer writer, String string )
-        throws IOException
+            throws IOException
     {
         int index = 0;
         int last = 0;
@@ -385,13 +396,13 @@ public class JarDiff
     }
 
     private static void writeEntry( JarOutputStream jos, JarEntry entry, JarFile2 file )
-        throws IOException
+            throws IOException
     {
         writeEntry( jos, entry, file.getJarFile().getInputStream( entry ) );
     }
 
     private static void writeEntry( JarOutputStream jos, JarEntry entry, InputStream data )
-        throws IOException
+            throws IOException
     {
         jos.putNextEntry( entry );
 
@@ -438,7 +449,7 @@ public class JarDiff
         private HashMap _crcToEntryMap;
 
         public JarFile2( String path )
-            throws IOException
+                throws IOException
         {
             _jar = new JarFile( new File( path ) );
             index();
@@ -460,10 +471,12 @@ public class JarDiff
         }
 
         /**
-         * Returns true if the two InputStreams differ.
+         * @param oldIS TODO
+         * @param newIS TODO
+         * @return true if the two InputStreams differ.
          */
         private static boolean differs( InputStream oldIS, InputStream newIS )
-            throws IOException
+                throws IOException
         {
             int newSize = 0;
             int oldSize;
@@ -537,7 +550,7 @@ public class JarDiff
         }
 
         public String getBestMatch( JarFile2 file, JarEntry entry )
-            throws IOException
+                throws IOException
         {
             // check for same name and same content, return name if found
             if ( contains( file, entry ) )
@@ -550,7 +563,7 @@ public class JarDiff
         }
 
         public boolean contains( JarFile2 f, JarEntry e )
-            throws IOException
+                throws IOException
         {
 
             JarEntry thisEntry = getEntryByName( e.getName() );
@@ -576,7 +589,7 @@ public class JarDiff
         }
 
         public String hasSameContent( JarFile2 file, JarEntry entry )
-            throws IOException
+                throws IOException
         {
 
             String thisName = null;
@@ -612,7 +625,7 @@ public class JarDiff
 
 
         private void index()
-            throws IOException
+                throws IOException
         {
             Enumeration entries = _jar.entries();
 
@@ -680,12 +693,12 @@ public class JarDiff
     private static void showHelp()
     {
         System.out.println(
-            "JarDiff: [-nonminimal (for backward compatibility with 1.0.1/1.0] [-creatediff | -applydiff] [-output file] old.jar new.jar" );
+                "JarDiff: [-nonminimal (for backward compatibility with 1.0.1/1.0] [-creatediff | -applydiff] [-output file] old.jar new.jar" );
     }
 
     // -creatediff -applydiff -debug -output file
     public static void main( String[] args )
-        throws IOException
+            throws IOException
     {
         boolean diff = true;
         boolean minimal = true;

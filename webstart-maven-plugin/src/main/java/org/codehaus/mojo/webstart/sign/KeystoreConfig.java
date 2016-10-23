@@ -22,7 +22,7 @@ package org.codehaus.mojo.webstart.sign;
 /**
  * Keystore configuration
  *
- * @author tchemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-3
  */
 public class KeystoreConfig

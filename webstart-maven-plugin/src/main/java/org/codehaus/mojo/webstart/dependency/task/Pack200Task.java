@@ -29,10 +29,10 @@ import java.io.IOException;
 
 /**
  * To pack200 a dependency.
- * <p/>
+ * <p>
  * Created on 1/4/14.
  *
- * @author Tony Chemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
 @Component( role = JnlpDependencyTask.class, hint = Pack200Task.ROLE_HINT, instantiationStrategy = "per-lookup" )

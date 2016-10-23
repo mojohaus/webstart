@@ -79,6 +79,9 @@ public class JnlpFileHandler
 
     /**
      * Initialize JnlpFileHandler for the specific ServletContext
+     *
+     * @param log            TODO
+     * @param servletContext TODO
      */
     public JnlpFileHandler( ServletContext servletContext, Logger log )
     {
@@ -115,7 +118,7 @@ public class JnlpFileHandler
 
     /* Main method to lookup an entry */
     public synchronized DownloadResponse getJnlpFile( JnlpResource jnlpres, DownloadRequest dreq )
-        throws IOException
+            throws IOException
     {
         String path = jnlpres.getPath();
         URL resource = jnlpres.getResource();
@@ -176,7 +179,7 @@ public class JnlpFileHandler
 
         // Create entry
         DownloadResponse resp =
-            DownloadResponse.getFileDownloadResponse( byteContent, mimeType, timeStamp, jnlpres.getReturnVersionId() );
+                DownloadResponse.getFileDownloadResponse( byteContent, mimeType, timeStamp, jnlpres.getReturnVersionId() );
         jnlpFile = new JnlpFileEntry( resp, lastModified );
         _jnlpFiles.put( reqUrl, jnlpFile );
 
@@ -185,7 +188,7 @@ public class JnlpFileHandler
 
     /* Main method to lookup an entry (NEW for JavaWebStart 1.5+) */
     public synchronized DownloadResponse getJnlpFileEx( JnlpResource jnlpres, DownloadRequest dreq )
-        throws IOException
+            throws IOException
     {
         String path = jnlpres.getPath();
         URL resource = jnlpres.getResource();
@@ -317,18 +320,23 @@ public class JnlpFileHandler
 
         // Create entry
         DownloadResponse resp =
-            DownloadResponse.getFileDownloadResponse( byteContent, mimeType, timeStamp, jnlpres.getReturnVersionId() );
+                DownloadResponse.getFileDownloadResponse( byteContent, mimeType, timeStamp, jnlpres.getReturnVersionId() );
         jnlpFile = new JnlpFileEntry( resp, lastModified );
         _jnlpFiles.put( reqUrl, jnlpFile );
 
         return resp;
     }
 
-    /* This method performs the following substituations
-    *  $$name
-    *  $$codebase
-    *  $$context
-    */
+    /**
+     * This method performs the following substituations
+     * $$name
+     * $$codebase
+     * $$context
+     *
+     * @param request      TODO
+     * @param respath      TODO
+     * @param jnlpTemplate TODO
+     */
     private String specializeJnlpTemplate( HttpServletRequest request, String respath, String jnlpTemplate )
     {
         String urlprefix = getUrlPrefix( request );
@@ -380,22 +388,25 @@ public class JnlpFileHandler
 
     /**
      * Parses a ISO 8601 Timestamp. The format of the timestamp is:
-     * <p/>
+     * <p>
      * YYYY-MM-DD hh:mm:ss  or   YYYYMMDDhhmmss
-     * <p/>
+     * <p>
      * Hours (hh) is in 24h format. ss are optional. Time are by default relative
      * to the current timezone. Timezone information can be specified
      * by:
-     * <p/>
+     * <p>
      * - Appending a 'Z', e.g., 2001-12-19 12:00Z
      * - Appending +hh:mm, +hhmm, +hh, -hh:mm -hhmm, -hh to
      * indicate that the locale timezone used is either the specified
      * amound before or after GMT. For example,
-     * <p/>
+     * <p>
      * 12:00Z = 13:00+1:00 = 0700-0500
-     * <p/>
+     * <p>
      * The method returns 0 if it cannot pass the string. Otherwise, it is
      * the number of milliseconds size sometime in 1969.
+     *
+     * @param timestamp TODO
+     * @return TODO
      */
     private long parseTimeStamp( String timestamp )
     {

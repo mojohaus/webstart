@@ -53,6 +53,8 @@ public class VersionString
 
     /**
      * Constructs a VersionString object from string
+     *
+     * @param vs TODO
      */
     public VersionString( String vs )
     {
@@ -70,6 +72,9 @@ public class VersionString
 
     /**
      * Check if this VersionString object contains the VersionID m
+     *
+     * @param m TODO
+     * @return TODO
      */
     public boolean contains( VersionID m )
     {
@@ -87,6 +92,9 @@ public class VersionString
 
     /**
      * Check if this VersionString object contains the VersionID m, given as a string
+     *
+     * @param versionid TODO
+     * @return TODO
      */
     public boolean contains( String versionid )
     {
@@ -95,6 +103,9 @@ public class VersionString
 
     /**
      * Check if this VersionString object contains anything greater than m
+     *
+     * @param m TODO
+     * @return TODO
      */
     public boolean containsGreaterThan( VersionID m )
     {
@@ -112,6 +123,9 @@ public class VersionString
 
     /**
      * Check if this VersionString object contains anything greater than the VersionID m, given as a string
+     *
+     * @param versionid TODO
+     * @return TODO
      */
     public boolean containsGreaterThan( String versionid )
     {
@@ -120,15 +134,17 @@ public class VersionString
 
     /**
      * Check if the versionString 'vs' contains the VersionID 'vi'
+     *
+     * @param vi TODO
+     * @param vs TODO
+     * @return TODO
      */
     static public boolean contains( String vs, String vi )
     {
         return ( new VersionString( vs ) ).contains( vi );
     }
 
-    /**
-     * Pretty-print object
-     */
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();

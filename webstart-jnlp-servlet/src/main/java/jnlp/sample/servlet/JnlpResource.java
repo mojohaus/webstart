@@ -46,9 +46,9 @@ import java.util.Date;
 /**
  * A JnlpResource encapsulate the information about a resource that is
  * needed to process a JNLP Download Request.
- * <p/>
+ * <p>
  * The pattern matching arguments are: name, version-id, os, arch, and locale.
- * <p/>
+ * <p>
  * The outgoing arguments are:
  * - path to resource in (WAR File)
  * - product version-id (Version-id to return or null. Typically same as version-id above)
@@ -153,8 +153,8 @@ public class JnlpResource
                 boolean found = false;
                 // pack200 compression
                 if ( encoding != null && _mimeType != null &&
-                    ( _mimeType.compareTo( JAR_MIME_TYPE ) == 0 || _mimeType.compareTo( JAR_MIME_TYPE_NEW ) == 0 ) &&
-                    encoding.toLowerCase().contains( DownloadResponse.PACK200_GZIP_ENCODING ) )
+                        ( _mimeType.compareTo( JAR_MIME_TYPE ) == 0 || _mimeType.compareTo( JAR_MIME_TYPE_NEW ) == 0 ) &&
+                        encoding.toLowerCase().contains( DownloadResponse.PACK200_GZIP_ENCODING ) )
                 {
                     search_path = orig_path + ".pack.gz";
                     _resource = context.getResource( search_path );
@@ -176,7 +176,7 @@ public class JnlpResource
 
                 // gzip compression
                 if ( !found && encoding != null &&
-                    encoding.toLowerCase().contains( DownloadResponse.GZIP_ENCODING ) )
+                        encoding.toLowerCase().contains( DownloadResponse.GZIP_ENCODING ) )
                 {
                     search_path = orig_path + ".gz";
                     _resource = context.getResource( search_path );
@@ -347,9 +347,9 @@ public class JnlpResource
     public String toString()
     {
         return "JnlpResource[WAR Path: " + _path + showEntry( " versionId=", _versionId ) +
-            showEntry( " name=", _name ) + " lastModified=" + new Date( _lastModified ) +
-            showEntry( " osList=", _osList ) + showEntry( " archList=", _archList ) +
-            showEntry( " localeList=", _localeList ) + "]" + showEntry( " returnVersionId=", _returnVersionId ) + "]";
+                showEntry( " name=", _name ) + " lastModified=" + new Date( _lastModified ) +
+                showEntry( " osList=", _osList ) + showEntry( " archList=", _archList ) +
+                showEntry( " localeList=", _localeList ) + "]" + showEntry( " returnVersionId=", _returnVersionId ) + "]";
 
     }
 

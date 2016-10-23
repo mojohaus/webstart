@@ -42,12 +42,12 @@ import java.util.List;
 
 /**
  * VersionID contains a JNLP version ID.
- * <p/>
+ * <p>
  * The VersionID also contains a prefix indicator that can
  * be used when stored with a VersionString
  */
 public class VersionID
-    implements Comparable
+        implements Comparable
 {
     private String[] _tuple;   // Array of Integer or String objects
 
@@ -61,6 +61,8 @@ public class VersionID
 
     /**
      * Creates a VersionID object
+     *
+     * @param str TODO
      */
     public VersionID( String str )
     {
@@ -123,7 +125,7 @@ public class VersionID
     }
 
     /**
-     * Returns true if no flags are set
+     * @return true if no flags are set
      */
     public boolean isSimpleVersion()
     {
@@ -135,6 +137,9 @@ public class VersionID
      * The _usePrefixMatch/_useGreaterThan flag is used to determine if a
      * prefix match of an exact match should be performed
      * if _isCompound, must match _rest also.
+     *
+     * @param vid TODO
+     * @return TODO
      */
     public boolean match( VersionID vid )
     {
@@ -146,12 +151,15 @@ public class VersionID
             }
         }
         return ( _usePrefixMatch )
-            ? this.isPrefixMatch( vid )
-            : ( _useGreaterThan ) ? vid.isGreaterThanOrEqual( this ) : matchTuple( vid );
+                ? this.isPrefixMatch( vid )
+                : ( _useGreaterThan ) ? vid.isGreaterThanOrEqual( this ) : matchTuple( vid );
     }
 
     /**
      * Compares if two version IDs are equal
+     *
+     * @param o TODO
+     * @return TODO
      */
     public boolean equals( Object o )
     {
@@ -171,6 +179,9 @@ public class VersionID
 
     /**
      * Compares if two version IDs are equal
+     *
+     * @param o TODO
+     * @return TODO
      */
     private boolean matchTuple( Object o )
     {
@@ -224,6 +235,10 @@ public class VersionID
 
     /**
      * Compares if 'this' is greater than vid
+     *
+     * @param vid        TODO
+     * @param allowEqual TODO
+     * @return TODO
      */
     private boolean isGreaterThanOrEqualHelper( VersionID vid, boolean allowEqual )
     {
@@ -269,6 +284,9 @@ public class VersionID
 
     /**
      * Checks if 'this' is a prefix of vid
+     *
+     * @param vid TODO
+     * @return TODO
      */
     public boolean isPrefixMatch( VersionID vid )
     {
@@ -301,7 +319,11 @@ public class VersionID
     }
 
     /**
-     * Normalize an array to a certain lengh
+     * Normalize an array to a certain length
+     *
+     * @param list      TODO
+     * @param minlength TODO
+     * @return TODO
      */
     private String[] normalize( String[] list, int minlength )
     {
@@ -319,6 +341,7 @@ public class VersionID
         }
     }
 
+    @Override
     public int compareTo( Object o )
     {
         if ( o == null || !( o instanceof VersionID ) )
@@ -329,9 +352,7 @@ public class VersionID
         return equals( vid ) ? 0 : ( isGreaterThanOrEqual( vid ) ? 1 : -1 );
     }
 
-    /**
-     * Show it as a string
-     */
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();

@@ -44,7 +44,7 @@ import java.util.List;
  * To create some {@link JnlpDependencyRequest}.
  * Created on 1/4/14.
  *
- * @author Tony Chemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
 @Component( role = JnlpDependencyRequestBuilder.class, instantiationStrategy = "per-lookup" )

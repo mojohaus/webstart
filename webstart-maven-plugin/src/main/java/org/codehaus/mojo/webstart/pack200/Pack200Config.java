@@ -47,7 +47,7 @@ public class Pack200Config
     private List<String> passFiles;
 
     /**
-     * Gets the pack200 enabled configuration value. <br />
+     * Gets the pack200 enabled configuration value. <br>
      * Please note: Setting this value to true requires SDK 5.0 or greater.
      *
      * @return {@code true} if pack200 compression of jar resources is enabled, {@code false} otherwise.
@@ -58,8 +58,8 @@ public class Pack200Config
     }
 
     /**
-     * Gets the files within jar archive to be passed without pack200 compression. <br />
-     * If file ends with a /, all files in the directory are passed through without packing. <br />
+     * Gets the files within jar archive to be passed without pack200 compression. <br>
+     * If file ends with a /, all files in the directory are passed through without packing. <br>
      * The same functionality as achievable by:
      * <pre>
      * pack200 --pass-file= file, -P file

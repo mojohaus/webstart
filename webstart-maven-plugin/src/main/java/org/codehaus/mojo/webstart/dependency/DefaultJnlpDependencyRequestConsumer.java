@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created on 1/4/14.
  *
- * @author Tony Chemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
 @Component( role = JnlpDependencyRequestConsumer.class )
@@ -117,10 +117,10 @@ public class DefaultJnlpDependencyRequestConsumer
 
         /**
          * Ask the thread to stop.
-         * <p/>
+         * <p>
          * It will finish all incoming files (but will not accept more files to
          * parse)
-         * <p/>
+         * <p>
          * <b>Note:</b> The method does not return until all files are not consumed.
          */
         public JnlpDependencyResults terminatesAndWaits()

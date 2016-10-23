@@ -41,7 +41,7 @@ import java.util.zip.ZipFile;
 /**
  * Created on 10/26/13.
  *
- * @author Tony Chemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-4
  */
 @Component( role = JarUtil.class, hint = "default" )
@@ -55,9 +55,7 @@ public class DefaultJarUtil
     @Requirement
     protected IOUtil ioUtil;
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void updateManifestEntries( File jar, Map<String, String> manifestentries )
             throws MojoExecutionException
     {
@@ -129,10 +127,10 @@ public class DefaultJarUtil
     /**
      * Create the new manifest from the existing jar file and the new entries
      *
-     * @param jar
-     * @param manifestentries
+     * @param jar TODO
+     * @param manifestentries TODO
      * @return Manifest
-     * @throws MojoExecutionException
+     * @throws MojoExecutionException TODO
      */
     protected Manifest createManifest( File jar, Map<String, String> manifestentries )
             throws MojoExecutionException

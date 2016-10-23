@@ -197,7 +197,7 @@ public class SignConfig
 
     /**
      * Called before any Jars get signed or verified.
-     * <p/>
+     * <p>
      * This method allows you to create any keys or perform any initialisation that the
      * method of signature that you're implementing requires.
      *

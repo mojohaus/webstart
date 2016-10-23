@@ -25,10 +25,10 @@ import java.util.Set;
 
 /**
  * Represents a resolved jnlpFile.
- * <p/>
+ * <p>
  * Created on 10/29/13.
  *
- * @author Tony Chemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-4
  */
 public class ResolvedJnlpFile

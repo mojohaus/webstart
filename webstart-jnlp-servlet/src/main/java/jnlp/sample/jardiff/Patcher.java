@@ -49,15 +49,21 @@ public interface Patcher
     /**
      * Applies a patch previously created with <code>createPatch</code>.
      * Pass in a delegate to be notified of the status of the patch.
+     *
+     * @param delegate   TODO
+     * @param oldJarPath TODO
+     * @param deltaPath  TODO
+     * @param result     TODO
+     * @throws IOException TODO
      */
-    public void applyPatch( PatchDelegate delegate, String oldJarPath, String deltaPath, OutputStream result )
-        throws IOException;
+    void applyPatch( PatchDelegate delegate, String oldJarPath, String deltaPath, OutputStream result )
+            throws IOException;
 
     /**
      * Callback used when patching a file.
      */
-    public interface PatchDelegate
+    interface PatchDelegate
     {
-        public void patching( int percentDone );
+        void patching( int percentDone );
     }
 }

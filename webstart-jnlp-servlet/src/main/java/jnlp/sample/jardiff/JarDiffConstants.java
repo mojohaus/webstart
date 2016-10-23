@@ -43,8 +43,8 @@ package jnlp.sample.jardiff;
  */
 public interface JarDiffConstants
 {
-    public final String VERSION_HEADER = "version 1.0";
-    public final String INDEX_NAME = "META-INF/INDEX.JD";
-    public final String REMOVE_COMMAND = "remove";
-    public final String MOVE_COMMAND = "move";
+    String VERSION_HEADER = "version 1.0";
+    String INDEX_NAME = "META-INF/INDEX.JD";
+    String REMOVE_COMMAND = "remove";
+    String MOVE_COMMAND = "move";
 }

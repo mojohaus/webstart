@@ -163,10 +163,10 @@ public abstract class AbstractJnlpMojo
 
     /**
      * A placeholder for an obsoleted configuration element.
-     * <p/>
+     * <p>
      * This dummy parameter is here to force the plugin configuration to fail in case one
      * didn't properly migrate from 1.0-alpha-1 to 1.0-alpha-2 configuration.
-     * <p/>
+     * <p>
      * It will be removed before 1.0.
      */
     @Parameter
@@ -181,7 +181,7 @@ public abstract class AbstractJnlpMojo
      * When set to true, this flag indicates that a version attribute should
      * be output in each of the jar resource elements in the generated
      * JNLP file.
-     * <p/>
+     * <p>
      * <strong>Note: </strong> since version 1.0-beta-5 we use the version download protocol optimization (see
      * http://docs.oracle.com/javase/tutorial/deployment/deploymentInDepth/avoidingUnnecessaryUpdateChecks.html).
      */
@@ -767,7 +767,7 @@ public abstract class AbstractJnlpMojo
 
     /**
      * Prepare extensions.
-     * <p/>
+     * <p>
      * Copy all includes of all extensions as to be excluded.
      *
      * @throws MojoExecutionException if could not prepare extensions
@@ -814,7 +814,7 @@ public abstract class AbstractJnlpMojo
      * Iterate through all the extensions dependencies declared in the project and
      * collect all the runtime scope dependencies for inclusion in the .zip and just
      * copy them to the lib directory.
-     * <p/>
+     * <p>
      * TODO, should check that all dependencies are well signed with the same
      * extension with the same signer.
      *

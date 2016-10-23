@@ -25,7 +25,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 /**
  * Created on 1/4/14.
  *
- * @author Tony Chemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since XXX
  */
 public abstract class AbstractJnlpTask

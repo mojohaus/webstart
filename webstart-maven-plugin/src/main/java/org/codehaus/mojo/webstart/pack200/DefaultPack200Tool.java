@@ -47,7 +47,7 @@ import java.util.zip.GZIPOutputStream;
 /**
  * Default implementation of the {@link Pack200Tool}.
  *
- * @author tchemit <chemit@codelutin.com>
+ * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-2
  */
 @Component( role = Pack200Tool.class, hint = "default" )
@@ -59,9 +59,7 @@ public class DefaultPack200Tool
 
     public static final String PACK_EXTENSION = ".pack";
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void pack( File source, File destination, Map<String, String> props, boolean gzip )
             throws IOException
     {
@@ -97,9 +95,7 @@ public class DefaultPack200Tool
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void repack( File source, File destination, Map<String, String> props )
             throws IOException
     {
@@ -116,9 +112,7 @@ public class DefaultPack200Tool
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void unpack( File source, File destination, Map<String, String> props )
             throws IOException
     {
@@ -146,9 +140,7 @@ public class DefaultPack200Tool
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void packJars( File directory, FileFilter jarFileFilter, boolean gzip, List<String> passFiles )
             throws IOException
     {
@@ -184,9 +176,7 @@ public class DefaultPack200Tool
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public File packJar( File jarFile, boolean gzip, List<String> passFiles )
             throws IOException
     {
@@ -215,9 +205,7 @@ public class DefaultPack200Tool
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void unpackJars( File directory, FileFilter pack200FileFilter )
             throws IOException
     {
@@ -237,9 +225,7 @@ public class DefaultPack200Tool
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public File unpackJar( File packFile )
             throws IOException
     {
@@ -279,9 +265,9 @@ public class DefaultPack200Tool
     }
 
     /**
-     * Tells if the specified file is gzipped.
-     *
      * @param file the file to test
+     * @return {@code true} if the specified file is gzipped.
+     * @throws IOException if any error while testing file
      */
     private static boolean isGzipped( File file )
             throws IOException

@@ -78,7 +78,7 @@ public class JarDiffHandler
 
     /* Contains information about a particular JARDiff entry */
     private static class JarDiffKey
-        implements Comparable
+            implements Comparable
     {
         private String _name;        // Name of file
 
@@ -179,6 +179,9 @@ public class JarDiffHandler
 
     /**
      * Initialize JarDiff handler
+     *
+     * @param log            TODO
+     * @param servletContext TODO
      */
     public JarDiffHandler( ServletContext servletContext, Logger log )
     {
@@ -195,6 +198,11 @@ public class JarDiffHandler
 
     /**
      * Returns a JarDiff for the given request
+     *
+     * @param catalog TODO
+     * @param dreq    TODO
+     * @param res     TODO
+     * @return TODO
      */
     public synchronized DownloadResponse getJarDiffEntry( ResourceCatalog catalog, DownloadRequest dreq,
                                                           JnlpResource res )
@@ -210,7 +218,7 @@ public class JarDiffHandler
 
         // First do a lookup to find a match
         JarDiffKey key =
-            new JarDiffKey( res.getName(), dreq.getCurrentVersionId(), res.getReturnVersionId(), !doJarDiffWorkAround );
+                new JarDiffKey( res.getName(), dreq.getCurrentVersionId(), res.getReturnVersionId(), !doJarDiffWorkAround );
 
         JarDiffEntry entry = (JarDiffEntry) _jarDiffEntries.get( key );
         // If entry is not found, then the querty has not been made.
@@ -371,7 +379,7 @@ public class JarDiffHandler
     // if the jar file resides in a war file, download it to a temp dir
     // so it can be used to generate jardiff
     private String getRealPath( String path )
-        throws IOException
+            throws IOException
     {
 
         URL fileURL = _servletContext.getResource( path );
@@ -439,7 +447,7 @@ public class JarDiffHandler
             File outputFile = File.createTempFile( "jnlp", ".jardiff", tempDir );
 
             _log.addDebug(
-                "Generating Jardiff between " + oldFilePath + " and " + newFilePath + " Store in " + outputFile );
+                    "Generating Jardiff between " + oldFilePath + " and " + newFilePath + " Store in " + outputFile );
 
             // Generate JarDiff
             OutputStream os = new FileOutputStream( outputFile );

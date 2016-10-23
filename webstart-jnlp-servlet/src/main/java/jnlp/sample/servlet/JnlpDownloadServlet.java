@@ -47,23 +47,22 @@ import java.util.ResourceBundle;
 /**
  * This Servlet class is an implementation of JNLP Specification's
  * Download Protocols.
- * <p/>
+ * <p>
  * All requests to this servlet is in the form of HTTP GET commands.
  * The parameters that are needed are:
  * <ul>
- * <li><code>arch</code>,
- * <li><code>os</code>,
- * <li><code>locale</code>,
- * <li><code>version-id</code> or <code>platform-version-id</code>,
- * <li><code>current-version-id</code>,
- * <li>code>known-platforms</code>
+ * <li><code>arch</code>,</li>
+ * <li><code>os</code>,</li>
+ * <li><code>locale</code>,</li>
+ * <li><code>version-id</code> or <code>platform-version-id</code>,</li>
+ * <li><code>current-version-id</code>,</li>
+ * <li><code>known-platforms</code></li>
  * </ul>
- * <p/>
  *
  * @version 1.8 01/23/03
  */
 public class JnlpDownloadServlet
-    extends HttpServlet
+        extends HttpServlet
 {
 
     // Localization
@@ -87,7 +86,7 @@ public class JnlpDownloadServlet
      * Initialize servlet
      */
     public void init( ServletConfig config )
-        throws ServletException
+            throws ServletException
     {
         super.init( config );
 
@@ -115,7 +114,7 @@ public class JnlpDownloadServlet
 
 
     public void doHead( HttpServletRequest request, HttpServletResponse response )
-        throws ServletException, IOException
+            throws ServletException, IOException
     {
         handleRequest( request, response, true );
     }
@@ -124,13 +123,13 @@ public class JnlpDownloadServlet
      * We handle get requests too - eventhough the spec. only requeres POST requests
      */
     public void doGet( HttpServletRequest request, HttpServletResponse response )
-        throws ServletException, IOException
+            throws ServletException, IOException
     {
         handleRequest( request, response, false );
     }
 
     private void handleRequest( HttpServletRequest request, HttpServletResponse response, boolean isHead )
-        throws IOException
+            throws IOException
     {
         String requestStr = request.getRequestURI();
         if ( request.getQueryString() != null )
@@ -227,7 +226,7 @@ public class JnlpDownloadServlet
      * reverse IP lookup
      */
     private void validateRequest( DownloadRequest dreq )
-        throws ErrorResponseException
+            throws ErrorResponseException
     {
         String path = dreq.getPath();
         if ( path.endsWith( ResourceCatalog.VERSION_XML_FILENAME ) || path.indexOf( "__" ) != -1 )
@@ -241,7 +240,7 @@ public class JnlpDownloadServlet
      * part of the Web Archive.
      */
     private JnlpResource locateResource( DownloadRequest dreq )
-        throws IOException, ErrorResponseException
+            throws IOException, ErrorResponseException
     {
         if ( dreq.getVersion() == null )
         {
@@ -254,7 +253,7 @@ public class JnlpDownloadServlet
     }
 
     private JnlpResource handleBasicDownload( DownloadRequest dreq )
-        throws ErrorResponseException, IOException
+            throws ErrorResponseException, IOException
     {
         _log.addDebug( "Basic Protocol lookup" );
         // Do not return directory names for basic protocol
@@ -272,7 +271,7 @@ public class JnlpDownloadServlet
     }
 
     private JnlpResource handleVersionRequest( DownloadRequest dreq )
-        throws IOException, ErrorResponseException
+            throws IOException, ErrorResponseException
     {
         _log.addDebug( "Version-based/Extension based lookup" );
         return _resourceCatalog.lookupResource( dreq );
@@ -283,7 +282,7 @@ public class JnlpDownloadServlet
      * to the requester
      */
     private DownloadResponse constructResponse( JnlpResource jnlpres, DownloadRequest dreq )
-        throws IOException
+            throws IOException
     {
         String path = jnlpres.getPath();
         if ( jnlpres.isJnlpFile() )
@@ -316,9 +315,9 @@ public class JnlpDownloadServlet
 
         // check and see if we can use pack resource
         JnlpResource jr =
-            new JnlpResource( getServletContext(), jnlpres.getName(), jnlpres.getVersionId(), jnlpres.getOSList(),
-                              jnlpres.getArchList(), jnlpres.getLocaleList(), jnlpres.getPath(),
-                              jnlpres.getReturnVersionId(), dreq.getEncoding() );
+                new JnlpResource( getServletContext(), jnlpres.getName(), jnlpres.getVersionId(), jnlpres.getOSList(),
+                                  jnlpres.getArchList(), jnlpres.getLocaleList(), jnlpres.getPath(),
+                                  jnlpres.getReturnVersionId(), dreq.getEncoding() );
 
         _log.addDebug( "Real resource returned: " + jr );
 
