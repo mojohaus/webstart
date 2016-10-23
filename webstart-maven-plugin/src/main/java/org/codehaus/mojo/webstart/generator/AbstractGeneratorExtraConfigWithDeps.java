@@ -100,8 +100,16 @@ public abstract class AbstractGeneratorExtraConfigWithDeps
     /**
      * {@inheritDoc}
      */
-    public String getDependencyFilename( Artifact artifact, Boolean outputJarVersion, Boolean useUniqueVersions )
+    public String getDependencyFilename( Artifact artifact, Boolean outputJarVersion )
     {
         return dependencyFilenameStrategy.getDependencyFilename( artifact, outputJarVersion, useUniqueVersions );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDependencyFileVersion( Artifact artifact )
+    {
+        return dependencyFilenameStrategy.getDependencyFileVersion( artifact, useUniqueVersions );
     }
 }

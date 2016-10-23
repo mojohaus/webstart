@@ -39,7 +39,9 @@ public interface GeneratorExtraConfigWithDeps
 
     public String getLibPath();
 
-    String getDependencyFilename( Artifact artifact, Boolean outputJarVersion, Boolean useUniqueVersions );
+    String getDependencyFilename( Artifact artifact, Boolean outputJarVersion );
+
+    String getDependencyFileVersion( Artifact artifact );
 
     boolean isArtifactWithMainClass( Artifact artifact );
 }

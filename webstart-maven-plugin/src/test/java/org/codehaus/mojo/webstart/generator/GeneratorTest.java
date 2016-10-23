@@ -47,6 +47,8 @@ public class GeneratorTest
     protected Artifact artifact2;
 
     protected Artifact artifact3;
+    
+    protected Artifact artifact4;
 
     private List<Artifact> artifacts;
 
@@ -67,16 +69,25 @@ public class GeneratorTest
                                  artifactHandler );
         artifact2.setFile( new File( "artifact2-1.5.jar" ) );
 
-        // add a SNAPSHOT artifact
+        // add a SNAPSHOT artifact, timestamped (from a remote maven repository)
         artifact3 =
                 new DefaultArtifact( "groupId", "artifact3", VersionRange.createFromVersion( "1.5-SNAPSHOT" ), null, "jar", "",
                                      artifactHandler );
-        artifact3.setBaseVersion("1.5-15012014121212");
-        artifact3.setFile( new File( "artifact3-1.5-15012014121212.jar" ) );
+        artifact3.setVersion("1.5-15012014.121212-1");
+        artifact3.setFile( new File( "artifact3-1.5-15012014.121212-1.jar" ) );
+
+        // add a SNAPSHOT artifact, not timestamped (from a local build)
+        artifact4 =
+                new DefaultArtifact( "groupId", "artifact4", VersionRange.createFromVersion( "1.5-SNAPSHOT" ), null, "jar", "",
+                                     artifactHandler );
+        artifact4.setFile( new File( "artifact4-1.5-SNAPSHOT.jar" ) );
+
         artifacts = new ArrayList<Artifact>();
+
         artifacts.add( artifact1 );
         artifacts.add( artifact2 );
         artifacts.add( artifact3 );
+        artifacts.add( artifact4 );
     }
 
     public void testGetDependenciesText()
@@ -99,8 +110,9 @@ public class GeneratorTest
                                  jnlp );
 
         assertEquals( EOL + "<jar href=\"artifact1-1.0-classifier.jar\" main=\"true\"/>" +
-        				EOL + "<jar href=\"artifact2-1.5.jar\"/>" + 
-        				EOL +"<jar href=\"artifact3-1.5-SNAPSHOT.jar\"/>" + EOL,
+        				EOL + "<jar href=\"artifact2-1.5.jar\"/>" +
+        				EOL +"<jar href=\"artifact3-1.5-15012014.121212-1.jar\"/>" +
+        				EOL +"<jar href=\"artifact4-1.5-SNAPSHOT.jar\"/>" + EOL,
             Generator.getDependenciesText( generatorConfig ) );
 
         GeneratorConfig generatorConfig2 =
@@ -109,8 +121,9 @@ public class GeneratorTest
 
         assertEquals( EOL + "<property name=\"jnlp.versionEnabled\" value=\"true\" />" +
         				EOL + "<jar href=\"artifact1-classifier.jar\" version=\"1.0\" main=\"true\"/>" +
-        				EOL + "<jar href=\"artifact2.jar\" version=\"1.5\"/>" + 
-        				EOL +"<jar href=\"artifact3.jar\" version=\"1.5-SNAPSHOT\"/>" + EOL,
+        				EOL + "<jar href=\"artifact2.jar\" version=\"1.5\"/>" +
+        				EOL + "<jar href=\"artifact3.jar\" version=\"1.5-15012014.121212-1\"/>" +
+        				EOL + "<jar href=\"artifact4.jar\" version=\"1.5-SNAPSHOT\"/>" + EOL,
                       Generator.getDependenciesText( generatorConfig2 ) );
     }
 
@@ -134,8 +147,9 @@ public class GeneratorTest
                                  jnlp );
 
         assertEquals( EOL + "<jar href=\"groupId-artifact1-1.0-classifier.jar\" main=\"true\"/>" +
-        				EOL +"<jar href=\"groupId-artifact2-1.5.jar\"/>" + 
-        				EOL +"<jar href=\"groupId-artifact3-1.5-SNAPSHOT.jar\"/>" + EOL,
+        				EOL +"<jar href=\"groupId-artifact2-1.5.jar\"/>" +
+        				EOL +"<jar href=\"groupId-artifact3-1.5-15012014.121212-1.jar\"/>" +
+        				EOL +"<jar href=\"groupId-artifact4-1.5-SNAPSHOT.jar\"/>" + EOL,
                       Generator.getDependenciesText( generatorConfig ) );
 
         GeneratorConfig generatorConfig2 =
@@ -144,8 +158,9 @@ public class GeneratorTest
 
         assertEquals( EOL + "<property name=\"jnlp.versionEnabled\" value=\"true\" />" +
         				EOL + "<jar href=\"groupId-artifact1-classifier.jar\" version=\"1.0\" main=\"true\"/>" +
-        				EOL + "<jar href=\"groupId-artifact2.jar\" version=\"1.5\"/>" + 
-        				EOL +"<jar href=\"groupId-artifact3.jar\" version=\"1.5-SNAPSHOT\"/>" + EOL,
+        				EOL + "<jar href=\"groupId-artifact2.jar\" version=\"1.5\"/>" +
+        				EOL + "<jar href=\"groupId-artifact3.jar\" version=\"1.5-15012014.121212-1\"/>" +
+        				EOL + "<jar href=\"groupId-artifact4.jar\" version=\"1.5-SNAPSHOT\"/>" + EOL,
                       Generator.getDependenciesText( generatorConfig2 ) );
     }
 
@@ -171,7 +186,8 @@ public class GeneratorTest
         assertEquals( EOL + "<property name=\"jnlp.packEnabled\" value=\"true\" />" +
         				EOL + "<jar href=\"artifact1-1.0-classifier.jar\" main=\"true\"/>" +
         				EOL + "<jar href=\"artifact2-1.5.jar\"/>" + 
-        				EOL +"<jar href=\"artifact3-1.5-SNAPSHOT.jar\"/>" + EOL, Generator.getDependenciesText( generatorConfig ) );
+        				EOL +"<jar href=\"artifact3-1.5-15012014.121212-1.jar\"/>" +
+        				EOL +"<jar href=\"artifact4-1.5-SNAPSHOT.jar\"/>" + EOL, Generator.getDependenciesText( generatorConfig ) );
 
         GeneratorConfig generatorConfig2 =
             new GeneratorConfig( null, true, true, false, artifact1, dependencyFilenameStrategy, artifacts, null, codebase,
@@ -181,7 +197,8 @@ public class GeneratorTest
         				EOL + "<property name=\"jnlp.versionEnabled\" value=\"true\" />" +
         				EOL + "<jar href=\"artifact1-classifier.jar\" version=\"1.0\" main=\"true\"/>" +
         				EOL + "<jar href=\"artifact2.jar\" version=\"1.5\"/>" + 
-        				EOL +"<jar href=\"artifact3.jar\" version=\"1.5-SNAPSHOT\"/>" + EOL,
+        				EOL +"<jar href=\"artifact3.jar\" version=\"1.5-15012014.121212-1\"/>" +
+        				EOL +"<jar href=\"artifact4.jar\" version=\"1.5-SNAPSHOT\"/>" + EOL,
                       Generator.getDependenciesText( generatorConfig2 ) );
     }
 
@@ -205,8 +222,10 @@ public class GeneratorTest
                                  jnlp );
 
         assertEquals( EOL + "<jar href=\"lib/artifact1-1.0-classifier.jar\" main=\"true\"/>" +
-        				EOL + "<jar href=\"lib/artifact2-1.5.jar\"/>" + 
-        				EOL +"<jar href=\"lib/artifact3-1.5-SNAPSHOT.jar\"/>" + EOL,
+        				EOL + "<jar href=\"lib/artifact2-1.5.jar\"/>" +
+        				EOL +"<jar href=\"lib/artifact3-1.5-15012014.121212-1.jar\"/>" +
+        				EOL +"<jar href=\"lib/artifact4-1.5-SNAPSHOT.jar\"/>" + EOL,
+
                       Generator.getDependenciesText( generatorConfig ) );
 
         GeneratorConfig generatorConfig2 =
@@ -215,8 +234,9 @@ public class GeneratorTest
 
         assertEquals( EOL + "<property name=\"jnlp.versionEnabled\" value=\"true\" />" +
         				EOL + "<jar href=\"lib/artifact1-classifier.jar\" version=\"1.0\" main=\"true\"/>" +
-        				EOL + "<jar href=\"lib/artifact2.jar\" version=\"1.5\"/>" + 
-        				EOL +"<jar href=\"lib/artifact3.jar\" version=\"1.5-SNAPSHOT\"/>" + EOL,
+        				EOL + "<jar href=\"lib/artifact2.jar\" version=\"1.5\"/>" +
+        				EOL +"<jar href=\"lib/artifact3.jar\" version=\"1.5-15012014.121212-1\"/>" +
+        				EOL +"<jar href=\"lib/artifact4.jar\" version=\"1.5-SNAPSHOT\"/>" + EOL,
                       Generator.getDependenciesText( generatorConfig2 ) );
     }
     
@@ -240,8 +260,10 @@ public class GeneratorTest
                                  jnlp );
 
         assertEquals(
-        		EOL + "<jar href=\"artifact1-1.0-classifier.jar\" main=\"true\"/>" + EOL + "<jar href=\"artifact2-1.5.jar\"/>" +
-        				EOL + "<jar href=\"artifact3-1.5-15012014121212.jar\"/>" + EOL,
+        		EOL + "<jar href=\"artifact1-1.0-classifier.jar\" main=\"true\"/>" + 
+        				EOL + "<jar href=\"artifact2-1.5.jar\"/>" +
+        				EOL + "<jar href=\"artifact3-1.5-15012014.121212-1.jar\"/>" +
+        				EOL + "<jar href=\"artifact4-1.5-19700101.000000-0.jar\"/>" + EOL,
             Generator.getDependenciesText( generatorConfig ) );
 
         GeneratorConfig generatorConfig2 =
@@ -251,7 +273,8 @@ public class GeneratorTest
         assertEquals( EOL + "<property name=\"jnlp.versionEnabled\" value=\"true\" />" +
         				EOL + "<jar href=\"artifact1-classifier.jar\" version=\"1.0\" main=\"true\"/>" +
         				EOL + "<jar href=\"artifact2.jar\" version=\"1.5\"/>"  +
-        				EOL + "<jar href=\"artifact3.jar\" version=\"1.5-15012014121212\"/>" + EOL,
+        				EOL + "<jar href=\"artifact3.jar\" version=\"1.5-15012014.121212-1\"/>" +
+        				EOL + "<jar href=\"artifact4.jar\" version=\"1.5-19700101.000000-0\"/>" + EOL,
                       Generator.getDependenciesText( generatorConfig2 ) );
         
         GeneratorConfig generatorConfig3 =
@@ -260,7 +283,8 @@ public class GeneratorTest
 
             assertEquals( EOL + "<jar href=\"artifact1-1.0-classifier.jar\" main=\"true\"/>" +
             				EOL + "<jar href=\"artifact2-1.5.jar\"/>"  +
-            				EOL + "<jar href=\"artifact3-1.5-15012014121212.jar\"/>" + EOL,
+            				EOL + "<jar href=\"artifact3-1.5-15012014.121212-1.jar\"/>" +
+            				EOL + "<jar href=\"artifact4-1.5-19700101.000000-0.jar\"/>" + EOL,
                           Generator.getDependenciesText( generatorConfig3 ) );
-    }    
+    }
 }

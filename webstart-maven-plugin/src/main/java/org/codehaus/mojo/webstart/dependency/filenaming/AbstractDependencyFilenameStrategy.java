@@ -51,4 +51,18 @@ public abstract class AbstractDependencyFilenameStrategy
         String extension = artifact.getArtifactHandler().getExtension();
         return extension;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDependencyFileVersion( Artifact artifact, Boolean useUniqueVersions )
+    {
+        if ( useUniqueVersions != null && useUniqueVersions )
+        {
+            return UniqueVersionsHelper.getUniqueVersion( artifact );
+        }
+
+        return artifact.getVersion();
+    }
+
 }

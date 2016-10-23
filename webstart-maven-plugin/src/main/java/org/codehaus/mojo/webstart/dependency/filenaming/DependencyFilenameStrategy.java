@@ -64,4 +64,12 @@ public interface DependencyFilenameStrategy
      */
     String getDependencyFileExtension( Artifact artifact );
 
+    /**
+     * Get the dependency file version for the given artifact.
+     *
+     * @param artifact origin of dependency
+     * @return dependency file version for the given artifact.
+     */
+    String getDependencyFileVersion( Artifact artifact, Boolean useUniqueVersions);
+
 }
