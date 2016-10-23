@@ -90,9 +90,7 @@ public class JarUnsignMojo
     // Mojo Implementation
     // ----------------------------------------------------------------------
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void execute()
             throws MojoExecutionException
     {

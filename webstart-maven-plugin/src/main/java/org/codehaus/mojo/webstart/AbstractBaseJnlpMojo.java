@@ -150,8 +150,6 @@ public abstract class AbstractBaseJnlpMojo
 
     /**
      * Set to true to exclude all transitive dependencies.
-     *
-     * @parameter
      */
     @Parameter( property = "jnlp.excludeTransitive" )
     private boolean excludeTransitive;
@@ -907,23 +905,7 @@ public abstract class AbstractBaseJnlpMojo
                     File signedJar = toProcessFile( unprocessedJarFile );
                     ioUtil.deleteFile( signedJar );
 
-                    verboseLog( "Sign " + signedJar.getName() );
-                    signTool.sign( sign, unprocessedJarFile, signedJar );
-
-                    getLog().debug(
-                            "lastModified signedJar:" + signedJar.lastModified() + " unprocessed signed Jar:" +
-                                    unprocessedJarFile.lastModified() );
-
-                    if ( signVerify )
-                    {
-                        verboseLog( "Verify signature of " + signedJar.getName() );
-                        signTool.verify( sign, signedJar, isVerbose() );
-                    }
-                    // remove unprocessed files
-                    // TODO wouldn't have to do that if we copied the
-                    // unprocessed jar files in a temporary area
-                    ioUtil.deleteFile( unprocessedJarFile );
-
+                    signJar( unprocessedJarFile, signedJar, signVerify );
                     return null;
                 }
             } ) );
@@ -956,6 +938,28 @@ public abstract class AbstractBaseJnlpMojo
         ex.shutdown();
 
         return jarFiles.length;
+    }
+
+    protected void signJar( File fileToSign, File signedJar, boolean signVerify ) throws MojoExecutionException
+    {
+
+        verboseLog( "Sign " + signedJar.getName() );
+        signTool.sign( sign, fileToSign, signedJar );
+
+        getLog().debug(
+                "lastModified signedJar:" + signedJar.lastModified() + " unprocessed signed Jar:" +
+                        fileToSign.lastModified() );
+
+        if ( signVerify )
+        {
+            verboseLog( "Verify signature of " + signedJar.getName() );
+            signTool.verify( sign, signedJar, isVerbose() );
+        }
+        // remove unprocessed files
+        // TODO wouldn't have to do that if we copied the
+        // unprocessed jar files in a temporary area
+        ioUtil.deleteFile( fileToSign );
+
     }
 
     /**
@@ -1022,7 +1026,7 @@ public abstract class AbstractBaseJnlpMojo
         return new URLClassLoader( urls );
     }
 
-    private File toUnprocessFile( File targetDirectory, String sourceName )
+    File toUnprocessFile( File targetDirectory, String sourceName )
     {
         if ( sourceName.startsWith( UNPROCESSED_PREFIX ) )
         {

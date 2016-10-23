@@ -39,14 +39,12 @@ public class ExtensionGenerator
         super( log, technicalConfig, extraConfig );
     }
 
+    @Override
     protected String getArgumentsText()
     {
         return "";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected VelocityContext createAndPopulateContext()
     {
@@ -56,9 +54,7 @@ public class ExtensionGenerator
         return context;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected String getDependenciesText()
     {
         List<Artifact> dependencies = getExtraConfig().getExtensionJnlpArtifacts( getExtraConfig().getExtension() );

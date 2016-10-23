@@ -30,6 +30,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProjectHelper;
+import org.apache.maven.shared.utils.io.FileUtils;
 import org.codehaus.mojo.webstart.generator.ExtensionGenerator;
 import org.codehaus.mojo.webstart.generator.ExtensionGeneratorConfig;
 import org.codehaus.mojo.webstart.generator.Generator;
@@ -38,13 +39,20 @@ import org.codehaus.mojo.webstart.generator.GeneratorTechnicalConfig;
 import org.codehaus.mojo.webstart.util.IOUtil;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.JarOutputStream;
 
 /**
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
@@ -196,6 +204,14 @@ public abstract class AbstractJnlpMojo
     @Parameter( property = "jnlp.skipDependencies", defaultValue = "false" )
     private boolean skipDependencies;
 
+    /**
+     * Flag to add the jnlp file inside to main jar at {@code JNLP-INF/APPLICATION.JNLP} location.
+     *
+     * @since 1.0.0
+     */
+    @Parameter( defaultValue = "true" )
+    private boolean addApplicationFile;
+
     // ----------------------------------------------------------------------
     // Components
     // ----------------------------------------------------------------------
@@ -226,9 +242,7 @@ public abstract class AbstractJnlpMojo
     // Mojo Implementation
     // ----------------------------------------------------------------------
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void execute()
             throws MojoExecutionException
     {
@@ -538,7 +552,8 @@ public abstract class AbstractJnlpMojo
                     }
                 }
 
-                if (skipDependencies && !mainArtifact) {
+                if ( skipDependencies && !mainArtifact )
+                {
                     return;
                 }
 
@@ -672,6 +687,54 @@ public abstract class AbstractJnlpMojo
         {
             getLog().debug( e.toString() );
             throw new MojoExecutionException( "Could not generate the JNLP deployment descriptor", e );
+        }
+
+        if ( addApplicationFile )
+        {
+            File jarFile = new File( getLibDirectory(), artifactWithMainClass.getFile().getName() );
+
+            if ( isVerbose() )
+            {
+                getLog().info( "Add JNPL-INF/APPLICATION.JNLP to " + jarFile );
+            }
+            try
+            {
+
+                JarFile inputJar = new JarFile( jarFile );
+                File tempJarFile = new File( jarFile.getParentFile(), jarFile.getName() + "-temp" );
+                JarOutputStream jarOutputStream = new JarOutputStream( new FileOutputStream( tempJarFile ) );
+
+                try
+                {
+                    Enumeration<JarEntry> entries = inputJar.entries();
+                    while ( entries.hasMoreElements() )
+                    {
+                        JarEntry jarEntry = entries.nextElement();
+                        jarOutputStream.putNextEntry( jarEntry );
+                        InputStream inputStream = inputJar.getInputStream( jarEntry );
+                        org.apache.maven.shared.utils.io.IOUtil.copy( inputStream, jarOutputStream );
+
+                    }
+                    JarEntry jarEntry = new JarEntry( "JNPL-INF/APPLICATION.JNLP" );
+                    jarOutputStream.putNextEntry( jarEntry );
+                    jarOutputStream.write( FileUtils.fileRead( jnlpOutputFile ).getBytes() );
+                    jarOutputStream.flush();
+                    jarOutputStream.close();
+
+                }
+                finally
+                {
+                    org.apache.maven.shared.utils.io.IOUtil.close( jarOutputStream );
+                }
+
+//                jarFile.delete();
+                signJar( tempJarFile, jarFile, false );
+
+            }
+            catch ( IOException e )
+            {
+                throw new MojoExecutionException( "Could not copy generated JNLP deployment descriptor to application file", e );
+            }
         }
     }
 
@@ -832,7 +895,7 @@ public abstract class AbstractJnlpMojo
      * TODO, should check that all dependencies are well signed with the same
      * extension with the same signer.
      *
-     * @throws MojoExecutionException
+     * @throws MojoExecutionException TODO
      */
     private void processExtensionsDependencies()
             throws MojoExecutionException
