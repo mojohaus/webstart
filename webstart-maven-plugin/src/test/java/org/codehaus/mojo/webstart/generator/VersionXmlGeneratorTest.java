@@ -154,12 +154,14 @@ public class VersionXmlGeneratorTest
 
         String actualXml = readFileContents( this.expectedFile );
 
-        Diff diff = new Diff( "<jnlp-versions>" + "  <resource>" + "    <pattern>" + "      <name>bogus1.txt</name>" +
-                                  "      <version-id>1.0</version-id>" + "    </pattern>" +
-                                  "    <file>bogus1.txt</file>" + "  </resource>" + "  <resource>" + "    <pattern>" +
-                                  "      <name>bogus2.txt</name>" + "      <version-id>1.0</version-id>" +
-                                  "    </pattern>" + "    <file>bogus2.txt</file>" + "  </resource>" +
-                                  "</jnlp-versions>", actualXml );
+        String expected = "<?xml version=\"1.0\"?><jnlp-versions>" + "  <resource>" + "    <pattern>" + "      <name>bogus1.txt</name>" +
+                "      <version-id>1.0</version-id>" + "    </pattern>" +
+                "    <file>artifactId1-1.0-classifier.jar</file>" + "  </resource>" + "  <resource>" + "    <pattern>" +
+                "      <name>bogus2.txt</name>" + "      <version-id>1.0</version-id>" +
+                "    </pattern>" + "    <file>artifactId2-1.0-classifier.jar</file>" + "  </resource>" +
+                "</jnlp-versions>";
+        Assert.assertEquals( actualXml, expected );
+        Diff diff = new Diff( expected, actualXml );
         Assert.assertTrue( diff.toString(), diff.similar() );
 
     }
