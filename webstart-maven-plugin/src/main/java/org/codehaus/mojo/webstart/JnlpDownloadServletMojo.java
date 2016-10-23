@@ -161,7 +161,7 @@ public class JnlpDownloadServletMojo
             resolvedCommonJarResources = resolveJarResources( commonJarResources, null );
         }
 
-        Set<ResolvedJarResource> allResolvedJarResources = new LinkedHashSet<ResolvedJarResource>();
+        Set<ResolvedJarResource> allResolvedJarResources = new LinkedHashSet<>();
         allResolvedJarResources.addAll( resolvedCommonJarResources );
 
         // ---
@@ -169,7 +169,7 @@ public class JnlpDownloadServletMojo
         // ---
 
         getLog().info( "-- Prepare jnlp files" );
-        Set<ResolvedJnlpFile> resolvedJnlpFiles = new LinkedHashSet<ResolvedJnlpFile>();
+        Set<ResolvedJnlpFile> resolvedJnlpFiles = new LinkedHashSet<>();
 
         for ( JnlpFile jnlpFile : jnlpFiles )
         {
@@ -263,7 +263,7 @@ public class JnlpDownloadServletMojo
         // check Jnlp files configuration
         // ---
 
-        Set<String> filenames = new LinkedHashSet<String>( jnlpFiles.size() );
+        Set<String> filenames = new LinkedHashSet<>( jnlpFiles.size() );
 
         for ( JnlpFile jnlpFile : jnlpFiles )
         {
@@ -438,7 +438,7 @@ public class JnlpDownloadServletMojo
             throws MojoExecutionException
     {
 
-        Set<ResolvedJarResource> collectedJarResources = new LinkedHashSet<ResolvedJarResource>();
+        Set<ResolvedJarResource> collectedJarResources = new LinkedHashSet<>();
 
         if ( commonJarResources != null )
         {
@@ -448,10 +448,10 @@ public class JnlpDownloadServletMojo
         ArtifactUtil artifactUtil = getArtifactUtil();
 
         // artifacts resolved from repositories
-        Set<Artifact> artifacts = new LinkedHashSet<Artifact>();
+        Set<Artifact> artifacts = new LinkedHashSet<>();
 
         // sibling projects hit from a jar resources (need a special transitive resolution)
-        Set<MavenProject> siblingProjects = new LinkedHashSet<MavenProject>();
+        Set<MavenProject> siblingProjects = new LinkedHashSet<>();
 
         // for each configured JarResource, create and resolve the corresponding artifact and
         // check it for the mainClass if specified

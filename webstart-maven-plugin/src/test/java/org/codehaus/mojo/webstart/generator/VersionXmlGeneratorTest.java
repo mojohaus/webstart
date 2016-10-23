@@ -113,7 +113,7 @@ public class VersionXmlGeneratorTest
         throws MojoExecutionException, IOException, SAXException, ParserConfigurationException
     {
 
-        List<ResolvedJarResource> jarResources = new ArrayList<ResolvedJarResource>();
+        List<ResolvedJarResource> jarResources = new ArrayList<>();
         new VersionXmlGenerator( "utf-8" ).generate( this.outputDir, jarResources );
 
         Assert.assertTrue( "Assert expectedFile exists", this.expectedFile.exists() );
@@ -146,7 +146,7 @@ public class VersionXmlGeneratorTest
 //        jar1.setArtifact( artifact1 );
 //        jar2.setArtifact( artifact2 );
 
-        List<ResolvedJarResource> jarResources = new ArrayList<ResolvedJarResource>( 2 );
+        List<ResolvedJarResource> jarResources = new ArrayList<>( 2 );
         jarResources.add( jar1 );
         jarResources.add( jar2 );
 

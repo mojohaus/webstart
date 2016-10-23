@@ -191,7 +191,7 @@ public class DownloadRequest
         {
             return null;
         }
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         int i = 0;
         int length = str.length();
         StringBuffer sb = null;

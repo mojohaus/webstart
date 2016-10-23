@@ -42,7 +42,7 @@ public class JnlpDependencyRequests
     public JnlpDependencyRequests( JnlpDependencyGlobalConfig config )
     {
         this.config = config;
-        requests = new ArrayList<JnlpDependencyRequest>();
+        requests = new ArrayList<>();
     }
 
     public JnlpDependencyGlobalConfig getConfig()

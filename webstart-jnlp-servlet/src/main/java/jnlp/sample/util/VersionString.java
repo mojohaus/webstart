@@ -58,7 +58,7 @@ public class VersionString
      */
     public VersionString( String vs )
     {
-        _versionIds = new ArrayList<VersionID>();
+        _versionIds = new ArrayList<>();
         if ( vs != null )
         {
             StringTokenizer st = new StringTokenizer( vs, " ", false );

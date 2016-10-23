@@ -100,7 +100,7 @@ public class VersionID
                 str = str.substring( 0, str.length() - 1 );
             }
 
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             int start = 0;
             for ( int i = 0; i < str.length(); i++ )
             {

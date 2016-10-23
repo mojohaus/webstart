@@ -149,7 +149,7 @@ public class DefaultArtifactUtil
             throws MojoExecutionException
     {
 
-        Set<Artifact> resultArtifacts = new LinkedHashSet<Artifact>();
+        Set<Artifact> resultArtifacts = new LinkedHashSet<>();
 
         if ( CollectionUtils.isNotEmpty( siblingProjects ) )
         {

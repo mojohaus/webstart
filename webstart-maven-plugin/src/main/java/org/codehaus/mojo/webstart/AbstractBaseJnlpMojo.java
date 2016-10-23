@@ -309,7 +309,7 @@ public abstract class AbstractBaseJnlpMojo
     /**
      * List of detected modified artifacts (will then re-apply stuff on them).
      */
-    private final List<String> modifiedJnlpArtifacts = new ArrayList<String>();
+    private final List<String> modifiedJnlpArtifacts = new ArrayList<>();
 
     // the jars to sign and pack are selected if they are prefixed by UNPROCESSED_PREFIX.
     // as the plugin copies the new versions locally before signing/packing them

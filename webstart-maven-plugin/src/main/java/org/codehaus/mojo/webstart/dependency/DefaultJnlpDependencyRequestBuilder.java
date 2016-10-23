@@ -106,7 +106,7 @@ public class DefaultJnlpDependencyRequestBuilder
 
     private JnlpDependencyTask[] createTasks( JnlpDependencyConfig config )
     {
-        List<JnlpDependencyTask> tasks = new ArrayList<JnlpDependencyTask>();
+        List<JnlpDependencyTask> tasks = new ArrayList<>();
 
         boolean doPack200 = config.isPack200();
 

@@ -82,7 +82,7 @@ public class GeneratorTest
                                      artifactHandler );
         artifact4.setFile( new File( "artifact4-1.5-SNAPSHOT.jar" ) );
 
-        artifacts = new ArrayList<Artifact>();
+        artifacts = new ArrayList<>();
 
         artifacts.add( artifact1 );
         artifacts.add( artifact2 );

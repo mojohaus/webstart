@@ -251,7 +251,7 @@ public class SignConfig
         }
 
         // reset arguments
-        arguments = new ArrayList<String>();
+        arguments = new ArrayList<>();
 
         generateArguments();
     }

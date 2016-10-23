@@ -89,8 +89,8 @@ public class JarDiffPatcher
         JarOutputStream jos = new JarOutputStream( result );
         JarFile oldJar = new JarFile( oldFile );
         JarFile jarDiff = new JarFile( diffFile );
-        Set<String> ignoreSet = new HashSet<String>();
-        Map<String, String> renameMap = new HashMap<String, String>();
+        Set<String> ignoreSet = new HashSet<>();
+        Map<String, String> renameMap = new HashMap<>();
 
         determineNameMapping( jarDiff, ignoreSet, renameMap );
 
@@ -98,7 +98,7 @@ public class JarDiffPatcher
         String[] keys = renameMap.keySet().toArray( new String[renameMap.size()] );
 
         // Files to implicit move
-        Set<String> oldjarNames = new HashSet<String>();
+        Set<String> oldjarNames = new HashSet<>();
 
         Enumeration<JarEntry> oldEntries = oldJar.entries();
         if ( oldEntries != null )
@@ -296,7 +296,7 @@ public class JarDiffPatcher
     {
         int index = 0;
         int length = path.length();
-        List<String> sub = new ArrayList<String>();
+        List<String> sub = new ArrayList<>();
 
         while ( index < length )
         {

@@ -41,7 +41,7 @@ public class JnlpDependencyResults
 
     public JnlpDependencyResults()
     {
-        results = new LinkedHashMap<JnlpDependencyRequest, JnlpDependencyResult>();
+        results = new LinkedHashMap<>();
     }
 
     public void registerResult( JnlpDependencyRequest request, JnlpDependencyResult result )
@@ -71,7 +71,7 @@ public class JnlpDependencyResults
 
     public JnlpDependencyResult[] getResultsWithError()
     {
-        List<JnlpDependencyResult> resultWithErrors = new ArrayList<JnlpDependencyResult>();
+        List<JnlpDependencyResult> resultWithErrors = new ArrayList<>();
         for ( JnlpDependencyResult dependencyResult : results.values() )
         {
             if ( dependencyResult.isError() )

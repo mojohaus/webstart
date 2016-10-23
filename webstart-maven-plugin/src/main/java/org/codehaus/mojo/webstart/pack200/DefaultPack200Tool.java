@@ -158,7 +158,7 @@ public class DefaultPack200Tool
 
             deleteFile( pack200Jar );
 
-            Map<String, String> propMap = new HashMap<String, String>();
+            Map<String, String> propMap = new HashMap<>();
             // Work around a JDK bug affecting large JAR files, see MWEBSTART-125
             propMap.put( Pack200.Packer.SEGMENT_LIMIT, String.valueOf( -1 ) );
 
@@ -186,7 +186,7 @@ public class DefaultPack200Tool
 
         deleteFile( pack200Jar );
 
-        Map<String, String> propMap = new HashMap<String, String>();
+        Map<String, String> propMap = new HashMap<>();
         // Work around a JDK bug affecting large JAR files, see MWEBSTART-125
         propMap.put( Pack200.Packer.SEGMENT_LIMIT, String.valueOf( -1 ) );
 
