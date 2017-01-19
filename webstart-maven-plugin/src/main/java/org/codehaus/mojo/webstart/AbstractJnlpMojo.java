@@ -388,6 +388,8 @@ public abstract class AbstractJnlpMojo
             getLog().warn( "Jnlp file of type '" + type +
                                    "' does not support mainClass, value will not be accessible in template." );
             jnlp.setMainClass( null );
+            
+            addApplicationFile = false;
         }
     }
 
@@ -606,6 +608,7 @@ public abstract class AbstractJnlpMojo
     private void generateJnlpFile( File outputDirectory )
             throws MojoExecutionException
     {
+    	getLog().info("Generate the JNLP file.");
         // ---
         // get output file
         // ---
@@ -691,16 +694,24 @@ public abstract class AbstractJnlpMojo
 
         if ( addApplicationFile )
         {
-            File jarFile = new File( getLibDirectory(), artifactWithMainClass.getFile().getName() );
+        	getLog().info("Add the application file, artifactWithMainClass: " + artifactWithMainClass);
+
+        	// must handle outputJarVersions == true
+        	String targetFilename =
+                    getDependencyFilenameStrategy().getDependencyFilename( artifactWithMainClass, outputJarVersions, isUseUniqueVersions() );
+        	
+            File jarFile = new File( getLibDirectory(), targetFilename);
 
             if ( isVerbose() )
             {
                 getLog().info( "Add JNPL-INF/APPLICATION.JNLP to " + jarFile );
             }
+            
+            JarFile inputJar = null;
             try
             {
 
-                JarFile inputJar = new JarFile( jarFile );
+                inputJar = new JarFile( jarFile );
                 File tempJarFile = new File( jarFile.getParentFile(), jarFile.getName() + "-temp" );
                 JarOutputStream jarOutputStream = new JarOutputStream( new FileOutputStream( tempJarFile ) );
 
@@ -710,6 +721,13 @@ public abstract class AbstractJnlpMojo
                     while ( entries.hasMoreElements() )
                     {
                         JarEntry jarEntry = entries.nextElement();
+                        
+                        if ("JNPL-INF/APPLICATION.JNLP".equals(jarEntry.getName())) {
+                            // skip existing JNLP-INF/APPLICATION.JNLP from jar
+                        	getLog().info("skip existing JNLP-INF/APPLICATION.JNLP");
+                        	continue;
+                        }
+                        
                         jarOutputStream.putNextEntry( jarEntry );
                         InputStream inputStream = inputJar.getInputStream( jarEntry );
                         org.apache.maven.shared.utils.io.IOUtil.copy( inputStream, jarOutputStream );
@@ -734,6 +752,17 @@ public abstract class AbstractJnlpMojo
             catch ( IOException e )
             {
                 throw new MojoExecutionException( "Could not copy generated JNLP deployment descriptor to application file", e );
+            }
+            finally {
+            	if (inputJar != null) {
+            		try {
+						inputJar.close();
+					} 
+            		catch (IOException e) 
+            		{
+						// ignore
+					}
+            	}
             }
         }
     }

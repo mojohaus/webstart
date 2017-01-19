@@ -887,6 +887,7 @@ public abstract class AbstractBaseJnlpMojo
 
         if ( jarFiles.length == 0 )
         {
+        	getLog().info( "No jar files to sign available." );
             return 0;
         }
 
@@ -944,22 +945,30 @@ public abstract class AbstractBaseJnlpMojo
     {
 
         verboseLog( "Sign " + signedJar.getName() );
-        signTool.sign( sign, fileToSign, signedJar );
-
-        getLog().debug(
-                "lastModified signedJar:" + signedJar.lastModified() + " unprocessed signed Jar:" +
-                        fileToSign.lastModified() );
-
-        if ( signVerify )
+        
+        if ( sign != null )
         {
-            verboseLog( "Verify signature of " + signedJar.getName() );
-            signTool.verify( sign, signedJar, isVerbose() );
+	        signTool.sign( sign, fileToSign, signedJar );
+	
+	        getLog().debug(
+	                "lastModified signedJar:" + signedJar.lastModified() + " unprocessed signed Jar:" +
+	                        fileToSign.lastModified() );
+	
+	        if ( signVerify )
+	        {
+	            verboseLog( "Verify signature of " + signedJar.getName() );
+	            signTool.verify( sign, signedJar, isVerbose() );
+	        }
         }
+        else 
+        {
+        	getLog().error("No sign configuration available! Jar is not signed: " +signedJar.getName());
+        }
+
         // remove unprocessed files
         // TODO wouldn't have to do that if we copied the
         // unprocessed jar files in a temporary area
         ioUtil.deleteFile( fileToSign );
-
     }
 
     /**
