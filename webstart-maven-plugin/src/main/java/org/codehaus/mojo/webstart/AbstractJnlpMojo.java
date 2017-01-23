@@ -86,6 +86,8 @@ public abstract class AbstractJnlpMojo
      * Name of the default jnlp extension template to use if user define it in the default template directory.
      */
     private static final String EXTENSION_TEMPLATE_FILENAME = "extension-template.vm";
+    
+    private static final String JNLP_INF_APPLICATION_JNLP = "JNLP-INF/APPLICATION.JNLP";
 
     // ----------------------------------------------------------------------
     // Mojo Parameters
@@ -211,7 +213,7 @@ public abstract class AbstractJnlpMojo
      */
     @Parameter( defaultValue = "true" )
     private boolean addApplicationFile;
-
+    
     // ----------------------------------------------------------------------
     // Components
     // ----------------------------------------------------------------------
@@ -377,6 +379,10 @@ public abstract class AbstractJnlpMojo
     void checkJnlpConfig()
             throws MojoExecutionException
     {
+        if ( jnlp == null )
+        {
+            throw new MojoExecutionException( "jnlp must be set to generate config!" );
+        }
         JnlpFileType type = jnlp.getType();
         if ( type == null )
         {
@@ -704,7 +710,7 @@ public abstract class AbstractJnlpMojo
 
             if ( isVerbose() )
             {
-                getLog().info( "Add JNPL-INF/APPLICATION.JNLP to " + jarFile );
+                getLog().info( "Add " + JNLP_INF_APPLICATION_JNLP + " to " + jarFile );
             }
             
             JarFile inputJar = null;
@@ -722,9 +728,9 @@ public abstract class AbstractJnlpMojo
                     {
                         JarEntry jarEntry = entries.nextElement();
                         
-                        if ("JNPL-INF/APPLICATION.JNLP".equals(jarEntry.getName())) {
+                        if (JNLP_INF_APPLICATION_JNLP.equals(jarEntry.getName())) {
                             // skip existing JNLP-INF/APPLICATION.JNLP from jar
-                        	getLog().info("skip existing JNLP-INF/APPLICATION.JNLP");
+                        	getLog().info("Skip add existing " + JNLP_INF_APPLICATION_JNLP);
                         	continue;
                         }
                         
@@ -733,7 +739,7 @@ public abstract class AbstractJnlpMojo
                         org.apache.maven.shared.utils.io.IOUtil.copy( inputStream, jarOutputStream );
 
                     }
-                    JarEntry jarEntry = new JarEntry( "JNPL-INF/APPLICATION.JNLP" );
+                    JarEntry jarEntry = new JarEntry( JNLP_INF_APPLICATION_JNLP );
                     jarOutputStream.putNextEntry( jarEntry );
                     jarOutputStream.write( FileUtils.fileRead( jnlpOutputFile ).getBytes() );
                     jarOutputStream.flush();
