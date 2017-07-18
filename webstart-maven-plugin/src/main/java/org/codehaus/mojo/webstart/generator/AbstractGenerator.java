@@ -234,6 +234,7 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
         context.put( "offlineAllowed", BooleanUtils.toBoolean( extraConfig.getOfflineAllowed() ) );
         context.put( "jnlpspec", extraConfig.getJnlpSpec() );
         context.put( "j2seVersion", extraConfig.getJ2seVersion() );
+        context.put( "iconHref", extraConfig.getIconHref() );
 
         return context;
     }
