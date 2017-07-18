@@ -25,10 +25,11 @@ Using the Inbuilt Velocity Templates
 
 Use your own templates
 
-  If you do want to provide your own template, consider placing it in the default location
-  (see the <templateDirectory> parameter) to minimize the plugin configuration.
+  There may be some JNLP features that you want to specify that aren't in the default template. If you want to 
+  provide your own template consider placing it in the default location (see the <templateDirectory> parameter) to
+  minimize the plugin configuration.
 
-  You can then sue the default names:
+  You can then use the following default names:
 
   * <jnlp-template.vm> for JNLP Mojos template
 
