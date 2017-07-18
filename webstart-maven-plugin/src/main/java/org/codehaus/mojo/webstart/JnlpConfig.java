@@ -51,6 +51,8 @@ public class JnlpConfig
 
     private String mainClass;
 
+    private String iconHref;
+
     private Map<String, String> properties;
 
     /**
@@ -126,6 +128,11 @@ public class JnlpConfig
         this.type = type;
     }
 
+    public void setIconHref( String iconHref )
+    {
+        this.iconHref = iconHref;
+    }
+
     public String getInputTemplateResourcePath()
     {
         return inputTemplateResourcePath;
@@ -194,6 +201,11 @@ public class JnlpConfig
     public JnlpFileType getType()
     {
         return type;
+    }
+
+    public String getIconHref()
+    {
+        return iconHref;
     }
 
     public boolean isRequireMainClass()
