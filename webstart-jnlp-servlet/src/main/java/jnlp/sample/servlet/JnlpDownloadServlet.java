@@ -73,6 +73,8 @@ public class JnlpDownloadServlet
 
     private static final String PARAM_JAR_EXTENSION = "jar-extension";
 
+    private static final String PARAM_JNLP_FILE_HANDLER_HOOK = "jnlp-file-handler-hook";
+
     // Servlet configuration
     private Logger _log = null;
 
@@ -98,9 +100,26 @@ public class JnlpDownloadServlet
         JnlpResource.setDefaultExtensions( config.getInitParameter( PARAM_JNLP_EXTENSION ),
                                            config.getInitParameter( PARAM_JAR_EXTENSION ) );
 
-        _jnlpFileHandler = new JnlpFileHandler( config.getServletContext(), _log );
+        JnlpFileHandlerHook hook = createHook( config.getInitParameter(PARAM_JNLP_FILE_HANDLER_HOOK) );
+	_jnlpFileHandler = new JnlpFileHandler( config.getServletContext(), hook, _log );
         _jarDiffHandler = new JarDiffHandler( config.getServletContext(), _log );
         _resourceCatalog = new ResourceCatalog( config.getServletContext(), _log );
+    }
+
+    /**
+     * Creates the instance of the configured {@link JnlpFileHandlerHook}
+     * 
+     * @param hookClass class
+     * @return the post-processor instance, never {@code null}
+     */
+    private JnlpFileHandlerHook createHook( String hookClass ) {
+        if ( hookClass != null )
+            try {
+                return Class.forName( hookClass ).asSubclass( JnlpFileHandlerHook.class ).newInstance();
+            } catch ( InstantiationException | IllegalAccessException | ClassNotFoundException e ) {
+                _log.addWarning( "servlet.log.warning.failed-jnlp-file-hook", hookClass, e );
+            }
+        return JnlpFileHandlerHook.IDENTITY;
     }
 
     public static synchronized ResourceBundle getResourceBundle()
