@@ -196,6 +196,18 @@ public class SignConfig
     private String digestalg;
 
     /**
+     * ConfigFilePath option
+     *
+     */
+    private String providerArg;
+
+    /**
+     * Name of cryptographic service provider's master class file
+     * Ex: sun.security.pkcs11.SunPKCS11
+     */
+    private String providerClass;
+
+    /**
      * Called before any Jars get signed or verified.
      * <p>
      * This method allows you to create any keys or perform any initialisation that the
@@ -238,16 +250,23 @@ public class SignConfig
             // try to locate key store from any location
             File keystoreFile = signTool.getKeyStoreFile( getKeystore(), workingKeystore, classLoader );
 
-            // now we will use this key store path
-            setKeystore( keystoreFile.getAbsolutePath() );
+
+            if( !keystore.equals("NONE") )
+            {
+                // now we will use this key store path
+                setKeystore(keystoreFile.getAbsolutePath());
+            }
         }
 
         // at the end keystore file must exists
         File keystoreFile = new File( getKeystore() );
 
-        if ( !keystoreFile.exists() )
-        {
-            throw new MojoExecutionException( "Could not obtain key store location at " + keystore );
+        if( !keystore.equals("NONE") )
+	{
+            if (!keystoreFile.exists())
+	    {
+                throw new MojoExecutionException("Could not obtain key store location at " + keystore);
+            }
         }
 
         // reset arguments
@@ -310,6 +329,8 @@ public class SignConfig
         request.setArchive( jarToSign );
         request.setSignedjar( signedJar );
         request.setTsaLocation( getTsaLocation() );
+        request.setProviderArg( getProviderArg() );
+        request.setProviderClass( getProviderClass() );
 
         // Special handling for passwords through the Maven Security Dispatcher
         request.setKeypass( decrypt( keypass ) );
@@ -670,6 +691,22 @@ public class SignConfig
         this.digestalg = digestalg;
     }
 
+    public String getProviderArg() {
+        return providerArg;
+    }
+
+    public void setProviderArg(String providerArg) {
+        this.providerArg = providerArg;
+    }
+
+    public String getProviderClass() {
+        return providerClass;
+    }
+
+    public void setProviderClass(String providerClass) {
+        this.providerClass = providerClass;
+    }
+
     private void appendToDnameBuffer( final String property, StringBuffer buffer, final String prefix )
     {
         if ( property != null )
@@ -684,7 +721,8 @@ public class SignConfig
         }
     }
 
-    private String decrypt( String encoded )
+
+    private String decrypt(String encoded )
             throws MojoExecutionException
     {
         try
