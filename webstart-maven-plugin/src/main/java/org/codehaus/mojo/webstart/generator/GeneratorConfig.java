@@ -131,4 +131,8 @@ public class GeneratorConfig
     {
         return jnlp.getProperties();
     }
+
+    public String getIconHref() {
+        return jnlp.getIconHref();
+    }
 }

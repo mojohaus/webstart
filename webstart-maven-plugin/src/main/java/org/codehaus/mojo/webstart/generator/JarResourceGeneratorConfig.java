@@ -113,6 +113,11 @@ public class JarResourceGeneratorConfig
         return properties;
     }
 
+    @Override
+    public String getIconHref() {
+        return null;
+    }
+
     public List<String> getArguments()
     {
         return arguments;

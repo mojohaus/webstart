@@ -135,4 +135,9 @@ public class ExtensionGeneratorConfig
     {
         return Collections.emptyMap();
     }
+
+    @Override
+    public String getIconHref() {
+        return null;
+    }
 }

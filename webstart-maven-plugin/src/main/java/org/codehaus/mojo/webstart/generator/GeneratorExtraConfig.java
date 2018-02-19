@@ -40,4 +40,6 @@ public interface GeneratorExtraConfig
     String getJnlpCodeBase();
 
     Map<String, String> getProperties();
+
+    String getIconHref();
 }
