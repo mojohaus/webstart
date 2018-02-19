@@ -60,6 +60,7 @@ import java.net.URLConnection;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 /* The JNLP file handler implements a class that keeps
@@ -73,6 +74,8 @@ public class JnlpFileHandler
 
     private ServletContext _servletContext;
 
+    private JnlpFileHandlerHook _hook;
+
     private Logger _log = null;
 
     private HashMap _jnlpFiles = null;
@@ -83,9 +86,10 @@ public class JnlpFileHandler
      * @param log            TODO
      * @param servletContext TODO
      */
-    public JnlpFileHandler( ServletContext servletContext, Logger log )
+    public JnlpFileHandler( ServletContext servletContext, JnlpFileHandlerHook hook, Logger log )
     {
         _servletContext = servletContext;
+        _hook = hook;
         _log = log;
         _jnlpFiles = new HashMap();
     }
@@ -293,6 +297,7 @@ public class JnlpFileHandler
                             }
                         }
                     }
+                    _hook.preCommit( dreq, document );
                     TransformerFactory tFactory = TransformerFactory.newInstance();
                     Transformer transformer = tFactory.newTransformer();
                     DOMSource source = new DOMSource( document );
