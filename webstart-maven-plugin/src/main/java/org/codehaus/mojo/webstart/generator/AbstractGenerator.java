@@ -234,6 +234,8 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
         context.put( "offlineAllowed", BooleanUtils.toBoolean( extraConfig.getOfflineAllowed() ) );
         context.put( "jnlpspec", extraConfig.getJnlpSpec() );
         context.put( "j2seVersion", extraConfig.getJ2seVersion() );
+        context.put( "iconHref", extraConfig.getIconHref() );
+        // FIXME: 7/18/2017 Where is extraConfig's implementation so getIconHref can be added to it?
 
         return context;
     }

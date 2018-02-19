@@ -43,7 +43,7 @@
       <item name="JAR signing with Maven" href="http://maven.apache.org/plugins/maven-jar-plugin/" />
     </item>
     <item name="Sun's Download Servlet Guide" href="http://java.sun.com/j2se/1.5.0/docs/guide/javaws/developersguide/downloadservletguide.html" />
-    <item name="Velocity user guide" href="http://velocity.apache.org/engine/releases/velocity-1.5/user-guide.html" />
+    <item name="Velocity user guide" href="http://velocity.apache.org/engine/releases/velocity-1.7/user-guide.html" />
   </menu>
  </body>
 </project>

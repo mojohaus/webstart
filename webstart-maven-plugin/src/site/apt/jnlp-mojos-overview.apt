@@ -88,7 +88,7 @@ Maven project properties (All properties taken from pom.properties section)  (No
 Extra config properties (All properties taken from config.properties section) (Note: properties containing dots ('.') might not be passed properly. This is due to the nature of the Velocity parser which treats dots as delimiters.)
 -------------------------------
 
-  See the {{{http://velocity.apache.org/engine/releases/velocity-1.5/user-guide.html#variables}Velocity User Guide}} for
+  See the {{{http://velocity.apache.org/engine/releases/velocity-1.7/user-guide.html#variables}Velocity User Guide}} for
   more information on how to retrieve fields from the Maven POM.
 
   <<Note:>> The template generation doesn't know if a placeholder was not replaced. So if you put a <<<$outputFile>>> in
