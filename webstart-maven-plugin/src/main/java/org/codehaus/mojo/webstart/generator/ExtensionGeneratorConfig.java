@@ -138,6 +138,6 @@ public class ExtensionGeneratorConfig
 
     @Override
     public String getIconHref() {
-        return null;
+        return extension.getIconHref();
     }
 }
