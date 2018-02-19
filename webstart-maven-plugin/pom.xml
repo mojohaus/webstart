@@ -90,6 +90,12 @@
     <dependency>
       <groupId>org.apache.maven.reporting</groupId>
       <artifactId>maven-reporting-impl</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>velocity</groupId>
+          <artifactId>velocity</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
