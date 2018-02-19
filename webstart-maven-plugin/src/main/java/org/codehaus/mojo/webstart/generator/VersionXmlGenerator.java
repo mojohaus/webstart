@@ -133,7 +133,7 @@ public class VersionXmlGenerator
             writer.newLine();
             writer.write( "    <file>" );
             writer.write( String.format( "%s-%s%s.%s", jarResource.getArtifactId(), jarResource.getVersion(),
-                                         jarResource.getClassifier() == null ? "" : "-" + jarResource.getClassifier(), jarResource.getType() ) );
+                                         jarResource.getClassifier() == null ? "" : "-" + jarResource.getClassifier(), "test-jar".equals(jarResource.getType()) ? "jar" : jarResource.getType() ) );
             writer.write( "</file>" );
             writer.newLine();
             writer.write( "  </resource>" );
