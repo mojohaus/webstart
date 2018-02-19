@@ -42,6 +42,7 @@ public class JarResourcesGenerator
         super( log, technicalConfig, extraConfig );
     }
 
+    @Override
     protected String getArgumentsText()
     {
         StringBuilder buffer = new StringBuilder();
@@ -57,9 +58,7 @@ public class JarResourcesGenerator
         return buffer.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected String getDependenciesText()
     {
 

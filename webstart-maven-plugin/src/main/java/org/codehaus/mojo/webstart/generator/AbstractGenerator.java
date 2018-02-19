@@ -86,7 +86,7 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
         }
         else
         {
-            log.info( "No template specified Using default one." );
+            log.info( "No template specified. Using default one." );
 
             inputFileTemplatePath = config.getDefaultTemplateResourceName();
 
@@ -102,7 +102,7 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
             props.setProperty( "jar.resource.loader.path", webstartJarURL );
 
             initVelocity( props );
-
+            
             if ( !engine.templateExists( inputFileTemplatePath ) )
             {
                 log.error( "Inbuilt template not found!! " + config.getDefaultTemplateResourceName() +

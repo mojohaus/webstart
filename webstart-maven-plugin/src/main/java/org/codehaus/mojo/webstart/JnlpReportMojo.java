@@ -86,15 +86,15 @@ public class JnlpReportMojo
     @Parameter( property = "jnlp.codebase", defaultValue = "${project.url}/jnlp" )
     private String codebase;
 
+    /**
+     * Maven project.
+     */
+    @Parameter( defaultValue = "${project}", required = true, readonly = true )
+    private MavenProject project;
+
     // ----------------------------------------------------------------------
     // Components
     // ----------------------------------------------------------------------
-
-    /**
-     * Maven Project
-     */
-    @Component
-    private MavenProject project;
 
     /**
      * <i>Maven Internal</i>: The Doxia Site Renderer.
@@ -136,33 +136,25 @@ public class JnlpReportMojo
     // AbstractMavenReport implementatio
     // ----------------------------------------------------------------------
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected Renderer getSiteRenderer()
     {
         return siteRenderer;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected MavenProject getProject()
     {
         return project;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getOutputName()
     {
         return outputName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected String getOutputDirectory()
     {
         return outputDirectory.getPath();

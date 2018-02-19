@@ -42,19 +42,19 @@ public class Generator
         super( log, technicalConfig, extraConfig );
     }
 
+    @Override
     protected String getArgumentsText()
     {
         return "";
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected String getDependenciesText()
     {
         return indentText( 4, getDependenciesText( getExtraConfig() ) );
     }
 
+    @Override
     protected VelocityContext createAndPopulateContext()
     {
         VelocityContext context = super.createAndPopulateContext();

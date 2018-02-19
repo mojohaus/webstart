@@ -59,9 +59,7 @@ public class JnlpMojo
     // AbstractBaseJnlpMojo implementatio
     // ----------------------------------------------------------------------
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public MavenProject getProject()
     {
         return executedProject;
