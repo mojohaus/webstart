@@ -91,13 +91,6 @@
       <version>2.1</version>
     </dependency>
     <dependency>
-      <groupId>com.sun</groupId>
-      <artifactId>tools</artifactId>
-      <version>1.4.2</version>
-      <scope>system</scope>
-      <systemPath>${toolsjar}</systemPath>
-    </dependency>
-    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <version>2.3</version>
@@ -105,28 +98,4 @@
     </dependency>
   </dependencies>
 
-  <profiles>
-    <profile>
-      <id>default-profile</id>
-      <activation>
-        <file>
-          <exists>${java.home}/../lib/tools.jar</exists>
-        </file>
-      </activation>
-      <properties>
-        <toolsjar>${java.home}/../lib/tools.jar</toolsjar>
-      </properties>
-    </profile>
-    <profile>
-      <id>mac-profile</id>
-      <activation>
-        <file>
-          <exists>${java.home}/../Classes/classes.jar</exists>
-        </file>
-      </activation>
-      <properties>
-        <toolsjar>${java.home}/../Classes/classes.jar</toolsjar>
-      </properties>
-    </profile>
-  </profiles>
 </project>

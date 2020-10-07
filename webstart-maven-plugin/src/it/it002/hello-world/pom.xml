@@ -25,13 +25,6 @@
       <artifactId>junit</artifactId>
     </dependency>
 
-    <!-- these dependencies are not really needed for this module to build, 
-         just added to check that dependencies are properly filtered out -->
-    <dependency>
-      <groupId>com.sun</groupId>
-      <artifactId>tools</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
