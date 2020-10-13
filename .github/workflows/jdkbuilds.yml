@@ -13,7 +13,7 @@ jobs:
   openjdk:
     strategy:
       matrix:
-        jdk: [8-slim]
+        jdk: [8-slim, 11-slim]
     name: "OpenJDK ${{ matrix.jdk }}"
     runs-on: ubuntu-latest
     container: "maven:3.6.2-jdk-${{ matrix.jdk }}"
