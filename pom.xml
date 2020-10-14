@@ -104,9 +104,11 @@
 
   <properties>
     <mavenVersion>3.5.4</mavenVersion>
-    <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
+    <mavenPluginPluginVersion>3.6.0</mavenPluginPluginVersion>
     <keytoolVersion>1.5</keytoolVersion>
 	<plexusComponentVersion>1.7.1</plexusComponentVersion>
+
+	<velocity-version>2.2</velocity-version>
 
     <!-- release plugin configuration -->
 
@@ -229,7 +231,7 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-archiver</artifactId>
-        <version>2.4.1</version>
+        <version>4.2.3</version>
         <exclusions>
           <exclusion>
             <groupId>org.codehaus.plexus</groupId>
@@ -244,7 +246,7 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
-        <version>3.0.10</version>
+        <version>3.3.0</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.mojo</groupId>
@@ -266,32 +268,26 @@
       <dependency>
         <groupId>xmlunit</groupId>
         <artifactId>xmlunit</artifactId>
-        <version>1.2</version>
+        <version>1.6</version>
       </dependency>
 
       <dependency>
-        <groupId>commons-lang</groupId>
-        <artifactId>commons-lang</artifactId>
-        <version>2.6</version>
-      </dependency>
-     
-      <dependency>
         <groupId>org.apache.velocity</groupId>
-        <artifactId>velocity</artifactId>
-        <version>1.7</version>
+        <artifactId>velocity-engine-core</artifactId>
+        <version>${velocity-version}</version>
       </dependency>
       
       <dependency>
-        <groupId>org.apache.maven.shared</groupId>
+        <groupId>org.apache.maven.plugin-testing</groupId>
         <artifactId>maven-plugin-testing-harness</artifactId>
-        <version>1.1</version>
+        <version>3.3.0</version>
         <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-container-default</artifactId>
-        <version>1.0-alpha-9</version>
+        <version>2.1.0</version>
       </dependency>
 
       <!-- for JarUnsign... -->
