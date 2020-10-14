@@ -1,4 +1,4 @@
-dist: trusty
+dist: xenial
 language: java
 install: true
 
@@ -10,12 +10,17 @@ jdk:
   - openjdk8
   - openjdk11
 
+env:
+  global:
+    - MVN_VERSION="3.6.3"
+
 script:
+  - mvn -version
   - mvn clean verify -B -e -V
 
-#cache:
-#  directories:
-#    - '$HOME/.m2/repository'
+cache:
+  directories:
+    - '$HOME/.m2/repository'
 
 branches:
     except:
