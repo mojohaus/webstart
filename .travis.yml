@@ -1,13 +1,20 @@
-dist: trusty
+dist: xenial
 language: java
-sudo: false
 install: true
 
+os:
+  - linux
+
 jdk: 
-  - openjdk7
   - openjdk8
+  - openjdk11
+
+env:
+  global:
+    - MVN_VERSION="3.6.3"
 
 script:
+  - mvn -version
   - mvn clean verify -B -e -V
 
 cache:

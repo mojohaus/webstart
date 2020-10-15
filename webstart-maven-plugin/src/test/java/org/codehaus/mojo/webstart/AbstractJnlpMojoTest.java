@@ -1,5 +1,9 @@
 package org.codehaus.mojo.webstart;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -28,12 +32,10 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.profiles.DefaultProfileManager;
 import org.apache.maven.profiles.ProfileManager;
+import org.apache.maven.project.DefaultProjectBuilder;
+import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectBuilder;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.maven.project.ProjectBuilder;
 
 /**
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
@@ -107,7 +109,7 @@ public abstract class AbstractJnlpMojoTest
     private void setUpProject( File pomFile, AbstractMojo mojo )
         throws Exception
     {
-        MavenProjectBuilder projectBuilder = (MavenProjectBuilder) lookup( MavenProjectBuilder.ROLE );
+        DefaultProjectBuilder projectBuilder = (DefaultProjectBuilder) lookup( DefaultProjectBuilder.class );
 
         ArtifactRepositoryFactory artifactRepositoryFactory =
             (ArtifactRepositoryFactory) lookup( ArtifactRepositoryFactory.ROLE );
@@ -120,9 +122,14 @@ public abstract class AbstractJnlpMojoTest
             artifactRepositoryFactory.createArtifactRepository( "local", localRepoUrl, new DefaultRepositoryLayout(),
                                                                 policy, policy );
 
-        ProfileManager profileManager = new DefaultProfileManager( getContainer() );
-
-        MavenProject project = projectBuilder.buildWithDependencies( pomFile, localRepository, profileManager );
+//        ProfileManager profileManager = new DefaultProfileManager( getContainer() );
+        
+        final DefaultProjectBuildingRequest configuration = new DefaultProjectBuildingRequest();
+        configuration.setLocalRepository(localRepository);
+        
+        MavenProject project = projectBuilder.build(pomFile, configuration).getProject();
+        
+//        MavenProject project = projectBuilder.buildWithDependencies( pomFile, localRepository, profileManager );
 
         //this gets the classes for these tests of this mojo (exec plugin) onto the project classpath for the test
         project.getBuild().setOutputDirectory( new File( "target/test-classes" ).getAbsolutePath() );

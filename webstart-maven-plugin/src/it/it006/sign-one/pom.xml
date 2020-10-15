@@ -19,11 +19,11 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>keytool-maven-plugin</artifactId>
-        <version>1.0</version>
+        <version>1.5</version>
         <executions>
            <execution>
               <goals>
-                 <goal>genkey</goal>
+                 <goal>generateKeyPair</goal>
               </goals>
               <phase>validate</phase> <!-- should really be pre-package... -->
            </execution>
@@ -37,7 +37,8 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
+        <artifactId>maven-jarsigner-plugin</artifactId>
+		<version>3.0.0</version>
         <executions>
           <execution>
             <goals>
