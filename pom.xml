@@ -5,10 +5,10 @@
   <parent>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>mojo-parent</artifactId>
-    <version>50</version>
+    <version>69</version>
+    <relativePath/>
   </parent>
 
-  <groupId>org.codehaus.mojo</groupId>
   <artifactId>webstart</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -20,7 +20,7 @@
   <licenses>
     <license>
       <name>Apache License 2</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -104,32 +104,13 @@
 
   <properties>
     <mavenVersion>3.5.4</mavenVersion>
-    <mavenPluginPluginVersion>3.6.0</mavenPluginPluginVersion>
+    <mavenPluginPluginVersion>3.6.4</mavenPluginPluginVersion>
     <keytoolVersion>1.5</keytoolVersion>
 	<plexusComponentVersion>2.1.1</plexusComponentVersion>
 
 	<velocity-version>2.2</velocity-version>
-	
-	<!-- maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion -->
-	<maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-
-    <!-- release plugin configuration -->
-
-    <!-- all modules shares the same version in our projects -->
     <autoVersionSubmodules>true</autoVersionSubmodules>
   </properties>
-
-  <repositories>
-    <repository>
-      <id>apache.maven.org</id>
-      <name>Maven Central Development Repository</name>
-      <url>https://repository.apache.org/content/groups/snapshots-group/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
 
   <dependencyManagement>
     <dependencies>
@@ -390,13 +371,6 @@
             <goals>
               <goal>check</goal>
             </goals>
-            <configuration>
-              <signature>
-                <groupId>org.codehaus.mojo.signature</groupId>
-                <artifactId>java15</artifactId>
-                <version>1.0</version>
-              </signature>
-            </configuration>
           </execution>
         </executions>
       </plugin>
