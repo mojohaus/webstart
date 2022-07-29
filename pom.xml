@@ -108,7 +108,7 @@
     <keytoolVersion>1.6</keytoolVersion>
 	<plexusComponentVersion>2.1.1</plexusComponentVersion>
 
-	<velocity-version>2.2</velocity-version>
+	<velocity-version>2.3</velocity-version>
     <autoVersionSubmodules>true</autoVersionSubmodules>
   </properties>
 
