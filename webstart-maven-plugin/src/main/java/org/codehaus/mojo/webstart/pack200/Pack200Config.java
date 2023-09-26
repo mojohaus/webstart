@@ -40,6 +40,13 @@ public class Pack200Config
     private boolean enabled;
 
     /**
+     * Whether the commons compress version of pack200 is enabled
+     *
+     * @see #isCommonsCompressEnabled()
+     */
+    private boolean commonsCompressEnabled;
+
+    /**
      * The files to be passed without compression.
      *
      * @see #getPassFiles()
@@ -82,5 +89,13 @@ public class Pack200Config
     {
         this.passFiles = passFiles;
     }
+
+	public boolean isCommonsCompressEnabled() {
+		return commonsCompressEnabled;
+	}
+
+	public void setCommonsCompressEnabled(boolean commonsCompressEnabled) {
+		this.commonsCompressEnabled = commonsCompressEnabled;
+	}
 
 }

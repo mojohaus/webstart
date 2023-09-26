@@ -58,7 +58,7 @@ public interface Pack200Tool
      * @param gzip        true if the destination file
      * @throws IOException TODO
      */
-    void pack( File source, File destination, Map<String, String> props, boolean gzip )
+    void pack( File source, File destination, Map<String, String> props, boolean gzip, boolean commonsCompress )
             throws IOException;
 
     /**
@@ -69,7 +69,7 @@ public interface Pack200Tool
      * @param props       the packing properties
      * @throws IOException TODO
      */
-    void repack( File source, File destination, Map<String, String> props )
+    void repack( File source, File destination, Map<String, String> props, boolean commonsCompress )
             throws IOException;
 
     /**
@@ -80,7 +80,7 @@ public interface Pack200Tool
      * @param props       the packing properties
      * @throws IOException TODO
      */
-    void unpack( File source, File destination, Map<String, String> props )
+    void unpack( File source, File destination, Map<String, String> props, boolean commonsCompress )
             throws IOException;
 
     /**
@@ -94,7 +94,7 @@ public interface Pack200Tool
      * @param passFiles     the list of file names to be passed as not pack200 compressed
      * @throws IOException TODO
      */
-    void packJars( File directory, FileFilter jarFileFilter, boolean gzip, List<String> passFiles )
+    void packJars( File directory, FileFilter jarFileFilter, boolean gzip, List<String> passFiles, boolean commonsCompress )
             throws IOException;
 
     /**
@@ -106,7 +106,7 @@ public interface Pack200Tool
      * @return the packed file
      * @throws IOException TODO
      */
-    File packJar( File jarFile, boolean gzip, List<String> passFiles )
+    File packJar( File jarFile, boolean gzip, List<String> passFiles, boolean commonsCompress )
             throws IOException;
 
     /**
@@ -116,7 +116,7 @@ public interface Pack200Tool
      * @param pack200FileFilter the fileter to determin which files to unpakc
      * @throws IOException TODO
      */
-    void unpackJars( File directory, FileFilter pack200FileFilter )
+    void unpackJars( File directory, FileFilter pack200FileFilter, boolean commonsCompress )
             throws IOException;
 
     /**
@@ -126,6 +126,6 @@ public interface Pack200Tool
      * @return the unpacked file
      * @throws IOException TODO
      */
-    File unpackJar( File packFile )
+    File unpackJar( File packFile, boolean commonsCompress )
             throws IOException;
 }

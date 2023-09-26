@@ -153,4 +153,10 @@ public class JnlpDependencyGlobalConfig
     {
         return pack200 != null && pack200.isEnabled();
     }
+
+
+    public boolean isCommonsCompressEnabled()
+    {
+        return pack200 != null && pack200.isCommonsCompressEnabled();
+    }
 }

@@ -827,6 +827,7 @@ public abstract class AbstractJnlpMojo
         getLog().debug( "basedir " + this.basedir );
         getLog().debug( "gzip " + isGzip() );
         getLog().debug( "pack200 " + isPack200() );
+        getLog().debug( "Commons Compress pack200 " + isCommonsCompressEnabled() );
         getLog().debug( "project " + this.getProject() );
         getLog().debug( "verbose " + isVerbose() );
 
