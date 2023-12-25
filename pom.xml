@@ -106,7 +106,7 @@
     <mavenVersion>3.5.4</mavenVersion>
     <mavenPluginPluginVersion>3.9.0</mavenPluginPluginVersion>
     <keytoolVersion>1.7</keytoolVersion>
-	<plexusComponentVersion>2.1.1</plexusComponentVersion>
+	<plexusComponentVersion>2.2.0</plexusComponentVersion>
 
 	<velocity-version>2.3</velocity-version>
     <autoVersionSubmodules>true</autoVersionSubmodules>
