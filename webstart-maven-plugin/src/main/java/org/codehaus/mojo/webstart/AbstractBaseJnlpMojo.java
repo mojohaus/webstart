@@ -408,6 +408,17 @@ public abstract class AbstractBaseJnlpMojo
     }
 
     /**
+     * Returns the flag that indicates whether or not jar resources
+     * will be compressed using the Apache Commons Compress pack200 variant.
+     *
+     * @return Returns the value of the pack200.enabled field.
+     */
+    public boolean isCommonsCompressEnabled()
+    {
+        return pack200 != null && pack200.isCommonsCompressEnabled();
+    }
+
+    /**
      * Returns the files to be passed without pack200 compression.
      *
      * @return Returns the list value of the pack200.passFiles.
@@ -691,7 +702,7 @@ public abstract class AbstractBaseJnlpMojo
 
                 // http://java.sun.com/j2se/1.5.0/docs/guide/deployment/deployment-guide/pack200.html
                 // we need to pack then unpack the files before signing them
-                unpackJars( getLibDirectory() );
+                unpackJars( getLibDirectory(), isCommonsCompressEnabled() );
 
                 // As out current Pack200 ant tasks don't give us the ability to use a temporary area for
                 // creating those temporary packing, we have to delete the temporary files.
@@ -733,7 +744,7 @@ public abstract class AbstractBaseJnlpMojo
     {
         try
         {
-            getPack200Tool().packJars( directory, filter, isGzip(), getPack200PassFiles() );
+            getPack200Tool().packJars( directory, filter, isGzip(), getPack200PassFiles(), isCommonsCompressEnabled() );
         }
         catch ( IOException e )
         {
@@ -798,7 +809,7 @@ public abstract class AbstractBaseJnlpMojo
     // Private Methods
     // ----------------------------------------------------------------------
 
-    private void unpackJars( File directory )
+    private void unpackJars( File directory, boolean commonsCompress )
             throws MojoExecutionException
     {
         getLog().info( "-- Unpack jars before sign operation " );
@@ -812,7 +823,7 @@ public abstract class AbstractBaseJnlpMojo
         // then unpack
         try
         {
-            getPack200Tool().unpackJars( directory, unprocessedPack200FileFilter );
+            getPack200Tool().unpackJars( directory, unprocessedPack200FileFilter, commonsCompress );
         }
         catch ( IOException e )
         {
