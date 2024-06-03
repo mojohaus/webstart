@@ -15,12 +15,6 @@
   <description>JNLP Sample servlet that supports pack200 protocol. Taken from Sun's JDK sample/jnlp directory thanks to
     its permissive license.</description>
   <url>http:///jdk6.dev.java.net/</url>
-  <!--scm> available in source package inside a mustang snapshot.
-    <connection />
-    <developerConnection />
-    <tag />
-    <url />
-  </scm-->
   <organization>
     <name>Sun Microsystems</name>
     <url>http://www.sun.com</url>

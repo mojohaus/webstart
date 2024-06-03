@@ -224,7 +224,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
-            <version>3.4.0</version>
             <configuration>
               <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
               <settingsFile>src/it/settings.xml</settingsFile>
@@ -265,7 +264,6 @@
 
           <plugin>
             <artifactId>maven-invoker-plugin</artifactId>
-            <version>3.4.0</version>
           </plugin>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
