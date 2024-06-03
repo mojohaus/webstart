@@ -19,8 +19,6 @@ package org.codehaus.mojo.webstart.dependency.filenaming;
  * under the License.
  */
 
-import org.apache.maven.artifact.Artifact;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,26 +26,22 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class UniqueVersionsHelper
-{
+import org.apache.maven.artifact.Artifact;
 
-    private final static Pattern NONUNIQUE_SNAPSHOT_PATTERN = Pattern.compile( "^(.*)-SNAPSHOT$" );
+public class UniqueVersionsHelper {
 
-    public static final String getUniqueVersion( Artifact artifact )
-    {
-        Matcher m = NONUNIQUE_SNAPSHOT_PATTERN.matcher( artifact.getVersion() );
-        if ( m.matches() )
-        {
+    private static final Pattern NONUNIQUE_SNAPSHOT_PATTERN = Pattern.compile("^(.*)-SNAPSHOT$");
+
+    public static final String getUniqueVersion(Artifact artifact) {
+        Matcher m = NONUNIQUE_SNAPSHOT_PATTERN.matcher(artifact.getVersion());
+        if (m.matches()) {
             // version is not unique, replace SNAPSHOT with file modification timestamp
-            Date d = new Date( artifact.getFile().lastModified() );
-            DateFormat df = new SimpleDateFormat( "yyyyMMdd.HHmmss" );
-            df.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
-            return m.group( 1 ) + "-" + df.format( d ) + "-0";
-        }
-        else
-        {
+            Date d = new Date(artifact.getFile().lastModified());
+            DateFormat df = new SimpleDateFormat("yyyyMMdd.HHmmss");
+            df.setTimeZone(TimeZone.getTimeZone("UTC"));
+            return m.group(1) + "-" + df.format(d) + "-0";
+        } else {
             return artifact.getVersion();
         }
     }
-
 }

@@ -1,6 +1,6 @@
 /*
  * @(#)DownloadResponse.java	1.8 07/03/15
- * 
+ *
  * Copyright (c) 2006 Sun Microsystems, Inc. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@
 package jnlp.sample.servlet;
 
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -53,8 +54,7 @@ import java.util.MissingResourceException;
  * A class used to encapsulate a file response, and
  * factory methods to create some common types.
  */
-abstract public class DownloadResponse
-{
+public abstract class DownloadResponse {
     private static final String HEADER_LASTMOD = "Last-Modified";
 
     private static final String HEADER_JNLP_VERSION = "x-java-jnlp-version-id";
@@ -85,11 +85,11 @@ abstract public class DownloadResponse
 
     public static final String PACK200_GZIP_ENCODING = "pack200-gzip";
 
-    public DownloadResponse()
-    { /* do nothing */ }
+    public DownloadResponse() {
+        /* do nothing */
+    }
 
-    public String toString()
-    {
+    public String toString() {
         return getClass().getName();
     }
 
@@ -99,96 +99,72 @@ abstract public class DownloadResponse
      * @param response TODO
      * @throws IOException TODO
      */
-    abstract void sendRespond( HttpServletResponse response )
-            throws IOException;
+    abstract void sendRespond(HttpServletResponse response) throws IOException;
 
     /**
      * Factory methods for error responses
      *
      * @return TODO
      */
-    static DownloadResponse getNotFoundResponse()
-    {
+    static DownloadResponse getNotFoundResponse() {
         return new NotFoundResponse();
     }
 
-    static DownloadResponse getNoContentResponse()
-    {
+    static DownloadResponse getNoContentResponse() {
         return new NotFoundResponse();
     }
 
-    static DownloadResponse getJnlpErrorResponse( int jnlpErrorCode )
-    {
-        return new JnlpErrorResponse( jnlpErrorCode );
+    static DownloadResponse getJnlpErrorResponse(int jnlpErrorCode) {
+        return new JnlpErrorResponse(jnlpErrorCode);
     }
 
     /**
      * Factory method for file download responses
      */
-
-    static DownloadResponse getNotModifiedResponse()
-    {
+    static DownloadResponse getNotModifiedResponse() {
         return new NotModifiedResponse();
     }
 
-    static DownloadResponse getHeadRequestResponse( String mimeType, String versionId, long lastModified,
-                                                    int contentLength )
-    {
-        return new HeadRequestResponse( mimeType, versionId, lastModified, contentLength );
+    static DownloadResponse getHeadRequestResponse(
+            String mimeType, String versionId, long lastModified, int contentLength) {
+        return new HeadRequestResponse(mimeType, versionId, lastModified, contentLength);
     }
 
-    static DownloadResponse getFileDownloadResponse( byte[] content, String mimeType, long timestamp, String versionId )
-    {
-        return new ByteArrayFileDownloadResponse( content, mimeType, versionId, timestamp );
+    static DownloadResponse getFileDownloadResponse(byte[] content, String mimeType, long timestamp, String versionId) {
+        return new ByteArrayFileDownloadResponse(content, mimeType, versionId, timestamp);
     }
 
-    static DownloadResponse getFileDownloadResponse( URL resource, String mimeType, long timestamp, String versionId )
-    {
-        return new ResourceFileDownloadResponse( resource, mimeType, versionId, timestamp );
+    static DownloadResponse getFileDownloadResponse(URL resource, String mimeType, long timestamp, String versionId) {
+        return new ResourceFileDownloadResponse(resource, mimeType, versionId, timestamp);
     }
 
-    static DownloadResponse getFileDownloadResponse( File file, String mimeType, long timestamp, String versionId )
-    {
-        return new DiskFileDownloadResponse( file, mimeType, versionId, timestamp );
+    static DownloadResponse getFileDownloadResponse(File file, String mimeType, long timestamp, String versionId) {
+        return new DiskFileDownloadResponse(file, mimeType, versionId, timestamp);
     }
 
     //
     // Private classes implementing the various types
     //
 
-    static private class NotModifiedResponse
-            extends DownloadResponse
-    {
-        public void sendRespond( HttpServletResponse response )
-                throws IOException
-        {
-            response.sendError( HttpServletResponse.SC_NOT_MODIFIED );
+    private static class NotModifiedResponse extends DownloadResponse {
+        public void sendRespond(HttpServletResponse response) throws IOException {
+            response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
         }
     }
 
-    static private class NotFoundResponse
-            extends DownloadResponse
-    {
-        public void sendRespond( HttpServletResponse response )
-                throws IOException
-        {
-            response.sendError( HttpServletResponse.SC_NOT_FOUND );
+    private static class NotFoundResponse extends DownloadResponse {
+        public void sendRespond(HttpServletResponse response) throws IOException {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 
-    static private class NoContentResponse
-            extends DownloadResponse
-    {
-        public void sendRespond( HttpServletResponse response )
-                throws IOException
-        {
-            response.sendError( HttpServletResponse.SC_NO_CONTENT );
+    private static class NoContentResponse extends DownloadResponse {
+        public void sendRespond(HttpServletResponse response) throws IOException {
+            response.sendError(HttpServletResponse.SC_NO_CONTENT);
         }
     }
 
-    static private class HeadRequestResponse
-            extends DownloadResponse
-    {
+    private static class HeadRequestResponse extends DownloadResponse {
         private String _mimeType;
 
         private String _versionId;
@@ -197,8 +173,7 @@ abstract public class DownloadResponse
 
         private int _contentLength;
 
-        HeadRequestResponse( String mimeType, String versionId, long lastModified, int contentLength )
-        {
+        HeadRequestResponse(String mimeType, String versionId, long lastModified, int contentLength) {
             _mimeType = mimeType;
             _versionId = versionId;
             _lastModified = lastModified;
@@ -208,61 +183,47 @@ abstract public class DownloadResponse
         /**
          * Post information to an HttpResponse
          */
-        public void sendRespond( HttpServletResponse response )
-                throws IOException
-        {
+        public void sendRespond(HttpServletResponse response) throws IOException {
             // Set header information
-            response.setContentType( _mimeType );
-            response.setContentLength( _contentLength );
-            if ( _versionId != null )
-            {
-                response.setHeader( HEADER_JNLP_VERSION, _versionId );
+            response.setContentType(_mimeType);
+            response.setContentLength(_contentLength);
+            if (_versionId != null) {
+                response.setHeader(HEADER_JNLP_VERSION, _versionId);
             }
-            if ( _lastModified != 0 )
-            {
-                response.setDateHeader( HEADER_LASTMOD, _lastModified );
+            if (_lastModified != 0) {
+                response.setDateHeader(HEADER_LASTMOD, _lastModified);
             }
-            response.sendError( HttpServletResponse.SC_OK );
+            response.sendError(HttpServletResponse.SC_OK);
         }
     }
 
-    static public class JnlpErrorResponse
-            extends DownloadResponse
-    {
+    public static class JnlpErrorResponse extends DownloadResponse {
         private String _message;
 
-        public JnlpErrorResponse( int jnlpErrorCode )
-        {
-            String msg = Integer.toString( jnlpErrorCode );
+        public JnlpErrorResponse(int jnlpErrorCode) {
+            String msg = Integer.toString(jnlpErrorCode);
             String dsc = "No description";
-            try
-            {
-                dsc = JnlpDownloadServlet.getResourceBundle().getString( "servlet.jnlp.err." + msg );
+            try {
+                dsc = JnlpDownloadServlet.getResourceBundle().getString("servlet.jnlp.err." + msg);
+            } catch (MissingResourceException mre) {
+                /* ignore */
             }
-            catch ( MissingResourceException mre )
-            { /* ignore */}
             _message = msg + " " + dsc;
         }
 
-        public void sendRespond( HttpServletResponse response )
-                throws IOException
-        {
-            response.setContentType( JNLP_ERROR_MIMETYPE );
+        public void sendRespond(HttpServletResponse response) throws IOException {
+            response.setContentType(JNLP_ERROR_MIMETYPE);
             PrintWriter pw = response.getWriter();
-            pw.println( _message );
+            pw.println(_message);
         }
-
         ;
 
-        public String toString()
-        {
+        public String toString() {
             return super.toString() + "[" + _message + "]";
         }
     }
 
-    static private abstract class FileDownloadResponse
-            extends DownloadResponse
-    {
+    private abstract static class FileDownloadResponse extends DownloadResponse {
         private String _mimeType;
 
         private String _versionId;
@@ -271,201 +232,151 @@ abstract public class DownloadResponse
 
         private String _fileName;
 
-        FileDownloadResponse( String mimeType, String versionId, long lastModified )
-        {
+        FileDownloadResponse(String mimeType, String versionId, long lastModified) {
             _mimeType = mimeType;
             _versionId = versionId;
             _lastModified = lastModified;
             _fileName = null;
         }
 
-        FileDownloadResponse( String mimeType, String versionId, long lastModified, String fileName )
-        {
+        FileDownloadResponse(String mimeType, String versionId, long lastModified, String fileName) {
             _mimeType = mimeType;
             _versionId = versionId;
             _lastModified = lastModified;
             _fileName = fileName;
         }
 
-
         /**
          * Information about response
          */
-        String getMimeType()
-        {
+        String getMimeType() {
             return _mimeType;
         }
 
-        String getVersionId()
-        {
+        String getVersionId() {
             return _versionId;
         }
 
-        long getLastModified()
-        {
+        long getLastModified() {
             return _lastModified;
         }
 
-        abstract int getContentLength()
-                throws IOException;
+        abstract int getContentLength() throws IOException;
 
-        abstract InputStream getContent()
-                throws IOException;
+        abstract InputStream getContent() throws IOException;
 
         /**
          * Post information to an HttpResponse
          */
-        public void sendRespond( HttpServletResponse response )
-                throws IOException
-        {
+        public void sendRespond(HttpServletResponse response) throws IOException {
             // Set header information
-            response.setContentType( getMimeType() );
-            response.setContentLength( getContentLength() );
-            if ( getVersionId() != null )
-            {
-                response.setHeader( HEADER_JNLP_VERSION, getVersionId() );
+            response.setContentType(getMimeType());
+            response.setContentLength(getContentLength());
+            if (getVersionId() != null) {
+                response.setHeader(HEADER_JNLP_VERSION, getVersionId());
             }
-            if ( getLastModified() != 0 )
-            {
-                response.setDateHeader( HEADER_LASTMOD, getLastModified() );
+            if (getLastModified() != 0) {
+                response.setDateHeader(HEADER_LASTMOD, getLastModified());
             }
-            if ( _fileName != null )
-            {
+            if (_fileName != null) {
 
-                if ( _fileName.endsWith( ".pack.gz" ) )
-                {
-                    response.setHeader( CONTENT_ENCODING, PACK200_GZIP_ENCODING );
-                }
-                else if ( _fileName.endsWith( ".gz" ) )
-                {
-                    response.setHeader( CONTENT_ENCODING, GZIP_ENCODING );
-                }
-                else
-                {
-                    response.setHeader( CONTENT_ENCODING, null );
+                if (_fileName.endsWith(".pack.gz")) {
+                    response.setHeader(CONTENT_ENCODING, PACK200_GZIP_ENCODING);
+                } else if (_fileName.endsWith(".gz")) {
+                    response.setHeader(CONTENT_ENCODING, GZIP_ENCODING);
+                } else {
+                    response.setHeader(CONTENT_ENCODING, null);
                 }
             }
 
             // Send contents
             InputStream in = getContent();
             OutputStream out = response.getOutputStream();
-            try
-            {
+            try {
                 byte[] bytes = new byte[32 * 1024];
                 int read;
-                while ( ( read = in.read( bytes ) ) != -1 )
-                {
-                    out.write( bytes, 0, read );
+                while ((read = in.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
                 }
-            }
-            finally
-            {
-                if ( in != null )
-                {
+            } finally {
+                if (in != null) {
                     in.close();
                 }
             }
         }
 
-        protected String getArgString()
-        {
+        protected String getArgString() {
             long length = 0;
-            try
-            {
+            try {
                 length = getContentLength();
+            } catch (IOException ioe) {
+                /* ignore */
             }
-            catch ( IOException ioe )
-            { /* ignore */ }
-            return "Mimetype=" + getMimeType() + " VersionId=" + getVersionId() + " Timestamp=" +
-                    new Date( getLastModified() ) + " Length=" + length;
+            return "Mimetype=" + getMimeType() + " VersionId=" + getVersionId() + " Timestamp="
+                    + new Date(getLastModified()) + " Length=" + length;
         }
     }
 
-    static private class ByteArrayFileDownloadResponse
-            extends FileDownloadResponse
-    {
+    private static class ByteArrayFileDownloadResponse extends FileDownloadResponse {
         private byte[] _content;
 
-        ByteArrayFileDownloadResponse( byte[] content, String mimeType, String versionId, long lastModified )
-        {
-            super( mimeType, versionId, lastModified );
+        ByteArrayFileDownloadResponse(byte[] content, String mimeType, String versionId, long lastModified) {
+            super(mimeType, versionId, lastModified);
             _content = content;
         }
 
-        int getContentLength()
-        {
+        int getContentLength() {
             return _content.length;
         }
 
-        InputStream getContent()
-        {
-            return new ByteArrayInputStream( _content );
+        InputStream getContent() {
+            return new ByteArrayInputStream(_content);
         }
 
-        public String toString()
-        {
+        public String toString() {
             return super.toString() + "[ " + getArgString() + "]";
         }
     }
 
-    static private class ResourceFileDownloadResponse
-            extends FileDownloadResponse
-    {
+    private static class ResourceFileDownloadResponse extends FileDownloadResponse {
         URL _url;
 
-        ResourceFileDownloadResponse( URL url, String mimeType, String versionId, long lastModified )
-        {
-            super( mimeType, versionId, lastModified, url.toString() );
+        ResourceFileDownloadResponse(URL url, String mimeType, String versionId, long lastModified) {
+            super(mimeType, versionId, lastModified, url.toString());
             _url = url;
         }
 
-        int getContentLength()
-                throws IOException
-        {
+        int getContentLength() throws IOException {
             return _url.openConnection().getContentLength();
         }
 
-        InputStream getContent()
-                throws IOException
-        {
+        InputStream getContent() throws IOException {
             return _url.openConnection().getInputStream();
         }
 
-        public String toString()
-        {
+        public String toString() {
             return super.toString() + "[ " + getArgString() + "]";
         }
     }
 
-    static private class DiskFileDownloadResponse
-            extends FileDownloadResponse
-    {
+    private static class DiskFileDownloadResponse extends FileDownloadResponse {
         private File _file;
 
-        DiskFileDownloadResponse( File file, String mimeType, String versionId, long lastModified )
-        {
-            super( mimeType, versionId, lastModified, file.getName() );
+        DiskFileDownloadResponse(File file, String mimeType, String versionId, long lastModified) {
+            super(mimeType, versionId, lastModified, file.getName());
             _file = file;
         }
 
-        int getContentLength()
-                throws IOException
-        {
+        int getContentLength() throws IOException {
             return (int) _file.length();
         }
 
-        InputStream getContent()
-                throws IOException
-        {
-            return new BufferedInputStream( new FileInputStream( _file ) );
+        InputStream getContent() throws IOException {
+            return new BufferedInputStream(new FileInputStream(_file));
         }
 
-        public String toString()
-        {
+        public String toString() {
             return super.toString() + "[ " + getArgString() + "]";
         }
     }
 }
-
-
-

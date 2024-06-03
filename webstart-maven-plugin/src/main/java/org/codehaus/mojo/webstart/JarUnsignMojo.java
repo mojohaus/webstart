@@ -19,6 +19,8 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
+import java.io.File;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
@@ -27,8 +29,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.jarsigner.JarSignerUtil;
 import org.codehaus.mojo.webstart.sign.SignTool;
-
-import java.io.File;
 
 /**
  * Unsigns a JAR, removing signatures.
@@ -39,10 +39,8 @@ import java.io.File;
  * @author <a href="mailto:andrius@pivotcapital.com">Andrius Šabanas</a>
  * @version $Id$
  */
-@Mojo( name = "unsign", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = false )
-public class JarUnsignMojo
-        extends AbstractMojo
-{
+@Mojo(name = "unsign", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = false)
+public class JarUnsignMojo extends AbstractMojo {
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
@@ -51,7 +49,7 @@ public class JarUnsignMojo
      * Set this to <code>true</code> to disable signing.
      * Useful to speed up build process in development environment.
      */
-    @Parameter( property = "maven.jar.unsign.skip", defaultValue = "false" )
+    @Parameter(property = "maven.jar.unsign.skip", defaultValue = "false")
     private boolean skip;
 
     /**
@@ -59,21 +57,23 @@ public class JarUnsignMojo
      *
      * @deprecated since 1.0-beta-4, no more used to unsign jars.
      */
-    @Parameter( property = "tempdir", defaultValue = "${basedir}", required = true )
+    @Parameter(property = "tempdir", defaultValue = "${basedir}", required = true)
     private File tempDirectory;
 
     /**
      * Path of the jar to unsign. Will unsign all archives in case folder was specified here.
      * When specified, the finalName is ignored.
      */
-    @Parameter( alias = "jarpath", property = "maven.jar.unsign.jarpath",
-            defaultValue = "${project.build.directory}/${project.build.finalName}.${project.packaging}" )
+    @Parameter(
+            alias = "jarpath",
+            property = "maven.jar.unsign.jarpath",
+            defaultValue = "${project.build.directory}/${project.build.finalName}.${project.packaging}")
     private File jarPath;
 
     /**
      * Enable verbose mode.
      */
-    @Parameter( property = "verbose", defaultValue = "false" )
+    @Parameter(property = "verbose", defaultValue = "false")
     private boolean verbose;
 
     // ----------------------------------------------------------------------
@@ -91,31 +91,21 @@ public class JarUnsignMojo
     // ----------------------------------------------------------------------
 
     @Override
-    public void execute()
-            throws MojoExecutionException
-    {
-        if ( skip )
-        {
-            getLog().info( "Skipping JAR unsigning for file: " + jarPath.getAbsolutePath() );
+    public void execute() throws MojoExecutionException {
+        if (skip) {
+            getLog().info("Skipping JAR unsigning for file: " + jarPath.getAbsolutePath());
             return;
         }
-        if ( jarPath.isDirectory() )
-        {
-            for ( File jar : jarPath.listFiles() )
-            {
-                if ( JarSignerUtil.isZipFile( jar ) )
-                {
-                    signTool.unsign( jar, verbose );
-                }
-                else
-                {
-                    getLog().info( "Skipping JAR unsigning for file: " + jar.getAbsolutePath() );
+        if (jarPath.isDirectory()) {
+            for (File jar : jarPath.listFiles()) {
+                if (JarSignerUtil.isZipFile(jar)) {
+                    signTool.unsign(jar, verbose);
+                } else {
+                    getLog().info("Skipping JAR unsigning for file: " + jar.getAbsolutePath());
                 }
             }
-        }
-        else
-        {
-            signTool.unsign( this.jarPath, verbose );
+        } else {
+            signTool.unsign(this.jarPath, verbose);
         }
     }
 
@@ -123,19 +113,15 @@ public class JarUnsignMojo
     // Public Methods
     // ----------------------------------------------------------------------
 
-    public void setJarPath( File jarPath )
-    {
+    public void setJarPath(File jarPath) {
         this.jarPath = jarPath;
     }
 
-    public void setVerbose( boolean verbose )
-    {
+    public void setVerbose(boolean verbose) {
         this.verbose = verbose;
     }
 
-    public void setSignTool( SignTool signTool )
-    {
+    public void setSignTool(SignTool signTool) {
         this.signTool = signTool;
     }
-
 }

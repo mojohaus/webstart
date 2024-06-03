@@ -1,6 +1,6 @@
 /*
  * @(#)Patcher.java	1.6 05/11/17
- * 
+ *
  * Copyright (c) 2006 Sun Microsystems, Inc. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,8 +44,7 @@ import java.io.OutputStream;
  *
  * @version 1.8, 01/23/03
  */
-public interface Patcher
-{
+public interface Patcher {
     /**
      * Applies a patch previously created with <code>createPatch</code>.
      * Pass in a delegate to be notified of the status of the patch.
@@ -56,14 +55,13 @@ public interface Patcher
      * @param result     TODO
      * @throws IOException TODO
      */
-    void applyPatch( PatchDelegate delegate, String oldJarPath, String deltaPath, OutputStream result )
+    void applyPatch(PatchDelegate delegate, String oldJarPath, String deltaPath, OutputStream result)
             throws IOException;
 
     /**
      * Callback used when patching a file.
      */
-    interface PatchDelegate
-    {
-        void patching( int percentDone );
+    interface PatchDelegate {
+        void patching(int percentDone);
     }
 }

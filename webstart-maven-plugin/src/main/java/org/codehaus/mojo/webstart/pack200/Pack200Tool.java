@@ -31,8 +31,7 @@ import java.util.Map;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-2
  */
-public interface Pack200Tool
-{
+public interface Pack200Tool {
 
     /**
      * Plexus component role.
@@ -58,8 +57,7 @@ public interface Pack200Tool
      * @param gzip        true if the destination file
      * @throws IOException TODO
      */
-    void pack( File source, File destination, Map<String, String> props, boolean gzip )
-            throws IOException;
+    void pack(File source, File destination, Map<String, String> props, boolean gzip) throws IOException;
 
     /**
      * Repack a jar.
@@ -69,8 +67,7 @@ public interface Pack200Tool
      * @param props       the packing properties
      * @throws IOException TODO
      */
-    void repack( File source, File destination, Map<String, String> props )
-            throws IOException;
+    void repack(File source, File destination, Map<String, String> props) throws IOException;
 
     /**
      * Unpack a jar.
@@ -80,8 +77,7 @@ public interface Pack200Tool
      * @param props       the packing properties
      * @throws IOException TODO
      */
-    void unpack( File source, File destination, Map<String, String> props )
-            throws IOException;
+    void unpack(File source, File destination, Map<String, String> props) throws IOException;
 
     /**
      * Packs from the given {@code directory}, all files matched by the filter.
@@ -94,8 +90,7 @@ public interface Pack200Tool
      * @param passFiles     the list of file names to be passed as not pack200 compressed
      * @throws IOException TODO
      */
-    void packJars( File directory, FileFilter jarFileFilter, boolean gzip, List<String> passFiles )
-            throws IOException;
+    void packJars(File directory, FileFilter jarFileFilter, boolean gzip, List<String> passFiles) throws IOException;
 
     /**
      * Pack the given jarfile and return the packed file.
@@ -106,8 +101,7 @@ public interface Pack200Tool
      * @return the packed file
      * @throws IOException TODO
      */
-    File packJar( File jarFile, boolean gzip, List<String> passFiles )
-            throws IOException;
+    File packJar(File jarFile, boolean gzip, List<String> passFiles) throws IOException;
 
     /**
      * UnPacks from the given {@code directory}, all files matched by the filter.
@@ -116,8 +110,7 @@ public interface Pack200Tool
      * @param pack200FileFilter the fileter to determin which files to unpakc
      * @throws IOException TODO
      */
-    void unpackJars( File directory, FileFilter pack200FileFilter )
-            throws IOException;
+    void unpackJars(File directory, FileFilter pack200FileFilter) throws IOException;
 
     /**
      * Unpack the given file and return it.
@@ -126,6 +119,5 @@ public interface Pack200Tool
      * @return the unpacked file
      * @throws IOException TODO
      */
-    File unpackJar( File packFile )
-            throws IOException;
+    File unpackJar(File packFile) throws IOException;
 }

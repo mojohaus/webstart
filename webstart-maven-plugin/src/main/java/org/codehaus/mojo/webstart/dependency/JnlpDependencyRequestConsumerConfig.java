@@ -25,8 +25,7 @@ package org.codehaus.mojo.webstart.dependency;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public class JnlpDependencyRequestConsumerConfig
-{
+public class JnlpDependencyRequestConsumerConfig {
 
     private boolean verbose;
 
@@ -34,33 +33,27 @@ public class JnlpDependencyRequestConsumerConfig
 
     private boolean failFast;
 
-    public int getMaxThreads()
-    {
+    public int getMaxThreads() {
         return maxThreads;
     }
 
-    public void setMaxThreads( int maxThreads )
-    {
+    public void setMaxThreads(int maxThreads) {
         this.maxThreads = maxThreads;
     }
 
-    public boolean isFailFast()
-    {
+    public boolean isFailFast() {
         return failFast;
     }
 
-    public void setFailFast( boolean failFast )
-    {
+    public void setFailFast(boolean failFast) {
         this.failFast = failFast;
     }
 
-    public boolean isVerbose()
-    {
+    public boolean isVerbose() {
         return verbose;
     }
 
-    public void setVerbose( boolean verbose )
-    {
+    public void setVerbose(boolean verbose) {
         this.verbose = verbose;
     }
 }

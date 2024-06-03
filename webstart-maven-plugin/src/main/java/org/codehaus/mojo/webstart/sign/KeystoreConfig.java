@@ -25,29 +25,24 @@ package org.codehaus.mojo.webstart.sign;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-3
  */
-public class KeystoreConfig
-{
+public class KeystoreConfig {
     private boolean delete;
 
     private boolean gen;
 
-    public boolean isDelete()
-    {
+    public boolean isDelete() {
         return delete;
     }
 
-    public void setDelete( boolean delete )
-    {
+    public void setDelete(boolean delete) {
         this.delete = delete;
     }
 
-    public boolean isGen()
-    {
+    public boolean isGen() {
         return gen;
     }
 
-    public void setGen( boolean gen )
-    {
+    public void setGen(boolean gen) {
         this.gen = gen;
     }
 }

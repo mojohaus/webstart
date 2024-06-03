@@ -35,11 +35,12 @@ import org.apache.maven.project.MavenProject;
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
  */
-@Mojo( name = "jnlp-single", requiresProject = true, inheritByDefault = true,
-        requiresDependencyResolution = ResolutionScope.RUNTIME )
-public class JnlpSingleMojo
-        extends AbstractJnlpMojo
-{
+@Mojo(
+        name = "jnlp-single",
+        requiresProject = true,
+        inheritByDefault = true,
+        requiresDependencyResolution = ResolutionScope.RUNTIME)
+public class JnlpSingleMojo extends AbstractJnlpMojo {
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
@@ -47,7 +48,7 @@ public class JnlpSingleMojo
     /**
      * Maven project.
      */
-    @Parameter( defaultValue = "${project}", required = true, readonly = true )
+    @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
 
     // ----------------------------------------------------------------------
@@ -55,8 +56,7 @@ public class JnlpSingleMojo
     // ----------------------------------------------------------------------
 
     @Override
-    public MavenProject getProject()
-    {
+    public MavenProject getProject() {
         return project;
     }
 }

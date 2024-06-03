@@ -13,8 +13,7 @@
 
   <name>MWEBSTART :: Webstart Maven Plugin</name>
   <description>Maven plugin that supports webstart application development. Helps generate JNLP files and supports the
-    JnlpDownloadServlet.
-  </description>
+    JnlpDownloadServlet.</description>
 
   <contributors>
     <contributor>
@@ -46,10 +45,10 @@
 
   <dependencies>
 
-	<dependency>
-	  <groupId>org.codehaus.mojo</groupId>
-	  <artifactId>keytool-api-1.7</artifactId>
-	</dependency>
+    <dependency>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>keytool-api-1.7</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -190,10 +189,10 @@
         <executions>
           <execution>
             <id>site</id>
-            <phase>pre-site</phase>
             <goals>
               <goal>run</goal>
             </goals>
+            <phase>pre-site</phase>
             <configuration>
               <tasks>
                 <copy todir="${project.build.directory}/site/examples/">
@@ -225,7 +224,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
-						<version>3.4.0</version>
+            <version>3.4.0</version>
             <configuration>
               <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
               <settingsFile>src/it/settings.xml</settingsFile>
@@ -266,7 +265,7 @@
 
           <plugin>
             <artifactId>maven-invoker-plugin</artifactId>
-			<version>3.4.0</version>
+            <version>3.4.0</version>
           </plugin>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>

@@ -19,15 +19,15 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.maven.artifact.Artifact;
 import org.codehaus.mojo.webstart.JnlpConfig;
 import org.codehaus.mojo.webstart.JnlpExtension;
 import org.codehaus.mojo.webstart.dependency.filenaming.DependencyFilenameStrategy;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * configuration of {@link Generator}.
@@ -37,9 +37,7 @@ import java.util.Map;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public class GeneratorConfig
-        extends AbstractGeneratorExtraConfigWithDeps
-{
+public class GeneratorConfig extends AbstractGeneratorExtraConfigWithDeps {
 
     private final Collection<Artifact> packagedJnlpArtifacts;
 
@@ -49,13 +47,24 @@ public class GeneratorConfig
 
     private final JnlpConfig jnlp;
 
-    public GeneratorConfig( String libPath, boolean pack200, boolean outputJarVersions,
-                            boolean useUniqueVersions, Artifact artifactWithMainClass,
-                            DependencyFilenameStrategy dependencyFilenameStrategy,
-                            Collection<Artifact> packagedJnlpArtifacts, List<JnlpExtension> jnlpExtensions,
-                            String codebase, JnlpConfig jnlp )
-    {
-        super( libPath, pack200, outputJarVersions, useUniqueVersions, artifactWithMainClass, dependencyFilenameStrategy );
+    public GeneratorConfig(
+            String libPath,
+            boolean pack200,
+            boolean outputJarVersions,
+            boolean useUniqueVersions,
+            Artifact artifactWithMainClass,
+            DependencyFilenameStrategy dependencyFilenameStrategy,
+            Collection<Artifact> packagedJnlpArtifacts,
+            List<JnlpExtension> jnlpExtensions,
+            String codebase,
+            JnlpConfig jnlp) {
+        super(
+                libPath,
+                pack200,
+                outputJarVersions,
+                useUniqueVersions,
+                artifactWithMainClass,
+                dependencyFilenameStrategy);
 
         this.packagedJnlpArtifacts = packagedJnlpArtifacts;
         this.jnlpExtensions = jnlpExtensions;
@@ -63,72 +72,59 @@ public class GeneratorConfig
         this.jnlp = jnlp;
     }
 
-    public Collection<Artifact> getPackagedJnlpArtifacts()
-    {
+    public Collection<Artifact> getPackagedJnlpArtifacts() {
         return packagedJnlpArtifacts;
     }
 
-    public List<JnlpExtension> getJnlpExtensions()
-    {
+    public List<JnlpExtension> getJnlpExtensions() {
         return jnlpExtensions;
     }
 
-    public boolean hasJnlpExtensions()
-    {
-        return CollectionUtils.isNotEmpty( jnlpExtensions );
+    public boolean hasJnlpExtensions() {
+        return CollectionUtils.isNotEmpty(jnlpExtensions);
     }
 
     @Override
-    public String getJnlpSpec()
-    {
+    public String getJnlpSpec() {
         // shouldn't we automatically identify the spec based on the features used in the spec?
         // also detect conflicts. If user specified 1.0 but uses a 1.5 feature we should fail in checkInput().
-        if ( jnlp.getSpec() != null )
-        {
+        if (jnlp.getSpec() != null) {
             return jnlp.getSpec();
         }
         return "1.0+";
     }
 
     @Override
-    public String getOfflineAllowed()
-    {
-        if ( jnlp.getOfflineAllowed() != null )
-        {
+    public String getOfflineAllowed() {
+        if (jnlp.getOfflineAllowed() != null) {
             return jnlp.getOfflineAllowed();
         }
         return "false";
     }
 
     @Override
-    public String getAllPermissions()
-    {
-        if ( jnlp.getAllPermissions() != null )
-        {
+    public String getAllPermissions() {
+        if (jnlp.getAllPermissions() != null) {
             return jnlp.getAllPermissions();
         }
         return "true";
     }
 
     @Override
-    public String getJ2seVersion()
-    {
-        if ( jnlp.getJ2seVersion() != null )
-        {
+    public String getJ2seVersion() {
+        if (jnlp.getJ2seVersion() != null) {
             return jnlp.getJ2seVersion();
         }
         return "1.5+";
     }
 
     @Override
-    public String getJnlpCodeBase()
-    {
+    public String getJnlpCodeBase() {
         return codebase;
     }
 
     @Override
-    public Map<String, String> getProperties()
-    {
+    public Map<String, String> getProperties() {
         return jnlp.getProperties();
     }
 

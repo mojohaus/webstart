@@ -1,6 +1,6 @@
 /*
  * @(#)ResourceCatalog.java	1.6 05/11/17
- * 
+ *
  * Copyright (c) 2006 Sun Microsystems, Inc. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,22 +36,22 @@
 
 package jnlp.sample.servlet;
 
-import jnlp.sample.util.VersionID;
-import jnlp.sample.util.VersionString;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXParseException;
-
 import javax.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ResourceCatalog
-{
+import jnlp.sample.util.VersionID;
+import jnlp.sample.util.VersionString;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXParseException;
+
+public class ResourceCatalog {
     public static final String VERSION_XML_FILENAME = "version.xml";
 
     private Logger _log = null;
@@ -64,8 +64,7 @@ public class ResourceCatalog
      * Class to contain the information we know
      * about a specific directory
      */
-    static private class PathEntries
-    {
+    private static class PathEntries {
         /* Version-based entries at this particular path */
         private List _versionXmlList;
 
@@ -76,115 +75,92 @@ public class ResourceCatalog
         /* Last time this entry was updated */
         private long _lastModified; // Last modified time of entry;
 
-        public PathEntries( List versionXmlList, List directoryList, List platformList, long lastModified )
-        {
+        public PathEntries(List versionXmlList, List directoryList, List platformList, long lastModified) {
             _versionXmlList = versionXmlList;
             _directoryList = directoryList;
             _platformList = platformList;
             _lastModified = lastModified;
         }
 
-
-        public void setDirectoryList( List dirList )
-        {
+        public void setDirectoryList(List dirList) {
             _directoryList = dirList;
         }
 
-        public List getVersionXmlList()
-        {
+        public List getVersionXmlList() {
             return _versionXmlList;
         }
 
-        public List getDirectoryList()
-        {
+        public List getDirectoryList() {
             return _directoryList;
         }
 
-        public List getPlatformList()
-        {
+        public List getPlatformList() {
             return _platformList;
         }
 
-        public long getLastModified()
-        {
+        public long getLastModified() {
             return _lastModified;
         }
     }
 
-    public ResourceCatalog( ServletContext servletContext, Logger log )
-    {
+    public ResourceCatalog(ServletContext servletContext, Logger log) {
         _entries = new HashMap();
         _servletContext = servletContext;
         _log = log;
     }
 
-
-    public JnlpResource lookupResource( DownloadRequest dreq )
-            throws ErrorResponseException
-    {
+    public JnlpResource lookupResource(DownloadRequest dreq) throws ErrorResponseException {
         // Split request up into path and name
         String path = dreq.getPath();
         String name = null;
         String dir = null;
-        int idx = path.lastIndexOf( '/' );
-        if ( idx == -1 )
-        {
+        int idx = path.lastIndexOf('/');
+        if (idx == -1) {
             name = path;
-        }
-        else
-        {
-            name = path.substring( idx + 1 ); // Exclude '/'
-            dir = path.substring( 0, idx + 1 ); // Include '/'
+        } else {
+            name = path.substring(idx + 1); // Exclude '/'
+            dir = path.substring(0, idx + 1); // Include '/'
         }
 
         // Lookup up already parsed entries, and san directory for entries if neccesary
-        PathEntries pentries = (PathEntries) _entries.get( dir );
-        JnlpResource xmlVersionResPath = new JnlpResource( _servletContext, dir + VERSION_XML_FILENAME );
-        if ( pentries == null ||
-                ( xmlVersionResPath.exists() && xmlVersionResPath.getLastModified() > pentries.getLastModified() ) )
-        {
-            _log.addInformational( "servlet.log.scandir", dir );
-            List dirList = scanDirectory( dir, dreq );
+        PathEntries pentries = (PathEntries) _entries.get(dir);
+        JnlpResource xmlVersionResPath = new JnlpResource(_servletContext, dir + VERSION_XML_FILENAME);
+        if (pentries == null
+                || (xmlVersionResPath.exists() && xmlVersionResPath.getLastModified() > pentries.getLastModified())) {
+            _log.addInformational("servlet.log.scandir", dir);
+            List dirList = scanDirectory(dir, dreq);
             // Scan XML file
             List versionList = new ArrayList();
             List platformList = new ArrayList();
-            parseVersionXML( versionList, platformList, dir, xmlVersionResPath );
-            pentries = new PathEntries( versionList, dirList, platformList, xmlVersionResPath.getLastModified() );
-            _entries.put( dir, pentries );
+            parseVersionXML(versionList, platformList, dir, xmlVersionResPath);
+            pentries = new PathEntries(versionList, dirList, platformList, xmlVersionResPath.getLastModified());
+            _entries.put(dir, pentries);
         }
 
         // Search for a match
         JnlpResource[] result = new JnlpResource[1];
 
-        if ( dreq.isPlatformRequest() )
-        {
-            int sts = findMatch( pentries.getPlatformList(), name, dreq, result );
-            if ( sts != DownloadResponse.STS_00_OK )
-            {
-                throw new ErrorResponseException( DownloadResponse.getJnlpErrorResponse( sts ) );
+        if (dreq.isPlatformRequest()) {
+            int sts = findMatch(pentries.getPlatformList(), name, dreq, result);
+            if (sts != DownloadResponse.STS_00_OK) {
+                throw new ErrorResponseException(DownloadResponse.getJnlpErrorResponse(sts));
             }
-        }
-        else
-        {
+        } else {
             // First lookup in versions.xml file
-            int sts1 = findMatch( pentries.getVersionXmlList(), name, dreq, result );
-            if ( sts1 != DownloadResponse.STS_00_OK )
-            {
+            int sts1 = findMatch(pentries.getVersionXmlList(), name, dreq, result);
+            if (sts1 != DownloadResponse.STS_00_OK) {
                 // Then lookup in directory
-                int sts2 = findMatch( pentries.getDirectoryList(), name, dreq, result );
-                if ( sts2 != DownloadResponse.STS_00_OK )
-                {
+                int sts2 = findMatch(pentries.getDirectoryList(), name, dreq, result);
+                if (sts2 != DownloadResponse.STS_00_OK) {
 
                     // fix for 4450104
                     // try rescan and see if it helps
-                    pentries.setDirectoryList( scanDirectory( dir, dreq ) );
-                    sts2 = findMatch( pentries.getDirectoryList(), name, dreq, result );
+                    pentries.setDirectoryList(scanDirectory(dir, dreq));
+                    sts2 = findMatch(pentries.getDirectoryList(), name, dreq, result);
                     // try again after rescanning directory
-                    if ( sts2 != DownloadResponse.STS_00_OK )
-                    {
+                    if (sts2 != DownloadResponse.STS_00_OK) {
                         // Throw the most specific error code
-                        throw new ErrorResponseException(
-                                DownloadResponse.getJnlpErrorResponse( Math.max( sts1, sts2 ) ) );
+                        throw new ErrorResponseException(DownloadResponse.getJnlpErrorResponse(Math.max(sts1, sts2)));
                     }
                 }
             }
@@ -210,80 +186,61 @@ public class ResourceCatalog
      * @param result TODO
      * @return TODO
      */
-    public int findMatch( List list, String name, DownloadRequest dreq, JnlpResource[] result )
-    {
-        if ( list == null )
-        {
+    public int findMatch(List list, String name, DownloadRequest dreq, JnlpResource[] result) {
+        if (list == null) {
             return DownloadResponse.ERR_10_NO_RESOURCE;
         }
         // Setup return values
         VersionID bestVersionId = null;
         int error = DownloadResponse.ERR_10_NO_RESOURCE;
-        VersionString vs = new VersionString( dreq.getVersion() );
+        VersionString vs = new VersionString(dreq.getVersion());
         // Iterate through entries
-        for ( Object aList : list )
-        {
+        for (Object aList : list) {
             JnlpResource respath = (JnlpResource) aList;
-            VersionID vid = new VersionID( respath.getVersionId() );
-            int sts = matchEntry( name, vs, dreq, respath, vid );
-            if ( sts == DownloadResponse.STS_00_OK )
-            {
-                if ( result[0] == null || vid.isGreaterThan( bestVersionId ) )
-                {
+            VersionID vid = new VersionID(respath.getVersionId());
+            int sts = matchEntry(name, vs, dreq, respath, vid);
+            if (sts == DownloadResponse.STS_00_OK) {
+                if (result[0] == null || vid.isGreaterThan(bestVersionId)) {
                     result[0] = respath;
                     bestVersionId = vid;
                 }
-            }
-            else
-            {
-                error = Math.max( error, sts );
+            } else {
+                error = Math.max(error, sts);
             }
         }
-        return ( result[0] != null ) ? DownloadResponse.STS_00_OK : error;
+        return (result[0] != null) ? DownloadResponse.STS_00_OK : error;
     }
 
-    public int matchEntry( String name, VersionString vs, DownloadRequest dreq, JnlpResource jnlpres, VersionID vid )
-    {
-        if ( !name.equals( jnlpres.getName() ) )
-        {
+    public int matchEntry(String name, VersionString vs, DownloadRequest dreq, JnlpResource jnlpres, VersionID vid) {
+        if (!name.equals(jnlpres.getName())) {
             return DownloadResponse.ERR_10_NO_RESOURCE;
         }
-        if ( !vs.contains( vid ) )
-        {
+        if (!vs.contains(vid)) {
             return DownloadResponse.ERR_11_NO_VERSION;
         }
-        if ( !prefixMatchLists( jnlpres.getOSList(), dreq.getOS() ) )
-        {
+        if (!prefixMatchLists(jnlpres.getOSList(), dreq.getOS())) {
             return DownloadResponse.ERR_20_UNSUP_OS;
         }
-        if ( !prefixMatchLists( jnlpres.getArchList(), dreq.getArch() ) )
-        {
+        if (!prefixMatchLists(jnlpres.getArchList(), dreq.getArch())) {
             return DownloadResponse.ERR_21_UNSUP_ARCH;
         }
-        if ( !prefixMatchLists( jnlpres.getLocaleList(), dreq.getLocale() ) )
-        {
+        if (!prefixMatchLists(jnlpres.getLocaleList(), dreq.getLocale())) {
             return DownloadResponse.ERR_22_UNSUP_LOCALE;
         }
         return DownloadResponse.STS_00_OK;
     }
 
-
-    private static boolean prefixMatchStringList( String[] prefixList, String target )
-    {
+    private static boolean prefixMatchStringList(String[] prefixList, String target) {
         // No prefixes matches everything
-        if ( prefixList == null )
-        {
+        if (prefixList == null) {
             return true;
         }
         // No target, but a prefix list does not match anything
-        if ( target == null )
-        {
+        if (target == null) {
             return false;
         }
-        for ( String aPrefixList : prefixList )
-        {
-            if ( target.startsWith( aPrefixList ) )
-            {
+        for (String aPrefixList : prefixList) {
+            if (target.startsWith(aPrefixList)) {
                 return true;
             }
         }
@@ -291,27 +248,22 @@ public class ResourceCatalog
     }
 
     /* Return true if at least one of the strings in 'prefixes' are a prefix
-    * to at least one of the 'keys'.
-    */
-    public boolean prefixMatchLists( String[] prefixes, String[] keys )
-    {
+     * to at least one of the 'keys'.
+     */
+    public boolean prefixMatchLists(String[] prefixes, String[] keys) {
         // The prefixes are part of the server resources. If none is given,
         // everything matches
-        if ( prefixes == null )
-        {
+        if (prefixes == null) {
             return true;
         }
         // If no os keyes was given, and the server resource is keyed of this,
         // then return false.
-        if ( keys == null )
-        {
+        if (keys == null) {
             return false;
         }
         // Check for a match on a key
-        for ( String key : keys )
-        {
-            if ( prefixMatchStringList( prefixes, key ) )
-            {
+        for (String key : keys) {
+            if (prefixMatchStringList(prefixes, key)) {
                 return true;
             }
         }
@@ -336,62 +288,49 @@ public class ResourceCatalog
      * @param dreq TODO
      * @return TODO
      */
-
-
-    private String jnlpGetPath( DownloadRequest dreq )
-    {
+    private String jnlpGetPath(DownloadRequest dreq) {
         // fix for 4474021
         // try to manuually generate the filename
         // extract file name
         String path = dreq.getPath();
-        String filename = path.substring( path.lastIndexOf( "/" ) + 1 );
-        path = path.substring( 0, path.lastIndexOf( "/" ) + 1 );
+        String filename = path.substring(path.lastIndexOf("/") + 1);
+        path = path.substring(0, path.lastIndexOf("/") + 1);
         String name = filename;
         String ext = null;
 
-        if ( filename.lastIndexOf( "." ) != -1 )
-        {
-            ext = filename.substring( filename.lastIndexOf( "." ) + 1 );
+        if (filename.lastIndexOf(".") != -1) {
+            ext = filename.substring(filename.lastIndexOf(".") + 1);
 
-            filename = filename.substring( 0, filename.lastIndexOf( "." ) );
-
+            filename = filename.substring(0, filename.lastIndexOf("."));
         }
-        if ( dreq.getVersion() != null )
-        {
+        if (dreq.getVersion() != null) {
             filename += "__V" + dreq.getVersion();
         }
 
         String[] temp = dreq.getOS();
 
-        if ( temp != null )
-        {
-            for ( String aTemp : temp )
-            {
+        if (temp != null) {
+            for (String aTemp : temp) {
                 filename += "__O" + aTemp;
             }
         }
 
         temp = dreq.getArch();
 
-        if ( temp != null )
-        {
-            for ( String aTemp : temp )
-            {
+        if (temp != null) {
+            for (String aTemp : temp) {
                 filename += "__A" + aTemp;
             }
         }
         temp = dreq.getLocale();
 
-        if ( temp != null )
-        {
-            for ( String aTemp : temp )
-            {
+        if (temp != null) {
+            for (String aTemp : temp) {
                 filename += "__L" + aTemp;
             }
         }
 
-        if ( ext != null )
-        {
+        if (ext != null) {
             filename += "." + ext;
         }
 
@@ -400,70 +339,66 @@ public class ResourceCatalog
         return path;
     }
 
-    public List scanDirectory( String dirPath, DownloadRequest dreq )
-    {
+    public List scanDirectory(String dirPath, DownloadRequest dreq) {
         ArrayList list = new ArrayList();
 
         // fix for 4474021
-        if ( _servletContext.getRealPath( dirPath ) == null )
-        {
-            String path = jnlpGetPath( dreq );
+        if (_servletContext.getRealPath(dirPath) == null) {
+            String path = jnlpGetPath(dreq);
 
-            String name = dreq.getPath().substring( path.lastIndexOf( "/" ) + 1 );
+            String name = dreq.getPath().substring(path.lastIndexOf("/") + 1);
 
-            JnlpResource jnlpres =
-                    new JnlpResource( _servletContext, name, dreq.getVersion(), dreq.getOS(), dreq.getArch(),
-                                      dreq.getLocale(), path, dreq.getVersion() );
+            JnlpResource jnlpres = new JnlpResource(
+                    _servletContext,
+                    name,
+                    dreq.getVersion(),
+                    dreq.getOS(),
+                    dreq.getArch(),
+                    dreq.getLocale(),
+                    path,
+                    dreq.getVersion());
 
             // the file does not exist
-            if ( jnlpres.getResource() == null )
-            {
+            if (jnlpres.getResource() == null) {
                 return null;
             }
 
-            list.add( jnlpres );
+            list.add(jnlpres);
             return list;
         }
-        File dir = new File( _servletContext.getRealPath( dirPath ) );
-        _log.addDebug( "File directory: " + dir );
-        if ( dir.exists() && dir.isDirectory() )
-        {
+        File dir = new File(_servletContext.getRealPath(dirPath));
+        _log.addDebug("File directory: " + dir);
+        if (dir.exists() && dir.isDirectory()) {
             File[] entries = dir.listFiles();
-            for ( File entry : entries )
-            {
-                JnlpResource jnlpres = parseFileEntry( dirPath, entry.getName() );
-                if ( jnlpres != null )
-                {
-                    if ( _log.isDebugLevel() )
-                    {
-                        _log.addDebug( "Read file resource: " + jnlpres );
+            for (File entry : entries) {
+                JnlpResource jnlpres = parseFileEntry(dirPath, entry.getName());
+                if (jnlpres != null) {
+                    if (_log.isDebugLevel()) {
+                        _log.addDebug("Read file resource: " + jnlpres);
                     }
-                    list.add( jnlpres );
+                    list.add(jnlpres);
                 }
             }
         }
         return list;
     }
 
-    private JnlpResource parseFileEntry( String dir, String filename )
-    {
-        int idx = filename.indexOf( "__" );
-        if ( idx == -1 )
-        {
+    private JnlpResource parseFileEntry(String dir, String filename) {
+        int idx = filename.indexOf("__");
+        if (idx == -1) {
             return null;
         }
 
         // Cut out name
-        String name = filename.substring( 0, idx );
-        String rest = filename.substring( idx );
+        String name = filename.substring(0, idx);
+        String rest = filename.substring(idx);
 
         // Cut out extension
-        idx = rest.lastIndexOf( '.' );
+        idx = rest.lastIndexOf('.');
         String extension = "";
-        if ( idx != -1 )
-        {
-            extension = rest.substring( idx );
-            rest = rest.substring( 0, idx );
+        if (idx != -1) {
+            extension = rest.substring(idx);
+            rest = rest.substring(0, idx);
         }
 
         // Parse options
@@ -471,199 +406,164 @@ public class ResourceCatalog
         ArrayList osList = new ArrayList();
         ArrayList archList = new ArrayList();
         ArrayList localeList = new ArrayList();
-        while ( rest.length() > 0 )
-        {
+        while (rest.length() > 0) {
             /* Must start with __ at this point */
-            if ( !rest.startsWith( "__" ) )
-            {
+            if (!rest.startsWith("__")) {
                 return null;
             }
-            rest = rest.substring( 2 );
+            rest = rest.substring(2);
             // Get option and argument
-            char option = rest.charAt( 0 );
-            idx = rest.indexOf( "__" );
+            char option = rest.charAt(0);
+            idx = rest.indexOf("__");
             String arg = null;
-            if ( idx == -1 )
-            {
-                arg = rest.substring( 1 );
+            if (idx == -1) {
+                arg = rest.substring(1);
                 rest = "";
+            } else {
+                arg = rest.substring(1, idx);
+                rest = rest.substring(idx);
             }
-            else
-            {
-                arg = rest.substring( 1, idx );
-                rest = rest.substring( idx );
-            }
-            switch ( option )
-            {
+            switch (option) {
                 case 'V':
                     versionId = arg;
                     break;
                 case 'O':
-                    osList.add( arg );
+                    osList.add(arg);
                     break;
                 case 'A':
-                    archList.add( arg );
+                    archList.add(arg);
                     break;
                 case 'L':
-                    localeList.add( arg );
+                    localeList.add(arg);
                     break;
                 default:
                     return null; // error
             }
         }
 
-        return new JnlpResource( _servletContext, name + extension, /* Resource name in URL request */
-                                 versionId, listToStrings( osList ), listToStrings( archList ),
-                                 listToStrings( localeList ), dir + filename, /* Resource name in WAR file */
-                                 versionId );
+        return new JnlpResource(
+                _servletContext,
+                name + extension, /* Resource name in URL request */
+                versionId,
+                listToStrings(osList),
+                listToStrings(archList),
+                listToStrings(localeList),
+                dir + filename, /* Resource name in WAR file */
+                versionId);
     }
 
-    private String[] listToStrings( List list )
-    {
-        if ( list.size() == 0 )
-        {
+    private String[] listToStrings(List list) {
+        if (list.size() == 0) {
             return null;
         }
-        return (String[]) list.toArray( new String[list.size()] );
+        return (String[]) list.toArray(new String[list.size()]);
     }
 
     // Returns false if parsing failed
-    private void parseVersionXML( final List versionList, final List platformList, final String dir,
-                                  final JnlpResource versionRes )
-    {
-        if ( !versionRes.exists() )
-        {
+    private void parseVersionXML(
+            final List versionList, final List platformList, final String dir, final JnlpResource versionRes) {
+        if (!versionRes.exists()) {
             return;
         }
 
         // Parse XML into a more understandable format
         XMLNode root = null;
-        try
-        {
+        try {
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document doc = docBuilder.parse( new BufferedInputStream( versionRes.getResource().openStream() ) );
+            Document doc = docBuilder.parse(
+                    new BufferedInputStream(versionRes.getResource().openStream()));
             doc.getDocumentElement().normalize();
 
             // Convert document into an XMLNode structure, since we already got utility methods
             //  to handle these. We should really use the data-binding stuff here - but that will come
             //  later
             //
-            root = XMLParsing.convert( doc.getDocumentElement() );
-        }
-        catch ( SAXParseException err )
-        {
-            _log.addWarning( "servlet.log.warning.xml.parsing", versionRes.getPath(),
-                             Integer.toString( err.getLineNumber() ), err.getMessage() );
+            root = XMLParsing.convert(doc.getDocumentElement());
+        } catch (SAXParseException err) {
+            _log.addWarning(
+                    "servlet.log.warning.xml.parsing",
+                    versionRes.getPath(),
+                    Integer.toString(err.getLineNumber()),
+                    err.getMessage());
             return;
-        }
-        catch ( Throwable t )
-        {
-            _log.addWarning( "servlet.log.warning.xml.reading", versionRes.getPath(), t );
+        } catch (Throwable t) {
+            _log.addWarning("servlet.log.warning.xml.reading", versionRes.getPath(), t);
             return;
         }
 
         // Check that root element is a <jnlp> tag
-        if ( !root.getName().equals( "jnlp-versions" ) )
-        {
-            _log.addWarning( "servlet.log.warning.xml.missing-jnlp", versionRes.getPath() );
+        if (!root.getName().equals("jnlp-versions")) {
+            _log.addWarning("servlet.log.warning.xml.missing-jnlp", versionRes.getPath());
             return;
         }
 
         // Visit all <resource> elements
-        XMLParsing.visitElements( root, "<resource>", new XMLParsing.ElementVisitor()
-        {
-            public void visitElement( XMLNode node )
-            {
-                XMLNode pattern = XMLParsing.findElementPath( node, "<pattern>" );
-                if ( pattern == null )
-                {
-                    _log.addWarning( "servlet.log.warning.xml.missing-pattern", versionRes.getPath() );
-                }
-                else
-                {
+        XMLParsing.visitElements(root, "<resource>", new XMLParsing.ElementVisitor() {
+            public void visitElement(XMLNode node) {
+                XMLNode pattern = XMLParsing.findElementPath(node, "<pattern>");
+                if (pattern == null) {
+                    _log.addWarning("servlet.log.warning.xml.missing-pattern", versionRes.getPath());
+                } else {
                     // Parse pattern
-                    String name = XMLParsing.getElementContent( pattern, "<name>", "" );
-                    String versionId = XMLParsing.getElementContent( pattern, "<version-id>" );
-                    String[] os = XMLParsing.getMultiElementContent( pattern, "<os>" );
-                    String[] arch = XMLParsing.getMultiElementContent( pattern, "<arch>" );
-                    String[] locale = XMLParsing.getMultiElementContent( pattern, "<locale>" );
+                    String name = XMLParsing.getElementContent(pattern, "<name>", "");
+                    String versionId = XMLParsing.getElementContent(pattern, "<version-id>");
+                    String[] os = XMLParsing.getMultiElementContent(pattern, "<os>");
+                    String[] arch = XMLParsing.getMultiElementContent(pattern, "<arch>");
+                    String[] locale = XMLParsing.getMultiElementContent(pattern, "<locale>");
                     // Get return request
-                    String file = XMLParsing.getElementContent( node, "<file>" );
-                    if ( versionId == null || file == null )
-                    {
-                        _log.addWarning( "servlet.log.warning.xml.missing-elems", versionRes.getPath() );
-                    }
-                    else
-                    {
-                        JnlpResource res =
-                                new JnlpResource( _servletContext, name, versionId, os, arch, locale, dir + file,
-                                                  versionId );
-                        if ( res.exists() )
-                        {
-                            versionList.add( res );
-                            if ( _log.isDebugLevel() )
-                            {
-                                _log.addDebug( "Read resource: " + res );
+                    String file = XMLParsing.getElementContent(node, "<file>");
+                    if (versionId == null || file == null) {
+                        _log.addWarning("servlet.log.warning.xml.missing-elems", versionRes.getPath());
+                    } else {
+                        JnlpResource res = new JnlpResource(
+                                _servletContext, name, versionId, os, arch, locale, dir + file, versionId);
+                        if (res.exists()) {
+                            versionList.add(res);
+                            if (_log.isDebugLevel()) {
+                                _log.addDebug("Read resource: " + res);
                             }
-                        }
-                        else
-                        {
-                            _log.addWarning( "servlet.log.warning.missing-file", file, versionRes.getPath() );
+                        } else {
+                            _log.addWarning("servlet.log.warning.missing-file", file, versionRes.getPath());
                         }
                     }
                 }
             }
-        } );
+        });
 
         // Visit all <resource> elements
-        XMLParsing.visitElements( root, "<platform>", new XMLParsing.ElementVisitor()
-        {
-            public void visitElement( XMLNode node )
-            {
-                XMLNode pattern = XMLParsing.findElementPath( node, "<pattern>" );
-                if ( pattern == null )
-                {
-                    _log.addWarning( "servlet.log.warning.xml.missing-pattern", versionRes.getPath() );
-                }
-                else
-                {
+        XMLParsing.visitElements(root, "<platform>", new XMLParsing.ElementVisitor() {
+            public void visitElement(XMLNode node) {
+                XMLNode pattern = XMLParsing.findElementPath(node, "<pattern>");
+                if (pattern == null) {
+                    _log.addWarning("servlet.log.warning.xml.missing-pattern", versionRes.getPath());
+                } else {
                     // Parse pattern
-                    String name = XMLParsing.getElementContent( pattern, "<name>", "" );
-                    String versionId = XMLParsing.getElementContent( pattern, "<version-id>" );
-                    String[] os = XMLParsing.getMultiElementContent( pattern, "<os>" );
-                    String[] arch = XMLParsing.getMultiElementContent( pattern, "<arch>" );
-                    String[] locale = XMLParsing.getMultiElementContent( pattern, "<locale>" );
+                    String name = XMLParsing.getElementContent(pattern, "<name>", "");
+                    String versionId = XMLParsing.getElementContent(pattern, "<version-id>");
+                    String[] os = XMLParsing.getMultiElementContent(pattern, "<os>");
+                    String[] arch = XMLParsing.getMultiElementContent(pattern, "<arch>");
+                    String[] locale = XMLParsing.getMultiElementContent(pattern, "<locale>");
                     // Get return request
-                    String file = XMLParsing.getElementContent( node, "<file>" );
-                    String productId = XMLParsing.getElementContent( node, "<product-version-id>" );
+                    String file = XMLParsing.getElementContent(node, "<file>");
+                    String productId = XMLParsing.getElementContent(node, "<product-version-id>");
 
-                    if ( versionId == null || file == null || productId == null )
-                    {
-                        _log.addWarning( "servlet.log.warning.xml.missing-elems2", versionRes.getPath() );
-                    }
-                    else
-                    {
-                        JnlpResource res =
-                                new JnlpResource( _servletContext, name, versionId, os, arch, locale, dir + file,
-                                                  productId );
-                        if ( res.exists() )
-                        {
-                            platformList.add( res );
-                            if ( _log.isDebugLevel() )
-                            {
-                                _log.addDebug( "Read platform resource: " + res );
+                    if (versionId == null || file == null || productId == null) {
+                        _log.addWarning("servlet.log.warning.xml.missing-elems2", versionRes.getPath());
+                    } else {
+                        JnlpResource res = new JnlpResource(
+                                _servletContext, name, versionId, os, arch, locale, dir + file, productId);
+                        if (res.exists()) {
+                            platformList.add(res);
+                            if (_log.isDebugLevel()) {
+                                _log.addDebug("Read platform resource: " + res);
                             }
-                        }
-                        else
-                        {
-                            _log.addWarning( "servlet.log.warning.missing-file", file, versionRes.getPath() );
+                        } else {
+                            _log.addWarning("servlet.log.warning.missing-file", file, versionRes.getPath());
                         }
                     }
                 }
             }
-        } );
+        });
     }
 }
-
-

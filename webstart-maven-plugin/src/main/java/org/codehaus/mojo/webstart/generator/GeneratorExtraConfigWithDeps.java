@@ -27,9 +27,7 @@ import org.apache.maven.artifact.Artifact;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public interface GeneratorExtraConfigWithDeps
-        extends GeneratorExtraConfig
-{
+public interface GeneratorExtraConfigWithDeps extends GeneratorExtraConfig {
 
     public boolean isPack200();
 
@@ -39,9 +37,9 @@ public interface GeneratorExtraConfigWithDeps
 
     public String getLibPath();
 
-    String getDependencyFilename( Artifact artifact, Boolean outputJarVersion );
+    String getDependencyFilename(Artifact artifact, Boolean outputJarVersion);
 
-    String getDependencyFileVersion( Artifact artifact );
+    String getDependencyFileVersion(Artifact artifact);
 
-    boolean isArtifactWithMainClass( Artifact artifact );
+    boolean isArtifactWithMainClass(Artifact artifact);
 }

@@ -1,6 +1,6 @@
 /*
  * @(#)JarDiffConstants.java	1.6 05/11/17
- * 
+ *
  * Copyright (c) 2006 Sun Microsystems, Inc. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,8 +41,7 @@ package jnlp.sample.jardiff;
  *
  * @version 1.8, 06/26/03
  */
-public interface JarDiffConstants
-{
+public interface JarDiffConstants {
     String VERSION_HEADER = "version 1.0";
     String INDEX_NAME = "META-INF/INDEX.JD";
     String REMOVE_COMMAND = "remove";

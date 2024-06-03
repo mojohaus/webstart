@@ -27,13 +27,12 @@ import org.apache.maven.artifact.Artifact;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public interface JnlpDependencyRequestBuilder
-{
+public interface JnlpDependencyRequestBuilder {
     String ROLE = JnlpDependencyRequestBuilder.class.getName();
 
-    void init( JnlpDependencyGlobalConfig config );
+    void init(JnlpDependencyGlobalConfig config);
 
     JnlpDependencyRequests createRequests();
 
-    JnlpDependencyRequest createRequest( Artifact artifact, boolean outputJarVersion, boolean useUniqueVersions );
+    JnlpDependencyRequest createRequest(Artifact artifact, boolean outputJarVersion, boolean useUniqueVersions);
 }

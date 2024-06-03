@@ -33,18 +33,13 @@ import org.codehaus.plexus.logging.console.ConsoleLogger;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-4
  */
-@Component( role = Archiver.class, hint = "jarWithNoLog" )
-public class JarArchiverWithNoLog
-        extends JarArchiver
-        implements Archiver
-{
+@Component(role = Archiver.class, hint = "jarWithNoLog")
+public class JarArchiverWithNoLog extends JarArchiver implements Archiver {
 
-    Logger log = new ConsoleLogger( Logger.LEVEL_WARN, "console" );
+    Logger log = new ConsoleLogger(Logger.LEVEL_WARN, "console");
 
     @Override
-    protected Logger getLogger()
-    {
+    protected Logger getLogger() {
         return log;
     }
-
 }

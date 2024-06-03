@@ -19,6 +19,10 @@ package org.codehaus.mojo.webstart.util;
  * under the License.
  */
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
@@ -26,18 +30,13 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.webstart.JarResource;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Some usefull methods on artifacts.
  *
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-4
  */
-public interface ArtifactUtil
-{
+public interface ArtifactUtil {
 
     /**
      * Plexus component role.
@@ -52,8 +51,7 @@ public interface ArtifactUtil
      * @return {@code true} if given artifact contains the given fqn, {@code false} otherwise
      * @throws MojoExecutionException if artifact file url is mal formed
      */
-    public boolean artifactContainsClass( Artifact artifact, final String mainClass )
-            throws MojoExecutionException;
+    public boolean artifactContainsClass(Artifact artifact, final String mainClass) throws MojoExecutionException;
 
     /**
      * Creates from the given jar resource the underlying artifact.
@@ -61,17 +59,21 @@ public interface ArtifactUtil
      * @param jarResource the jar resource
      * @return the created artifact from the given jar resource
      */
-    Artifact createArtifact( JarResource jarResource );
+    Artifact createArtifact(JarResource jarResource);
 
-    MavenProject resolveFromReactor( Artifact artifact, MavenProject mavenProject, List<MavenProject> reactorProjects )
+    MavenProject resolveFromReactor(Artifact artifact, MavenProject mavenProject, List<MavenProject> reactorProjects)
             throws MojoExecutionException;
 
-
-    void resolveFromRepositories( Artifact artifact, List remoteRepositories, ArtifactRepository localRepository )
+    void resolveFromRepositories(Artifact artifact, List remoteRepositories, ArtifactRepository localRepository)
             throws MojoExecutionException;
 
-    Set<Artifact> resolveTransitively( Set<Artifact> jarResourceArtifacts, Set<MavenProject> siblingProjects,
-                                       Artifact artifact, ArtifactRepository localRepository,
-                                       List<ArtifactRepository> remoteRepositories, ArtifactFilter artifactFilter, Map managedVersions )
+    Set<Artifact> resolveTransitively(
+            Set<Artifact> jarResourceArtifacts,
+            Set<MavenProject> siblingProjects,
+            Artifact artifact,
+            ArtifactRepository localRepository,
+            List<ArtifactRepository> remoteRepositories,
+            ArtifactFilter artifactFilter,
+            Map managedVersions)
             throws MojoExecutionException;
 }

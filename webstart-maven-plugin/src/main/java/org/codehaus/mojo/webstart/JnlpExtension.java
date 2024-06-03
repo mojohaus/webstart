@@ -27,9 +27,7 @@ import java.util.List;
  * @author <a href="chemit@codelutin.com">tony Chemit</a>
  * @version $Id$
  */
-public class JnlpExtension
-        extends JnlpConfig
-{
+public class JnlpExtension extends JnlpConfig {
 
     private List<String> includes;
 
@@ -43,64 +41,51 @@ public class JnlpExtension
 
     private String description;
 
-    public void setDescription( String description )
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public void setHomepage( String homepage )
-    {
+    public void setHomepage(String homepage) {
         this.homepage = homepage;
     }
 
-    public void setIncludes( List<String> includes )
-    {
+    public void setIncludes(List<String> includes) {
         this.includes = includes;
     }
 
-    public void setTitle( String title )
-    {
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setVendor( String vendor )
-    {
+    public void setVendor(String vendor) {
         this.vendor = vendor;
     }
 
-    public void setName( String name )
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
 
-    public String getHomepage()
-    {
+    public String getHomepage() {
         return homepage;
     }
 
-    public List<String> getIncludes()
-    {
+    public List<String> getIncludes() {
         return includes;
     }
 
-    public String getTitle()
-    {
+    public String getTitle() {
         return title;
     }
 
-    public String getVendor()
-    {
+    public String getVendor() {
         return vendor;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
-
 }

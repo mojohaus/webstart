@@ -19,6 +19,12 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import org.apache.maven.doxia.siterenderer.Renderer;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -29,21 +35,13 @@ import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
 import org.codehaus.plexus.util.FileUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 /**
  * Creates a JNLP report.
  *
  * @author Geoffrey De Smet
  */
-@Mojo( name = "report", defaultPhase = LifecyclePhase.SITE, requiresReports = true )
-public class JnlpReportMojo
-        extends AbstractMavenReport
-{
+@Mojo(name = "report", defaultPhase = LifecyclePhase.SITE, requiresReports = true)
+public class JnlpReportMojo extends AbstractMavenReport {
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
@@ -51,31 +49,31 @@ public class JnlpReportMojo
     /**
      * Location where the site is generated.
      */
-    @Parameter( property = "jnlp.outputDirectory", defaultValue = "${project.reporting.outputDirectory}" )
+    @Parameter(property = "jnlp.outputDirectory", defaultValue = "${project.reporting.outputDirectory}")
     private File outputDirectory;
 
     /**
      * Directory where the jnlp artifacts and jnlp sources files reside.
      */
-    @Parameter( property = "jnlp.jnlpSourceDirectory", defaultValue = "${project.build.directory}/jnlp", required = true )
+    @Parameter(property = "jnlp.jnlpSourceDirectory", defaultValue = "${project.build.directory}/jnlp", required = true)
     private File jnlpSourceDirectory;
 
     /**
      * Directory in the site directory where the jnlp artifacts and jnlp sources files reside.
      */
-    @Parameter( property = "jnlp.siteJnlpDirectory", defaultValue = "jnlp", required = true )
+    @Parameter(property = "jnlp.siteJnlpDirectory", defaultValue = "jnlp", required = true)
     private String siteJnlpDirectory;
 
     /**
      * Name of the main jnlp file of the project.
      */
-    @Parameter( property = "jnlp.siteJnlpFile", defaultValue = "launch.jnlp", required = true )
+    @Parameter(property = "jnlp.siteJnlpFile", defaultValue = "launch.jnlp", required = true)
     private String siteJnlpFile;
 
     /**
      * The default filename to use for the report.
      */
-    @Parameter( property = "outputName", defaultValue = "jnlp-report", required = true )
+    @Parameter(property = "outputName", defaultValue = "jnlp-report", required = true)
     private String outputName;
 
     /**
@@ -83,13 +81,13 @@ public class JnlpReportMojo
      *
      * @since 1.0-beta-2
      */
-    @Parameter( property = "jnlp.codebase", defaultValue = "${project.url}/jnlp" )
+    @Parameter(property = "jnlp.codebase", defaultValue = "${project.url}/jnlp")
     private String codebase;
 
     /**
      * Maven project.
      */
-    @Parameter( defaultValue = "${project}", required = true, readonly = true )
+    @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
 
     // ----------------------------------------------------------------------
@@ -109,27 +107,23 @@ public class JnlpReportMojo
     /**
      * {@inheritDoc}
      */
-    public void executeReport( Locale locale )
-            throws MavenReportException
-    {
+    public void executeReport(Locale locale) throws MavenReportException {
         copyJnlpFiles();
-        fillReport( locale );
+        fillReport(locale);
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getName( Locale locale )
-    {
-        return getBundle( locale ).getString( "report.jnlp-report.name" );
+    public String getName(Locale locale) {
+        return getBundle(locale).getString("report.jnlp-report.name");
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getDescription( Locale locale )
-    {
-        return getBundle( locale ).getString( "report.jnlp-report.description" );
+    public String getDescription(Locale locale) {
+        return getBundle(locale).getString("report.jnlp-report.description");
     }
 
     // ----------------------------------------------------------------------
@@ -137,26 +131,22 @@ public class JnlpReportMojo
     // ----------------------------------------------------------------------
 
     @Override
-    protected Renderer getSiteRenderer()
-    {
+    protected Renderer getSiteRenderer() {
         return siteRenderer;
     }
 
     @Override
-    protected MavenProject getProject()
-    {
+    protected MavenProject getProject() {
         return project;
     }
 
     @Override
-    public String getOutputName()
-    {
+    public String getOutputName() {
         return outputName;
     }
 
     @Override
-    protected String getOutputDirectory()
-    {
+    protected String getOutputDirectory() {
         return outputDirectory.getPath();
     }
 
@@ -164,92 +154,75 @@ public class JnlpReportMojo
     // Private methods
     // ----------------------------------------------------------------------
 
-    private void copyJnlpFiles()
-            throws MavenReportException
-    {
-        if ( !jnlpSourceDirectory.exists() )
-        {
-            throw new MavenReportException( "jnlpSourceDirectory does not exist" );
+    private void copyJnlpFiles() throws MavenReportException {
+        if (!jnlpSourceDirectory.exists()) {
+            throw new MavenReportException("jnlpSourceDirectory does not exist");
         }
-        try
-        {
-            File destinationDirectory = new File( outputDirectory, siteJnlpDirectory );
-            List<File> files = FileUtils.getFiles( jnlpSourceDirectory, "**/*", "" );
-            for ( File file : files )
-            {
-                getLog().debug( "Copying " + file + " to " + destinationDirectory );
-                String path = file.getAbsolutePath().substring( jnlpSourceDirectory.getAbsolutePath().length() + 1 );
-                File destDir = new File( destinationDirectory, path );
-                getLog().debug( "Copying " + file + " to " + destDir );
-                if ( file.isDirectory() )
-                {
+        try {
+            File destinationDirectory = new File(outputDirectory, siteJnlpDirectory);
+            List<File> files = FileUtils.getFiles(jnlpSourceDirectory, "**/*", "");
+            for (File file : files) {
+                getLog().debug("Copying " + file + " to " + destinationDirectory);
+                String path = file.getAbsolutePath()
+                        .substring(jnlpSourceDirectory.getAbsolutePath().length() + 1);
+                File destDir = new File(destinationDirectory, path);
+                getLog().debug("Copying " + file + " to " + destDir);
+                if (file.isDirectory()) {
                     destDir.mkdirs();
-                }
-                else
-                {
-                    FileUtils.copyFileToDirectory( file, destDir.getParentFile() );
+                } else {
+                    FileUtils.copyFileToDirectory(file, destDir.getParentFile());
                 }
             }
-        }
-        catch ( IOException e )
-        {
-            throw new MavenReportException( "Failed to copy jnlp files", e );
+        } catch (IOException e) {
+            throw new MavenReportException("Failed to copy jnlp files", e);
         }
     }
 
-    private void fillReport( Locale locale )
-    {
-        ResourceBundle bundle = getBundle( locale );
+    private void fillReport(Locale locale) {
+        ResourceBundle bundle = getBundle(locale);
         getSink().head();
-        getSink().text( bundle.getString( "report.jnlp-report.description" ) );
+        getSink().text(bundle.getString("report.jnlp-report.description"));
         getSink().head_();
         getSink().body();
         getSink().sectionTitle1();
-        getSink().text( bundle.getString( "report.jnlp-report.label.installation.header" ) );
+        getSink().text(bundle.getString("report.jnlp-report.label.installation.header"));
         getSink().sectionTitle1_();
         getSink().paragraph();
-        getSink().text( bundle.getString( "report.jnlp-report.label.installation.description" ) );
+        getSink().text(bundle.getString("report.jnlp-report.label.installation.description"));
         getSink().paragraph_();
         getSink().paragraph();
-        if ( codebase.startsWith( "file://" ) )
-        {
-            if ( !codebase.endsWith( File.separator ) )
-            {
+        if (codebase.startsWith("file://")) {
+            if (!codebase.endsWith(File.separator)) {
                 codebase += File.separator;
             }
-        }
-        else
-        {
-            if ( !codebase.endsWith( "/" ) )
-            {
+        } else {
+            if (!codebase.endsWith("/")) {
                 codebase += "/";
             }
         }
-        getSink().link( codebase + siteJnlpFile );
+        getSink().link(codebase + siteJnlpFile);
 
-        getSink().text( bundle.getString( "report.jnlp-report.label.installation.webStartMeNow" ) );
+        getSink().text(bundle.getString("report.jnlp-report.label.installation.webStartMeNow"));
         getSink().link_();
         getSink().paragraph_();
         getSink().paragraph();
-        getSink().text( bundle.getString( "report.jnlp-report.label.installation.getJava" ) + " " );
-        getSink().link( "http://java.com" );
-        getSink().text( "http://java.com" );
+        getSink().text(bundle.getString("report.jnlp-report.label.installation.getJava") + " ");
+        getSink().link("http://java.com");
+        getSink().text("http://java.com");
         getSink().link_();
         getSink().paragraph_();
         getSink().sectionTitle1();
-        getSink().text( bundle.getString( "report.jnlp-report.label.uninstallation.header" ) );
+        getSink().text(bundle.getString("report.jnlp-report.label.uninstallation.header"));
         getSink().sectionTitle1_();
         getSink().paragraph();
-        getSink().text( bundle.getString( "report.jnlp-report.label.uninstallation.description" ) );
+        getSink().text(bundle.getString("report.jnlp-report.label.uninstallation.description"));
         getSink().paragraph_();
         getSink().body_();
         getSink().flush();
         getSink().close();
     }
 
-    private ResourceBundle getBundle( Locale locale )
-    {
-        return ResourceBundle.getBundle( "jnlp-report", locale, this.getClass().getClassLoader() );
+    private ResourceBundle getBundle(Locale locale) {
+        return ResourceBundle.getBundle("jnlp-report", locale, this.getClass().getClassLoader());
     }
-
 }

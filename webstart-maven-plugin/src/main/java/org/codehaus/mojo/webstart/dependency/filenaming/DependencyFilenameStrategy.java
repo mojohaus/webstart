@@ -29,8 +29,7 @@ import org.apache.maven.artifact.Artifact;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public interface DependencyFilenameStrategy
-{
+public interface DependencyFilenameStrategy {
     /**
      * Plexus component role.
      */
@@ -44,7 +43,7 @@ public interface DependencyFilenameStrategy
      * @param useUniqueVersions flag if useUniqueVersions is used
      * @return dependency file basename (filename without extension) for the given artifact.
      */
-    String getDependencyFileBasename( Artifact artifact, Boolean outputJarVersion, Boolean useUniqueVersions );
+    String getDependencyFileBasename(Artifact artifact, Boolean outputJarVersion, Boolean useUniqueVersions);
 
     /**
      * Get the dependency file name for the given artifact.
@@ -54,7 +53,7 @@ public interface DependencyFilenameStrategy
      * @param useUniqueVersions flag if useUniqueVersions is used
      * @return dependency file name for the given artifact.
      */
-    String getDependencyFilename( Artifact artifact, Boolean outputJarVersion, Boolean useUniqueVersions );
+    String getDependencyFilename(Artifact artifact, Boolean outputJarVersion, Boolean useUniqueVersions);
 
     /**
      * Get the dependency file extension for the given artifact.
@@ -62,7 +61,7 @@ public interface DependencyFilenameStrategy
      * @param artifact origin of dependency
      * @return dependency file extension for the given artifact.
      */
-    String getDependencyFileExtension( Artifact artifact );
+    String getDependencyFileExtension(Artifact artifact);
 
     /**
      * Get the dependency file version for the given artifact.
@@ -71,6 +70,5 @@ public interface DependencyFilenameStrategy
      * @param useUniqueVersions flag if useUniqueVersions is used
      * @return dependency file version for the given artifact.
      */
-    String getDependencyFileVersion( Artifact artifact, Boolean useUniqueVersions );
-
+    String getDependencyFileVersion(Artifact artifact, Boolean useUniqueVersions);
 }

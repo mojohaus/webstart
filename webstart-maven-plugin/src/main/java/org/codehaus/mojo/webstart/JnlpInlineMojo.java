@@ -19,7 +19,6 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -36,11 +35,13 @@ import org.apache.maven.project.MavenProject;
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
  */
-@Mojo( name = "jnlp-inline", requiresProject = true, inheritByDefault = true,
-        requiresDependencyResolution = ResolutionScope.RUNTIME, aggregator = true )
-public class JnlpInlineMojo
-        extends AbstractJnlpMojo
-{
+@Mojo(
+        name = "jnlp-inline",
+        requiresProject = true,
+        inheritByDefault = true,
+        requiresDependencyResolution = ResolutionScope.RUNTIME,
+        aggregator = true)
+public class JnlpInlineMojo extends AbstractJnlpMojo {
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
@@ -48,7 +49,7 @@ public class JnlpInlineMojo
     /**
      * Maven project.
      */
-    @Parameter( defaultValue = "${project}", required = true, readonly = true )
+    @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
 
     // ----------------------------------------------------------------------
@@ -56,9 +57,7 @@ public class JnlpInlineMojo
     // ----------------------------------------------------------------------
 
     @Override
-    public MavenProject getProject()
-    {
+    public MavenProject getProject() {
         return project;
     }
 }
-

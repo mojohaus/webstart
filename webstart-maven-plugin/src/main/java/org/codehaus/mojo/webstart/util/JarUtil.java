@@ -19,10 +19,10 @@ package org.codehaus.mojo.webstart.util;
  * under the License.
  */
 
-import org.apache.maven.plugin.MojoExecutionException;
-
 import java.io.File;
 import java.util.Map;
+
+import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * Jar helper to update entries of manifest.
@@ -32,14 +32,12 @@ import java.util.Map;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-4
  */
-public interface JarUtil
-{
+public interface JarUtil {
 
     /**
      * Plexus component role.
      */
     String ROLE = JarUtil.class.getName();
 
-    void updateManifestEntries( File jar, Map<String, String> updateManifestEntries )
-            throws MojoExecutionException;
+    void updateManifestEntries(File jar, Map<String, String> updateManifestEntries) throws MojoExecutionException;
 }

@@ -39,12 +39,15 @@ import org.apache.maven.project.MavenProject;
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
  */
-@Mojo( name = "jnlp", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, inheritByDefault = true,
-        requiresDependencyResolution = ResolutionScope.RUNTIME, aggregator = true )
-@Execute( phase = LifecyclePhase.PACKAGE )
-public class JnlpMojo
-        extends AbstractJnlpMojo
-{
+@Mojo(
+        name = "jnlp",
+        defaultPhase = LifecyclePhase.PACKAGE,
+        requiresProject = true,
+        inheritByDefault = true,
+        requiresDependencyResolution = ResolutionScope.RUNTIME,
+        aggregator = true)
+@Execute(phase = LifecyclePhase.PACKAGE)
+public class JnlpMojo extends AbstractJnlpMojo {
     // ----------------------------------------------------------------------
     // Mojo Parameters
     // ----------------------------------------------------------------------
@@ -52,7 +55,7 @@ public class JnlpMojo
     /**
      * Get the executed project from the forked lifecycle.
      */
-    @Parameter( defaultValue = "${executedProject}", required = true, readonly = true )
+    @Parameter(defaultValue = "${executedProject}", required = true, readonly = true)
     private MavenProject executedProject;
 
     // ----------------------------------------------------------------------
@@ -60,9 +63,7 @@ public class JnlpMojo
     // ----------------------------------------------------------------------
 
     @Override
-    public MavenProject getProject()
-    {
+    public MavenProject getProject() {
         return executedProject;
     }
 }
-

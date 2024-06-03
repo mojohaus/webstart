@@ -31,37 +31,30 @@ import java.util.Map;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public class JnlpDependencyResults
-{
+public class JnlpDependencyResults {
 
     /**
      * Registred results.
      */
     private final Map<JnlpDependencyRequest, JnlpDependencyResult> results;
 
-    public JnlpDependencyResults()
-    {
+    public JnlpDependencyResults() {
         results = new LinkedHashMap<>();
     }
 
-    public void registerResult( JnlpDependencyRequest request, JnlpDependencyResult result )
-    {
-        results.put( request, result );
+    public void registerResult(JnlpDependencyRequest request, JnlpDependencyResult result) {
+        results.put(request, result);
     }
 
-    public Map<JnlpDependencyRequest, JnlpDependencyResult> getResults()
-    {
-        return Collections.unmodifiableMap( results );
+    public Map<JnlpDependencyRequest, JnlpDependencyResult> getResults() {
+        return Collections.unmodifiableMap(results);
     }
 
-    public boolean isError()
-    {
+    public boolean isError() {
         boolean result = false;
 
-        for ( JnlpDependencyResult dependencyResult : results.values() )
-        {
-            if ( dependencyResult.isError() )
-            {
+        for (JnlpDependencyResult dependencyResult : results.values()) {
+            if (dependencyResult.isError()) {
                 result = true;
                 break;
             }
@@ -69,39 +62,30 @@ public class JnlpDependencyResults
         return result;
     }
 
-    public JnlpDependencyResult[] getResultsWithError()
-    {
+    public JnlpDependencyResult[] getResultsWithError() {
         List<JnlpDependencyResult> resultWithErrors = new ArrayList<>();
-        for ( JnlpDependencyResult dependencyResult : results.values() )
-        {
-            if ( dependencyResult.isError() )
-            {
-                resultWithErrors.add( dependencyResult );
+        for (JnlpDependencyResult dependencyResult : results.values()) {
+            if (dependencyResult.isError()) {
+                resultWithErrors.add(dependencyResult);
             }
         }
-        return resultWithErrors.toArray( new JnlpDependencyResult[resultWithErrors.size()] );
+        return resultWithErrors.toArray(new JnlpDependencyResult[resultWithErrors.size()]);
     }
 
-    public int getNbRequestsProcessed()
-    {
+    public int getNbRequestsProcessed() {
         int result = 0;
-        for ( JnlpDependencyRequest request : results.keySet() )
-        {
-            if ( !request.isUptodate() )
-            {
+        for (JnlpDependencyRequest request : results.keySet()) {
+            if (!request.isUptodate()) {
                 result++;
             }
         }
         return result;
     }
 
-    public int getNbRequestsUptodate()
-    {
+    public int getNbRequestsUptodate() {
         int result = 0;
-        for ( JnlpDependencyRequest request : results.keySet() )
-        {
-            if ( request.isUptodate() )
-            {
+        for (JnlpDependencyRequest request : results.keySet()) {
+            if (request.isUptodate()) {
                 result++;
             }
         }

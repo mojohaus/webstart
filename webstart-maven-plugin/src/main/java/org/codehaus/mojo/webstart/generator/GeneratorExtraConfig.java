@@ -27,8 +27,7 @@ import java.util.Map;
  * @author jerome@coffeebreaks.org
  * @since 1.0-alpha-2
  */
-public interface GeneratorExtraConfig
-{
+public interface GeneratorExtraConfig {
     String getJnlpSpec();
 
     String getOfflineAllowed();

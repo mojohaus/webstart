@@ -25,18 +25,14 @@ package org.codehaus.mojo.webstart.dependency.task;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public class JnlpDependencyTaskException
-        extends Exception
-{
+public class JnlpDependencyTaskException extends Exception {
     private static final long serialVersionUID = -2891103651265072561L;
 
-    public JnlpDependencyTaskException( String message )
-    {
-        super( message );
+    public JnlpDependencyTaskException(String message) {
+        super(message);
     }
 
-    public JnlpDependencyTaskException( String message, Throwable cause )
-    {
-        super( message, cause );
+    public JnlpDependencyTaskException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

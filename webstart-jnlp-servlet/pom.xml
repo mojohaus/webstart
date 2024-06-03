@@ -8,14 +8,12 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.codehaus.mojo</groupId>
   <artifactId>webstart-jnlp-servlet</artifactId>
 
   <name>MWEBSTART :: JNLP Servlet</name>
   <!--<version>1.0-7.0.02_ea_b02.2-SNAPSHOT</version>-->
   <description>JNLP Sample servlet that supports pack200 protocol. Taken from Sun's JDK sample/jnlp directory thanks to
-    its permissive license.
-  </description>
+    its permissive license.</description>
   <url>http:///jdk6.dev.java.net/</url>
   <!--scm> available in source package inside a mustang snapshot.
     <connection />

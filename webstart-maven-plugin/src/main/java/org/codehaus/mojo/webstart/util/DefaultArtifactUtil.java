@@ -19,6 +19,13 @@ package org.codehaus.mojo.webstart.util;
  * under the License.
  */
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -36,24 +43,14 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Default implementation of {@link ArtifactUtil}.
  *
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-4
  */
-@Component( role = ArtifactUtil.class, hint = "default" )
-public class DefaultArtifactUtil
-        extends AbstractLogEnabled
-        implements ArtifactUtil
-{
+@Component(role = ArtifactUtil.class, hint = "default")
+public class DefaultArtifactUtil extends AbstractLogEnabled implements ArtifactUtil {
 
     /**
      */
@@ -75,40 +72,39 @@ public class DefaultArtifactUtil
     /**
      * {@inheritDoc}
      */
-    public Artifact createArtifact( JarResource jarResource )
-    {
+    public Artifact createArtifact(JarResource jarResource) {
 
-        if ( jarResource.getClassifier() == null )
-        {
-            return artifactFactory.createArtifact( jarResource.getGroupId(), jarResource.getArtifactId(),
-                                                   jarResource.getVersion(), Artifact.SCOPE_RUNTIME, "jar" );
-        }
-        else
-        {
-            return artifactFactory.createArtifactWithClassifier( jarResource.getGroupId(), jarResource.getArtifactId(),
-                                                                 jarResource.getVersion(), "jar",
-                                                                 jarResource.getClassifier() );
+        if (jarResource.getClassifier() == null) {
+            return artifactFactory.createArtifact(
+                    jarResource.getGroupId(),
+                    jarResource.getArtifactId(),
+                    jarResource.getVersion(),
+                    Artifact.SCOPE_RUNTIME,
+                    "jar");
+        } else {
+            return artifactFactory.createArtifactWithClassifier(
+                    jarResource.getGroupId(),
+                    jarResource.getArtifactId(),
+                    jarResource.getVersion(),
+                    "jar",
+                    jarResource.getClassifier());
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public MavenProject resolveFromReactor( Artifact artifact, MavenProject mp, List<MavenProject> reactorProjects )
-            throws MojoExecutionException
-    {
+    public MavenProject resolveFromReactor(Artifact artifact, MavenProject mp, List<MavenProject> reactorProjects)
+            throws MojoExecutionException {
         MavenProject result = null;
 
         String artifactId = artifact.getArtifactId();
         String groupId = artifact.getGroupId();
 
-        if ( CollectionUtils.isNotEmpty( reactorProjects ) )
-        {
-            for ( MavenProject reactorProject : reactorProjects )
-            {
-                if ( reactorProject.getArtifactId().equals( artifactId ) &&
-                        reactorProject.getGroupId().equals( groupId ) )
-                {
+        if (CollectionUtils.isNotEmpty(reactorProjects)) {
+            for (MavenProject reactorProject : reactorProjects) {
+                if (reactorProject.getArtifactId().equals(artifactId)
+                        && reactorProject.getGroupId().equals(groupId)) {
                     result = reactorProject;
                     break;
                 }
@@ -121,72 +117,62 @@ public class DefaultArtifactUtil
     /**
      * {@inheritDoc}
      */
-    public void resolveFromRepositories( Artifact artifact, List remoteRepositories,
-                                         ArtifactRepository localRepository )
-            throws MojoExecutionException
-    {
-        try
-        {
-            artifactResolver.resolve( artifact, remoteRepositories, localRepository );
-        }
-        catch ( ArtifactResolutionException e )
-        {
-            throw new MojoExecutionException( "Could not resolv artifact: " + artifact, e );
-        }
-        catch ( ArtifactNotFoundException e )
-        {
-            throw new MojoExecutionException( "Could not find artifact: " + artifact, e );
+    public void resolveFromRepositories(Artifact artifact, List remoteRepositories, ArtifactRepository localRepository)
+            throws MojoExecutionException {
+        try {
+            artifactResolver.resolve(artifact, remoteRepositories, localRepository);
+        } catch (ArtifactResolutionException e) {
+            throw new MojoExecutionException("Could not resolv artifact: " + artifact, e);
+        } catch (ArtifactNotFoundException e) {
+            throw new MojoExecutionException("Could not find artifact: " + artifact, e);
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public Set<Artifact> resolveTransitively( Set<Artifact> jarResourceArtifacts, Set<MavenProject> siblingProjects,
-                                              Artifact originateArtifact, ArtifactRepository localRepository,
-                                              List<ArtifactRepository> remoteRepositories,
-                                              ArtifactFilter artifactFilter, Map managedVersions )
-            throws MojoExecutionException
-    {
+    public Set<Artifact> resolveTransitively(
+            Set<Artifact> jarResourceArtifacts,
+            Set<MavenProject> siblingProjects,
+            Artifact originateArtifact,
+            ArtifactRepository localRepository,
+            List<ArtifactRepository> remoteRepositories,
+            ArtifactFilter artifactFilter,
+            Map managedVersions)
+            throws MojoExecutionException {
 
         Set<Artifact> resultArtifacts = new LinkedHashSet<>();
 
-        if ( CollectionUtils.isNotEmpty( siblingProjects ) )
-        {
+        if (CollectionUtils.isNotEmpty(siblingProjects)) {
 
             // getting transitive dependencies from project
-            for ( MavenProject siblingProject : siblingProjects )
-            {
+            for (MavenProject siblingProject : siblingProjects) {
                 Set<Artifact> artifacts = siblingProject.getArtifacts();
-                for ( Artifact artifact : artifacts )
-                {
-                    if ( artifactFilter.include( artifact ) )
-                    {
+                for (Artifact artifact : artifacts) {
+                    if (artifactFilter.include(artifact)) {
 
-                        resultArtifacts.add( artifact );
+                        resultArtifacts.add(artifact);
                     }
                 }
             }
         }
-        try
-        {
-            ArtifactResolutionResult result =
-                    artifactResolver.resolveTransitively( jarResourceArtifacts, originateArtifact,
-                                                          managedVersions,
-                                                          localRepository, remoteRepositories, this.artifactMetadataSource,
-                                                          artifactFilter );
+        try {
+            ArtifactResolutionResult result = artifactResolver.resolveTransitively(
+                    jarResourceArtifacts,
+                    originateArtifact,
+                    managedVersions,
+                    localRepository,
+                    remoteRepositories,
+                    this.artifactMetadataSource,
+                    artifactFilter);
 
-            resultArtifacts.addAll( result.getArtifacts() );
+            resultArtifacts.addAll(result.getArtifacts());
 
             return resultArtifacts;
-        }
-        catch ( ArtifactResolutionException e )
-        {
-            throw new MojoExecutionException( "Could not resolv transitive dependencies", e );
-        }
-        catch ( ArtifactNotFoundException e )
-        {
-            throw new MojoExecutionException( "Could not find transitive dependencies ", e );
+        } catch (ArtifactResolutionException e) {
+            throw new MojoExecutionException("Could not resolv transitive dependencies", e);
+        } catch (ArtifactNotFoundException e) {
+            throw new MojoExecutionException("Could not find transitive dependencies ", e);
         }
     }
 
@@ -198,68 +184,55 @@ public class DefaultArtifactUtil
      * @return {@code true} if given artifact contains the given fqn, {@code false} otherwise
      * @throws MojoExecutionException if artifact file url is mal formed
      */
-
-    public boolean artifactContainsClass( Artifact artifact, final String mainClass )
-            throws MojoExecutionException
-    {
+    public boolean artifactContainsClass(Artifact artifact, final String mainClass) throws MojoExecutionException {
         boolean containsClass = true;
 
         // JarArchiver.grabFilesAndDirs()
         URL url;
-        try
-        {
+        try {
             url = artifact.getFile().toURI().toURL();
+        } catch (MalformedURLException e) {
+            throw new MojoExecutionException("Could not get artifact url: " + artifact.getFile(), e);
         }
-        catch ( MalformedURLException e )
-        {
-            throw new MojoExecutionException( "Could not get artifact url: " + artifact.getFile(), e );
-        }
-        ClassLoader cl = new java.net.URLClassLoader( new URL[]{url} );
+        ClassLoader cl = new java.net.URLClassLoader(new URL[] {url});
         Class<?> c = null;
-        try
-        {
-            c = Class.forName( mainClass, false, cl );
-        }
-        catch ( ClassNotFoundException e )
-        {
-            getLogger().debug( "artifact " + artifact + " doesn't contain the main class: " + mainClass );
+        try {
+            c = Class.forName(mainClass, false, cl);
+        } catch (ClassNotFoundException e) {
+            getLogger().debug("artifact " + artifact + " doesn't contain the main class: " + mainClass);
             containsClass = false;
-        }
-        catch ( Throwable t )
-        {
-            getLogger().info( "artifact " + artifact + " seems to contain the main class: " + mainClass +
-                                      " but the jar doesn't seem to contain all dependencies " + t.getMessage() );
+        } catch (Throwable t) {
+            getLogger()
+                    .info("artifact " + artifact + " seems to contain the main class: " + mainClass
+                            + " but the jar doesn't seem to contain all dependencies " + t.getMessage());
         }
 
-        if ( c != null )
-        {
-            getLogger().debug( "Checking if the loaded class contains a main method." );
+        if (c != null) {
+            getLogger().debug("Checking if the loaded class contains a main method.");
 
-            try
-            {
-                c.getMethod( "main", String[].class );
-            }
-            catch ( NoSuchMethodException e )
-            {
-                getLogger().warn(
-                        "The specified main class (" + mainClass + ") doesn't seem to contain a main method... " +
-                                "Please check your configuration." + e.getMessage() );
-            }
-            catch ( NoClassDefFoundError e )
-            {
+            try {
+                c.getMethod("main", String[].class);
+            } catch (NoSuchMethodException e) {
+                getLogger()
+                        .warn("The specified main class (" + mainClass + ") doesn't seem to contain a main method... "
+                                + "Please check your configuration." + e.getMessage());
+            } catch (NoClassDefFoundError e) {
                 // undocumented in SDK 5.0. is this due to the ClassLoader lazy loading the Method
                 // thus making this a case tackled by the JVM Spec (Ref 5.3.5)!
                 // Reported as Incident 633981 to Sun just in case ...
-                getLogger().warn( "Something failed while checking if the main class contains the main() method. " +
-                                          "This is probably due to the limited classpath we have provided to the class loader. " +
-                                          "The specified main class (" + mainClass +
-                                          ") found in the jar is *assumed* to contain a main method... " + e.getMessage() );
-            }
-            catch ( Throwable t )
-            {
-                getLogger().error( "Unknown error: Couldn't check if the main class has a main method. " +
-                                           "The specified main class (" + mainClass +
-                                           ") found in the jar is *assumed* to contain a main method...", t );
+                getLogger()
+                        .warn("Something failed while checking if the main class contains the main() method. "
+                                + "This is probably due to the limited classpath we have provided to the class loader. "
+                                + "The specified main class ("
+                                + mainClass + ") found in the jar is *assumed* to contain a main method... "
+                                + e.getMessage());
+            } catch (Throwable t) {
+                getLogger()
+                        .error(
+                                "Unknown error: Couldn't check if the main class has a main method. "
+                                        + "The specified main class ("
+                                        + mainClass + ") found in the jar is *assumed* to contain a main method...",
+                                t);
             }
         }
 

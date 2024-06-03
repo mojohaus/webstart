@@ -1,9 +1,3 @@
-package org.codehaus.mojo.webstart;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -22,6 +16,11 @@ import java.util.List;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.codehaus.mojo.webstart;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.ArtifactRepositoryFactory;
@@ -30,109 +29,94 @@ import org.apache.maven.artifact.repository.layout.DefaultRepositoryLayout;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
-import org.apache.maven.profiles.DefaultProfileManager;
-import org.apache.maven.profiles.ProfileManager;
 import org.apache.maven.project.DefaultProjectBuilder;
 import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.ProjectBuilder;
 
 /**
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
  */
-public abstract class AbstractJnlpMojoTest
-    extends AbstractMojoTestCase
-{
+public abstract class AbstractJnlpMojoTest extends AbstractMojoTestCase {
 
-    public void testFailWhenSomeDependenciesDoNotExist()
-        throws Exception
-    {
+    public void testFailWhenSomeDependenciesDoNotExist() throws Exception {
         JnlpInlineMojo mojo = new JnlpInlineMojo();
 
-        File pom = new File( getBasedir(), "src/test/projects/project4/pom.xml" );
+        File pom = new File(getBasedir(), "src/test/projects/project4/pom.xml");
 
-        setUpProject( pom, mojo );
+        setUpProject(pom, mojo);
 
         // -- TODO why can't this be read/set from the pom.xml file?
         AbstractJnlpMojo.Dependencies deps = new AbstractJnlpMojo.Dependencies();
         List includes = new ArrayList();
-        includes.add( "tatatata" );
-        includes.add( "titititi" );
+        includes.add("tatatata");
+        includes.add("titititi");
         List excludes = new ArrayList();
-        excludes.add( "commons-lang:commons-lang" );
-        excludes.add( "totototo" );
-        deps.setIncludes( includes );
-        deps.setExcludes( excludes );
-        setVariableValueToObject( mojo, "dependencies", deps );
-        // -- 
+        excludes.add("commons-lang:commons-lang");
+        excludes.add("totototo");
+        deps.setIncludes(includes);
+        deps.setExcludes(excludes);
+        setVariableValueToObject(mojo, "dependencies", deps);
+        // --
 
-        assertTrue( "dependencies not null", mojo.getDependencies() != null );
-        assertEquals( "2 includes", 2, mojo.getDependencies().getIncludes().size() );
-        assertEquals( "2 excludes", 2, mojo.getDependencies().getExcludes().size() );
+        assertTrue("dependencies not null", mojo.getDependencies() != null);
+        assertEquals("2 includes", 2, mojo.getDependencies().getIncludes().size());
+        assertEquals("2 excludes", 2, mojo.getDependencies().getExcludes().size());
 
-        try
-        {
+        try {
             mojo.checkDependencies();
-            fail( "Should have detected invalid webstart <dependencies>" );
-        }
-        catch ( MojoExecutionException e )
-        {
+            fail("Should have detected invalid webstart <dependencies>");
+        } catch (MojoExecutionException e) {
         }
     }
 
-    public void testAllDependenciesExist()
-        throws Exception
-    {
+    public void testAllDependenciesExist() throws Exception {
         JnlpInlineMojo mojo = new JnlpInlineMojo();
 
-        File pom = new File( getBasedir(), "src/test/projects/project3/pom.xml" );
+        File pom = new File(getBasedir(), "src/test/projects/project3/pom.xml");
 
-        setUpProject( pom, mojo );
+        setUpProject(pom, mojo);
 
         // -- TODO why can't this be read/set from the pom.xml file?
         AbstractJnlpMojo.Dependencies deps = new AbstractJnlpMojo.Dependencies();
         List excludes = new ArrayList();
-        excludes.add( "commons-lang:commons-lang" );
-        deps.setExcludes( excludes );
-        setVariableValueToObject( mojo, "dependencies", deps );
-        // -- 
+        excludes.add("commons-lang:commons-lang");
+        deps.setExcludes(excludes);
+        setVariableValueToObject(mojo, "dependencies", deps);
+        // --
 
-        assertTrue( "dependencies not null", mojo.getDependencies() != null );
-        assertNull( "no include", mojo.getDependencies().getIncludes() );
-        assertEquals( "1 exclude", 1, mojo.getDependencies().getExcludes().size() );
+        assertTrue("dependencies not null", mojo.getDependencies() != null);
+        assertNull("no include", mojo.getDependencies().getIncludes());
+        assertEquals("1 exclude", 1, mojo.getDependencies().getExcludes().size());
 
         mojo.checkDependencies();
     }
 
-
-    private void setUpProject( File pomFile, AbstractMojo mojo )
-        throws Exception
-    {
-        DefaultProjectBuilder projectBuilder = (DefaultProjectBuilder) lookup( DefaultProjectBuilder.class );
+    private void setUpProject(File pomFile, AbstractMojo mojo) throws Exception {
+        DefaultProjectBuilder projectBuilder = (DefaultProjectBuilder) lookup(DefaultProjectBuilder.class);
 
         ArtifactRepositoryFactory artifactRepositoryFactory =
-            (ArtifactRepositoryFactory) lookup( ArtifactRepositoryFactory.ROLE );
+                (ArtifactRepositoryFactory) lookup(ArtifactRepositoryFactory.ROLE);
 
-        ArtifactRepositoryPolicy policy = new ArtifactRepositoryPolicy( true, "never", "never" );
+        ArtifactRepositoryPolicy policy = new ArtifactRepositoryPolicy(true, "never", "never");
 
-        String localRepoUrl = "file://" + System.getProperty( "user.home" ) + "/.m2/repository";
+        String localRepoUrl = "file://" + System.getProperty("user.home") + "/.m2/repository";
 
-        ArtifactRepository localRepository =
-            artifactRepositoryFactory.createArtifactRepository( "local", localRepoUrl, new DefaultRepositoryLayout(),
-                                                                policy, policy );
+        ArtifactRepository localRepository = artifactRepositoryFactory.createArtifactRepository(
+                "local", localRepoUrl, new DefaultRepositoryLayout(), policy, policy);
 
-//        ProfileManager profileManager = new DefaultProfileManager( getContainer() );
-        
+        //        ProfileManager profileManager = new DefaultProfileManager( getContainer() );
+
         final DefaultProjectBuildingRequest configuration = new DefaultProjectBuildingRequest();
         configuration.setLocalRepository(localRepository);
-        
-        MavenProject project = projectBuilder.build(pomFile, configuration).getProject();
-        
-//        MavenProject project = projectBuilder.buildWithDependencies( pomFile, localRepository, profileManager );
 
-        //this gets the classes for these tests of this mojo (exec plugin) onto the project classpath for the test
-        project.getBuild().setOutputDirectory( new File( "target/test-classes" ).getAbsolutePath() );
-        setVariableValueToObject( mojo, "project", project );
+        MavenProject project = projectBuilder.build(pomFile, configuration).getProject();
+
+        //        MavenProject project = projectBuilder.buildWithDependencies( pomFile, localRepository, profileManager
+        // );
+
+        // this gets the classes for these tests of this mojo (exec plugin) onto the project classpath for the test
+        project.getBuild().setOutputDirectory(new File("target/test-classes").getAbsolutePath());
+        setVariableValueToObject(mojo, "project", project);
     }
 }

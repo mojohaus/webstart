@@ -19,47 +19,41 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
+import java.util.List;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.velocity.VelocityContext;
-
-import java.util.List;
 
 /**
  * To generate an extension jnlp file.
  *
  * @author chemit
  */
-public class ExtensionGenerator
-        extends AbstractGenerator<ExtensionGeneratorConfig>
-{
+public class ExtensionGenerator extends AbstractGenerator<ExtensionGeneratorConfig> {
 
-    public ExtensionGenerator( Log log, GeneratorTechnicalConfig technicalConfig, ExtensionGeneratorConfig extraConfig )
-    {
-        super( log, technicalConfig, extraConfig );
+    public ExtensionGenerator(Log log, GeneratorTechnicalConfig technicalConfig, ExtensionGeneratorConfig extraConfig) {
+        super(log, technicalConfig, extraConfig);
     }
 
     @Override
-    protected String getArgumentsText()
-    {
+    protected String getArgumentsText() {
         return "";
     }
 
     @Override
-    protected VelocityContext createAndPopulateContext()
-    {
+    protected VelocityContext createAndPopulateContext() {
         VelocityContext context = super.createAndPopulateContext();
         // add the extension in velocity context
-        context.put( "extension", getExtraConfig().getExtension() );
+        context.put("extension", getExtraConfig().getExtension());
         return context;
     }
 
     @Override
-    protected String getDependenciesText()
-    {
-        List<Artifact> dependencies = getExtraConfig().getExtensionJnlpArtifacts( getExtraConfig().getExtension() );
+    protected String getDependenciesText() {
+        List<Artifact> dependencies =
+                getExtraConfig().getExtensionJnlpArtifacts(getExtraConfig().getExtension());
 
-        return indentText( 4, Generator.getDependenciesText( getExtraConfig(), dependencies ) );
+        return indentText(4, Generator.getDependenciesText(getExtraConfig(), dependencies));
     }
-
 }

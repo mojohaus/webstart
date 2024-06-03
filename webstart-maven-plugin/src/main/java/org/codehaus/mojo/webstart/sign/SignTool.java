@@ -19,9 +19,9 @@ package org.codehaus.mojo.webstart.sign;
  * under the License.
  */
 
-import org.apache.maven.plugin.MojoExecutionException;
-
 import java.io.File;
+
+import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * Tool api for jarsigner operations.
@@ -29,8 +29,7 @@ import java.io.File;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-3
  */
-public interface SignTool
-{
+public interface SignTool {
 
     /**
      * Plexus component role.
@@ -51,8 +50,7 @@ public interface SignTool
      * @throws MojoExecutionException if something wrong occurs
      * @since 1.0-beta-4
      */
-    File getKeyStoreFile( String keystore, File workingKeystore, ClassLoader classLoader )
-            throws MojoExecutionException;
+    File getKeyStoreFile(String keystore, File workingKeystore, ClassLoader classLoader) throws MojoExecutionException;
 
     /**
      * Generate a key store using keytool.
@@ -61,8 +59,7 @@ public interface SignTool
      * @param keystoreFile location of the keystore to generate
      * @throws MojoExecutionException if something wrong occurs
      */
-    void generateKey( SignConfig config, File keystoreFile )
-            throws MojoExecutionException;
+    void generateKey(SignConfig config, File keystoreFile) throws MojoExecutionException;
 
     /**
      * Sign a jar using jarsigner.
@@ -72,8 +69,7 @@ public interface SignTool
      * @param signedJar optional location of the signed jar to produce (if not set, will use the original location)
      * @throws MojoExecutionException if something wrong occurs
      */
-    void sign( SignConfig config, File jarFile, File signedJar )
-            throws MojoExecutionException;
+    void sign(SignConfig config, File jarFile, File signedJar) throws MojoExecutionException;
 
     /**
      * Verify a jar file using jarsigner.
@@ -83,8 +79,7 @@ public interface SignTool
      * @param certs   flag to show certificats details
      * @throws MojoExecutionException if something wrong occurs
      */
-    void verify( SignConfig config, File jarFile, boolean certs )
-            throws MojoExecutionException;
+    void verify(SignConfig config, File jarFile, boolean certs) throws MojoExecutionException;
 
     /**
      * Tests if the given jar is signed.
@@ -94,8 +89,7 @@ public interface SignTool
      * @throws MojoExecutionException if something wrong occurs
      * @since 1.0-beta-4
      */
-    boolean isJarSigned( File jarFile )
-            throws MojoExecutionException;
+    boolean isJarSigned(File jarFile) throws MojoExecutionException;
 
     /**
      * Unsign a jar.
@@ -105,8 +99,7 @@ public interface SignTool
      * @throws MojoExecutionException if something wrong occurs
      * @since 1.0-beta-4
      */
-    void unsign( File jarFile, boolean verbose )
-            throws MojoExecutionException;
+    void unsign(File jarFile, boolean verbose) throws MojoExecutionException;
 
     /**
      * Delete an existing key store
@@ -114,5 +107,5 @@ public interface SignTool
      * @param keystore the keystore to delete
      * @param verbose  flag to display verbose logs
      */
-    void deleteKeyStore( File keystore, boolean verbose );
+    void deleteKeyStore(File keystore, boolean verbose);
 }

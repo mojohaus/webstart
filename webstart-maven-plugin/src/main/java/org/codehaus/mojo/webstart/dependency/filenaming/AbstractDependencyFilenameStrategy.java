@@ -27,18 +27,15 @@ import org.apache.maven.artifact.Artifact;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public abstract class AbstractDependencyFilenameStrategy
-        implements DependencyFilenameStrategy
-{
+public abstract class AbstractDependencyFilenameStrategy implements DependencyFilenameStrategy {
 
     /**
      * {@inheritDoc}
      */
-    public String getDependencyFilename( Artifact artifact, Boolean outputJarVersion, Boolean useUniqueVersions )
-    {
-        String filename = getDependencyFileBasename( artifact, outputJarVersion, useUniqueVersions );
+    public String getDependencyFilename(Artifact artifact, Boolean outputJarVersion, Boolean useUniqueVersions) {
+        String filename = getDependencyFileBasename(artifact, outputJarVersion, useUniqueVersions);
 
-        filename += "." + getDependencyFileExtension( artifact );
+        filename += "." + getDependencyFileExtension(artifact);
 
         return filename;
     }
@@ -46,8 +43,7 @@ public abstract class AbstractDependencyFilenameStrategy
     /**
      * {@inheritDoc}
      */
-    public String getDependencyFileExtension( Artifact artifact )
-    {
+    public String getDependencyFileExtension(Artifact artifact) {
         String extension = artifact.getArtifactHandler().getExtension();
         return extension;
     }
@@ -55,14 +51,11 @@ public abstract class AbstractDependencyFilenameStrategy
     /**
      * {@inheritDoc}
      */
-    public String getDependencyFileVersion( Artifact artifact, Boolean useUniqueVersions )
-    {
-        if ( useUniqueVersions != null && useUniqueVersions )
-        {
-            return UniqueVersionsHelper.getUniqueVersion( artifact );
+    public String getDependencyFileVersion(Artifact artifact, Boolean useUniqueVersions) {
+        if (useUniqueVersions != null && useUniqueVersions) {
+            return UniqueVersionsHelper.getUniqueVersion(artifact);
         }
 
         return artifact.getVersion();
     }
-
 }

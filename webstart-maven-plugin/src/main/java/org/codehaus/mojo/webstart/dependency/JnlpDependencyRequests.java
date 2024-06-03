@@ -29,8 +29,7 @@ import java.util.List;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public class JnlpDependencyRequests
-{
+public class JnlpDependencyRequests {
 
     /**
      * Registred requests.
@@ -39,29 +38,24 @@ public class JnlpDependencyRequests
 
     private final JnlpDependencyGlobalConfig config;
 
-    public JnlpDependencyRequests( JnlpDependencyGlobalConfig config )
-    {
+    public JnlpDependencyRequests(JnlpDependencyGlobalConfig config) {
         this.config = config;
         requests = new ArrayList<>();
     }
 
-    public JnlpDependencyGlobalConfig getConfig()
-    {
+    public JnlpDependencyGlobalConfig getConfig() {
         return config;
     }
 
-    public void addRequest( JnlpDependencyRequest request )
-    {
-        requests.add( request );
+    public void addRequest(JnlpDependencyRequest request) {
+        requests.add(request);
     }
 
-    public List<JnlpDependencyRequest> getRequests()
-    {
-        return Collections.unmodifiableList( requests );
+    public List<JnlpDependencyRequest> getRequests() {
+        return Collections.unmodifiableList(requests);
     }
 
-    public int getNbRequests()
-    {
+    public int getNbRequests() {
         return requests.size();
     }
 }

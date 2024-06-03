@@ -1,6 +1,6 @@
 /*
  * @(#)VersionString.java	1.6 05/11/17
- * 
+ *
  * Copyright (c) 2006 Sun Microsystems, Inc. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,8 +47,7 @@ import java.util.StringTokenizer;
  *  (version-id ('+'?) ' ') *
  *
  */
-public class VersionString
-{
+public class VersionString {
     private List<VersionID> _versionIds;
 
     /**
@@ -56,16 +55,13 @@ public class VersionString
      *
      * @param vs TODO
      */
-    public VersionString( String vs )
-    {
+    public VersionString(String vs) {
         _versionIds = new ArrayList<>();
-        if ( vs != null )
-        {
-            StringTokenizer st = new StringTokenizer( vs, " ", false );
-            while ( st.hasMoreElements() )
-            {
+        if (vs != null) {
+            StringTokenizer st = new StringTokenizer(vs, " ", false);
+            while (st.hasMoreElements()) {
                 // Note: The VersionID class takes care of a postfixed '+'
-                _versionIds.add( new VersionID( st.nextToken() ) );
+                _versionIds.add(new VersionID(st.nextToken()));
             }
         }
     }
@@ -76,14 +72,11 @@ public class VersionString
      * @param m TODO
      * @return TODO
      */
-    public boolean contains( VersionID m )
-    {
-        for ( Object _versionId : _versionIds )
-        {
+    public boolean contains(VersionID m) {
+        for (Object _versionId : _versionIds) {
             VersionID vi = (VersionID) _versionId;
-            boolean check = vi.match( m );
-            if ( check )
-            {
+            boolean check = vi.match(m);
+            if (check) {
                 return true;
             }
         }
@@ -96,9 +89,8 @@ public class VersionString
      * @param versionid TODO
      * @return TODO
      */
-    public boolean contains( String versionid )
-    {
-        return contains( new VersionID( versionid ) );
+    public boolean contains(String versionid) {
+        return contains(new VersionID(versionid));
     }
 
     /**
@@ -107,14 +99,11 @@ public class VersionString
      * @param m TODO
      * @return TODO
      */
-    public boolean containsGreaterThan( VersionID m )
-    {
-        for ( Object _versionId : _versionIds )
-        {
+    public boolean containsGreaterThan(VersionID m) {
+        for (Object _versionId : _versionIds) {
             VersionID vi = (VersionID) _versionId;
-            boolean check = vi.isGreaterThan( m );
-            if ( check )
-            {
+            boolean check = vi.isGreaterThan(m);
+            if (check) {
                 return true;
             }
         }
@@ -127,9 +116,8 @@ public class VersionString
      * @param versionid TODO
      * @return TODO
      */
-    public boolean containsGreaterThan( String versionid )
-    {
-        return containsGreaterThan( new VersionID( versionid ) );
+    public boolean containsGreaterThan(String versionid) {
+        return containsGreaterThan(new VersionID(versionid));
     }
 
     /**
@@ -139,23 +127,17 @@ public class VersionString
      * @param vs TODO
      * @return TODO
      */
-    static public boolean contains( String vs, String vi )
-    {
-        return ( new VersionString( vs ) ).contains( vi );
+    public static boolean contains(String vs, String vi) {
+        return (new VersionString(vs)).contains(vi);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder sb = new StringBuilder();
-        for ( Object _versionId : _versionIds )
-        {
-            sb.append( _versionId.toString() );
-            sb.append( ' ' );
+        for (Object _versionId : _versionIds) {
+            sb.append(_versionId.toString());
+            sb.append(' ');
         }
         return sb.toString();
     }
 }
-
-
-

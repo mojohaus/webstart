@@ -31,8 +31,7 @@ import java.util.Map;
  * @version $Revision$
  * @since 1.0-alpha-2
  */
-public class JnlpFile
-{
+public class JnlpFile {
 
     private String inputTemplateResourcePath;
 
@@ -53,28 +52,23 @@ public class JnlpFile
     /**
      * Creates a new uninitialized {@code JnlpFile}.
      */
-    public JnlpFile()
-    {
+    public JnlpFile() {
         // do nothing
     }
 
-    public String getTemplateFilename()
-    {
+    public String getTemplateFilename() {
         return templateFilename;
     }
 
-    public void setInputTemplateResourcePath( String inputTemplateResourcePath )
-    {
+    public void setInputTemplateResourcePath(String inputTemplateResourcePath) {
         this.inputTemplateResourcePath = inputTemplateResourcePath;
     }
 
-    public String getInputTemplateResourcePath()
-    {
+    public String getInputTemplateResourcePath() {
         return inputTemplateResourcePath;
     }
 
-    public void setInputTemplate( String inputTemplate )
-    {
+    public void setInputTemplate(String inputTemplate) {
         this.inputTemplate = inputTemplate;
     }
 
@@ -84,8 +78,7 @@ public class JnlpFile
      *
      * @return the name of the JNLP template file.
      */
-    public String getInputTemplate()
-    {
+    public String getInputTemplate() {
         return inputTemplate;
     }
 
@@ -94,8 +87,7 @@ public class JnlpFile
      *
      * @return the value of the outputFilename field.
      */
-    protected String getOutputFilename()
-    {
+    protected String getOutputFilename() {
         return this.outputFilename;
     }
 
@@ -104,8 +96,7 @@ public class JnlpFile
      *
      * @return the value of the jarResources field.
      */
-    protected List<JarResource> getJarResources()
-    {
+    protected List<JarResource> getJarResources() {
         return this.jarResources;
     }
 
@@ -115,8 +106,7 @@ public class JnlpFile
      *
      * @return the value of the mainClass field.
      */
-    protected String getMainClass()
-    {
+    protected String getMainClass() {
         return this.mainClass;
     }
 
@@ -125,8 +115,7 @@ public class JnlpFile
      *
      * @return the value of the properties field.
      */
-    protected Map<String, String> getProperties()
-    {
+    protected Map<String, String> getProperties() {
         return this.properties;
     }
 
@@ -135,8 +124,7 @@ public class JnlpFile
      *
      * @param jarResources the new value for field {@link #jarResources}
      */
-    protected void setJarResources( List<JarResource> jarResources )
-    {
+    protected void setJarResources(List<JarResource> jarResources) {
         this.jarResources = jarResources;
     }
 
@@ -145,8 +133,7 @@ public class JnlpFile
      *
      * @param outputFilename the new value for field {@link #outputFilename}
      */
-    protected void setOutputFilename( String outputFilename )
-    {
+    protected void setOutputFilename(String outputFilename) {
         this.outputFilename = outputFilename;
     }
 
@@ -156,8 +143,7 @@ public class JnlpFile
      *
      * @param mainClass the new value for field {@link #mainClass}
      */
-    protected void setMainClass( String mainClass )
-    {
+    protected void setMainClass(String mainClass) {
         this.mainClass = mainClass;
     }
 
@@ -166,20 +152,15 @@ public class JnlpFile
      *
      * @param properties the new value for field {@link #properties}
      */
-
-    public void setProperties( Map<String, String> properties )
-    {
+    public void setProperties(Map<String, String> properties) {
         this.properties = properties;
     }
 
-    public List<String> getArguments()
-    {
+    public List<String> getArguments() {
         return arguments;
     }
 
-    public void setArguments( List<String> arguments )
-    {
+    public void setArguments(List<String> arguments) {
         this.arguments = arguments;
     }
-
 }

@@ -25,43 +25,39 @@ import junit.framework.TestCase;
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
  */
-public class SignConfigTest
-    extends TestCase
-{
+public class SignConfigTest extends TestCase {
 
-    public void testGetDname()
-    {
+    public void testGetDname() {
         SignConfig signConfig = new SignConfig();
-        signConfig.setDnameCn( "www.example.com" );
-        signConfig.setDnameOu( "None" );
-        signConfig.setDnameL( "Seattle" );
-        signConfig.setDnameSt( "Washington" );
-        signConfig.setDnameO( "ExampleOrg" );
-        signConfig.setDnameC( "US" );
-        assertEquals( "CN=www.example.com, OU=None, L=Seattle, ST=Washington, O=ExampleOrg, C=US",
-                      signConfig.getDname() );
+        signConfig.setDnameCn("www.example.com");
+        signConfig.setDnameOu("None");
+        signConfig.setDnameL("Seattle");
+        signConfig.setDnameSt("Washington");
+        signConfig.setDnameO("ExampleOrg");
+        signConfig.setDnameC("US");
+        assertEquals(
+                "CN=www.example.com, OU=None, L=Seattle, ST=Washington, O=ExampleOrg, C=US", signConfig.getDname());
     }
 
-    public void testGetDnameMissing()
-    {
+    public void testGetDnameMissing() {
         SignConfig signConfig = new SignConfig();
-        signConfig.setDnameCn( "www.example.com" );
-        signConfig.setDnameL( "Seattle" );
-        signConfig.setDnameO( "ExampleOrg" );
-        signConfig.setDnameC( "US" );
-        assertEquals( "CN=www.example.com, L=Seattle, O=ExampleOrg, C=US", signConfig.getDname() );
+        signConfig.setDnameCn("www.example.com");
+        signConfig.setDnameL("Seattle");
+        signConfig.setDnameO("ExampleOrg");
+        signConfig.setDnameC("US");
+        assertEquals("CN=www.example.com, L=Seattle, O=ExampleOrg, C=US", signConfig.getDname());
     }
 
-    public void testGetDnameWithCommaInOrganization()
-    {
+    public void testGetDnameWithCommaInOrganization() {
         SignConfig signConfig = new SignConfig();
-        signConfig.setDnameCn( "www.example.com" );
-        signConfig.setDnameOu( "None" );
-        signConfig.setDnameL( "Seattle" );
-        signConfig.setDnameSt( "Washington" );
-        signConfig.setDnameO( "Some Company, Inc." );
-        signConfig.setDnameC( "US" );
-        assertEquals( "CN=www.example.com, OU=None, L=Seattle, ST=Washington, O=Some Company\\, Inc., C=US",
-                      signConfig.getDname() );
+        signConfig.setDnameCn("www.example.com");
+        signConfig.setDnameOu("None");
+        signConfig.setDnameL("Seattle");
+        signConfig.setDnameSt("Washington");
+        signConfig.setDnameO("Some Company, Inc.");
+        signConfig.setDnameC("US");
+        assertEquals(
+                "CN=www.example.com, OU=None, L=Seattle, ST=Washington, O=Some Company\\, Inc., C=US",
+                signConfig.getDname());
     }
 }

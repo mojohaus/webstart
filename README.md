@@ -15,3 +15,4 @@ For publishing the site do the following:
 cd target/checkout
 mvn -Preporting verify site site:stage scm-publish:publish-scm
 ```
+
