@@ -49,6 +49,9 @@ import java.util.zip.ZipFile;
 public class UpdateManifestTask
         extends AbstractJnlpTask
 {
+
+    private static final String INDEX_LIST = "META-INF/INDEX.LIST";
+
     public static final String ROLE_HINT = "UpdateManifestTask";
 
     @Requirement
@@ -121,6 +124,11 @@ public class UpdateManifestTask
 
                 // skip the original manifest
                 if ( JarFile.MANIFEST_NAME.equals( entry.getName() ) )
+                {
+                    continue;
+                }
+                //skip the INDEX.LIST file
+                if (INDEX_LIST.equals(entry.getName()))
                 {
                     continue;
                 }
