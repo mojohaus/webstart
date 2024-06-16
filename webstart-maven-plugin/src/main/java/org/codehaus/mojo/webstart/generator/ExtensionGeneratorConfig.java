@@ -19,13 +19,13 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
-import org.apache.maven.artifact.Artifact;
-import org.codehaus.mojo.webstart.JnlpExtension;
-import org.codehaus.mojo.webstart.dependency.filenaming.DependencyFilenameStrategy;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.maven.artifact.Artifact;
+import org.codehaus.mojo.webstart.JnlpExtension;
+import org.codehaus.mojo.webstart.dependency.filenaming.DependencyFilenameStrategy;
 
 /**
  * Created on 1/6/14.
@@ -33,9 +33,7 @@ import java.util.Map;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public class ExtensionGeneratorConfig
-        extends AbstractGeneratorExtraConfigWithDeps
-{
+public class ExtensionGeneratorConfig extends AbstractGeneratorExtraConfigWithDeps {
 
     private final Map<JnlpExtension, List<Artifact>> extensionsJnlpArtifacts;
 
@@ -43,42 +41,47 @@ public class ExtensionGeneratorConfig
 
     private final String codebase;
 
-    public ExtensionGeneratorConfig( String libPath, boolean pack200, boolean outputJarVersions,
-                                     boolean useUniqueVersions, Artifact artifactWithMainClass,
-                                     DependencyFilenameStrategy dependencyFilenameStrategy,
-                                     Map<JnlpExtension, List<Artifact>> extensionsJnlpArtifacts, String codebase,
-                                     JnlpExtension extension )
-    {
-        super( libPath, pack200, outputJarVersions, useUniqueVersions, artifactWithMainClass, dependencyFilenameStrategy );
+    public ExtensionGeneratorConfig(
+            String libPath,
+            boolean pack200,
+            boolean outputJarVersions,
+            boolean useUniqueVersions,
+            Artifact artifactWithMainClass,
+            DependencyFilenameStrategy dependencyFilenameStrategy,
+            Map<JnlpExtension, List<Artifact>> extensionsJnlpArtifacts,
+            String codebase,
+            JnlpExtension extension) {
+        super(
+                libPath,
+                pack200,
+                outputJarVersions,
+                useUniqueVersions,
+                artifactWithMainClass,
+                dependencyFilenameStrategy);
         this.extensionsJnlpArtifacts = extensionsJnlpArtifacts;
         this.extension = extension;
         this.codebase = codebase;
     }
 
-    public JnlpExtension getExtension()
-    {
+    public JnlpExtension getExtension() {
         return extension;
     }
 
-    public String getCodebase()
-    {
+    public String getCodebase() {
         return codebase;
     }
 
-    public List<Artifact> getExtensionJnlpArtifacts( JnlpExtension extension )
-    {
-        return extensionsJnlpArtifacts.get( extension );
+    public List<Artifact> getExtensionJnlpArtifacts(JnlpExtension extension) {
+        return extensionsJnlpArtifacts.get(extension);
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getJnlpSpec()
-    {
+    public String getJnlpSpec() {
         // shouldn't we automatically identify the spec based on the features used in the spec?
         // also detect conflicts. If user specified 1.0 but uses a 1.5 feature we should fail in checkInput().
-        if ( extension.getSpec() != null )
-        {
+        if (extension.getSpec() != null) {
             return extension.getSpec();
         }
         return "1.0+";
@@ -87,10 +90,8 @@ public class ExtensionGeneratorConfig
     /**
      * {@inheritDoc}
      */
-    public String getOfflineAllowed()
-    {
-        if ( extension.getOfflineAllowed() != null )
-        {
+    public String getOfflineAllowed() {
+        if (extension.getOfflineAllowed() != null) {
             return extension.getOfflineAllowed();
         }
         return "false";
@@ -99,10 +100,8 @@ public class ExtensionGeneratorConfig
     /**
      * {@inheritDoc}
      */
-    public String getAllPermissions()
-    {
-        if ( extension.getAllPermissions() != null )
-        {
+    public String getAllPermissions() {
+        if (extension.getAllPermissions() != null) {
             return extension.getAllPermissions();
         }
         return "true";
@@ -111,10 +110,8 @@ public class ExtensionGeneratorConfig
     /**
      * {@inheritDoc}
      */
-    public String getJ2seVersion()
-    {
-        if ( extension.getJ2seVersion() != null )
-        {
+    public String getJ2seVersion() {
+        if (extension.getJ2seVersion() != null) {
             return extension.getJ2seVersion();
         }
         return "1.5+";
@@ -123,16 +120,14 @@ public class ExtensionGeneratorConfig
     /**
      * {@inheritDoc}
      */
-    public String getJnlpCodeBase()
-    {
+    public String getJnlpCodeBase() {
         return codebase;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Map<String, String> getProperties()
-    {
+    public Map<String, String> getProperties() {
         return Collections.emptyMap();
     }
 

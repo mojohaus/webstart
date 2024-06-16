@@ -1,6 +1,6 @@
 /*
  * @(#)XMLNode.java	1.6 05/11/17
- * 
+ *
  * Copyright (c) 2006 Sun Microsystems, Inc. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,28 +42,26 @@ import java.io.StringWriter;
 /**
  * Class that contains information about an XML Node
  */
-public class XMLNode
-{
-    private boolean _isElement;     // Element/PCTEXT
+public class XMLNode {
+    private boolean _isElement; // Element/PCTEXT
 
     private String _name;
 
     private XMLAttribute _attr;
 
-    private XMLNode _parent;  // Parent Node
+    private XMLNode _parent; // Parent Node
 
-    private XMLNode _nested;  // Nested XML tags
+    private XMLNode _nested; // Nested XML tags
 
-    private XMLNode _next;    // Following XML tag on the same level
+    private XMLNode _next; // Following XML tag on the same level
 
     /**
      * Creates a PCTEXT node
      *
      * @param name TODO
      */
-    public XMLNode( String name )
-    {
-        this( name, null, null, null );
+    public XMLNode(String name) {
+        this(name, null, null, null);
         _isElement = false;
     }
 
@@ -73,9 +71,8 @@ public class XMLNode
      * @param name TODO
      * @param attr TODO
      */
-    public XMLNode( String name, XMLAttribute attr )
-    {
-        this( name, attr, null, null );
+    public XMLNode(String name, XMLAttribute attr) {
+        this(name, attr, null, null);
     }
 
     /**
@@ -86,8 +83,7 @@ public class XMLNode
      * @param nested TODO
      * @param next   TODO
      */
-    public XMLNode( String name, XMLAttribute attr, XMLNode nested, XMLNode next )
-    {
+    public XMLNode(String name, XMLAttribute attr, XMLNode nested, XMLNode next) {
         _isElement = true;
         _name = name;
         _attr = attr;
@@ -96,71 +92,58 @@ public class XMLNode
         _parent = null;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return _name;
     }
 
-    public XMLAttribute getAttributes()
-    {
+    public XMLAttribute getAttributes() {
         return _attr;
     }
 
-    public XMLNode getNested()
-    {
+    public XMLNode getNested() {
         return _nested;
     }
 
-    public XMLNode getNext()
-    {
+    public XMLNode getNext() {
         return _next;
     }
 
-    public boolean isElement()
-    {
+    public boolean isElement() {
         return _isElement;
     }
 
-    public void setParent( XMLNode parent )
-    {
+    public void setParent(XMLNode parent) {
         _parent = parent;
     }
 
-    public XMLNode getParent()
-    {
+    public XMLNode getParent() {
         return _parent;
     }
 
-    public void setNext( XMLNode next )
-    {
+    public void setNext(XMLNode next) {
         _next = next;
     }
 
-    public void setNested( XMLNode nested )
-    {
+    public void setNested(XMLNode nested) {
         _nested = nested;
     }
 
-    public boolean equals( Object o )
-    {
-        if ( o == null || !( o instanceof XMLNode ) )
-        {
+    public boolean equals(Object o) {
+        if (o == null || !(o instanceof XMLNode)) {
             return false;
         }
         XMLNode other = (XMLNode) o;
-        boolean result =
-                match( _name, other._name ) && match( _attr, other._attr ) && match( _nested, other._nested ) &&
-                        match( _next, other._next );
+        boolean result = match(_name, other._name)
+                && match(_attr, other._attr)
+                && match(_nested, other._nested)
+                && match(_next, other._next);
         return result;
     }
 
-    public String getAttribute( String name )
-    {
+    public String getAttribute(String name) {
         XMLAttribute cur = _attr;
-        while ( cur != null )
-        {
-            if ( name.equals( cur.getName() ) )
-            {
+        while (cur != null) {
+            if (name.equals(cur.getName())) {
                 return cur.getValue();
             }
             cur = cur.getNext();
@@ -168,72 +151,53 @@ public class XMLNode
         return "";
     }
 
-    private static boolean match( Object o1, Object o2 )
-    {
-        if ( o1 == null )
-        {
-            return ( o2 == null );
+    private static boolean match(Object o1, Object o2) {
+        if (o1 == null) {
+            return (o2 == null);
         }
-        return o1.equals( o2 );
+        return o1.equals(o2);
     }
 
-    public void printToStream( PrintWriter out )
-    {
-        printToStream( out, 0 );
+    public void printToStream(PrintWriter out) {
+        printToStream(out, 0);
     }
 
-    public void printToStream( PrintWriter out, int n )
-    {
-        if ( !isElement() )
-        {
-            out.print( _name );
-        }
-        else
-        {
-            if ( _nested == null )
-            {
-                String attrString = ( _attr == null ) ? "" : ( " " + _attr.toString() );
-                lineln( out, n, "<" + _name + attrString + "/>" );
-            }
-            else
-            {
-                String attrString = ( _attr == null ) ? "" : ( " " + _attr.toString() );
-                lineln( out, n, "<" + _name + attrString + ">" );
-                _nested.printToStream( out, n + 1 );
-                if ( _nested.isElement() )
-                {
-                    lineln( out, n, "</" + _name + ">" );
-                }
-                else
-                {
-                    out.print( "</" + _name + ">" );
+    public void printToStream(PrintWriter out, int n) {
+        if (!isElement()) {
+            out.print(_name);
+        } else {
+            if (_nested == null) {
+                String attrString = (_attr == null) ? "" : (" " + _attr.toString());
+                lineln(out, n, "<" + _name + attrString + "/>");
+            } else {
+                String attrString = (_attr == null) ? "" : (" " + _attr.toString());
+                lineln(out, n, "<" + _name + attrString + ">");
+                _nested.printToStream(out, n + 1);
+                if (_nested.isElement()) {
+                    lineln(out, n, "</" + _name + ">");
+                } else {
+                    out.print("</" + _name + ">");
                 }
             }
         }
-        if ( _next != null )
-        {
-            _next.printToStream( out, n );
+        if (_next != null) {
+            _next.printToStream(out, n);
         }
     }
 
-    private static void lineln( PrintWriter out, int indent, String s )
-    {
-        out.println( "" );
-        for ( int i = 0; i < indent; i++ )
-        {
-            out.print( "  " );
+    private static void lineln(PrintWriter out, int indent, String s) {
+        out.println("");
+        for (int i = 0; i < indent; i++) {
+            out.print("  ");
         }
-        out.print( s );
+        out.print(s);
     }
 
-    public String toString()
-    {
-        StringWriter sw = new StringWriter( 1000 );
-        PrintWriter pw = new PrintWriter( sw );
-        printToStream( pw );
+    public String toString() {
+        StringWriter sw = new StringWriter(1000);
+        PrintWriter pw = new PrintWriter(sw);
+        printToStream(pw);
         pw.close();
         return sw.toString();
     }
 }
-
-

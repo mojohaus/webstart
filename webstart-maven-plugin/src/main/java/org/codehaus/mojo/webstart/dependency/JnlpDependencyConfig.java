@@ -19,13 +19,13 @@ package org.codehaus.mojo.webstart.dependency;
  * under the License.
  */
 
-import org.apache.maven.artifact.Artifact;
-import org.codehaus.mojo.webstart.dependency.filenaming.DependencyFilenameStrategy;
-import org.codehaus.mojo.webstart.sign.SignConfig;
-
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.maven.artifact.Artifact;
+import org.codehaus.mojo.webstart.dependency.filenaming.DependencyFilenameStrategy;
+import org.codehaus.mojo.webstart.sign.SignConfig;
 
 /**
  * To configure a task on a jnlp dependency.
@@ -35,8 +35,7 @@ import java.util.Map;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public class JnlpDependencyConfig
-{
+public class JnlpDependencyConfig {
     /**
      * Global configuration used by all dependencies.
      */
@@ -62,43 +61,40 @@ public class JnlpDependencyConfig
      */
     private File workingDirectory;
 
-    public JnlpDependencyConfig( JnlpDependencyGlobalConfig globalConfig, Artifact artifact, String finalName,
-                                 boolean outputJarVersion, boolean useUniqueVersions )
-    {
+    public JnlpDependencyConfig(
+            JnlpDependencyGlobalConfig globalConfig,
+            Artifact artifact,
+            String finalName,
+            boolean outputJarVersion,
+            boolean useUniqueVersions) {
         this.globalConfig = globalConfig;
         this.artifact = artifact;
         this.outputJarVersion = outputJarVersion;
         this.useUniqueVersions = useUniqueVersions;
-        this.workingDirectory = new File( globalConfig.getWorkingDirectory(), finalName );
+        this.workingDirectory = new File(globalConfig.getWorkingDirectory(), finalName);
     }
 
-    public Artifact getArtifact()
-    {
+    public Artifact getArtifact() {
         return artifact;
     }
 
-    public File getWorkingDirectory()
-    {
+    public File getWorkingDirectory() {
         return workingDirectory;
     }
 
-    public boolean isOutputJarVersion()
-    {
+    public boolean isOutputJarVersion() {
         return outputJarVersion;
     }
 
-    public boolean isUseUniqueVersions()
-    {
+    public boolean isUseUniqueVersions() {
         return useUniqueVersions;
     }
 
-    public DependencyFilenameStrategy getDependencyFilenameStrategy()
-    {
+    public DependencyFilenameStrategy getDependencyFilenameStrategy() {
         return globalConfig.getDependencyFilenameStrategy();
     }
 
-    public File getFinalDirectory()
-    {
+    public File getFinalDirectory() {
         return globalConfig.getFinalDirectory();
     }
 
@@ -108,8 +104,7 @@ public class JnlpDependencyConfig
      *
      * @return Returns the value of the pack200.enabled field.
      */
-    public boolean isPack200()
-    {
+    public boolean isPack200() {
         return globalConfig.isPack200();
     }
 
@@ -118,8 +113,7 @@ public class JnlpDependencyConfig
      *
      * @return Returns the list value of the pack200.passFiles.
      */
-    public List<String> getPack200PassFiles()
-    {
+    public List<String> getPack200PassFiles() {
         return globalConfig.getPack200PassFiles();
     }
 
@@ -129,43 +123,35 @@ public class JnlpDependencyConfig
      *
      * @return Returns the value of the gzip field.
      */
-    public boolean isGzip()
-    {
+    public boolean isGzip() {
         return globalConfig.isGzip();
     }
 
-    public boolean isVerbose()
-    {
+    public boolean isVerbose() {
         return globalConfig.isVerbose();
     }
 
-    public SignConfig getSign()
-    {
+    public SignConfig getSign() {
         return globalConfig.getSign();
     }
 
-    public Map<String, String> getUpdateManifestEntries()
-    {
+    public Map<String, String> getUpdateManifestEntries() {
         return globalConfig.getUpdateManifestEntries();
     }
 
-    public boolean isUnsignAlreadySignedJars()
-    {
+    public boolean isUnsignAlreadySignedJars() {
         return globalConfig.isUnsignAlreadySignedJars();
     }
 
-    public boolean isCanUnsign()
-    {
+    public boolean isCanUnsign() {
         return globalConfig.isCanUnsign();
     }
 
-    public boolean isSign()
-    {
+    public boolean isSign() {
         return globalConfig.isSign();
     }
 
-    public boolean isUpdateManifest()
-    {
+    public boolean isUpdateManifest() {
         return globalConfig.isUpdateManifest();
     }
 }

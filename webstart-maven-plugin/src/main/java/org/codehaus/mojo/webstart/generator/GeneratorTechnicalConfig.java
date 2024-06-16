@@ -19,9 +19,9 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
-import org.apache.maven.project.MavenProject;
-
 import java.io.File;
+
+import org.apache.maven.project.MavenProject;
 
 /**
  * Created on 1/6/14.
@@ -29,8 +29,7 @@ import java.io.File;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public class GeneratorTechnicalConfig
-{
+public class GeneratorTechnicalConfig {
 
     private final MavenProject mavenProject;
 
@@ -48,29 +47,31 @@ public class GeneratorTechnicalConfig
 
     private final String webstartJarURL;
 
-    public GeneratorTechnicalConfig( MavenProject mavenProject, File resourceLoaderPath,
-                                     String defaultTemplateResourceName, File outputFile, String inputFileTemplatePath,
-                                     String mainClass, String webstartJarURL, String encoding )
-    {
-        if ( mavenProject == null )
-        {
-            throw new IllegalArgumentException( "mavenProject must not be null" );
+    public GeneratorTechnicalConfig(
+            MavenProject mavenProject,
+            File resourceLoaderPath,
+            String defaultTemplateResourceName,
+            File outputFile,
+            String inputFileTemplatePath,
+            String mainClass,
+            String webstartJarURL,
+            String encoding) {
+        if (mavenProject == null) {
+            throw new IllegalArgumentException("mavenProject must not be null");
         }
 
-        if ( resourceLoaderPath == null )
-        {
-            throw new IllegalArgumentException( "resourceLoaderPath must not be null" );
+        if (resourceLoaderPath == null) {
+            throw new IllegalArgumentException("resourceLoaderPath must not be null");
         }
 
-        if ( outputFile == null )
-        {
-            throw new IllegalArgumentException( "outputFile must not be null" );
+        if (outputFile == null) {
+            throw new IllegalArgumentException("outputFile must not be null");
         }
 
-//        if ( mainClass == null )
-//        {
-//            throw new IllegalArgumentException( "mainClass must not be null" );
-//        }
+        //        if ( mainClass == null )
+        //        {
+        //            throw new IllegalArgumentException( "mainClass must not be null" );
+        //        }
 
         this.mavenProject = mavenProject;
         this.outputFile = outputFile;
@@ -82,43 +83,35 @@ public class GeneratorTechnicalConfig
         this.webstartJarURL = webstartJarURL;
     }
 
-    public MavenProject getMavenProject()
-    {
+    public MavenProject getMavenProject() {
         return mavenProject;
     }
 
-    public File getOutputFile()
-    {
+    public File getOutputFile() {
         return outputFile;
     }
 
-    public String getMainClass()
-    {
+    public String getMainClass() {
         return mainClass;
     }
 
-    public String getEncoding()
-    {
+    public String getEncoding() {
         return encoding;
     }
 
-    public File getResourceLoaderPath()
-    {
+    public File getResourceLoaderPath() {
         return resourceLoaderPath;
     }
 
-    public String getDefaultTemplateResourceName()
-    {
+    public String getDefaultTemplateResourceName() {
         return defaultTemplateResourceName;
     }
 
-    public String getInputFileTemplatePath()
-    {
+    public String getInputFileTemplatePath() {
         return inputFileTemplatePath;
     }
 
-    public String getWebstartJarURL()
-    {
+    public String getWebstartJarURL() {
         return webstartJarURL;
     }
 }

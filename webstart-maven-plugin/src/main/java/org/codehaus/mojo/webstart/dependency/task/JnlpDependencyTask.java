@@ -19,9 +19,9 @@ package org.codehaus.mojo.webstart.dependency.task;
  * under the License.
  */
 
-import org.codehaus.mojo.webstart.dependency.JnlpDependencyConfig;
-
 import java.io.File;
+
+import org.codehaus.mojo.webstart.dependency.JnlpDependencyConfig;
 
 /**
  * Created on 1/4/14.
@@ -29,8 +29,7 @@ import java.io.File;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public interface JnlpDependencyTask
-{
+public interface JnlpDependencyTask {
 
     String ROLE = JnlpDependencyTask.class.getName();
 
@@ -39,7 +38,7 @@ public interface JnlpDependencyTask
      *
      * @param config the task configuration
      */
-    void check( JnlpDependencyConfig config );
+    void check(JnlpDependencyConfig config);
 
     /**
      * @param config configuration of the dependency to treat.
@@ -47,6 +46,5 @@ public interface JnlpDependencyTask
      * @return the new produced file
      * @throws JnlpDependencyTaskException TODO
      */
-    File execute( JnlpDependencyConfig config, File file )
-            throws JnlpDependencyTaskException;
+    File execute(JnlpDependencyConfig config, File file) throws JnlpDependencyTaskException;
 }

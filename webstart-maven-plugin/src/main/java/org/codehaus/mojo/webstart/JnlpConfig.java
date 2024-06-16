@@ -28,8 +28,7 @@ import java.util.Map;
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
  */
-public class JnlpConfig
-{
+public class JnlpConfig {
 
     private String inputTemplateResourcePath;
 
@@ -63,153 +62,123 @@ public class JnlpConfig
 
     private JnlpFileType type = JnlpFileType.application;
 
-    public void setInputTemplateResourcePath( String inputTemplateResourcePath )
-    {
+    public void setInputTemplateResourcePath(String inputTemplateResourcePath) {
         this.inputTemplateResourcePath = inputTemplateResourcePath;
     }
 
-    public void setInputTemplate( String inputTemplate )
-    {
+    public void setInputTemplate(String inputTemplate) {
         this.inputTemplate = inputTemplate;
     }
 
-    public void setOutputFile( String outputFile )
-    {
+    public void setOutputFile(String outputFile) {
         this.outputFile = outputFile;
     }
 
-    public void setSpec( String spec )
-    {
+    public void setSpec(String spec) {
         this.spec = spec;
     }
 
-    public void setVersion( String version )
-    {
+    public void setVersion(String version) {
         this.version = version;
     }
 
-    public void setJ2seVersion( String j2seVersion )
-    {
+    public void setJ2seVersion(String j2seVersion) {
         this.j2seVersion = j2seVersion;
     }
 
-    public void setOfflineAllowed( String offlineAllowed )
-    {
+    public void setOfflineAllowed(String offlineAllowed) {
         this.offlineAllowed = offlineAllowed;
     }
 
-    public void setAllPermissions( String allPermissions )
-    {
+    public void setAllPermissions(String allPermissions) {
         this.allPermissions = allPermissions;
     }
 
-    public void setHref( String href )
-    {
+    public void setHref(String href) {
         this.href = href;
     }
 
-    public void setMainClass( String mainClass )
-    {
+    public void setMainClass(String mainClass) {
         this.mainClass = mainClass;
     }
 
-    public void setProperties( Map<String, String> properties )
-    {
+    public void setProperties(Map<String, String> properties) {
         this.properties = properties;
     }
 
-    public void setType( String type )
-    {
-        this.type = JnlpFileType.valueOf( type );
+    public void setType(String type) {
+        this.type = JnlpFileType.valueOf(type);
     }
 
-    public void setType( JnlpFileType type )
-    {
+    public void setType(JnlpFileType type) {
         this.type = type;
     }
 
-    public void setIconHref( String iconHref )
-    {
+    public void setIconHref(String iconHref) {
         this.iconHref = iconHref;
     }
 
-    public String getInputTemplateResourcePath()
-    {
+    public String getInputTemplateResourcePath() {
         return inputTemplateResourcePath;
     }
 
-    public String getInputTemplate()
-    {
+    public String getInputTemplate() {
         return inputTemplate;
     }
 
-    public void setResources( File resources )
-    {
+    public void setResources(File resources) {
         this.resources = resources;
     }
 
-    public String getOutputFile()
-    {
+    public String getOutputFile() {
         return outputFile;
     }
 
-    public String getSpec()
-    {
+    public String getSpec() {
         return spec;
     }
 
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
-    public String getJ2seVersion()
-    {
+    public String getJ2seVersion() {
         return j2seVersion;
     }
 
-    public String getAllPermissions()
-    {
+    public String getAllPermissions() {
         return allPermissions;
     }
 
-    public String getOfflineAllowed()
-    {
+    public String getOfflineAllowed() {
         return offlineAllowed;
     }
 
-    public File getResources()
-    {
+    public File getResources() {
         return resources;
     }
 
-    public String getHref()
-    {
+    public String getHref() {
         return href;
     }
 
-    public String getMainClass()
-    {
+    public String getMainClass() {
         return mainClass;
     }
 
-    public Map<String, String> getProperties()
-    {
+    public Map<String, String> getProperties() {
         return properties;
     }
 
-    public JnlpFileType getType()
-    {
+    public JnlpFileType getType() {
         return type;
     }
 
-    public String getIconHref()
-    {
+    public String getIconHref() {
         return iconHref;
     }
 
-    public boolean isRequireMainClass()
-    {
+    public boolean isRequireMainClass() {
         return type.isRequireMainClass();
     }
 }

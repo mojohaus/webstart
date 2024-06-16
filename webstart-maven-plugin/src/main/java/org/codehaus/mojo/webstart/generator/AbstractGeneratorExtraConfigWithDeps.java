@@ -28,9 +28,7 @@ import org.codehaus.mojo.webstart.dependency.filenaming.DependencyFilenameStrate
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public abstract class AbstractGeneratorExtraConfigWithDeps
-        implements GeneratorExtraConfigWithDeps
-{
+public abstract class AbstractGeneratorExtraConfigWithDeps implements GeneratorExtraConfigWithDeps {
 
     private final String libPath;
 
@@ -44,10 +42,13 @@ public abstract class AbstractGeneratorExtraConfigWithDeps
 
     private final DependencyFilenameStrategy dependencyFilenameStrategy;
 
-    public AbstractGeneratorExtraConfigWithDeps( String libPath, boolean pack200, boolean outputJarVersions,
-                                                 boolean useUniqueVersions, Artifact artifactWithMainClass,
-                                                 DependencyFilenameStrategy dependencyFilenameStrategy )
-    {
+    public AbstractGeneratorExtraConfigWithDeps(
+            String libPath,
+            boolean pack200,
+            boolean outputJarVersions,
+            boolean useUniqueVersions,
+            Artifact artifactWithMainClass,
+            DependencyFilenameStrategy dependencyFilenameStrategy) {
 
         this.libPath = libPath;
         this.pack200 = pack200;
@@ -60,56 +61,49 @@ public abstract class AbstractGeneratorExtraConfigWithDeps
     /**
      * {@inheritDoc}
      */
-    public boolean isPack200()
-    {
+    public boolean isPack200() {
         return pack200;
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean isOutputJarVersions()
-    {
+    public boolean isOutputJarVersions() {
         return outputJarVersions;
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean isUseUniqueVersions()
-    {
+    public boolean isUseUniqueVersions() {
         return useUniqueVersions;
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getLibPath()
-    {
+    public String getLibPath() {
         return libPath;
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean isArtifactWithMainClass( Artifact artifact )
-    {
-        return artifactWithMainClass != null && artifactWithMainClass.equals( artifact );
+    public boolean isArtifactWithMainClass(Artifact artifact) {
+        return artifactWithMainClass != null && artifactWithMainClass.equals(artifact);
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getDependencyFilename( Artifact artifact, Boolean outputJarVersion )
-    {
-        return dependencyFilenameStrategy.getDependencyFilename( artifact, outputJarVersion, useUniqueVersions );
+    public String getDependencyFilename(Artifact artifact, Boolean outputJarVersion) {
+        return dependencyFilenameStrategy.getDependencyFilename(artifact, outputJarVersion, useUniqueVersions);
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getDependencyFileVersion( Artifact artifact )
-    {
-        return dependencyFilenameStrategy.getDependencyFileVersion( artifact, useUniqueVersions );
+    public String getDependencyFileVersion(Artifact artifact) {
+        return dependencyFilenameStrategy.getDependencyFileVersion(artifact, useUniqueVersions);
     }
 }

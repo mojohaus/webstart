@@ -29,8 +29,7 @@ import org.apache.maven.artifact.Artifact;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-4
  */
-public class ResolvedJarResource
-{
+public class ResolvedJarResource {
     /**
      * The underlying jar resource configuration (from pom).
      */
@@ -46,63 +45,51 @@ public class ResolvedJarResource
      */
     private String hrefValue;
 
-    public ResolvedJarResource( Artifact artifact )
-    {
-        this( new JarResource(), artifact );
+    public ResolvedJarResource(Artifact artifact) {
+        this(new JarResource(), artifact);
     }
 
-    public ResolvedJarResource( JarResource jarResource, Artifact artifact )
-    {
-        if ( artifact == null )
-        {
-            throw new IllegalArgumentException( "artifact must not be null" );
+    public ResolvedJarResource(JarResource jarResource, Artifact artifact) {
+        if (artifact == null) {
+            throw new IllegalArgumentException("artifact must not be null");
         }
-        if ( jarResource == null )
-        {
-            throw new IllegalArgumentException( "jarResource must not be null" );
+        if (jarResource == null) {
+            throw new IllegalArgumentException("jarResource must not be null");
         }
         this.jarResource = jarResource;
         this.artifact = artifact;
-        setHrefValue( jarResource.getHrefValue() );
+        setHrefValue(jarResource.getHrefValue());
     }
 
-    public String getArtifactId()
-    {
+    public String getArtifactId() {
         return artifact.getArtifactId();
     }
 
-    public String getType()
-    {
+    public String getType() {
         return artifact.getType();
     }
 
-    public String getClassifier()
-    {
+    public String getClassifier() {
         return artifact.getClassifier();
     }
 
-    public String getGroupId()
-    {
+    public String getGroupId() {
         return artifact.getGroupId();
     }
 
-    public String getVersion()
-    {
+    public String getVersion() {
         return artifact.getVersion();
     }
 
-    public String getMainClass()
-    {
+    public String getMainClass() {
         return jarResource.getMainClass();
     }
 
-    public boolean isOutputJarVersion()
-    {
+    public boolean isOutputJarVersion() {
         return jarResource.isOutputJarVersion();
     }
 
-    public boolean isIncludeInJnlp()
-    {
+    public boolean isIncludeInJnlp() {
         return jarResource.isIncludeInJnlp();
     }
 
@@ -111,8 +98,7 @@ public class ResolvedJarResource
      *
      * @return Returns the value of the artifact field.
      */
-    public Artifact getArtifact()
-    {
+    public Artifact getArtifact() {
         return artifact;
     }
 
@@ -123,16 +109,12 @@ public class ResolvedJarResource
      *
      * @return The href attribute to be output for this jar resource in the generated JNLP file.
      */
-    public String getHrefValue()
-    {
+    public String getHrefValue() {
         String result;
-        if ( hrefValue == null && getArtifact() != null )
-        {
+        if (hrefValue == null && getArtifact() != null) {
             // use default value
             result = getArtifact().getFile().getName();
-        }
-        else
-        {
+        } else {
             // use customized value
             result = hrefValue;
         }
@@ -146,8 +128,7 @@ public class ResolvedJarResource
      *
      * @param hrefValue new value for field {@link #hrefValue}
      */
-    public void setHrefValue( String hrefValue )
-    {
+    public void setHrefValue(String hrefValue) {
         this.hrefValue = hrefValue;
     }
 
@@ -159,84 +140,66 @@ public class ResolvedJarResource
      * @return {@code true} if equals to given other object.
      */
     @Override
-    public boolean equals( Object obj )
-    {
+    public boolean equals(Object obj) {
 
-        if ( obj == this )
-        {
+        if (obj == this) {
             return true;
         }
 
-        if ( !( obj instanceof ResolvedJarResource ) )
-        {
+        if (!(obj instanceof ResolvedJarResource)) {
             return false;
         }
 
         ResolvedJarResource other = (ResolvedJarResource) obj;
 
-        if ( fieldsAreNotEqual( getGroupId(), other.getGroupId() ) )
-        {
+        if (fieldsAreNotEqual(getGroupId(), other.getGroupId())) {
             return false;
         }
 
-        if ( fieldsAreNotEqual( getArtifactId(), other.getArtifactId() ) )
-        {
+        if (fieldsAreNotEqual(getArtifactId(), other.getArtifactId())) {
             return false;
         }
 
-        if ( fieldsAreNotEqual( getVersion(), other.getVersion() ) )
-        {
+        if (fieldsAreNotEqual(getVersion(), other.getVersion())) {
             return false;
         }
 
-        if ( fieldsAreNotEqual( getType(), other.getType() ) )
-        {
+        if (fieldsAreNotEqual(getType(), other.getType())) {
             return false;
         }
 
-        if ( fieldsAreNotEqual( getClassifier(), other.getClassifier() ) )
-        {
+        if (fieldsAreNotEqual(getClassifier(), other.getClassifier())) {
             return false;
         }
 
         return true;
-
     }
 
-    private boolean fieldsAreNotEqual( Object field1, Object field2 )
-    {
+    private boolean fieldsAreNotEqual(Object field1, Object field2) {
 
-        if ( field1 == null )
-        {
+        if (field1 == null) {
             return field2 != null;
+        } else {
+            return !field1.equals(field2);
         }
-        else
-        {
-            return !field1.equals( field2 );
-        }
-
     }
 
     /**
      * {@inheritDoc}
      */
-    public int hashCode()
-    {
+    public int hashCode() {
         final int offset = 17;
         final int multiplier = 37;
         int result = offset;
-        result += multiplier * fieldHashCode( getGroupId() );
-        result += multiplier * fieldHashCode( getArtifactId() );
-        result += multiplier * fieldHashCode( getVersion() );
-        result += multiplier * fieldHashCode( getType() );
-        result += multiplier * fieldHashCode( getClassifier() );
+        result += multiplier * fieldHashCode(getGroupId());
+        result += multiplier * fieldHashCode(getArtifactId());
+        result += multiplier * fieldHashCode(getVersion());
+        result += multiplier * fieldHashCode(getType());
+        result += multiplier * fieldHashCode(getClassifier());
         return result;
-
     }
 
-    private int fieldHashCode( Object field )
-    {
+    private int fieldHashCode(Object field) {
         return field == null ? 0 : field.hashCode();
     }
 }
-

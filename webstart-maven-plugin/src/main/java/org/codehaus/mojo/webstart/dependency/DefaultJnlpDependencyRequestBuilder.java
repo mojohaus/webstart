@@ -19,6 +19,10 @@ package org.codehaus.mojo.webstart.dependency;
  * under the License.
  */
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.shared.jarsigner.JarSignerUtil;
 import org.codehaus.mojo.webstart.dependency.task.JnlpDependencyTask;
@@ -36,10 +40,6 @@ import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * To create some {@link JnlpDependencyRequest}.
  * Created on 1/4/14.
@@ -47,11 +47,9 @@ import java.util.List;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-@Component( role = JnlpDependencyRequestBuilder.class, instantiationStrategy = "per-lookup" )
-public class DefaultJnlpDependencyRequestBuilder
-        extends AbstractLogEnabled
-        implements JnlpDependencyRequestBuilder, Contextualizable
-{
+@Component(role = JnlpDependencyRequestBuilder.class, instantiationStrategy = "per-lookup")
+public class DefaultJnlpDependencyRequestBuilder extends AbstractLogEnabled
+        implements JnlpDependencyRequestBuilder, Contextualizable {
 
     private PlexusContainer container;
 
@@ -60,11 +58,9 @@ public class DefaultJnlpDependencyRequestBuilder
     /**
      * {@inheritDoc}
      */
-    public void init( JnlpDependencyGlobalConfig globalConfig )
-    {
-        if ( globalConfig == null )
-        {
-            throw new NullPointerException( "Can't use a null *globalConfig*" );
+    public void init(JnlpDependencyGlobalConfig globalConfig) {
+        if (globalConfig == null) {
+            throw new NullPointerException("Can't use a null *globalConfig*");
         }
         this.globalConfig = globalConfig;
     }
@@ -72,134 +68,114 @@ public class DefaultJnlpDependencyRequestBuilder
     /**
      * {@inheritDoc}
      */
-    public JnlpDependencyRequests createRequests()
-    {
-        return new JnlpDependencyRequests( globalConfig );
+    public JnlpDependencyRequests createRequests() {
+        return new JnlpDependencyRequests(globalConfig);
     }
 
     /**
      * {@inheritDoc}
      */
-    public JnlpDependencyRequest createRequest( Artifact artifact, boolean outputJarVersion, boolean useUniqueVersions )
-    {
+    public JnlpDependencyRequest createRequest(Artifact artifact, boolean outputJarVersion, boolean useUniqueVersions) {
 
-        if ( globalConfig == null )
-        {
-            throw new IllegalStateException( "No config found, use init method before creating a request" );
+        if (globalConfig == null) {
+            throw new IllegalStateException("No config found, use init method before creating a request");
         }
 
-        JnlpDependencyConfig config = createConfig( artifact, outputJarVersion, useUniqueVersions );
+        JnlpDependencyConfig config = createConfig(artifact, outputJarVersion, useUniqueVersions);
 
-        JnlpDependencyTask[] tasks = createTasks( config );
+        JnlpDependencyTask[] tasks = createTasks(config);
 
-        JnlpDependencyRequest request = new JnlpDependencyRequest( config, tasks );
+        JnlpDependencyRequest request = new JnlpDependencyRequest(config, tasks);
         return request;
     }
 
-    private JnlpDependencyConfig createConfig( Artifact artifact, boolean outputJarVersion, boolean useUniqueVersions )
-    {
+    private JnlpDependencyConfig createConfig(Artifact artifact, boolean outputJarVersion, boolean useUniqueVersions) {
 
-        String finalName = globalConfig.getDependencyFilenameStrategy().getDependencyFileBasename( artifact, false, false );
+        String finalName =
+                globalConfig.getDependencyFilenameStrategy().getDependencyFileBasename(artifact, false, false);
 
-        return new JnlpDependencyConfig( globalConfig, artifact, finalName, outputJarVersion, useUniqueVersions );
+        return new JnlpDependencyConfig(globalConfig, artifact, finalName, outputJarVersion, useUniqueVersions);
     }
 
-    private JnlpDependencyTask[] createTasks( JnlpDependencyConfig config )
-    {
+    private JnlpDependencyTask[] createTasks(JnlpDependencyConfig config) {
         List<JnlpDependencyTask> tasks = new ArrayList<>();
 
         boolean doPack200 = config.isPack200();
 
-        if ( config.isSign() )
-        {
+        if (config.isSign()) {
 
-            if ( config.isUnsignAlreadySignedJars() )
-            {
+            if (config.isUnsignAlreadySignedJars()) {
 
                 boolean signed;
-                try
-                {
-                    signed = JarSignerUtil.isArchiveSigned( config.getArtifact().getFile() );
-                }
-                catch ( IOException e )
-                {
-                    throw new RuntimeException( "Could not check if jar is signed", e );
+                try {
+                    signed = JarSignerUtil.isArchiveSigned(config.getArtifact().getFile());
+                } catch (IOException e) {
+                    throw new RuntimeException("Could not check if jar is signed", e);
                 }
 
-                if ( signed && config.isCanUnsign() )
-                {
+                if (signed && config.isCanUnsign()) {
 
                     // unsign
-                    registerTask( tasks, UnsignTask.ROLE_HINT, config );
+                    registerTask(tasks, UnsignTask.ROLE_HINT, config);
                 }
             }
 
-            if ( doPack200 )
-            {
+            if (doPack200) {
 
                 // http://java.sun.com/j2se/1.5.0/docs/guide/deployment/deployment-guide/pack200.html
                 // we need to pack then unpack the files before signing them
 
                 // pack200
-                registerTask( tasks, Pack200Task.ROLE_HINT, config );
+                registerTask(tasks, Pack200Task.ROLE_HINT, config);
 
                 // unpack200
-                registerTask( tasks, UnPack200Task.ROLE_HINT, config );
+                registerTask(tasks, UnPack200Task.ROLE_HINT, config);
             }
 
-            if ( config.isUpdateManifest() )
-            {
+            if (config.isUpdateManifest()) {
                 // update manifest
-                registerTask( tasks, UpdateManifestTask.ROLE_HINT, config );
+                registerTask(tasks, UpdateManifestTask.ROLE_HINT, config);
             }
 
             // sign jar
-            registerTask( tasks, SignTask.ROLE_HINT, config );
+            registerTask(tasks, SignTask.ROLE_HINT, config);
         }
 
-        if ( doPack200 )
-        {
+        if (doPack200) {
 
             // pack signed jar
-            registerTask( tasks, Pack200Task.ROLE_HINT, config );
+            registerTask(tasks, Pack200Task.ROLE_HINT, config);
         }
 
-        return tasks.toArray( new JnlpDependencyTask[tasks.size()] );
+        return tasks.toArray(new JnlpDependencyTask[tasks.size()]);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void contextualize( final Context context )
-            throws ContextException
-    {
-        container = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
+    public void contextualize(final Context context) throws ContextException {
+        container = (PlexusContainer) context.get(PlexusConstants.PLEXUS_KEY);
     }
 
-    protected void setContainer( final PlexusContainer container )
-    {
+    protected void setContainer(final PlexusContainer container) {
         this.container = container;
     }
 
-    protected <Task extends JnlpDependencyTask> Task registerTask( List<JnlpDependencyTask> tasks, String roleHint,
-                                                                   JnlpDependencyConfig config )
-    {
-        try
-        {
+    protected <Task extends JnlpDependencyTask> Task registerTask(
+            List<JnlpDependencyTask> tasks, String roleHint, JnlpDependencyConfig config) {
+        try {
             // create task
-            Task result = (Task) container.lookup( JnlpDependencyTask.ROLE, roleHint );
+            Task result = (Task) container.lookup(JnlpDependencyTask.ROLE, roleHint);
 
             // check configution
-            result.check( config );
+            result.check(config);
 
             // register task
-            tasks.add( result );
+            tasks.add(result);
 
             return result;
-        }
-        catch ( ComponentLookupException e )
-        {
-            throw new RuntimeException( "Could not find task with roleHint: " + roleHint, e );
+        } catch (ComponentLookupException e) {
+            throw new RuntimeException("Could not find task with roleHint: " + roleHint, e);
         }
     }
 }

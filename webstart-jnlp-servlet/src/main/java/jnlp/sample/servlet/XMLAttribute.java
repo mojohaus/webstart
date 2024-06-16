@@ -1,6 +1,6 @@
 /*
  * @(#)XMLAttribute.java	1.6 05/11/17
- * 
+ *
  * Copyright (c) 2006 Sun Microsystems, Inc. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,79 +39,61 @@ package jnlp.sample.servlet;
 /**
  * Class that contains information about a specific attribute
  */
-public class XMLAttribute
-{
+public class XMLAttribute {
     private String _name;
 
     private String _value;
 
     private XMLAttribute _next;
 
-    public XMLAttribute( String name, String value )
-    {
+    public XMLAttribute(String name, String value) {
         _name = name;
         _value = value;
         _next = null;
     }
 
-    public XMLAttribute( String name, String value, XMLAttribute next )
-    {
+    public XMLAttribute(String name, String value, XMLAttribute next) {
         _name = name;
         _value = value;
         _next = next;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return _name;
     }
 
-    public String getValue()
-    {
+    public String getValue() {
         return _value;
     }
 
-    public XMLAttribute getNext()
-    {
+    public XMLAttribute getNext() {
         return _next;
     }
 
-    public void setNext( XMLAttribute next )
-    {
+    public void setNext(XMLAttribute next) {
         _next = next;
     }
 
-    public boolean equals( Object o )
-    {
-        if ( o == null || !( o instanceof XMLAttribute ) )
-        {
+    public boolean equals(Object o) {
+        if (o == null || !(o instanceof XMLAttribute)) {
             return false;
         }
         XMLAttribute other = (XMLAttribute) o;
-        return match( _name, other._name ) && match( _value, other._value ) && match( _next, other._next );
+        return match(_name, other._name) && match(_value, other._value) && match(_next, other._next);
     }
 
-    private static boolean match( Object o1, Object o2 )
-    {
-        if ( o1 == null )
-        {
-            return ( o2 == null );
+    private static boolean match(Object o1, Object o2) {
+        if (o1 == null) {
+            return (o2 == null);
         }
-        return o1.equals( o2 );
+        return o1.equals(o2);
     }
 
-    public String toString()
-    {
-        if ( _next != null )
-        {
+    public String toString() {
+        if (_next != null) {
             return _name + "=\"" + _value + "\" " + _next.toString();
-        }
-        else
-        {
+        } else {
             return _name + "=\"" + _value + "\"";
         }
     }
 }
-
-
-

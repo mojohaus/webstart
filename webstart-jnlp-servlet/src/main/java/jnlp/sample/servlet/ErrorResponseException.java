@@ -1,6 +1,6 @@
 /*
  * @(#)ErrorResponseException.java	1.6 05/11/17
- * 
+ *
  * Copyright (c) 2006 Sun Microsystems, Inc. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,24 +41,18 @@ package jnlp.sample.servlet;
  * This exception can be thrown with the content describing
  * the message that should be returned in the HTTP respond
  */
-public class ErrorResponseException
-        extends Exception
-{
+public class ErrorResponseException extends Exception {
     private DownloadResponse _downloadResponse;
 
-    public ErrorResponseException( DownloadResponse downloadResponse )
-    {
+    public ErrorResponseException(DownloadResponse downloadResponse) {
         _downloadResponse = downloadResponse;
     }
 
-    public DownloadResponse getDownloadResponse()
-    {
+    public DownloadResponse getDownloadResponse() {
         return _downloadResponse;
     }
 
-    public String toString()
-    {
+    public String toString() {
         return _downloadResponse.toString();
     }
 }
-

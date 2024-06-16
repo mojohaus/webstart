@@ -31,8 +31,7 @@ import java.util.Set;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-4
  */
-public class ResolvedJnlpFile
-{
+public class ResolvedJnlpFile {
     /**
      * The user config (from pom).
      */
@@ -46,50 +45,41 @@ public class ResolvedJnlpFile
 
     private String inputTemplate;
 
-    public ResolvedJnlpFile( JnlpFile config, Set<ResolvedJarResource> jarResources )
-    {
+    public ResolvedJnlpFile(JnlpFile config, Set<ResolvedJarResource> jarResources) {
         this.config = config;
         this.jarResources = jarResources;
         this.inputTemplate = this.config.getInputTemplate();
     }
 
-    public String getOutputFilename()
-    {
+    public String getOutputFilename() {
         return config.getOutputFilename();
     }
 
-    public String getMainClass()
-    {
+    public String getMainClass() {
         return config.getMainClass();
     }
 
-    public Map<String, String> getProperties()
-    {
+    public Map<String, String> getProperties() {
         return config.getProperties();
     }
 
-    public List<String> getArguments()
-    {
+    public List<String> getArguments() {
         return config.getArguments();
     }
 
-    public String getInputTemplateResourcePath()
-    {
+    public String getInputTemplateResourcePath() {
         return config.getInputTemplateResourcePath();
     }
 
-    public Set<ResolvedJarResource> getJarResources()
-    {
+    public Set<ResolvedJarResource> getJarResources() {
         return jarResources;
     }
 
-    public String getInputTemplate()
-    {
+    public String getInputTemplate() {
         return inputTemplate;
     }
 
-    public void setInputTemplate( String inputTemplate )
-    {
+    public void setInputTemplate(String inputTemplate) {
         this.inputTemplate = inputTemplate;
     }
 }

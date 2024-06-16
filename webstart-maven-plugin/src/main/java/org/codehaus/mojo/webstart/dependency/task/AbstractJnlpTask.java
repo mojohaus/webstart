@@ -28,21 +28,13 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
  * @author Tony Chemit - dev@tchemit.fr
  * @since XXX
  */
-public abstract class AbstractJnlpTask
-        extends AbstractLogEnabled
-        implements JnlpDependencyTask
-{
+public abstract class AbstractJnlpTask extends AbstractLogEnabled implements JnlpDependencyTask {
 
-    protected void verboseLog( JnlpDependencyConfig config, String msg )
-    {
-        if ( config.isVerbose() )
-        {
-            getLogger().info( msg );
-        }
-        else
-        {
-            getLogger().debug( msg );
+    protected void verboseLog(JnlpDependencyConfig config, String msg) {
+        if (config.isVerbose()) {
+            getLogger().info(msg);
+        } else {
+            getLogger().debug(msg);
         }
     }
-
 }

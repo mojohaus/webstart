@@ -19,6 +19,22 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.JarOutputStream;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
@@ -38,31 +54,13 @@ import org.codehaus.mojo.webstart.generator.GeneratorConfig;
 import org.codehaus.mojo.webstart.generator.GeneratorTechnicalConfig;
 import org.codehaus.mojo.webstart.util.IOUtil;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.jar.JarOutputStream;
-
 /**
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
  *          TODO how to propagate the -X argument to enable verbose?
  *          TODO initialize the jnlp alias and dname.o from pom.artifactId and pom.organization.name
  */
-public abstract class AbstractJnlpMojo
-        extends AbstractBaseJnlpMojo
-{
+public abstract class AbstractJnlpMojo extends AbstractBaseJnlpMojo {
     // ----------------------------------------------------------------------
     // Constants
     // ----------------------------------------------------------------------
@@ -86,7 +84,7 @@ public abstract class AbstractJnlpMojo
      * Name of the default jnlp extension template to use if user define it in the default template directory.
      */
     private static final String EXTENSION_TEMPLATE_FILENAME = "extension-template.vm";
-    
+
     private static final String JNLP_INF_APPLICATION_JNLP = "JNLP-INF/APPLICATION.JNLP";
 
     // ----------------------------------------------------------------------
@@ -98,30 +96,25 @@ public abstract class AbstractJnlpMojo
      * project's dependencies will be included or excluded from the resources element
      * in the generated JNLP file.
      */
-    public static class Dependencies
-    {
+    public static class Dependencies {
 
         private List<String> includes;
 
         private List<String> excludes;
 
-        public List<String> getIncludes()
-        {
+        public List<String> getIncludes() {
             return includes;
         }
 
-        public void setIncludes( List<String> includes )
-        {
+        public void setIncludes(List<String> includes) {
             this.includes = includes;
         }
 
-        public List<String> getExcludes()
-        {
+        public List<String> getExcludes() {
             return excludes;
         }
 
-        public void setExcludes( List<String> excludes )
-        {
+        public void setExcludes(List<String> excludes) {
             this.excludes = excludes;
         }
     }
@@ -131,7 +124,7 @@ public abstract class AbstractJnlpMojo
      *
      * @since 1.0-beta-2
      */
-    @Parameter( property = "jnlp.makeArchive", defaultValue = "true" )
+    @Parameter(property = "jnlp.makeArchive", defaultValue = "true")
     private boolean makeArchive;
 
     /**
@@ -139,7 +132,7 @@ public abstract class AbstractJnlpMojo
      *
      * @since 1.0-beta-2
      */
-    @Parameter( property = "jnlp.attachArchive", defaultValue = "true" )
+    @Parameter(property = "jnlp.attachArchive", defaultValue = "true")
     private boolean attachArchive;
 
     /**
@@ -147,7 +140,7 @@ public abstract class AbstractJnlpMojo
      *
      * @since 1.0-beta-4
      */
-    @Parameter( property = "jnlp.archive", defaultValue = "${project.build.directory}/${project.build.finalName}.zip" )
+    @Parameter(property = "jnlp.archive", defaultValue = "${project.build.directory}/${project.build.finalName}.zip")
     private File archive;
 
     /**
@@ -184,7 +177,7 @@ public abstract class AbstractJnlpMojo
 
     /**
      */
-    @Parameter( defaultValue = "${basedir}", readonly = true, required = true )
+    @Parameter(defaultValue = "${basedir}", readonly = true, required = true)
     private File basedir;
 
     /**
@@ -195,7 +188,7 @@ public abstract class AbstractJnlpMojo
      * <strong>Note: </strong> since version 1.0-beta-5 we use the version download protocol optimization (see
      * http://docs.oracle.com/javase/tutorial/deployment/deploymentInDepth/avoidingUnnecessaryUpdateChecks.html).
      */
-    @Parameter( property = "jnlp.outputJarVersions", defaultValue = "false" )
+    @Parameter(property = "jnlp.outputJarVersions", defaultValue = "false")
     private boolean outputJarVersions;
 
     /**
@@ -203,7 +196,7 @@ public abstract class AbstractJnlpMojo
      *
      * @since 1.0.0
      */
-    @Parameter( property = "jnlp.skipDependencies", defaultValue = "false" )
+    @Parameter(property = "jnlp.skipDependencies", defaultValue = "false")
     private boolean skipDependencies;
 
     /**
@@ -211,9 +204,9 @@ public abstract class AbstractJnlpMojo
      *
      * @since 1.0.0
      */
-    @Parameter( defaultValue = "true" )
+    @Parameter(defaultValue = "true")
     private boolean addApplicationFile;
-    
+
     // ----------------------------------------------------------------------
     // Components
     // ----------------------------------------------------------------------
@@ -245,22 +238,19 @@ public abstract class AbstractJnlpMojo
     // ----------------------------------------------------------------------
 
     @Override
-    public void execute()
-            throws MojoExecutionException
-    {
+    public void execute() throws MojoExecutionException {
 
-        boolean withExtensions = CollectionUtils.isNotEmpty( jnlpExtensions );
+        boolean withExtensions = CollectionUtils.isNotEmpty(jnlpExtensions);
 
-        if ( withExtensions )
-        {
+        if (withExtensions) {
             prepareExtensions();
             findDefaultJnlpExtensionTemplateURL();
         }
 
         checkInput();
 
-        getLog().debug( "using work directory " + getWorkDirectory() );
-        getLog().debug( "using library directory " + getLibDirectory() );
+        getLog().debug("using work directory " + getWorkDirectory());
+        getLog().debug("using library directory " + getLibDirectory());
 
         IOUtil ioUtil = getIoUtil();
 
@@ -268,25 +258,22 @@ public abstract class AbstractJnlpMojo
         // prepare layout
         // ---
 
-        ioUtil.makeDirectoryIfNecessary( getWorkDirectory() );
-        ioUtil.makeDirectoryIfNecessary( getLibDirectory() );
+        ioUtil.makeDirectoryIfNecessary(getWorkDirectory());
+        ioUtil.makeDirectoryIfNecessary(getLibDirectory());
 
-        try
-        {
-            ioUtil.copyResources( getResourcesDirectory(), getWorkDirectory() );
+        try {
+            ioUtil.copyResources(getResourcesDirectory(), getWorkDirectory());
 
             artifactWithMainClass = null;
 
             processDependencies();
 
-            if ( jnlp.isRequireMainClass() && artifactWithMainClass == null )
-            {
+            if (jnlp.isRequireMainClass() && artifactWithMainClass == null) {
                 throw new MojoExecutionException(
-                        "didn't find artifact with main class: " + jnlp.getMainClass() + ". Did you specify it? " );
+                        "didn't find artifact with main class: " + jnlp.getMainClass() + ". Did you specify it? ");
             }
 
-            if ( withExtensions )
-            {
+            if (withExtensions) {
                 processExtensionsDependencies();
             }
 
@@ -296,11 +283,10 @@ public abstract class AbstractJnlpMojo
 
             processNativeLibs();
 
-            if ( ( isPack200() || getSign() != null ) && getLog().isDebugEnabled() )
-            {
+            if ((isPack200() || getSign() != null) && getLog().isDebugEnabled()) {
                 logCollection(
                         "Some dependencies may be skipped. Here's the list of the artifacts that should be signed/packed: ",
-                        getModifiedJnlpArtifacts() );
+                        getModifiedJnlpArtifacts());
             }
 
             // ---
@@ -313,48 +299,41 @@ public abstract class AbstractJnlpMojo
             // Generate jnlp file
             // ---
 
-            generateJnlpFile( getWorkDirectory() );
+            generateJnlpFile(getWorkDirectory());
 
             // ---
             // Generate jnlp extension files
             // ---
 
-            if ( withExtensions )
-            {
-                generateJnlpExtensionsFile( getWorkDirectory() );
+            if (withExtensions) {
+                generateJnlpExtensionsFile(getWorkDirectory());
             }
 
             // ---
             // Generate archive file if required
             // ---
 
-            if ( makeArchive )
-            {
+            if (makeArchive) {
                 // package the zip. Note this is very simple. Look at the JarMojo which does more things.
                 // we should perhaps package as a war when inside a project with war packaging ?
 
-                ioUtil.makeDirectoryIfNecessary( archive.getParentFile() );
+                ioUtil.makeDirectoryIfNecessary(archive.getParentFile());
 
-                ioUtil.deleteFile( archive );
+                ioUtil.deleteFile(archive);
 
-                verboseLog( "Will create archive at location: " + archive );
+                verboseLog("Will create archive at location: " + archive);
 
-                ioUtil.createArchive( getWorkDirectory(), archive );
+                ioUtil.createArchive(getWorkDirectory(), archive);
 
-                if ( attachArchive )
-                {
+                if (attachArchive) {
                     // maven 2 version 2.0.1 method
-                    projectHelper.attachArtifact( getProject(), "zip", archive );
+                    projectHelper.attachArtifact(getProject(), "zip", archive);
                 }
             }
-        }
-        catch ( MojoExecutionException e )
-        {
+        } catch (MojoExecutionException e) {
             throw e;
-        }
-        catch ( Exception e )
-        {
-            throw new MojoExecutionException( "Failure to run the plugin: ", e );
+        } catch (Exception e) {
+            throw new MojoExecutionException("Failure to run the plugin: ", e);
         }
     }
 
@@ -362,13 +341,11 @@ public abstract class AbstractJnlpMojo
     // Protected Methods
     // ----------------------------------------------------------------------
 
-    protected JnlpConfig getJnlp()
-    {
+    protected JnlpConfig getJnlp() {
         return jnlp;
     }
 
-    protected Dependencies getDependencies()
-    {
+    protected Dependencies getDependencies() {
         return this.dependencies;
     }
 
@@ -376,25 +353,20 @@ public abstract class AbstractJnlpMojo
     // Private Methods
     // ----------------------------------------------------------------------
 
-    void checkJnlpConfig()
-            throws MojoExecutionException
-    {
-        if ( jnlp == null )
-        {
-            throw new MojoExecutionException( "jnlp must be set to generate config!" );
+    void checkJnlpConfig() throws MojoExecutionException {
+        if (jnlp == null) {
+            throw new MojoExecutionException("jnlp must be set to generate config!");
         }
         JnlpFileType type = jnlp.getType();
-        if ( type == null )
-        {
-            throw new MojoExecutionException( "jnlp must define a default jnlp type file to generate (among " +
-                                                      Arrays.toString( JnlpFileType.values() ) + " )." );
+        if (type == null) {
+            throw new MojoExecutionException("jnlp must define a default jnlp type file to generate (among "
+                    + Arrays.toString(JnlpFileType.values()) + " ).");
         }
-        if ( !type.isRequireMainClass() && StringUtils.isNotBlank( jnlp.getMainClass() ) )
-        {
-            getLog().warn( "Jnlp file of type '" + type +
-                                   "' does not support mainClass, value will not be accessible in template." );
-            jnlp.setMainClass( null );
-            
+        if (!type.isRequireMainClass() && StringUtils.isNotBlank(jnlp.getMainClass())) {
+            getLog().warn("Jnlp file of type '" + type
+                    + "' does not support mainClass, value will not be accessible in template.");
+            jnlp.setMainClass(null);
+
             addApplicationFile = false;
         }
     }
@@ -405,11 +377,8 @@ public abstract class AbstractJnlpMojo
      * @throws MojoExecutionException if at least one of the specified includes or excludes matches no artifact,
      *                                false otherwise
      */
-    void checkDependencies()
-            throws MojoExecutionException
-    {
-        if ( dependencies == null )
-        {
+    void checkDependencies() throws MojoExecutionException {
+        if (dependencies == null) {
             return;
         }
 
@@ -417,21 +386,18 @@ public abstract class AbstractJnlpMojo
 
         Collection<Artifact> artifacts = getProject().getArtifacts();
 
-        getLog().debug( "artifacts: " + artifacts.size() );
+        getLog().debug("artifacts: " + artifacts.size());
 
-        if ( dependencies.getIncludes() != null && !dependencies.getIncludes().isEmpty() )
-        {
-            failed = checkDependencies( dependencies.getIncludes(), artifacts );
+        if (dependencies.getIncludes() != null && !dependencies.getIncludes().isEmpty()) {
+            failed = checkDependencies(dependencies.getIncludes(), artifacts);
         }
-        if ( dependencies.getExcludes() != null && !dependencies.getExcludes().isEmpty() )
-        {
-            failed = checkDependencies( dependencies.getExcludes(), artifacts ) || failed;
+        if (dependencies.getExcludes() != null && !dependencies.getExcludes().isEmpty()) {
+            failed = checkDependencies(dependencies.getExcludes(), artifacts) || failed;
         }
 
-        if ( failed )
-        {
+        if (failed) {
             throw new MojoExecutionException(
-                    "At least one specified dependency is incorrect. Review your project configuration." );
+                    "At least one specified dependency is incorrect. Review your project configuration.");
         }
     }
 
@@ -440,17 +406,14 @@ public abstract class AbstractJnlpMojo
      * @param artifacts collection of artifacts to check
      * @return true if at least one of the pattern in the list matches no artifact, false otherwise
      */
-    private boolean checkDependencies( List<String> patterns, Collection<Artifact> artifacts )
-    {
-        if ( dependencies == null )
-        {
+    private boolean checkDependencies(List<String> patterns, Collection<Artifact> artifacts) {
+        if (dependencies == null) {
             return false;
         }
 
         boolean failed = false;
-        for ( String pattern : patterns )
-        {
-            failed = ensurePatternMatchesAtLeastOneArtifact( pattern, artifacts ) || failed;
+        for (String pattern : patterns) {
+            failed = ensurePatternMatchesAtLeastOneArtifact(pattern, artifacts) || failed;
         }
         return failed;
     }
@@ -460,26 +423,22 @@ public abstract class AbstractJnlpMojo
      * @param artifacts collection of artifacts to check
      * @return true if filter matches no artifact, false otherwise *
      */
-    private boolean ensurePatternMatchesAtLeastOneArtifact( String pattern, Collection<Artifact> artifacts )
-    {
+    private boolean ensurePatternMatchesAtLeastOneArtifact(String pattern, Collection<Artifact> artifacts) {
         List<String> onePatternList = new ArrayList<>();
-        onePatternList.add( pattern );
-        ArtifactFilter filter = new IncludesArtifactFilter( onePatternList );
+        onePatternList.add(pattern);
+        ArtifactFilter filter = new IncludesArtifactFilter(onePatternList);
 
         boolean noMatch = true;
-        for ( Artifact artifact : artifacts )
-        {
-            getLog().debug( "checking pattern: " + pattern + " against " + artifact );
+        for (Artifact artifact : artifacts) {
+            getLog().debug("checking pattern: " + pattern + " against " + artifact);
 
-            if ( filter.include( artifact ) )
-            {
+            if (filter.include(artifact)) {
                 noMatch = false;
                 break;
             }
         }
-        if ( noMatch )
-        {
-            getLog().error( "pattern: " + pattern + " doesn't match any artifact." );
+        if (noMatch) {
+            getLog().error("pattern: " + pattern + " doesn't match any artifact.");
         }
         return noMatch;
     }
@@ -490,78 +449,64 @@ public abstract class AbstractJnlpMojo
      *
      * @throws MojoExecutionException if could not process dependencies
      */
-    private void processDependencies()
-            throws MojoExecutionException
-    {
+    private void processDependencies() throws MojoExecutionException {
 
-        processDependency( getProject().getArtifact() );
+        processDependency(getProject().getArtifact());
 
         AndArtifactFilter filter = new AndArtifactFilter();
         // filter.add( new ScopeArtifactFilter( dependencySet.getScope() ) );
 
-        if ( dependencies != null && dependencies.getIncludes() != null && !dependencies.getIncludes().isEmpty() )
-        {
-            filter.add( new IncludesArtifactFilter( dependencies.getIncludes() ) );
+        if (dependencies != null
+                && dependencies.getIncludes() != null
+                && !dependencies.getIncludes().isEmpty()) {
+            filter.add(new IncludesArtifactFilter(dependencies.getIncludes()));
         }
-        if ( dependencies != null && dependencies.getExcludes() != null && !dependencies.getExcludes().isEmpty() )
-        {
-            filter.add( new ExcludesArtifactFilter( dependencies.getExcludes() ) );
+        if (dependencies != null
+                && dependencies.getExcludes() != null
+                && !dependencies.getExcludes().isEmpty()) {
+            filter.add(new ExcludesArtifactFilter(dependencies.getExcludes()));
         }
 
-        Collection<Artifact> artifacts =
-                isExcludeTransitive() ? getProject().getDependencyArtifacts() : getProject().getArtifacts();
+        Collection<Artifact> artifacts = isExcludeTransitive()
+                ? getProject().getDependencyArtifacts()
+                : getProject().getArtifacts();
 
-        for ( Artifact artifact : artifacts )
-        {
-            if ( filter.include( artifact ) )
-            {
-                processDependency( artifact );
+        for (Artifact artifact : artifacts) {
+            if (filter.include(artifact)) {
+                processDependency(artifact);
             }
         }
     }
 
-    private void processDependency( Artifact artifact )
-            throws MojoExecutionException
-    {
+    private void processDependency(Artifact artifact) throws MojoExecutionException {
         // TODO: scope handler
         // Include runtime and compile time libraries
-        if ( !Artifact.SCOPE_SYSTEM.equals( artifact.getScope() ) &&
-                !Artifact.SCOPE_PROVIDED.equals( artifact.getScope() ) &&
-                !Artifact.SCOPE_TEST.equals( artifact.getScope() ) )
-        {
+        if (!Artifact.SCOPE_SYSTEM.equals(artifact.getScope())
+                && !Artifact.SCOPE_PROVIDED.equals(artifact.getScope())
+                && !Artifact.SCOPE_TEST.equals(artifact.getScope())) {
             String type = artifact.getType();
-            if ( "jar".equals( type ) || "ejb-client".equals( type ) )
-            {
+            if ("jar".equals(type) || "ejb-client".equals(type)) {
 
                 boolean mainArtifact = false;
-                if ( jnlp.isRequireMainClass() )
-                {
+                if (jnlp.isRequireMainClass()) {
 
                     // try to find if this dependency contains the main class
-                    boolean containsMainClass =
-                            getArtifactUtil().artifactContainsClass( artifact, jnlp.getMainClass() );
+                    boolean containsMainClass = getArtifactUtil().artifactContainsClass(artifact, jnlp.getMainClass());
 
-                    if ( containsMainClass )
-                    {
-                        if ( artifactWithMainClass == null )
-                        {
+                    if (containsMainClass) {
+                        if (artifactWithMainClass == null) {
                             mainArtifact = true;
                             artifactWithMainClass = artifact;
-                            getLog().debug(
-                                    "Found main jar. Artifact " + artifactWithMainClass + " contains the main class: " +
-                                            jnlp.getMainClass() );
-                        }
-                        else
-                        {
-                            getLog().warn(
-                                    "artifact " + artifact + " also contains the main class: " + jnlp.getMainClass() +
-                                            ". IGNORED." );
+                            getLog().debug("Found main jar. Artifact " + artifactWithMainClass
+                                    + " contains the main class: " + jnlp.getMainClass());
+                        } else {
+                            getLog().warn("artifact " + artifact + " also contains the main class: "
+                                    + jnlp.getMainClass() + ". IGNORED.");
                         }
                     }
                 }
 
-                if ( skipDependencies && !mainArtifact )
-                {
+                if (skipDependencies && !mainArtifact) {
                     return;
                 }
 
@@ -571,60 +516,53 @@ public abstract class AbstractJnlpMojo
                 // or shouldn't we?  See MOJO-7 comment end of October.
                 final File toCopy = artifact.getFile();
 
-                if ( toCopy == null )
-                {
-                    getLog().error( "artifact with no file: " + artifact );
-                    getLog().error( "artifact download url: " + artifact.getDownloadUrl() );
-                    getLog().error( "artifact repository: " + artifact.getRepository() );
-                    getLog().error( "artifact repository: " + artifact.getVersion() );
+                if (toCopy == null) {
+                    getLog().error("artifact with no file: " + artifact);
+                    getLog().error("artifact download url: " + artifact.getDownloadUrl());
+                    getLog().error("artifact repository: " + artifact.getRepository());
+                    getLog().error("artifact repository: " + artifact.getVersion());
                     throw new IllegalStateException(
-                            "artifact " + artifact + " has no matching file, why? Check the logs..." );
+                            "artifact " + artifact + " has no matching file, why? Check the logs...");
                 }
 
-                String name =
-                        getDependencyFilenameStrategy().getDependencyFilename( artifact, outputJarVersions, isUseUniqueVersions() );
+                String name = getDependencyFilenameStrategy()
+                        .getDependencyFilename(artifact, outputJarVersions, isUseUniqueVersions());
 
-                boolean copied = copyJarAsUnprocessedToDirectoryIfNecessary( toCopy, getLibDirectory(), name );
+                boolean copied = copyJarAsUnprocessedToDirectoryIfNecessary(toCopy, getLibDirectory(), name);
 
-                if ( copied )
-                {
+                if (copied) {
 
-                    getModifiedJnlpArtifacts().add( name.substring( 0, name.lastIndexOf( '.' ) ) );
-
+                    getModifiedJnlpArtifacts().add(name.substring(0, name.lastIndexOf('.')));
                 }
 
-                packagedJnlpArtifacts.add( artifact );
+                packagedJnlpArtifacts.add(artifact);
 
-            }
-            else
+            } else
             // FIXME how do we deal with native libs?
             // we should probably identify them and package inside jars that we timestamp like the native lib
             // to avoid repackaging every time. What are the types of the native libs?
             {
-                verboseLog( "Skipping artifact of type " + type + " for " + getLibDirectory().getName() );
+                verboseLog("Skipping artifact of type " + type + " for "
+                        + getLibDirectory().getName());
             }
             // END COPY
-        }
-        else
-        {
-            verboseLog( "Skipping artifact of scope " + artifact.getScope() + " for " + getLibDirectory().getName() );
+        } else {
+            verboseLog("Skipping artifact of scope " + artifact.getScope() + " for "
+                    + getLibDirectory().getName());
         }
     }
 
-    private void generateJnlpFile( File outputDirectory )
-            throws MojoExecutionException
-    {
-    	getLog().info("Generate the JNLP file.");
+    private void generateJnlpFile(File outputDirectory) throws MojoExecutionException {
+        getLog().info("Generate the JNLP file.");
         // ---
         // get output file
         // ---
 
-        if ( StringUtils.isBlank( jnlp.getOutputFile() ) )
-        {
-            getLog().debug( "Jnlp output file name not specified. Using default output file name: launch.jnlp." );
-            jnlp.setOutputFile( "launch.jnlp" );
+        if (StringUtils.isBlank(jnlp.getOutputFile())) {
+            getLog().debug("Jnlp output file name not specified. Using default output file name: launch.jnlp.");
+            jnlp.setOutputFile("launch.jnlp");
         }
-        File jnlpOutputFile = new File( outputDirectory, jnlp.getOutputFile() );
+        File jnlpOutputFile = new File(outputDirectory, jnlp.getOutputFile());
 
         // ---
         // get template directory
@@ -632,214 +570,193 @@ public abstract class AbstractJnlpMojo
 
         File templateDirectory;
 
-        if ( StringUtils.isNotBlank( jnlp.getInputTemplateResourcePath() ) )
-        {
-            templateDirectory = new File( jnlp.getInputTemplateResourcePath() );
-            getLog().debug( "Use jnlp directory : " + templateDirectory );
-        }
-        else
-        {
+        if (StringUtils.isNotBlank(jnlp.getInputTemplateResourcePath())) {
+            templateDirectory = new File(jnlp.getInputTemplateResourcePath());
+            getLog().debug("Use jnlp directory : " + templateDirectory);
+        } else {
             // use default template directory
             templateDirectory = getTemplateDirectory();
-            getLog().debug( "Use default template directory : " + templateDirectory );
+            getLog().debug("Use default template directory : " + templateDirectory);
         }
 
         // ---
         // get template filename
         // ---
 
-        if ( StringUtils.isBlank( jnlp.getInputTemplate() ) )
-        {
-            getLog().debug( "Jnlp template file name not specified. Checking if default output file name exists: " +
-                                    JNLP_TEMPLATE_FILENAME );
+        if (StringUtils.isBlank(jnlp.getInputTemplate())) {
+            getLog().debug("Jnlp template file name not specified. Checking if default output file name exists: "
+                    + JNLP_TEMPLATE_FILENAME);
 
-            File templateFile = new File( templateDirectory, JNLP_TEMPLATE_FILENAME );
+            File templateFile = new File(templateDirectory, JNLP_TEMPLATE_FILENAME);
 
-            if ( templateFile.isFile() )
-            {
-                jnlp.setInputTemplate( JNLP_TEMPLATE_FILENAME );
+            if (templateFile.isFile()) {
+                jnlp.setInputTemplate(JNLP_TEMPLATE_FILENAME);
+            } else {
+                getLog().debug("Jnlp template file not found in default location. Using inbuilt one.");
             }
-            else
-            {
-                getLog().debug( "Jnlp template file not found in default location. Using inbuilt one." );
-            }
-        }
-        else
-        {
-            File templateFile = new File( templateDirectory, jnlp.getInputTemplate() );
+        } else {
+            File templateFile = new File(templateDirectory, jnlp.getInputTemplate());
 
-            if ( !templateFile.isFile() )
-            {
-                throw new MojoExecutionException(
-                        "The specified JNLP template does not exist: [" + templateFile + "]" );
+            if (!templateFile.isFile()) {
+                throw new MojoExecutionException("The specified JNLP template does not exist: [" + templateFile + "]");
             }
         }
         String templateFileName = jnlp.getInputTemplate();
 
-        GeneratorTechnicalConfig generatorTechnicalConfig =
-                new GeneratorTechnicalConfig( getProject(), templateDirectory, jnlp.getType().getDefaultTemplateName(),
-                                              jnlpOutputFile, templateFileName, jnlp.getMainClass(),
-                                              getWebstartJarURLForVelocity(), getEncoding() );
+        GeneratorTechnicalConfig generatorTechnicalConfig = new GeneratorTechnicalConfig(
+                getProject(),
+                templateDirectory,
+                jnlp.getType().getDefaultTemplateName(),
+                jnlpOutputFile,
+                templateFileName,
+                jnlp.getMainClass(),
+                getWebstartJarURLForVelocity(),
+                getEncoding());
 
-        GeneratorConfig generatorConfig =
-                new GeneratorConfig( getLibPath(), isPack200(), outputJarVersions, isUseUniqueVersions(), artifactWithMainClass,
-                                     getDependencyFilenameStrategy(), packagedJnlpArtifacts, jnlpExtensions, getCodebase(),
-                                     jnlp );
+        GeneratorConfig generatorConfig = new GeneratorConfig(
+                getLibPath(),
+                isPack200(),
+                outputJarVersions,
+                isUseUniqueVersions(),
+                artifactWithMainClass,
+                getDependencyFilenameStrategy(),
+                packagedJnlpArtifacts,
+                jnlpExtensions,
+                getCodebase(),
+                jnlp);
 
-        Generator jnlpGenerator = new Generator( getLog(), generatorTechnicalConfig, generatorConfig );
+        Generator jnlpGenerator = new Generator(getLog(), generatorTechnicalConfig, generatorConfig);
 
-        try
-        {
+        try {
             jnlpGenerator.generate();
-        }
-        catch ( Exception e )
-        {
-            getLog().debug( e.toString() );
-            throw new MojoExecutionException( "Could not generate the JNLP deployment descriptor", e );
+        } catch (Exception e) {
+            getLog().debug(e.toString());
+            throw new MojoExecutionException("Could not generate the JNLP deployment descriptor", e);
         }
 
-        if ( addApplicationFile )
-        {
-        	getLog().info("Add the application file, artifactWithMainClass: " + artifactWithMainClass);
+        if (addApplicationFile) {
+            getLog().info("Add the application file, artifactWithMainClass: " + artifactWithMainClass);
 
-        	// must handle outputJarVersions == true
-        	String targetFilename =
-                    getDependencyFilenameStrategy().getDependencyFilename( artifactWithMainClass, outputJarVersions, isUseUniqueVersions() );
-        	
-            File jarFile = new File( getLibDirectory(), targetFilename);
+            // must handle outputJarVersions == true
+            String targetFilename = getDependencyFilenameStrategy()
+                    .getDependencyFilename(artifactWithMainClass, outputJarVersions, isUseUniqueVersions());
 
-            if ( isVerbose() )
-            {
-                getLog().info( "Add " + JNLP_INF_APPLICATION_JNLP + " to " + jarFile );
+            File jarFile = new File(getLibDirectory(), targetFilename);
+
+            if (isVerbose()) {
+                getLog().info("Add " + JNLP_INF_APPLICATION_JNLP + " to " + jarFile);
             }
-            
+
             JarFile inputJar = null;
-            try
-            {
+            try {
 
-                inputJar = new JarFile( jarFile );
-                File tempJarFile = new File( jarFile.getParentFile(), jarFile.getName() + "-temp" );
-                JarOutputStream jarOutputStream = new JarOutputStream( new FileOutputStream( tempJarFile ) );
+                inputJar = new JarFile(jarFile);
+                File tempJarFile = new File(jarFile.getParentFile(), jarFile.getName() + "-temp");
+                JarOutputStream jarOutputStream = new JarOutputStream(new FileOutputStream(tempJarFile));
 
-                try
-                {
+                try {
                     Enumeration<JarEntry> entries = inputJar.entries();
-                    while ( entries.hasMoreElements() )
-                    {
+                    while (entries.hasMoreElements()) {
                         JarEntry jarEntry = entries.nextElement();
-                        
+
                         if (JNLP_INF_APPLICATION_JNLP.equals(jarEntry.getName())) {
                             // skip existing JNLP-INF/APPLICATION.JNLP from jar
-                        	getLog().info("Skip add existing " + JNLP_INF_APPLICATION_JNLP);
-                        	continue;
+                            getLog().info("Skip add existing " + JNLP_INF_APPLICATION_JNLP);
+                            continue;
                         }
-                        
-                        jarOutputStream.putNextEntry( jarEntry );
-                        InputStream inputStream = inputJar.getInputStream( jarEntry );
-                        org.apache.maven.shared.utils.io.IOUtil.copy( inputStream, jarOutputStream );
 
+                        jarOutputStream.putNextEntry(jarEntry);
+                        InputStream inputStream = inputJar.getInputStream(jarEntry);
+                        org.apache.maven.shared.utils.io.IOUtil.copy(inputStream, jarOutputStream);
                     }
-                    JarEntry jarEntry = new JarEntry( JNLP_INF_APPLICATION_JNLP );
-                    jarOutputStream.putNextEntry( jarEntry );
-                    jarOutputStream.write( FileUtils.fileRead( jnlpOutputFile ).getBytes() );
+                    JarEntry jarEntry = new JarEntry(JNLP_INF_APPLICATION_JNLP);
+                    jarOutputStream.putNextEntry(jarEntry);
+                    jarOutputStream.write(FileUtils.fileRead(jnlpOutputFile).getBytes());
                     jarOutputStream.flush();
                     jarOutputStream.close();
 
-                }
-                finally
-                {
-                    org.apache.maven.shared.utils.io.IOUtil.close( jarOutputStream );
+                } finally {
+                    org.apache.maven.shared.utils.io.IOUtil.close(jarOutputStream);
                 }
 
-//                jarFile.delete();
-                signJar( tempJarFile, jarFile, false );
+                //                jarFile.delete();
+                signJar(tempJarFile, jarFile, false);
 
-            }
-            catch ( IOException e )
-            {
-                throw new MojoExecutionException( "Could not copy generated JNLP deployment descriptor to application file", e );
-            }
-            finally {
-            	if (inputJar != null) {
-            		try {
-						inputJar.close();
-					} 
-            		catch (IOException e) 
-            		{
-						// ignore
-					}
-            	}
+            } catch (IOException e) {
+                throw new MojoExecutionException(
+                        "Could not copy generated JNLP deployment descriptor to application file", e);
+            } finally {
+                if (inputJar != null) {
+                    try {
+                        inputJar.close();
+                    } catch (IOException e) {
+                        // ignore
+                    }
+                }
             }
         }
     }
 
-    private void processNativeLibs()
-    {
+    private void processNativeLibs() {
         /*
-            for( Iterator it = getNativeLibs().iterator(); it.hasNext(); ) {
-                Artifact artifact = ;
-                Artifact copiedArtifact =
+        for( Iterator it = getNativeLibs().iterator(); it.hasNext(); ) {
+            Artifact artifact = ;
+            Artifact copiedArtifact =
 
-                // similar to what we do for jars, except that we must pack them into jar instead of copying.
-                // them
-                    File nativeLib = artifact.getFile()
-                    if(! nativeLib.endsWith( ".jar" ) ){
-                        getLog().debug("Wrapping native library " + artifact + " into jar." );
-                        File nativeLibJar = new File( applicationFolder, xxx + ".jar");
-                        Jar jarTask = new Jar();
-                        jarTask.setDestFile( nativeLib );
-                        jarTask.setBasedir( basedir );
-                        jarTask.setIncludes( nativeLib );
-                        jarTask.execute();
+            // similar to what we do for jars, except that we must pack them into jar instead of copying.
+            // them
+                File nativeLib = artifact.getFile()
+                if(! nativeLib.endsWith( ".jar" ) ){
+                    getLog().debug("Wrapping native library " + artifact + " into jar." );
+                    File nativeLibJar = new File( applicationFolder, xxx + ".jar");
+                    Jar jarTask = new Jar();
+                    jarTask.setDestFile( nativeLib );
+                    jarTask.setBasedir( basedir );
+                    jarTask.setIncludes( nativeLib );
+                    jarTask.execute();
 
-                        nativeLibJar.setLastModified( nativeLib.lastModified() );
+                    nativeLibJar.setLastModified( nativeLib.lastModified() );
 
-                        copiedArtifact = new ....
-                    } else {
-                        getLog().debug( "Copying native lib " + artifact );
-                        copyFileToDirectory( artifact.getFile(), applicationFolder );
+                    copiedArtifact = new ....
+                } else {
+                    getLog().debug( "Copying native lib " + artifact );
+                    copyFileToDirectory( artifact.getFile(), applicationFolder );
 
-                        copiedArtifact = artifact;
-                    }
-                    copiedNativeArtifacts.add( copiedArtifact );
+                    copiedArtifact = artifact;
                 }
+                copiedNativeArtifacts.add( copiedArtifact );
             }
-            */
+        }
+        */
     }
 
-    private void logCollection( final String prefix, final Collection collection )
-    {
-        getLog().debug( prefix + " " + collection );
-        if ( collection == null )
-        {
+    private void logCollection(final String prefix, final Collection collection) {
+        getLog().debug(prefix + " " + collection);
+        if (collection == null) {
             return;
         }
-        for ( Object aCollection : collection )
-        {
-            getLog().debug( prefix + aCollection );
+        for (Object aCollection : collection) {
+            getLog().debug(prefix + aCollection);
         }
     }
 
-    private void checkInput()
-            throws MojoExecutionException
-    {
+    private void checkInput() throws MojoExecutionException {
 
-        getLog().debug( "basedir " + this.basedir );
-        getLog().debug( "gzip " + isGzip() );
-        getLog().debug( "pack200 " + isPack200() );
-        getLog().debug( "project " + this.getProject() );
-        getLog().debug( "verbose " + isVerbose() );
+        getLog().debug("basedir " + this.basedir);
+        getLog().debug("gzip " + isGzip());
+        getLog().debug("pack200 " + isPack200());
+        getLog().debug("project " + this.getProject());
+        getLog().debug("verbose " + isVerbose());
 
         checkJnlpConfig();
         checkDependencyFilenameStrategy();
         checkDependencies();
 
-        findDefaultTemplateURL( jnlp.getType() );
+        findDefaultTemplateURL(jnlp.getType());
 
-        if ( jnlp != null && jnlp.getResources() != null )
-        {
+        if (jnlp != null && jnlp.getResources() != null) {
             throw new MojoExecutionException(
-                    "The <jnlp><resources> configuration element is obsolete. Use <resourcesDirectory> instead." );
+                    "The <jnlp><resources> configuration element is obsolete. Use <resourcesDirectory> instead.");
         }
 
         // FIXME
@@ -850,31 +767,24 @@ public abstract class AbstractJnlpMojo
         */
     }
 
-    private void checkExtension( JnlpExtension extension )
-            throws MojoExecutionException
-    {
-        if ( StringUtils.isEmpty( extension.getName() ) )
-        {
-            throw new MojoExecutionException( "JnlpExtension name is mandatory. Review your project configuration." );
+    private void checkExtension(JnlpExtension extension) throws MojoExecutionException {
+        if (StringUtils.isEmpty(extension.getName())) {
+            throw new MojoExecutionException("JnlpExtension name is mandatory. Review your project configuration.");
         }
-        if ( StringUtils.isEmpty( extension.getVendor() ) )
-        {
-            throw new MojoExecutionException( "JnlpExtension vendor is mandatory. Review your project configuration." );
+        if (StringUtils.isEmpty(extension.getVendor())) {
+            throw new MojoExecutionException("JnlpExtension vendor is mandatory. Review your project configuration.");
         }
-        if ( StringUtils.isEmpty( extension.getTitle() ) )
-        {
-            throw new MojoExecutionException( "JnlpExtension name is title. Review your project configuration." );
+        if (StringUtils.isEmpty(extension.getTitle())) {
+            throw new MojoExecutionException("JnlpExtension name is title. Review your project configuration.");
         }
-        if ( extension.getIncludes() == null || extension.getIncludes().isEmpty() )
-        {
+        if (extension.getIncludes() == null || extension.getIncludes().isEmpty()) {
             throw new MojoExecutionException(
-                    "JnlpExtension need at least one include artifact. Review your project configuration." );
+                    "JnlpExtension need at least one include artifact. Review your project configuration.");
         }
     }
 
-    protected URL findDefaultJnlpExtensionTemplateURL()
-    {
-        return getClass().getClassLoader().getResource( "default-jnlp-extension-template.vm" );
+    protected URL findDefaultJnlpExtensionTemplateURL() {
+        return getClass().getClassLoader().getResource("default-jnlp-extension-template.vm");
     }
 
     /**
@@ -884,42 +794,35 @@ public abstract class AbstractJnlpMojo
      *
      * @throws MojoExecutionException if could not prepare extensions
      */
-    private void prepareExtensions()
-            throws MojoExecutionException
-    {
+    private void prepareExtensions() throws MojoExecutionException {
         List<String> includes = new ArrayList<>();
-        for ( JnlpExtension extension : jnlpExtensions )
-        {
+        for (JnlpExtension extension : jnlpExtensions) {
             // Check extensions (mandatory name, title and vendor and at least one include)
 
-            checkExtension( extension );
+            checkExtension(extension);
 
-            for ( String o : extension.getIncludes() )
-            {
-                includes.add( o.trim() );
+            for (String o : extension.getIncludes()) {
+                includes.add(o.trim());
             }
 
-            if ( StringUtils.isEmpty( extension.getOutputFile() ) )
-            {
+            if (StringUtils.isEmpty(extension.getOutputFile())) {
                 String name = extension.getName() + ".jnlp";
                 verboseLog(
-                        "Jnlp extension output file name not specified. Using default output file name: " + name + "." );
-                extension.setOutputFile( name );
+                        "Jnlp extension output file name not specified. Using default output file name: " + name + ".");
+                extension.setOutputFile(name);
             }
         }
         // copy all includes libs fro extensions to be exclude from the mojo
         // treatments (extensions by nature are already signed)
-        if ( dependencies == null )
-        {
+        if (dependencies == null) {
             dependencies = new Dependencies();
         }
 
-        if ( dependencies.getExcludes() == null )
-        {
-            dependencies.setExcludes( new ArrayList<String>() );
+        if (dependencies.getExcludes() == null) {
+            dependencies.setExcludes(new ArrayList<String>());
         }
 
-        dependencies.getExcludes().addAll( includes );
+        dependencies.getExcludes().addAll(includes);
     }
 
     /**
@@ -932,39 +835,31 @@ public abstract class AbstractJnlpMojo
      *
      * @throws MojoExecutionException TODO
      */
-    private void processExtensionsDependencies()
-            throws MojoExecutionException
-    {
+    private void processExtensionsDependencies() throws MojoExecutionException {
 
-        Collection<Artifact> artifacts =
-                isExcludeTransitive() ? getProject().getDependencyArtifacts() : getProject().getArtifacts();
+        Collection<Artifact> artifacts = isExcludeTransitive()
+                ? getProject().getDependencyArtifacts()
+                : getProject().getArtifacts();
 
-        for ( JnlpExtension extension : jnlpExtensions )
-        {
-            ArtifactFilter filter = new IncludesArtifactFilter( extension.getIncludes() );
+        for (JnlpExtension extension : jnlpExtensions) {
+            ArtifactFilter filter = new IncludesArtifactFilter(extension.getIncludes());
 
-            for ( Artifact artifact : artifacts )
-            {
-                if ( filter.include( artifact ) )
-                {
-                    processExtensionDependency( extension, artifact );
+            for (Artifact artifact : artifacts) {
+                if (filter.include(artifact)) {
+                    processExtensionDependency(extension, artifact);
                 }
             }
         }
     }
 
-    private void processExtensionDependency( JnlpExtension extension, Artifact artifact )
-            throws MojoExecutionException
-    {
+    private void processExtensionDependency(JnlpExtension extension, Artifact artifact) throws MojoExecutionException {
         // TODO: scope handler
         // Include runtime and compile time libraries
-        if ( !Artifact.SCOPE_SYSTEM.equals( artifact.getScope() ) &&
-                !Artifact.SCOPE_PROVIDED.equals( artifact.getScope() ) &&
-                !Artifact.SCOPE_TEST.equals( artifact.getScope() ) )
-        {
+        if (!Artifact.SCOPE_SYSTEM.equals(artifact.getScope())
+                && !Artifact.SCOPE_PROVIDED.equals(artifact.getScope())
+                && !Artifact.SCOPE_TEST.equals(artifact.getScope())) {
             String type = artifact.getType();
-            if ( "jar".equals( type ) || "ejb-client".equals( type ) )
-            {
+            if ("jar".equals(type) || "ejb-client".equals(type)) {
 
                 // FIXME when signed, we should update the manifest.
                 // see http://www.mail-archive.com/turbine-maven-dev@jakarta.apache.org/msg08081.html
@@ -972,83 +867,72 @@ public abstract class AbstractJnlpMojo
                 // or shouldn't we?  See MOJO-7 comment end of October.
                 final File toCopy = artifact.getFile();
 
-                if ( toCopy == null )
-                {
-                    getLog().error( "artifact with no file: " + artifact );
-                    getLog().error( "artifact download url: " + artifact.getDownloadUrl() );
-                    getLog().error( "artifact repository: " + artifact.getRepository() );
-                    getLog().error( "artifact repository: " + artifact.getVersion() );
+                if (toCopy == null) {
+                    getLog().error("artifact with no file: " + artifact);
+                    getLog().error("artifact download url: " + artifact.getDownloadUrl());
+                    getLog().error("artifact repository: " + artifact.getRepository());
+                    getLog().error("artifact repository: " + artifact.getVersion());
                     throw new IllegalStateException(
-                            "artifact " + artifact + " has no matching file, why? Check the logs..." );
+                            "artifact " + artifact + " has no matching file, why? Check the logs...");
                 }
 
                 // check jar is signed
-                boolean jarSigned = isJarSigned( toCopy );
-                if ( !jarSigned )
-                {
+                boolean jarSigned = isJarSigned(toCopy);
+                if (!jarSigned) {
                     throw new IllegalStateException(
-                            "artifact " + artifact + " must be signed as part of an extension.." );
+                            "artifact " + artifact + " must be signed as part of an extension..");
                 }
 
-                String targetFilename =
-                        getDependencyFilenameStrategy().getDependencyFilename( artifact, outputJarVersions, isUseUniqueVersions() );
+                String targetFilename = getDependencyFilenameStrategy()
+                        .getDependencyFilename(artifact, outputJarVersions, isUseUniqueVersions());
 
-                File targetFile = new File( getLibDirectory(), targetFilename );
-                boolean copied = getIoUtil().shouldCopyFile( toCopy, targetFile );
+                File targetFile = new File(getLibDirectory(), targetFilename);
+                boolean copied = getIoUtil().shouldCopyFile(toCopy, targetFile);
 
-                if ( copied )
-                {
-                    getIoUtil().copyFile( toCopy, targetFile );
-                    verboseLog( "copy extension artifact " + toCopy );
-                }
-                else
-                {
-                    verboseLog( "already up to date artifact " + toCopy );
+                if (copied) {
+                    getIoUtil().copyFile(toCopy, targetFile);
+                    verboseLog("copy extension artifact " + toCopy);
+                } else {
+                    verboseLog("already up to date artifact " + toCopy);
                 }
 
                 // save the artifact dependency for the extension
 
-                List<Artifact> deps = extensionsJnlpArtifacts.get( extension );
-                if ( deps == null )
-                {
+                List<Artifact> deps = extensionsJnlpArtifacts.get(extension);
+                if (deps == null) {
                     deps = new ArrayList<>();
-                    extensionsJnlpArtifacts.put( extension, deps );
+                    extensionsJnlpArtifacts.put(extension, deps);
                 }
-                deps.add( artifact );
-            }
-            else
+                deps.add(artifact);
+            } else
             // FIXME how do we deal with native libs?
             // we should probably identify them and package inside jars that we timestamp like the native lib
             // to avoid repackaging every time. What are the types of the native libs?
             {
-                verboseLog( "Skipping artifact of type " + type + " for " + getLibDirectory().getName() );
+                verboseLog("Skipping artifact of type " + type + " for "
+                        + getLibDirectory().getName());
             }
             // END COPY
-        }
-        else
-        {
-            verboseLog( "Skipping artifact of scope " + artifact.getScope() + " for " + getLibDirectory().getName() );
-        }
-    }
-
-    private void generateJnlpExtensionsFile( File outputDirectory )
-            throws MojoExecutionException
-    {
-        for ( JnlpExtension jnlpExtension : jnlpExtensions )
-        {
-            generateJnlpExtensionFile( outputDirectory, jnlpExtension );
+        } else {
+            verboseLog("Skipping artifact of scope " + artifact.getScope() + " for "
+                    + getLibDirectory().getName());
         }
     }
 
-    private void generateJnlpExtensionFile( File outputDirectory, JnlpExtension extension )
-            throws MojoExecutionException
-    {
+    private void generateJnlpExtensionsFile(File outputDirectory) throws MojoExecutionException {
+        for (JnlpExtension jnlpExtension : jnlpExtensions) {
+            generateJnlpExtensionFile(outputDirectory, jnlpExtension);
+        }
+    }
+
+    private void generateJnlpExtensionFile(File outputDirectory, JnlpExtension extension)
+            throws MojoExecutionException {
 
         // ---
         // get output file
         // ---
 
-        File jnlpOutputFile = new File( outputDirectory, extension.getOutputFile() );
+        File jnlpOutputFile = new File(outputDirectory, extension.getOutputFile());
 
         // ---
         // get template directory
@@ -1056,76 +940,72 @@ public abstract class AbstractJnlpMojo
 
         File templateDirectory;
 
-        if ( StringUtils.isNotBlank( extension.getInputTemplateResourcePath() ) )
-        {
+        if (StringUtils.isNotBlank(extension.getInputTemplateResourcePath())) {
             // if user overrides the input template resource path
-            templateDirectory = new File( extension.getInputTemplateResourcePath() );
-        }
-        else
-        {
+            templateDirectory = new File(extension.getInputTemplateResourcePath());
+        } else {
 
             // use default template directory
             templateDirectory = getTemplateDirectory();
-            getLog().debug( "Use default jnlp directory : " + templateDirectory );
+            getLog().debug("Use default jnlp directory : " + templateDirectory);
         }
 
         // ---
         // get template filename
         // ---
 
-        if ( StringUtils.isBlank( extension.getInputTemplate() ) )
-        {
+        if (StringUtils.isBlank(extension.getInputTemplate())) {
             getLog().debug(
-                    "Jnlp extension template file name not specified. Checking if default output file name exists: " +
-                            EXTENSION_TEMPLATE_FILENAME );
+                            "Jnlp extension template file name not specified. Checking if default output file name exists: "
+                                    + EXTENSION_TEMPLATE_FILENAME);
 
-            File templateFile = new File( templateDirectory, EXTENSION_TEMPLATE_FILENAME );
+            File templateFile = new File(templateDirectory, EXTENSION_TEMPLATE_FILENAME);
 
-            if ( templateFile.isFile() )
-            {
-                extension.setInputTemplate( EXTENSION_TEMPLATE_FILENAME );
+            if (templateFile.isFile()) {
+                extension.setInputTemplate(EXTENSION_TEMPLATE_FILENAME);
+            } else {
+                getLog().debug("Jnlp extension template file not found in default location. Using inbuilt one.");
             }
-            else
-            {
-                getLog().debug( "Jnlp extension template file not found in default location. Using inbuilt one." );
-            }
-        }
-        else
-        {
-            File templateFile = new File( templateDirectory, extension.getInputTemplate() );
+        } else {
+            File templateFile = new File(templateDirectory, extension.getInputTemplate());
 
-            if ( !templateFile.isFile() )
-            {
+            if (!templateFile.isFile()) {
                 throw new MojoExecutionException(
-                        "The specified JNLP extension template does not exist: [" + templateFile + "]" );
+                        "The specified JNLP extension template does not exist: [" + templateFile + "]");
             }
         }
         String templateFileName = extension.getInputTemplate();
 
-        GeneratorTechnicalConfig generatorTechnicalConfig =
-                new GeneratorTechnicalConfig( getProject(), templateDirectory, BUILT_IN_EXTENSION_TEMPLATE_FILENAME,
-                                              jnlpOutputFile, templateFileName, getJnlp().getMainClass(),
-                                              getWebstartJarURLForVelocity(), getEncoding() );
+        GeneratorTechnicalConfig generatorTechnicalConfig = new GeneratorTechnicalConfig(
+                getProject(),
+                templateDirectory,
+                BUILT_IN_EXTENSION_TEMPLATE_FILENAME,
+                jnlpOutputFile,
+                templateFileName,
+                getJnlp().getMainClass(),
+                getWebstartJarURLForVelocity(),
+                getEncoding());
 
-        ExtensionGeneratorConfig extensionGeneratorConfig =
-                new ExtensionGeneratorConfig( getLibPath(), isPack200(), outputJarVersions, isUseUniqueVersions(),
-                                              artifactWithMainClass, getDependencyFilenameStrategy(),
-                                              extensionsJnlpArtifacts, getCodebase(), extension );
+        ExtensionGeneratorConfig extensionGeneratorConfig = new ExtensionGeneratorConfig(
+                getLibPath(),
+                isPack200(),
+                outputJarVersions,
+                isUseUniqueVersions(),
+                artifactWithMainClass,
+                getDependencyFilenameStrategy(),
+                extensionsJnlpArtifacts,
+                getCodebase(),
+                extension);
         ExtensionGenerator jnlpGenerator =
-                new ExtensionGenerator( getLog(), generatorTechnicalConfig, extensionGeneratorConfig );
+                new ExtensionGenerator(getLog(), generatorTechnicalConfig, extensionGeneratorConfig);
 
-//        jnlpGenerator.setExtraConfig( new ExtensionGeneratorExtraConfig( extension, getCodebase() ) );
+        //        jnlpGenerator.setExtraConfig( new ExtensionGeneratorExtraConfig( extension, getCodebase() ) );
 
-        try
-        {
+        try {
             jnlpGenerator.generate();
-        }
-        catch ( Exception e )
-        {
-            getLog().debug( e.toString() );
-            throw new MojoExecutionException( "Could not generate the JNLP deployment descriptor", e );
+        } catch (Exception e) {
+            getLog().debug(e.toString());
+            throw new MojoExecutionException("Could not generate the JNLP deployment descriptor", e);
         }
     }
-
 }
-

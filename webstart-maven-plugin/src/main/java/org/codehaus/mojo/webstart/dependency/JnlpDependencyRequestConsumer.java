@@ -25,10 +25,9 @@ package org.codehaus.mojo.webstart.dependency;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public interface JnlpDependencyRequestConsumer
-{
+public interface JnlpDependencyRequestConsumer {
 
     String ROLE = JnlpDependencyRequestConsumer.class.getName();
 
-    JnlpDependencyResults execute( JnlpDependencyRequestConsumerConfig config, JnlpDependencyRequests requests );
+    JnlpDependencyResults execute(JnlpDependencyRequestConsumerConfig config, JnlpDependencyRequests requests);
 }

@@ -1,6 +1,6 @@
 /*
  * @(#)DownloadRequest.java	1.7 05/11/17
- * 
+ *
  * Copyright (c) 2006 Sun Microsystems, Inc. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,6 +38,7 @@ package jnlp.sample.servlet;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +47,7 @@ import java.util.List;
  * The DownloadRequest incapsulates all the data in a request
  * SQE: We need to address query string
  */
-public class DownloadRequest
-{
+public class DownloadRequest {
     // Arguments
     private static final String ARG_ARCH = "arch";
 
@@ -95,71 +95,60 @@ public class DownloadRequest
     public static final String ACCEPT_ENCODING = "accept-encoding";
 
     // Contruct Request object based on HTTP request
-    public DownloadRequest( HttpServletRequest request )
-    {
-        this( null, request );
+    public DownloadRequest(HttpServletRequest request) {
+        this(null, request);
     }
 
-    public DownloadRequest( ServletContext context, HttpServletRequest request )
-    {
+    public DownloadRequest(ServletContext context, HttpServletRequest request) {
         _context = context;
         _httpRequest = request;
         _path = request.getRequestURI();
-        _encoding = request.getHeader( ACCEPT_ENCODING );
+        _encoding = request.getHeader(ACCEPT_ENCODING);
         String context_path = request.getContextPath();
-        if ( context_path != null )
-        {
-            _path = _path.substring( context_path.length() );
+        if (context_path != null) {
+            _path = _path.substring(context_path.length());
         }
-        if ( _path == null )
-        {
+        if (_path == null) {
             _path = request.getServletPath(); // This works for *.<ext> invocations
         }
-        if ( _path == null )
-        {
+        if (_path == null) {
             _path = "/"; // No path given
         }
         _path = _path.trim();
-        if ( _context != null && !_path.endsWith( "/" ) )
-        {
-            String realPath = _context.getRealPath( _path );
+        if (_context != null && !_path.endsWith("/")) {
+            String realPath = _context.getRealPath(_path);
             // fix for 4474021 - getRealPath might returns NULL
-            if ( realPath != null )
-            {
-                File f = new File( realPath );
-                if ( f.exists() && f.isDirectory() )
-                {
+            if (realPath != null) {
+                File f = new File(realPath);
+                if (f.exists() && f.isDirectory()) {
                     _path += "/";
                 }
             }
         }
         // Append default file for a directory
-        if ( _path.endsWith( "/" ) )
-        {
+        if (_path.endsWith("/")) {
             _path += "launch.jnlp";
         }
-        _version = getParameter( request, ARG_VERSION_ID );
-        _currentVersionId = getParameter( request, ARG_CURRENT_VERSION_ID );
-        _os = getParameterList( request, ARG_OS );
-        _arch = getParameterList( request, ARG_ARCH );
-        _locale = getParameterList( request, ARG_LOCALE );
-        _knownPlatforms = getParameterList( request, ARG_KNOWN_PLATFORMS );
-        String platformVersion = getParameter( request, ARG_PLATFORM_VERSION_ID );
-        _isPlatformRequest = ( platformVersion != null );
-        if ( _isPlatformRequest )
-        {
+        _version = getParameter(request, ARG_VERSION_ID);
+        _currentVersionId = getParameter(request, ARG_CURRENT_VERSION_ID);
+        _os = getParameterList(request, ARG_OS);
+        _arch = getParameterList(request, ARG_ARCH);
+        _locale = getParameterList(request, ARG_LOCALE);
+        _knownPlatforms = getParameterList(request, ARG_KNOWN_PLATFORMS);
+        String platformVersion = getParameter(request, ARG_PLATFORM_VERSION_ID);
+        _isPlatformRequest = (platformVersion != null);
+        if (_isPlatformRequest) {
             _version = platformVersion;
         }
         _query = request.getQueryString();
-        _testJRE = getParameter( request, TEST_JRE );
+        _testJRE = getParameter(request, TEST_JRE);
     }
 
     /**
      * Returns a DownloadRequest for the currentVersionId, that can be used
      * to lookup the existing cached version
      */
-    private DownloadRequest( DownloadRequest dreq )
-    {
+    private DownloadRequest(DownloadRequest dreq) {
         _encoding = dreq._encoding;
         _context = dreq._context;
         _httpRequest = dreq._httpRequest;
@@ -175,139 +164,110 @@ public class DownloadRequest
         _testJRE = dreq._testJRE;
     }
 
-
-    private String getParameter( HttpServletRequest req, String key )
-    {
-        String res = req.getParameter( key );
-        return ( res == null ) ? null : res.trim();
+    private String getParameter(HttpServletRequest req, String key) {
+        String res = req.getParameter(key);
+        return (res == null) ? null : res.trim();
     }
 
     /**
      * Converts a space delimitered string to a list of strings
      */
-    static private String[] getStringList( String str )
-    {
-        if ( str == null )
-        {
+    private static String[] getStringList(String str) {
+        if (str == null) {
             return null;
         }
         List<String> list = new ArrayList<>();
         int i = 0;
         int length = str.length();
         StringBuffer sb = null;
-        while ( i < length )
-        {
-            char ch = str.charAt( i );
-            if ( ch == ' ' )
-            {
+        while (i < length) {
+            char ch = str.charAt(i);
+            if (ch == ' ') {
                 // A space was hit. Add string to list
-                if ( sb != null )
-                {
-                    list.add( sb.toString() );
+                if (sb != null) {
+                    list.add(sb.toString());
                     sb = null;
                 }
-            }
-            else if ( ch == '\\' )
-            {
+            } else if (ch == '\\') {
                 // It is a delimiter. Add next character
-                if ( i + 1 < length )
-                {
-                    ch = str.charAt( ++i );
-                    if ( sb == null )
-                    {
+                if (i + 1 < length) {
+                    ch = str.charAt(++i);
+                    if (sb == null) {
                         sb = new StringBuffer();
                     }
-                    sb.append( ch );
+                    sb.append(ch);
                 }
-            }
-            else
-            {
-                if ( sb == null )
-                {
+            } else {
+                if (sb == null) {
                     sb = new StringBuffer();
                 }
-                sb.append( ch );
+                sb.append(ch);
             }
             i++; // Next character
         }
         // Make sure to add the last part to the list too
-        if ( sb != null )
-        {
-            list.add( sb.toString() );
+        if (sb != null) {
+            list.add(sb.toString());
         }
-        if ( list.size() == 0 )
-        {
+        if (list.size() == 0) {
             return null;
         }
         String[] results = new String[list.size()];
-        return list.toArray( results );
+        return list.toArray(results);
     }
 
     /* Split parameter at spaces. Convert '\ ' insto a space */
-    private String[] getParameterList( HttpServletRequest req, String key )
-    {
-        String res = req.getParameter( key );
-        return ( res == null ) ? null : getStringList( res.trim() );
+    private String[] getParameterList(HttpServletRequest req, String key) {
+        String res = req.getParameter(key);
+        return (res == null) ? null : getStringList(res.trim());
     }
 
     // Query
-    public String getPath()
-    {
+    public String getPath() {
         return _path;
     }
 
-    public String getVersion()
-    {
+    public String getVersion() {
         return _version;
     }
 
-    public String getCurrentVersionId()
-    {
+    public String getCurrentVersionId() {
         return _currentVersionId;
     }
 
-    public String getQuery()
-    {
+    public String getQuery() {
         return _query;
     }
 
-    public String getTestJRE()
-    {
+    public String getTestJRE() {
         return _testJRE;
     }
 
-    public String getEncoding()
-    {
+    public String getEncoding() {
         return _encoding;
     }
 
-    public String[] getOS()
-    {
+    public String[] getOS() {
         return _os;
     }
 
-    public String[] getArch()
-    {
+    public String[] getArch() {
         return _arch;
     }
 
-    public String[] getLocale()
-    {
+    public String[] getLocale() {
         return _locale;
     }
 
-    public String[] getKnownPlatforms()
-    {
+    public String[] getKnownPlatforms() {
         return _knownPlatforms;
     }
 
-    public boolean isPlatformRequest()
-    {
+    public boolean isPlatformRequest() {
         return _isPlatformRequest;
     }
 
-    public HttpServletRequest getHttpRequest()
-    {
+    public HttpServletRequest getHttpRequest() {
         return _httpRequest;
     }
 
@@ -315,38 +275,31 @@ public class DownloadRequest
      * Returns a DownloadRequest for the currentVersionId, that can be used
      * to lookup the existing cached version
      */
-    DownloadRequest getFromDownloadRequest()
-    {
-        return new DownloadRequest( this );
+    DownloadRequest getFromDownloadRequest() {
+        return new DownloadRequest(this);
     }
 
     // Debug
-    public String toString()
-    {
-        return "DownloadRequest[path=" + _path + showEntry( " encoding=", _encoding ) + showEntry( " query=", _query ) +
-                showEntry( " TestJRE=", _testJRE ) + showEntry( " version=", _version ) +
-                showEntry( " currentVersionId=", _currentVersionId ) + showEntry( " os=", _os ) +
-                showEntry( " arch=", _arch ) + showEntry( " locale=", _locale ) +
-                showEntry( " knownPlatforms=", _knownPlatforms ) + " isPlatformRequest=" + _isPlatformRequest + "]";
+    public String toString() {
+        return "DownloadRequest[path=" + _path + showEntry(" encoding=", _encoding) + showEntry(" query=", _query)
+                + showEntry(" TestJRE=", _testJRE)
+                + showEntry(" version=", _version) + showEntry(" currentVersionId=", _currentVersionId)
+                + showEntry(" os=", _os) + showEntry(" arch=", _arch)
+                + showEntry(" locale=", _locale) + showEntry(" knownPlatforms=", _knownPlatforms)
+                + " isPlatformRequest=" + _isPlatformRequest + "]";
     }
 
-    private String showEntry( String msg, String value )
-    {
-        if ( value == null )
-        {
+    private String showEntry(String msg, String value) {
+        if (value == null) {
             return "";
         }
         return msg + value;
     }
 
-    private String showEntry( String msg, String[] value )
-    {
-        if ( value == null )
-        {
+    private String showEntry(String msg, String[] value) {
+        if (value == null) {
             return "";
         }
-        return msg + java.util.Arrays.asList( value ).toString();
+        return msg + java.util.Arrays.asList(value).toString();
     }
 }
-
-

@@ -34,38 +34,30 @@ import org.codehaus.plexus.component.annotations.Component;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-@Component( role = DependencyFilenameStrategy.class, hint = FullDependencyFilenameStrategy.ROLE_HINT )
-public class FullDependencyFilenameStrategy
-        extends AbstractDependencyFilenameStrategy
-        implements DependencyFilenameStrategy
-{
+@Component(role = DependencyFilenameStrategy.class, hint = FullDependencyFilenameStrategy.ROLE_HINT)
+public class FullDependencyFilenameStrategy extends AbstractDependencyFilenameStrategy
+        implements DependencyFilenameStrategy {
 
     public static final String ROLE_HINT = "full";
 
     /**
      * {@inheritDoc}
      */
-    public String getDependencyFileBasename( Artifact artifact, Boolean outputJarVersion, Boolean useUniqueVersions )
-    {
+    public String getDependencyFileBasename(Artifact artifact, Boolean outputJarVersion, Boolean useUniqueVersions) {
         String filename = artifact.getGroupId() + "-" + artifact.getArtifactId();
 
-        if ( outputJarVersion != null )
-        {
+        if (outputJarVersion != null) {
 
-            if ( outputJarVersion )
-            {
+            if (outputJarVersion) {
                 filename += "__V";
-            }
-            else
-            {
+            } else {
                 filename += "-";
             }
 
-            filename += getDependencyFileVersion( artifact, useUniqueVersions );
+            filename += getDependencyFileVersion(artifact, useUniqueVersions);
         }
 
-        if ( StringUtils.isNotEmpty( artifact.getClassifier() ) )
-        {
+        if (StringUtils.isNotEmpty(artifact.getClassifier())) {
             filename += "-" + artifact.getClassifier();
         }
 

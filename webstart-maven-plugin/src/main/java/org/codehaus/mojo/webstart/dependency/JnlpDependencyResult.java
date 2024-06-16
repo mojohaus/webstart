@@ -19,9 +19,9 @@ package org.codehaus.mojo.webstart.dependency;
  * under the License.
  */
 
-import org.apache.maven.artifact.Artifact;
-
 import java.io.File;
+
+import org.apache.maven.artifact.Artifact;
 
 /**
  * Created on 1/4/14.
@@ -29,50 +29,41 @@ import java.io.File;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public class JnlpDependencyResult
-{
+public class JnlpDependencyResult {
 
     private final JnlpDependencyRequest request;
 
     private Throwable error;
 
-    public JnlpDependencyResult( JnlpDependencyRequest request )
-    {
+    public JnlpDependencyResult(JnlpDependencyRequest request) {
         this.request = request;
     }
 
-    public Artifact getArtifact()
-    {
+    public Artifact getArtifact() {
         return request.getConfig().getArtifact();
     }
 
-    public File getOriginalFile()
-    {
+    public File getOriginalFile() {
         return request.getOriginalFile();
     }
 
-    public File getFinalFile()
-    {
+    public File getFinalFile() {
         return request.getFinalFile();
     }
 
-    public boolean isUptodate()
-    {
+    public boolean isUptodate() {
         return request.isUptodate();
     }
 
-    public Throwable getError()
-    {
+    public Throwable getError() {
         return error;
     }
 
-    public void setError( Throwable error )
-    {
+    public void setError(Throwable error) {
         this.error = error;
     }
 
-    public boolean isError()
-    {
+    public boolean isError() {
         return error != null;
     }
 }

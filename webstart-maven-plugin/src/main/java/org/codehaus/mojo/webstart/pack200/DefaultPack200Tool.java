@@ -19,9 +19,6 @@ package org.codehaus.mojo.webstart.pack200;
  * under the License.
  */
 
-import org.apache.maven.shared.utils.io.IOUtil;
-import org.codehaus.plexus.component.annotations.Component;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -44,223 +41,184 @@ import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import org.apache.maven.shared.utils.io.IOUtil;
+import org.codehaus.plexus.component.annotations.Component;
+
 /**
  * Default implementation of the {@link Pack200Tool}.
  *
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-2
  */
-@Component( role = Pack200Tool.class, hint = "default" )
-public class DefaultPack200Tool
-        implements Pack200Tool
-{
+@Component(role = Pack200Tool.class, hint = "default")
+public class DefaultPack200Tool implements Pack200Tool {
 
     public static final String PACK_GZ_EXTENSION = ".pack.gz";
 
     public static final String PACK_EXTENSION = ".pack";
 
     @Override
-    public void pack( File source, File destination, Map<String, String> props, boolean gzip )
-            throws IOException
-    {
+    public void pack(File source, File destination, Map<String, String> props, boolean gzip) throws IOException {
         JarFile jar = null;
         OutputStream out = null;
-        try
-        {
-            out = new FileOutputStream( destination );
-            if ( gzip )
-            {
-                out = new GZIPOutputStream( out )
-                {
+        try {
+            out = new FileOutputStream(destination);
+            if (gzip) {
+                out = new GZIPOutputStream(out) {
                     {
-                        def.setLevel( Deflater.BEST_COMPRESSION );
+                        def.setLevel(Deflater.BEST_COMPRESSION);
                     }
                 };
             }
-            out = new BufferedOutputStream( out );
+            out = new BufferedOutputStream(out);
 
-            jar = new JarFile( source, false );
+            jar = new JarFile(source, false);
 
             Pack200.Packer packer = Pack200.newPacker();
-            packer.properties().putAll( props );
-            packer.pack( jar, out );
-        }
-        finally
-        {
-            IOUtil.close( out );
-            if ( jar != null )
-            {
+            packer.properties().putAll(props);
+            packer.pack(jar, out);
+        } finally {
+            IOUtil.close(out);
+            if (jar != null) {
                 jar.close();
             }
         }
     }
 
     @Override
-    public void repack( File source, File destination, Map<String, String> props )
-            throws IOException
-    {
-        File tempFile = new File( source.toString() + ".tmp" );
+    public void repack(File source, File destination, Map<String, String> props) throws IOException {
+        File tempFile = new File(source.toString() + ".tmp");
 
-        try
-        {
-            pack( source, tempFile, props, false );
-            unpack( tempFile, destination, props );
-        }
-        finally
-        {
-            deleteFile( tempFile );
+        try {
+            pack(source, tempFile, props, false);
+            unpack(tempFile, destination, props);
+        } finally {
+            deleteFile(tempFile);
         }
     }
 
     @Override
-    public void unpack( File source, File destination, Map<String, String> props )
-            throws IOException
-    {
+    public void unpack(File source, File destination, Map<String, String> props) throws IOException {
         InputStream in = null;
         JarOutputStream out = null;
-        try
-        {
-            in = new FileInputStream( source );
-            if ( isGzipped( source ) )
-            {
-                in = new GZIPInputStream( in );
+        try {
+            in = new FileInputStream(source);
+            if (isGzipped(source)) {
+                in = new GZIPInputStream(in);
             }
-            in = new BufferedInputStream( in );
+            in = new BufferedInputStream(in);
 
-            out = new JarOutputStream( new BufferedOutputStream( new FileOutputStream( destination ) ) );
+            out = new JarOutputStream(new BufferedOutputStream(new FileOutputStream(destination)));
 
             Pack200.Unpacker unpacker = Pack200.newUnpacker();
-            unpacker.properties().putAll( props );
-            unpacker.unpack( in, out );
-        }
-        finally
-        {
-            IOUtil.close( in );
-            IOUtil.close( out );
+            unpacker.properties().putAll(props);
+            unpacker.unpack(in, out);
+        } finally {
+            IOUtil.close(in);
+            IOUtil.close(out);
         }
     }
 
     @Override
-    public void packJars( File directory, FileFilter jarFileFilter, boolean gzip, List<String> passFiles )
-            throws IOException
-    {
+    public void packJars(File directory, FileFilter jarFileFilter, boolean gzip, List<String> passFiles)
+            throws IOException {
         // getLog().debug( "packJars for " + directory );
-        File[] jarFiles = directory.listFiles( jarFileFilter );
-        for ( File jarFile1 : jarFiles )
-        {
+        File[] jarFiles = directory.listFiles(jarFileFilter);
+        for (File jarFile1 : jarFiles) {
             // getLog().debug( "packJars: " + jarFiles[i] );
 
             final String extension = gzip ? PACK_GZ_EXTENSION : PACK_EXTENSION;
 
             File jarFile = jarFile1;
 
-            File pack200Jar = new File( jarFile.getParentFile(), jarFile.getName() + extension );
+            File pack200Jar = new File(jarFile.getParentFile(), jarFile.getName() + extension);
 
-            deleteFile( pack200Jar );
+            deleteFile(pack200Jar);
 
             Map<String, String> propMap = new HashMap<>();
             // Work around a JDK bug affecting large JAR files, see MWEBSTART-125
-            propMap.put( Pack200.Packer.SEGMENT_LIMIT, String.valueOf( -1 ) );
+            propMap.put(Pack200.Packer.SEGMENT_LIMIT, String.valueOf(-1));
 
             // set passFiles if available
-            if ( passFiles != null && !passFiles.isEmpty() )
-            {
-                for ( int j = 0; j < passFiles.size(); j++ )
-                {
-                    propMap.put( Packer.PASS_FILE_PFX + j, passFiles.get( j ) );
+            if (passFiles != null && !passFiles.isEmpty()) {
+                for (int j = 0; j < passFiles.size(); j++) {
+                    propMap.put(Packer.PASS_FILE_PFX + j, passFiles.get(j));
                 }
             }
 
-            pack( jarFile, pack200Jar, propMap, gzip );
-            setLastModified( pack200Jar, jarFile.lastModified() );
+            pack(jarFile, pack200Jar, propMap, gzip);
+            setLastModified(pack200Jar, jarFile.lastModified());
         }
     }
 
     @Override
-    public File packJar( File jarFile, boolean gzip, List<String> passFiles )
-            throws IOException
-    {
+    public File packJar(File jarFile, boolean gzip, List<String> passFiles) throws IOException {
         final String extension = gzip ? PACK_GZ_EXTENSION : PACK_EXTENSION;
 
-        File pack200Jar = new File( jarFile.getParentFile(), jarFile.getName() + extension );
+        File pack200Jar = new File(jarFile.getParentFile(), jarFile.getName() + extension);
 
-        deleteFile( pack200Jar );
+        deleteFile(pack200Jar);
 
         Map<String, String> propMap = new HashMap<>();
         // Work around a JDK bug affecting large JAR files, see MWEBSTART-125
-        propMap.put( Pack200.Packer.SEGMENT_LIMIT, String.valueOf( -1 ) );
+        propMap.put(Pack200.Packer.SEGMENT_LIMIT, String.valueOf(-1));
 
         // set passFiles if available
-        if ( passFiles != null && !passFiles.isEmpty() )
-        {
-            for ( int j = 0; j < passFiles.size(); j++ )
-            {
-                propMap.put( Packer.PASS_FILE_PFX + j, passFiles.get( j ) );
+        if (passFiles != null && !passFiles.isEmpty()) {
+            for (int j = 0; j < passFiles.size(); j++) {
+                propMap.put(Packer.PASS_FILE_PFX + j, passFiles.get(j));
             }
         }
 
-        pack( jarFile, pack200Jar, propMap, gzip );
-        setLastModified( pack200Jar, jarFile.lastModified() );
+        pack(jarFile, pack200Jar, propMap, gzip);
+        setLastModified(pack200Jar, jarFile.lastModified());
         return pack200Jar;
     }
 
-
     @Override
-    public void unpackJars( File directory, FileFilter pack200FileFilter )
-            throws IOException
-    {
+    public void unpackJars(File directory, FileFilter pack200FileFilter) throws IOException {
         // getLog().debug( "unpackJars for " + directory );
-        File[] packFiles = directory.listFiles( pack200FileFilter );
-        for ( File packFile : packFiles )
-        {
+        File[] packFiles = directory.listFiles(pack200FileFilter);
+        for (File packFile : packFiles) {
             final String packedJarPath = packFile.getAbsolutePath();
-            int extensionLength = packedJarPath.endsWith( PACK_GZ_EXTENSION ) ? 8 : 5;
-            String jarFileName = packedJarPath.substring( 0, packedJarPath.length() - extensionLength );
-            File jarFile = new File( jarFileName );
+            int extensionLength = packedJarPath.endsWith(PACK_GZ_EXTENSION) ? 8 : 5;
+            String jarFileName = packedJarPath.substring(0, packedJarPath.length() - extensionLength);
+            File jarFile = new File(jarFileName);
 
-            deleteFile( jarFile );
+            deleteFile(jarFile);
 
-            unpack( packFile, jarFile, Collections.<String, String>emptyMap() );
-            setLastModified( jarFile, packFile.lastModified() );
+            unpack(packFile, jarFile, Collections.<String, String>emptyMap());
+            setLastModified(jarFile, packFile.lastModified());
         }
     }
 
     @Override
-    public File unpackJar( File packFile )
-            throws IOException
-    {
+    public File unpackJar(File packFile) throws IOException {
         final String packedJarPath = packFile.getAbsolutePath();
-        int extensionLength = packedJarPath.endsWith( PACK_GZ_EXTENSION ) ? 8 : 5;
-        String jarFileName = packedJarPath.substring( 0, packedJarPath.length() - extensionLength );
-        File jarFile = new File( jarFileName );
+        int extensionLength = packedJarPath.endsWith(PACK_GZ_EXTENSION) ? 8 : 5;
+        String jarFileName = packedJarPath.substring(0, packedJarPath.length() - extensionLength);
+        File jarFile = new File(jarFileName);
 
-        deleteFile( jarFile );
+        deleteFile(jarFile);
 
-        unpack( packFile, jarFile, Collections.<String, String>emptyMap() );
-        setLastModified( jarFile, packFile.lastModified() );
+        unpack(packFile, jarFile, Collections.<String, String>emptyMap());
+        setLastModified(jarFile, packFile.lastModified());
         return jarFile;
     }
 
-    private void deleteFile( File file )
-            throws IOException
-    {
-        if ( file.exists() )
-        {
+    private void deleteFile(File file) throws IOException {
+        if (file.exists()) {
             boolean delete = file.delete();
-            if ( !delete )
-            {
-                throw new IOException( "Could not delete file " + file );
+            if (!delete) {
+                throw new IOException("Could not delete file " + file);
             }
         }
     }
 
-    private void setLastModified( File file, long modifi )
-            throws IOException
-    {
-        boolean b = file.setLastModified( modifi );
-        if ( !b )
-        {
-            throw new IOException( "Could not change last modifified on file: " + file );
+    private void setLastModified(File file, long modifi) throws IOException {
+        boolean b = file.setLastModified(modifi);
+        if (!b) {
+            throw new IOException("Could not change last modifified on file: " + file);
         }
     }
 
@@ -269,12 +227,10 @@ public class DefaultPack200Tool
      * @return {@code true} if the specified file is gzipped.
      * @throws IOException if any error while testing file
      */
-    private static boolean isGzipped( File file )
-            throws IOException
-    {
-        DataInputStream is = new DataInputStream( new FileInputStream( file ) );
+    private static boolean isGzipped(File file) throws IOException {
+        DataInputStream is = new DataInputStream(new FileInputStream(file));
         int i = is.readInt();
         is.close();
-        return ( i & 0xffffff00 ) == 0x1f8b0800;
+        return (i & 0xffffff00) == 0x1f8b0800;
     }
 }

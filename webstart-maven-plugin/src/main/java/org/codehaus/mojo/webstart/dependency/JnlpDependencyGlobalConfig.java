@@ -19,15 +19,15 @@ package org.codehaus.mojo.webstart.dependency;
  * under the License.
  */
 
-import org.apache.commons.collections.MapUtils;
-import org.codehaus.mojo.webstart.dependency.filenaming.DependencyFilenameStrategy;
-import org.codehaus.mojo.webstart.pack200.Pack200Config;
-import org.codehaus.mojo.webstart.sign.SignConfig;
-
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.collections.MapUtils;
+import org.codehaus.mojo.webstart.dependency.filenaming.DependencyFilenameStrategy;
+import org.codehaus.mojo.webstart.pack200.Pack200Config;
+import org.codehaus.mojo.webstart.sign.SignConfig;
 
 /**
  * Created on 1/4/14.
@@ -35,8 +35,7 @@ import java.util.Map;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public class JnlpDependencyGlobalConfig
-{
+public class JnlpDependencyGlobalConfig {
 
     private final ClassLoader loader;
 
@@ -60,37 +59,40 @@ public class JnlpDependencyGlobalConfig
 
     private final DependencyFilenameStrategy dependencyFilenameStrategy;
 
-    public JnlpDependencyGlobalConfig( ClassLoader loader, DependencyFilenameStrategy dependencyFilenameStrategy,
-                                       File workingDirectory, File finalDirectory, Pack200Config pack200,
-                                       SignConfig sign, Map<String, String> updateManifestEntries, boolean gzip,
-                                       boolean verbose, boolean unsignAlreadySignedJars, boolean canUnsign )
-    {
+    public JnlpDependencyGlobalConfig(
+            ClassLoader loader,
+            DependencyFilenameStrategy dependencyFilenameStrategy,
+            File workingDirectory,
+            File finalDirectory,
+            Pack200Config pack200,
+            SignConfig sign,
+            Map<String, String> updateManifestEntries,
+            boolean gzip,
+            boolean verbose,
+            boolean unsignAlreadySignedJars,
+            boolean canUnsign) {
         this.loader = loader;
         this.dependencyFilenameStrategy = dependencyFilenameStrategy;
         this.workingDirectory = workingDirectory;
         this.finalDirectory = finalDirectory;
         this.pack200 = pack200;
         this.sign = sign;
-        this.updateManifestEntries = Collections.unmodifiableMap( updateManifestEntries );
+        this.updateManifestEntries = Collections.unmodifiableMap(updateManifestEntries);
         this.gzip = gzip;
         this.verbose = verbose;
         this.unsignAlreadySignedJars = unsignAlreadySignedJars;
         this.canUnsign = canUnsign;
     }
 
-
-    public DependencyFilenameStrategy getDependencyFilenameStrategy()
-    {
+    public DependencyFilenameStrategy getDependencyFilenameStrategy() {
         return dependencyFilenameStrategy;
     }
 
-    public File getWorkingDirectory()
-    {
+    public File getWorkingDirectory() {
         return workingDirectory;
     }
 
-    public File getFinalDirectory()
-    {
+    public File getFinalDirectory() {
         return finalDirectory;
     }
 
@@ -99,58 +101,47 @@ public class JnlpDependencyGlobalConfig
      *
      * @return Returns the list value of the pack200.passFiles.
      */
-    public List<String> getPack200PassFiles()
-    {
+    public List<String> getPack200PassFiles() {
         return isPack200() ? pack200.getPassFiles() : null;
     }
 
-    public SignConfig getSign()
-    {
+    public SignConfig getSign() {
         return sign;
     }
 
-    public Map<String, String> getUpdateManifestEntries()
-    {
+    public Map<String, String> getUpdateManifestEntries() {
         return updateManifestEntries;
     }
 
-    public boolean isGzip()
-    {
+    public boolean isGzip() {
         return gzip;
     }
 
-    public boolean isVerbose()
-    {
+    public boolean isVerbose() {
         return verbose;
     }
 
-    public boolean isUnsignAlreadySignedJars()
-    {
+    public boolean isUnsignAlreadySignedJars() {
         return unsignAlreadySignedJars;
     }
 
-    public boolean isCanUnsign()
-    {
+    public boolean isCanUnsign() {
         return canUnsign;
     }
 
-    public boolean isSign()
-    {
+    public boolean isSign() {
         return sign != null;
     }
 
-    public ClassLoader getLoader()
-    {
+    public ClassLoader getLoader() {
         return loader;
     }
 
-    public boolean isUpdateManifest()
-    {
-        return MapUtils.isNotEmpty( updateManifestEntries );
+    public boolean isUpdateManifest() {
+        return MapUtils.isNotEmpty(updateManifestEntries);
     }
 
-    public boolean isPack200()
-    {
+    public boolean isPack200() {
         return pack200 != null && pack200.isEnabled();
     }
 }

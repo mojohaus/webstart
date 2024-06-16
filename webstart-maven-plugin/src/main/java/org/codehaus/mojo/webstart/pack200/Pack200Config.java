@@ -29,8 +29,7 @@ import java.util.List;
  * @version $Revision$
  * @since 1.0-beta-4
  */
-public class Pack200Config
-{
+public class Pack200Config {
 
     /**
      * Whether pack200 is enabled at all or not.
@@ -52,8 +51,7 @@ public class Pack200Config
      *
      * @return {@code true} if pack200 compression of jar resources is enabled, {@code false} otherwise.
      */
-    public boolean isEnabled()
-    {
+    public boolean isEnabled() {
         return enabled;
     }
 
@@ -67,20 +65,15 @@ public class Pack200Config
      *
      * @return the files to be passed without pack200 compression.
      */
-    public List<String> getPassFiles()
-    {
+    public List<String> getPassFiles() {
         return passFiles;
     }
 
-    public void setEnabled( boolean enabled )
-    {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-
     }
 
-    public void setPassFiles( List<String> passFiles )
-    {
+    public void setPassFiles(List<String> passFiles) {
         this.passFiles = passFiles;
     }
-
 }

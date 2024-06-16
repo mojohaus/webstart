@@ -19,13 +19,13 @@ package org.codehaus.mojo.webstart.dependency.task;
  * under the License.
  */
 
+import java.io.File;
+import java.io.IOException;
+
 import org.codehaus.mojo.webstart.dependency.JnlpDependencyConfig;
 import org.codehaus.mojo.webstart.pack200.Pack200Tool;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * To unpack200 a dependency.
@@ -38,10 +38,8 @@ import java.io.IOException;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-@Component( role = JnlpDependencyTask.class, hint = UnPack200Task.ROLE_HINT, instantiationStrategy = "per-lookup" )
-public class UnPack200Task
-        extends AbstractJnlpTask
-{
+@Component(role = JnlpDependencyTask.class, hint = UnPack200Task.ROLE_HINT, instantiationStrategy = "per-lookup")
+public class UnPack200Task extends AbstractJnlpTask {
 
     public static final String ROLE_HINT = "UnPack200Task";
 
@@ -51,50 +49,39 @@ public class UnPack200Task
      * We use a plexus list injection instead of a direct component injection since for a jre 1.4, we will at the
      * moment have no implementation of this tool.
      */
-    @Requirement( role = Pack200Tool.class )
+    @Requirement(role = Pack200Tool.class)
     private Pack200Tool pack200Tool;
 
     /**
      * {@inheritDoc}
      */
-    public void check( JnlpDependencyConfig config )
-    {
-        if ( config == null )
-        {
-            throw new NullPointerException( "config can't be null" );
+    public void check(JnlpDependencyConfig config) {
+        if (config == null) {
+            throw new NullPointerException("config can't be null");
         }
-        if ( config.getArtifact() == null )
-        {
-            throw new NullPointerException( "config.artifact can't be null" );
+        if (config.getArtifact() == null) {
+            throw new NullPointerException("config.artifact can't be null");
         }
-        if ( config.getArtifact().getFile() == null )
-        {
-            throw new NullPointerException( "config.artifact.file can't be null" );
+        if (config.getArtifact().getFile() == null) {
+            throw new NullPointerException("config.artifact.file can't be null");
         }
-        if ( !config.isPack200() )
-        {
-            throw new IllegalStateException( "Can't pack200 if config.isPack200 is false" );
+        if (!config.isPack200()) {
+            throw new IllegalStateException("Can't pack200 if config.isPack200 is false");
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public File execute( JnlpDependencyConfig config, File file )
-            throws JnlpDependencyTaskException
-    {
+    public File execute(JnlpDependencyConfig config, File file) throws JnlpDependencyTaskException {
 
-        verboseLog( config, "Unpack 200 file: " + file );
-        try
-        {
-            File result = pack200Tool.unpackJar( file );
-            getLogger().debug( "Unpacked 200 file: " + result );
+        verboseLog(config, "Unpack 200 file: " + file);
+        try {
+            File result = pack200Tool.unpackJar(file);
+            getLogger().debug("Unpacked 200 file: " + result);
             return result;
-        }
-        catch ( IOException e )
-        {
-            throw new JnlpDependencyTaskException( "Could not pack200 jars: ", e );
+        } catch (IOException e) {
+            throw new JnlpDependencyTaskException("Could not pack200 jars: ", e);
         }
     }
-
 }

@@ -27,11 +27,10 @@ package org.codehaus.mojo.webstart;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-6
  */
-public enum JnlpFileType
-{
-    application( "default-jnlp-template.vm", true ),
-    component( "default-jnlp-component-template.vm", false ),
-    installer( "default-jnlp-installer-template.vm", false );
+public enum JnlpFileType {
+    application("default-jnlp-template.vm", true),
+    component("default-jnlp-component-template.vm", false),
+    installer("default-jnlp-installer-template.vm", false);
 
     /**
      * Default template to use to generate a jnlp type of this type.
@@ -43,19 +42,16 @@ public enum JnlpFileType
      */
     private final boolean requireMainClass;
 
-    JnlpFileType( String defaultTemplateName, boolean requireMainClass )
-    {
+    JnlpFileType(String defaultTemplateName, boolean requireMainClass) {
         this.defaultTemplateName = defaultTemplateName;
         this.requireMainClass = requireMainClass;
     }
 
-    public String getDefaultTemplateName()
-    {
+    public String getDefaultTemplateName() {
         return defaultTemplateName;
     }
 
-    public boolean isRequireMainClass()
-    {
+    public boolean isRequireMainClass() {
         return requireMainClass;
     }
 }

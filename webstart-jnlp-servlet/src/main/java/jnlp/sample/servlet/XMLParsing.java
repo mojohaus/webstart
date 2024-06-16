@@ -1,6 +1,6 @@
 /*
  * @(#)XMLParsing.java	1.6 05/11/17
- * 
+ *
  * Copyright (c) 2006 Sun Microsystems, Inc. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,64 +36,52 @@
 
 package jnlp.sample.servlet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Contains handy methods for looking up information
  * stored in XMLNodes.
  */
-public class XMLParsing
-{
+public class XMLParsing {
 
-    public static XMLNode convert( Node n )
-    {
-        if ( n == null )
-        {
+    public static XMLNode convert(Node n) {
+        if (n == null) {
             return null;
-        }
-        else if ( n instanceof Text )
-        {
+        } else if (n instanceof Text) {
             Text tn = (Text) n;
-            return new XMLNode( tn.getNodeValue() );
-        }
-        else if ( n instanceof Element )
-        {
+            return new XMLNode(tn.getNodeValue());
+        } else if (n instanceof Element) {
             Element en = (Element) n;
 
             XMLAttribute xmlatts = null;
             NamedNodeMap attributes = en.getAttributes();
-            for ( int i = attributes.getLength() - 1; i >= 0; i-- )
-            {
-                Attr ar = (Attr) attributes.item( i );
-                xmlatts = new XMLAttribute( ar.getName(), ar.getValue(), xmlatts );
+            for (int i = attributes.getLength() - 1; i >= 0; i--) {
+                Attr ar = (Attr) attributes.item(i);
+                xmlatts = new XMLAttribute(ar.getName(), ar.getValue(), xmlatts);
             }
 
             // Convert childern
-            XMLNode thisNode = new XMLNode( en.getNodeName(), xmlatts, null, null );
+            XMLNode thisNode = new XMLNode(en.getNodeName(), xmlatts, null, null);
             ;
             XMLNode last = null;
             Node nn = en.getFirstChild();
-            while ( nn != null )
-            {
-                if ( thisNode.getNested() == null )
-                {
-                    last = convert( nn );
-                    thisNode.setNested( last );
-                }
-                else
-                {
-                    XMLNode nnode = convert( nn );
-                    last.setNext( nnode );
+            while (nn != null) {
+                if (thisNode.getNested() == null) {
+                    last = convert(nn);
+                    thisNode.setNested(last);
+                } else {
+                    XMLNode nnode = convert(nn);
+                    last.setNext(nnode);
                     last = nnode;
                 }
-                last.setParent( thisNode );
+                last.setParent(thisNode);
                 nn = nn.getNextSibling();
             }
 
@@ -107,30 +95,25 @@ public class XMLParsing
      * @param path TODO
      * @return true if the path exists in the document, otherwise false
      */
-    static public boolean isElementPath( XMLNode root, String path )
-    {
-        return findElementPath( root, path ) != null;
+    public static boolean isElementPath(XMLNode root, String path) {
+        return findElementPath(root, path) != null;
     }
-
 
     /**
      * @param e TODO
      * @return a string describing the current location in the DOM
      */
-    static public String getPathString( XMLNode e )
-    {
-        return ( e == null || !( e.isElement() ) ) ? "" : getPathString( e.getParent() ) + "<" + e.getName() + ">";
+    public static String getPathString(XMLNode e) {
+        return (e == null || !(e.isElement())) ? "" : getPathString(e.getParent()) + "<" + e.getName() + ">";
     }
-
 
     /**
      * @param root TODO
      * @param path TODO
      * @return Like getElementContents(...) but with a defaultValue of null
      */
-    static public String getElementContent( XMLNode root, String path )
-    {
-        return getElementContent( root, path, null );
+    public static String getElementContent(XMLNode root, String path) {
+        return getElementContent(root, path, null);
     }
 
     /**
@@ -140,25 +123,20 @@ public class XMLParsing
      * @param path TODO
      * @return TODO
      */
-    static public String[] getMultiElementContent( XMLNode root, String path )
-    {
+    public static String[] getMultiElementContent(XMLNode root, String path) {
         final List list = new ArrayList();
-        visitElements( root, path, new ElementVisitor()
-        {
-            public void visitElement( XMLNode n )
-            {
-                String value = getElementContent( n, "" );
-                if ( value != null )
-                {
-                    list.add( value );
+        visitElements(root, path, new ElementVisitor() {
+            public void visitElement(XMLNode n) {
+                String value = getElementContent(n, "");
+                if (value != null) {
+                    list.add(value);
                 }
             }
-        } );
-        if ( list.size() == 0 )
-        {
+        });
+        if (list.size() == 0) {
             return null;
         }
-        return (String[]) list.toArray( new String[list.size()] );
+        return (String[]) list.toArray(new String[list.size()]);
     }
 
     /**
@@ -168,16 +146,13 @@ public class XMLParsing
      * @return the value of the last element tag in the path, e.g.,  &lt;..&gt;&lt;tag&gt;value&lt;/tag&gt;. The DOM is assumes
      * to be normalized. If no value is found, the default value is returned
      */
-    static public String getElementContent( XMLNode root, String path, String defaultvalue )
-    {
-        XMLNode e = findElementPath( root, path );
-        if ( e == null )
-        {
+    public static String getElementContent(XMLNode root, String path, String defaultvalue) {
+        XMLNode e = findElementPath(root, path);
+        if (e == null) {
             return defaultvalue;
         }
         XMLNode n = e.getNested();
-        if ( n != null && !n.isElement() )
-        {
+        if (n != null && !n.isElement()) {
             return n.getName();
         }
         return defaultvalue;
@@ -190,24 +165,21 @@ public class XMLParsing
      * node for that tag, or null if it does not exist. If multiple elements exists with same
      * path the first is returned
      */
-    static public XMLNode findElementPath( XMLNode elem, String path )
-    {
+    public static XMLNode findElementPath(XMLNode elem, String path) {
         // End condition. Root null -> path does not exist
-        if ( elem == null )
-        {
+        if (elem == null) {
             return null;
         }
         // End condition. String empty, return current root
-        if ( path == null || path.length() == 0 )
-        {
+        if (path == null || path.length() == 0) {
             return elem;
         }
 
         // Strip of first tag
-        int idx = path.indexOf( '>' );
-        String head = path.substring( 1, idx );
-        String tail = path.substring( idx + 1 );
-        return findElementPath( findChildElement( elem, head ), tail );
+        int idx = path.indexOf('>');
+        String head = path.substring(1, idx);
+        String tail = path.substring(idx + 1);
+        return findElementPath(findChildElement(elem, head), tail);
     }
 
     /**
@@ -215,13 +187,10 @@ public class XMLParsing
      * @param tag  TODO
      * @return an child element with the current tag name or null.
      */
-    static public XMLNode findChildElement( XMLNode elem, String tag )
-    {
+    public static XMLNode findChildElement(XMLNode elem, String tag) {
         XMLNode n = elem.getNested();
-        while ( n != null )
-        {
-            if ( n.isElement() && n.getName().equals( tag ) )
-            {
+        while (n != null) {
+            if (n.isElement() && n.getName().equals(tag)) {
                 return n;
             }
             n = n.getNext();
@@ -232,9 +201,8 @@ public class XMLParsing
     /**
      * Iterator class
      */
-    public abstract static class ElementVisitor
-    {
-        abstract public void visitElement( XMLNode e );
+    public abstract static class ElementVisitor {
+        public abstract void visitElement(XMLNode e);
     }
 
     /**
@@ -245,43 +213,35 @@ public class XMLParsing
      * @param path TODO
      * @param ev   TODO
      */
-    static public void visitElements( XMLNode root, String path, ElementVisitor ev )
-    {
+    public static void visitElements(XMLNode root, String path, ElementVisitor ev) {
         // Get last element in path
-        int idx = path.lastIndexOf( '<' );
-        String head = path.substring( 0, idx );
-        String tag = path.substring( idx + 1, path.length() - 1 );
+        int idx = path.lastIndexOf('<');
+        String head = path.substring(0, idx);
+        String tag = path.substring(idx + 1, path.length() - 1);
 
-        XMLNode elem = findElementPath( root, head );
-        if ( elem == null )
-        {
+        XMLNode elem = findElementPath(root, head);
+        if (elem == null) {
             return;
         }
 
         // Iterate through all child nodes
         XMLNode n = elem.getNested();
-        while ( n != null )
-        {
-            if ( n.isElement() && n.getName().equals( tag ) )
-            {
-                ev.visitElement( n );
+        while (n != null) {
+            if (n.isElement() && n.getName().equals(tag)) {
+                ev.visitElement(n);
             }
             n = n.getNext();
         }
     }
 
-    static public void visitChildrenElements( XMLNode elem, ElementVisitor ev )
-    {
+    public static void visitChildrenElements(XMLNode elem, ElementVisitor ev) {
         // Iterate through all child nodes
         XMLNode n = elem.getNested();
-        while ( n != null )
-        {
-            if ( n.isElement() )
-            {
-                ev.visitElement( n );
+        while (n != null) {
+            if (n.isElement()) {
+                ev.visitElement(n);
             }
             n = n.getNext();
         }
     }
 }
-

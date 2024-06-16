@@ -19,10 +19,10 @@ package org.codehaus.mojo.webstart.dependency;
  * under the License.
  */
 
+import java.io.File;
+
 import org.apache.maven.artifact.Artifact;
 import org.codehaus.mojo.webstart.dependency.task.JnlpDependencyTask;
-
-import java.io.File;
 
 /**
  * Created on 1/4/14.
@@ -30,8 +30,7 @@ import java.io.File;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public class JnlpDependencyRequest
-{
+public class JnlpDependencyRequest {
 
     private final JnlpDependencyConfig config;
 
@@ -43,8 +42,7 @@ public class JnlpDependencyRequest
 
     private final boolean uptodate;
 
-    public JnlpDependencyRequest( JnlpDependencyConfig config, JnlpDependencyTask... tasks )
-    {
+    public JnlpDependencyRequest(JnlpDependencyConfig config, JnlpDependencyTask... tasks) {
         this.config = config;
         this.tasks = tasks;
 
@@ -54,64 +52,56 @@ public class JnlpDependencyRequest
         File incomingFile = getConfig().getArtifact().getFile();
 
         long limitDate = incomingFile.lastModified();
-        uptodate = originalFile.exists() && originalFile.lastModified() > limitDate &&
-                finalFile.exists() && finalFile.lastModified() > limitDate;
+        uptodate = originalFile.exists()
+                && originalFile.lastModified() > limitDate
+                && finalFile.exists()
+                && finalFile.lastModified() > limitDate;
     }
 
-    public JnlpDependencyConfig getConfig()
-    {
+    public JnlpDependencyConfig getConfig() {
         return config;
     }
 
-    public JnlpDependencyTask[] getTasks()
-    {
+    public JnlpDependencyTask[] getTasks() {
         return tasks;
     }
 
-    public File getOriginalFile()
-    {
+    public File getOriginalFile() {
         return originalFile;
     }
 
-    public boolean isUptodate()
-    {
+    public boolean isUptodate() {
         return uptodate;
     }
 
-    public File getFinalFile()
-    {
+    public File getFinalFile() {
         return finalFile;
     }
 
-    private File buildOriginalFile()
-    {
+    private File buildOriginalFile() {
 
         File workingDirectory = config.getWorkingDirectory();
 
         Artifact artifact = config.getArtifact();
 
-        String fileName = config.getDependencyFilenameStrategy().getDependencyFilename( artifact, false, false );
+        String fileName = config.getDependencyFilenameStrategy().getDependencyFilename(artifact, false, false);
 
-        return new File( workingDirectory, fileName );
+        return new File(workingDirectory, fileName);
     }
 
-    private File buildFinalFile()
-    {
+    private File buildFinalFile() {
 
         File finalDirectory = config.getFinalDirectory();
-        String filename = config.getDependencyFilenameStrategy().getDependencyFilename( config.getArtifact(),
-                                                                                        config.isOutputJarVersion(),
-                                                                                        config.isUseUniqueVersions() );
-        if ( config.isPack200() )
-        {
+        String filename = config.getDependencyFilenameStrategy()
+                .getDependencyFilename(config.getArtifact(), config.isOutputJarVersion(), config.isUseUniqueVersions());
+        if (config.isPack200()) {
             filename += ".pack";
         }
 
-        if ( config.isGzip() )
-        {
+        if (config.isGzip()) {
             filename += ".gz";
         }
 
-        return new File( finalDirectory, filename );
+        return new File(finalDirectory, filename);
     }
 }

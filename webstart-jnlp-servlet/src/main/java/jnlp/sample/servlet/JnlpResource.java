@@ -1,6 +1,6 @@
 /*
  * @(#)JnlpResource.java	1.8 05/11/17
- * 
+ *
  * Copyright (c) 2006 Sun Microsystems, Inc. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@
 package jnlp.sample.servlet;
 
 import javax.servlet.ServletContext;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -55,8 +56,7 @@ import java.util.Date;
  * - mime-type for content
  * - lastModified date of WAR file resource
  */
-public class JnlpResource
-{
+public class JnlpResource {
     private static final String JNLP_MIME_TYPE = "application/x-java-jnlp-file";
 
     private static final String JAR_MIME_TYPE = "application/x-java-archive";
@@ -72,20 +72,15 @@ public class JnlpResource
 
     private static String _jarExtension = JAR_EXTENSION;
 
-    public static void setDefaultExtensions( String jnlpExtension, String jarExtension )
-    {
-        if ( jnlpExtension != null && jnlpExtension.length() > 0 )
-        {
-            if ( !jnlpExtension.startsWith( "." ) )
-            {
+    public static void setDefaultExtensions(String jnlpExtension, String jarExtension) {
+        if (jnlpExtension != null && jnlpExtension.length() > 0) {
+            if (!jnlpExtension.startsWith(".")) {
                 jnlpExtension = "." + jnlpExtension;
             }
             _jnlpExtension = jnlpExtension;
         }
-        if ( jarExtension != null && jarExtension.length() > 0 )
-        {
-            if ( !jarExtension.startsWith( "." ) )
-            {
+        if (jarExtension != null && jarExtension.length() > 0) {
+            if (!jarExtension.startsWith(".")) {
                 jarExtension = "." + jarExtension;
             }
             _jarExtension = jarExtension;
@@ -93,43 +88,55 @@ public class JnlpResource
     }
 
     /* Pattern matching arguments */
-    private String _name;      // Name of resource with path (this is the same as path for non-version based)
+    private String _name; // Name of resource with path (this is the same as path for non-version based)
 
-    private String _versionId;    // Version-id for resource, or null if none
+    private String _versionId; // Version-id for resource, or null if none
 
-    private String[] _osList;     // List of OSes for which resource should be returned
+    private String[] _osList; // List of OSes for which resource should be returned
 
-    private String[] _archList;   // List of architectures for which the resource should be returned
+    private String[] _archList; // List of architectures for which the resource should be returned
 
     private String[] _localeList; // List of locales for which the resource should be returned
 
     /* Information used for reply */
-    private String _path;            // Path to resource in WAR file (unique)
+    private String _path; // Path to resource in WAR file (unique)
 
-    private URL _resource;        // URL to resource in WAR file (unique - same as above really)
+    private URL _resource; // URL to resource in WAR file (unique - same as above really)
 
-    private long _lastModified;    // Last modified in WAR file
+    private long _lastModified; // Last modified in WAR file
 
-    private String _mimeType;        // Mime-type for resource
+    private String _mimeType; // Mime-type for resource
 
     private String _returnVersionId; // Version Id to return
 
-    private String _encoding;        // Accept encoding
+    private String _encoding; // Accept encoding
 
-    public JnlpResource( ServletContext context, String path )
-    {
-        this( context, null, null, null, null, null, path, null );
+    public JnlpResource(ServletContext context, String path) {
+        this(context, null, null, null, null, null, path, null);
     }
 
-    public JnlpResource( ServletContext context, String name, String versionId, String[] osList, String[] archList,
-                         String[] localeList, String path, String returnVersionId )
-    {
-        this( context, name, versionId, osList, archList, localeList, path, returnVersionId, null );
+    public JnlpResource(
+            ServletContext context,
+            String name,
+            String versionId,
+            String[] osList,
+            String[] archList,
+            String[] localeList,
+            String path,
+            String returnVersionId) {
+        this(context, name, versionId, osList, archList, localeList, path, returnVersionId, null);
     }
 
-    public JnlpResource( ServletContext context, String name, String versionId, String[] osList, String[] archList,
-                         String[] localeList, String path, String returnVersionId, String encoding )
-    {
+    public JnlpResource(
+            ServletContext context,
+            String name,
+            String versionId,
+            String[] osList,
+            String[] archList,
+            String[] localeList,
+            String path,
+            String returnVersionId,
+            String encoding) {
         // Matching arguments
         _encoding = encoding;
         _name = name;
@@ -141,114 +148,88 @@ public class JnlpResource
         _returnVersionId = returnVersionId;
 
         /* Check for existance and get last modified timestamp */
-        try
-        {
+        try {
             String orig_path = path.trim();
             String search_path = orig_path;
-            _resource = context.getResource( orig_path );
-            _mimeType = getMimeType( context, orig_path );
-            if ( _resource != null )
-            {
+            _resource = context.getResource(orig_path);
+            _mimeType = getMimeType(context, orig_path);
+            if (_resource != null) {
 
                 boolean found = false;
                 // pack200 compression
-                if ( encoding != null && _mimeType != null &&
-                        ( _mimeType.compareTo( JAR_MIME_TYPE ) == 0 || _mimeType.compareTo( JAR_MIME_TYPE_NEW ) == 0 ) &&
-                        encoding.toLowerCase().contains( DownloadResponse.PACK200_GZIP_ENCODING ) )
-                {
+                if (encoding != null
+                        && _mimeType != null
+                        && (_mimeType.compareTo(JAR_MIME_TYPE) == 0 || _mimeType.compareTo(JAR_MIME_TYPE_NEW) == 0)
+                        && encoding.toLowerCase().contains(DownloadResponse.PACK200_GZIP_ENCODING)) {
                     search_path = orig_path + ".pack.gz";
-                    _resource = context.getResource( search_path );
+                    _resource = context.getResource(search_path);
                     // Get last modified time
-                    if ( _resource != null )
-                    {
-                        _lastModified = getLastModified( context, _resource, search_path );
-                        if ( _lastModified != 0 )
-                        {
+                    if (_resource != null) {
+                        _lastModified = getLastModified(context, _resource, search_path);
+                        if (_lastModified != 0) {
                             _path = search_path;
                             found = true;
-                        }
-                        else
-                        {
+                        } else {
                             _resource = null;
                         }
                     }
                 }
 
                 // gzip compression
-                if ( !found && encoding != null &&
-                        encoding.toLowerCase().contains( DownloadResponse.GZIP_ENCODING ) )
-                {
+                if (!found && encoding != null && encoding.toLowerCase().contains(DownloadResponse.GZIP_ENCODING)) {
                     search_path = orig_path + ".gz";
-                    _resource = context.getResource( search_path );
+                    _resource = context.getResource(search_path);
                     // Get last modified time
-                    if ( _resource != null )
-                    {
-                        _lastModified = getLastModified( context, _resource, search_path );
-                        if ( _lastModified != 0 )
-                        {
+                    if (_resource != null) {
+                        _lastModified = getLastModified(context, _resource, search_path);
+                        if (_lastModified != 0) {
                             _path = search_path;
                             found = true;
-                        }
-                        else
-                        {
+                        } else {
                             _resource = null;
                         }
                     }
                 }
 
-                if ( !found )
-                {
+                if (!found) {
                     // no compression
                     search_path = orig_path;
-                    _resource = context.getResource( search_path );
+                    _resource = context.getResource(search_path);
                     // Get last modified time
-                    if ( _resource != null )
-                    {
-                        _lastModified = getLastModified( context, _resource, search_path );
-                        if ( _lastModified != 0 )
-                        {
+                    if (_resource != null) {
+                        _lastModified = getLastModified(context, _resource, search_path);
+                        if (_lastModified != 0) {
                             _path = search_path;
                             found = true;
-                        }
-                        else
-                        {
+                        } else {
                             _resource = null;
                         }
                     }
                 }
             }
-        }
-        catch ( IOException ioe )
-        {
+        } catch (IOException ioe) {
             _resource = null;
         }
     }
 
-    long getLastModified( ServletContext context, URL resource, String path )
-    {
+    long getLastModified(ServletContext context, URL resource, String path) {
         long lastModified = 0;
         URLConnection conn;
-        try
-        {
+        try {
             // Get last modified time
             conn = resource.openConnection();
             lastModified = conn.getLastModified();
-        }
-        catch ( Exception e )
-        {
+        } catch (Exception e) {
             // do nothing
         }
 
-        if ( lastModified == 0 )
-        {
+        if (lastModified == 0) {
             // Arguably a bug in the JRE will not set the lastModified for file URLs, and
             // always return 0. This is a workaround for that problem.
-            String filepath = context.getRealPath( path );
-            if ( filepath != null )
-            {
-                File f = new File( filepath );
-                if ( f.exists() )
-                {
+            String filepath = context.getRealPath(path);
+            if (filepath != null) {
+                File f = new File(filepath);
+                if (f.exists()) {
                     lastModified = f.lastModified();
                 }
             }
@@ -257,85 +238,68 @@ public class JnlpResource
     }
 
     /* Get resource specific attributes */
-    public String getPath()
-    {
+    public String getPath() {
         return _path;
     }
 
-    public URL getResource()
-    {
+    public URL getResource() {
         return _resource;
     }
 
-    public String getMimeType()
-    {
+    public String getMimeType() {
         return _mimeType;
     }
 
-    public long getLastModified()
-    {
+    public long getLastModified() {
         return _lastModified;
     }
 
-    public boolean exists()
-    {
+    public boolean exists() {
         return _resource != null;
     }
 
-    public boolean isJnlpFile()
-    {
-        return _path.endsWith( _jnlpExtension );
+    public boolean isJnlpFile() {
+        return _path.endsWith(_jnlpExtension);
     }
 
-    public boolean isJarFile()
-    {
-        return _path.endsWith( _jarExtension );
+    public boolean isJarFile() {
+        return _path.endsWith(_jarExtension);
     }
 
     /* Get JNLP version specific attributes */
-    public String getName()
-    {
+    public String getName() {
         return _name;
     }
 
-    public String getVersionId()
-    {
+    public String getVersionId() {
         return _versionId;
     }
 
-    public String[] getOSList()
-    {
+    public String[] getOSList() {
         return _osList;
     }
 
-    public String[] getArchList()
-    {
+    public String[] getArchList() {
         return _archList;
     }
 
-    public String[] getLocaleList()
-    {
+    public String[] getLocaleList() {
         return _localeList;
     }
 
-    public String getReturnVersionId()
-    {
+    public String getReturnVersionId() {
         return _returnVersionId;
     }
 
-    private String getMimeType( ServletContext context, String path )
-    {
-        String mimeType = context.getMimeType( path );
-        if ( mimeType != null )
-        {
+    private String getMimeType(ServletContext context, String path) {
+        String mimeType = context.getMimeType(path);
+        if (mimeType != null) {
             return mimeType;
         }
-        if ( path.endsWith( _jnlpExtension ) )
-        {
+        if (path.endsWith(_jnlpExtension)) {
             return JNLP_MIME_TYPE;
         }
-        if ( path.endsWith( _jarExtension ) )
-        {
+        if (path.endsWith(_jarExtension)) {
             return JAR_MIME_TYPE;
         }
         return "application/unknown";
@@ -344,34 +308,24 @@ public class JnlpResource
     /**
      * Print info about an entry
      */
-    public String toString()
-    {
-        return "JnlpResource[WAR Path: " + _path + showEntry( " versionId=", _versionId ) +
-                showEntry( " name=", _name ) + " lastModified=" + new Date( _lastModified ) +
-                showEntry( " osList=", _osList ) + showEntry( " archList=", _archList ) +
-                showEntry( " localeList=", _localeList ) + "]" + showEntry( " returnVersionId=", _returnVersionId ) + "]";
-
+    public String toString() {
+        return "JnlpResource[WAR Path: " + _path + showEntry(" versionId=", _versionId) + showEntry(" name=", _name)
+                + " lastModified=" + new Date(_lastModified) + showEntry(" osList=", _osList)
+                + showEntry(" archList=", _archList) + showEntry(" localeList=", _localeList)
+                + "]" + showEntry(" returnVersionId=", _returnVersionId) + "]";
     }
 
-    private String showEntry( String msg, String value )
-    {
-        if ( value == null )
-        {
+    private String showEntry(String msg, String value) {
+        if (value == null) {
             return "";
         }
         return msg + value;
     }
 
-    private String showEntry( String msg, String[] value )
-    {
-        if ( value == null )
-        {
+    private String showEntry(String msg, String[] value) {
+        if (value == null) {
             return "";
         }
-        return msg + java.util.Arrays.asList( value ).toString();
+        return msg + java.util.Arrays.asList(value).toString();
     }
 }
-
-
-
-

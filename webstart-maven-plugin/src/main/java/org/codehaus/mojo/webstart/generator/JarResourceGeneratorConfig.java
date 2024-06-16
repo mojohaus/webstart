@@ -19,11 +19,11 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
-import org.codehaus.mojo.webstart.ResolvedJarResource;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import org.codehaus.mojo.webstart.ResolvedJarResource;
 
 /**
  * Created on 1/6/14.
@@ -31,9 +31,7 @@ import java.util.Map;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-public class JarResourceGeneratorConfig
-        implements GeneratorExtraConfig
-{
+public class JarResourceGeneratorConfig implements GeneratorExtraConfig {
 
     private final Collection<ResolvedJarResource> jarResources;
 
@@ -45,9 +43,12 @@ public class JarResourceGeneratorConfig
 
     private List<String> arguments;
 
-    public JarResourceGeneratorConfig( Collection<ResolvedJarResource> jarResources, String libPath, String codebase,
-                                       Map<String, String> properties, List<String> arguments )
-    {
+    public JarResourceGeneratorConfig(
+            Collection<ResolvedJarResource> jarResources,
+            String libPath,
+            String codebase,
+            Map<String, String> properties,
+            List<String> arguments) {
         this.jarResources = jarResources;
         this.libPath = libPath;
         this.codebase = codebase;
@@ -55,61 +56,53 @@ public class JarResourceGeneratorConfig
         this.arguments = arguments;
     }
 
-    public Collection<ResolvedJarResource> getJarResources()
-    {
+    public Collection<ResolvedJarResource> getJarResources() {
         return jarResources;
     }
 
-    public String getLibPath()
-    {
+    public String getLibPath() {
         return libPath;
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getJnlpSpec()
-    {
+    public String getJnlpSpec() {
         return "1.0+";
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getOfflineAllowed()
-    {
+    public String getOfflineAllowed() {
         return "false";
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getAllPermissions()
-    {
+    public String getAllPermissions() {
         return "true";
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getJ2seVersion()
-    {
+    public String getJ2seVersion() {
         return "1.5+";
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getJnlpCodeBase()
-    {
+    public String getJnlpCodeBase() {
         return codebase;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Map<String, String> getProperties()
-    {
+    public Map<String, String> getProperties() {
         return properties;
     }
 
@@ -118,8 +111,7 @@ public class JarResourceGeneratorConfig
         return null;
     }
 
-    public List<String> getArguments()
-    {
+    public List<String> getArguments() {
         return arguments;
     }
 }

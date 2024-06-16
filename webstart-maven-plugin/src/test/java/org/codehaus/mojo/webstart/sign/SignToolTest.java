@@ -18,12 +18,12 @@ package org.codehaus.mojo.webstart.sign;
  * under the License.
  */
 
+import java.io.File;
+import java.io.IOException;
+
 import org.apache.commons.lang.SystemUtils;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.util.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Tests the {@link SignToolTest}.
@@ -31,110 +31,95 @@ import java.io.IOException;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.1
  */
-public class SignToolTest
-    extends PlexusTestCase
-{
+public class SignToolTest extends PlexusTestCase {
 
     protected SignTool signTool;
 
-    public void setUp()
-        throws Exception
-    {
+    public void setUp() throws Exception {
         super.setUp();
-        signTool = (SignTool) lookup( SignTool.class.getName() );
+        signTool = (SignTool) lookup(SignTool.class.getName());
     }
 
-    public void testIsJarSigned()
-        throws Exception
-    {
+    public void testIsJarSigned() throws Exception {
 
         // -- test with an unsigned jar -- //
-        File unsignedTarget = new File( "target/SignToolTest-IsJarSigned/simple.jar" );
+        File unsignedTarget = new File("target/SignToolTest-IsJarSigned/simple.jar");
 
-        copyTestFile( new File( "src/test/simple.jar" ), unsignedTarget );
+        copyTestFile(new File("src/test/simple.jar"), unsignedTarget);
 
         // jar is not signed
-        assertFalse( signTool.isJarSigned( unsignedTarget ) );
+        assertFalse(signTool.isJarSigned(unsignedTarget));
 
         // -- test with an signed jar -- //
 
-        File signedTarget = new File( "target/SignToolTest-IsJarSigned/simpleSignedLowerCase.jar" );
+        File signedTarget = new File("target/SignToolTest-IsJarSigned/simpleSignedLowerCase.jar");
 
-        copyTestFile( new File( "src/test/simpleSignedLowerCase.jar" ), signedTarget );
+        copyTestFile(new File("src/test/simpleSignedLowerCase.jar"), signedTarget);
 
         // jar is signed
-        assertTrue( signTool.isJarSigned( signedTarget ) );
+        assertTrue(signTool.isJarSigned(signedTarget));
     }
 
-    public void testUnsignArchiveWithLowerExtensionNames()
-        throws Exception
-    {
+    public void testUnsignArchiveWithLowerExtensionNames() throws Exception {
 
         // usign an already signed jar but with some signed files with mixed extension case (.Sf, .das)
 
-        File signedTarget = new File( "target/SignToolTest/simpleSignedLowerCase.jar" );
+        File signedTarget = new File("target/SignToolTest/simpleSignedLowerCase.jar");
 
-        copyTestFile( new File( "src/test/simpleSignedLowerCase.jar" ), signedTarget );
+        copyTestFile(new File("src/test/simpleSignedLowerCase.jar"), signedTarget);
 
         // jar is signed
-        assertTrue( signTool.isJarSigned( signedTarget ) );
+        assertTrue(signTool.isJarSigned(signedTarget));
 
-        signTool.unsign( signedTarget, true );
+        signTool.unsign(signedTarget, true);
 
         // jar is now unsigned
-        assertFalse( signTool.isJarSigned( signedTarget ) );
+        assertFalse(signTool.isJarSigned(signedTarget));
     }
 
-    public void testGetKeyStoreFile()
-        throws Exception
-    {
+    public void testGetKeyStoreFile() throws Exception {
 
         File tmpDir = SystemUtils.getJavaIoTmpDir();
 
-        File parentDir = new File( tmpDir, "tmp" );
+        File parentDir = new File(tmpDir, "tmp");
         File keyStoreFile;
 
         ClassLoader classLoader = getClassLoader();
 
         // from classpath with / start
         keyStoreFile =
-            signTool.getKeyStoreFile( "classpath:/test/myfile.txt", new File( tmpDir, "myfile2.txt" ), classLoader );
-        assertNotNull( keyStoreFile );
-        assertEquals( "myfile2.txt", keyStoreFile.getName() );
-        assertEquals( tmpDir, keyStoreFile.getParentFile() );
+                signTool.getKeyStoreFile("classpath:/test/myfile.txt", new File(tmpDir, "myfile2.txt"), classLoader);
+        assertNotNull(keyStoreFile);
+        assertEquals("myfile2.txt", keyStoreFile.getName());
+        assertEquals(tmpDir, keyStoreFile.getParentFile());
 
         // from classpath
         keyStoreFile =
-            signTool.getKeyStoreFile( "classpath:test/myfile.txt", new File( tmpDir, "myfile2.txt" ), classLoader );
-        assertNotNull( keyStoreFile );
-        assertEquals( "myfile2.txt", keyStoreFile.getName() );
-        assertEquals( tmpDir, keyStoreFile.getParentFile() );
+                signTool.getKeyStoreFile("classpath:test/myfile.txt", new File(tmpDir, "myfile2.txt"), classLoader);
+        assertNotNull(keyStoreFile);
+        assertEquals("myfile2.txt", keyStoreFile.getName());
+        assertEquals(tmpDir, keyStoreFile.getParentFile());
 
         // from a direct file (no change)
-        keyStoreFile = signTool.getKeyStoreFile( keyStoreFile.getAbsolutePath(), new File( parentDir, "myfile3.txt" ),
-                                                 classLoader );
-        assertNotNull( keyStoreFile );
-        assertEquals( "myfile2.txt", keyStoreFile.getName() );
-        assertEquals( tmpDir, keyStoreFile.getParentFile() );
+        keyStoreFile = signTool.getKeyStoreFile(
+                keyStoreFile.getAbsolutePath(), new File(parentDir, "myfile3.txt"), classLoader);
+        assertNotNull(keyStoreFile);
+        assertEquals("myfile2.txt", keyStoreFile.getName());
+        assertEquals(tmpDir, keyStoreFile.getParentFile());
 
-        //from a url (from a file)
-        keyStoreFile = signTool.getKeyStoreFile( keyStoreFile.toURI().toString(), new File( parentDir, "myfile3.txt" ),
-                                                 classLoader );
-        assertNotNull( keyStoreFile );
-        assertEquals( "myfile3.txt", keyStoreFile.getName() );
-        assertEquals( parentDir, keyStoreFile.getParentFile() );
+        // from a url (from a file)
+        keyStoreFile = signTool.getKeyStoreFile(
+                keyStoreFile.toURI().toString(), new File(parentDir, "myfile3.txt"), classLoader);
+        assertNotNull(keyStoreFile);
+        assertEquals("myfile3.txt", keyStoreFile.getName());
+        assertEquals(parentDir, keyStoreFile.getParentFile());
     }
 
-    protected void copyTestFile( File file, File target )
-        throws IOException
-    {
-        if ( target.exists() )
-        {
-            FileUtils.forceDelete( target );
+    protected void copyTestFile(File file, File target) throws IOException {
+        if (target.exists()) {
+            FileUtils.forceDelete(target);
         }
 
-        FileUtils.copyFile( file, target );
-
+        FileUtils.copyFile(file, target);
     }
-
 }

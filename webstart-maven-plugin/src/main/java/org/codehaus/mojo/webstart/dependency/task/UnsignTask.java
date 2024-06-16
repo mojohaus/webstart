@@ -19,15 +19,15 @@ package org.codehaus.mojo.webstart.dependency.task;
  * under the License.
  */
 
+import java.io.File;
+import java.io.IOException;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.shared.jarsigner.JarSignerUtil;
 import org.codehaus.mojo.webstart.dependency.JnlpDependencyConfig;
 import org.codehaus.mojo.webstart.sign.SignTool;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * To unsign a already sign
@@ -36,10 +36,8 @@ import java.io.IOException;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-5
  */
-@Component( role = JnlpDependencyTask.class, hint = UnsignTask.ROLE_HINT, instantiationStrategy = "per-lookup" )
-public class UnsignTask
-        extends AbstractJnlpTask
-{
+@Component(role = JnlpDependencyTask.class, hint = UnsignTask.ROLE_HINT, instantiationStrategy = "per-lookup")
+public class UnsignTask extends AbstractJnlpTask {
     public static final String ROLE_HINT = "UnsignTask";
 
     /**
@@ -51,81 +49,61 @@ public class UnsignTask
     /**
      * {@inheritDoc}
      */
-    public void check( JnlpDependencyConfig config )
-    {
-        if ( config == null )
-        {
-            throw new NullPointerException( "config can't be null" );
+    public void check(JnlpDependencyConfig config) {
+        if (config == null) {
+            throw new NullPointerException("config can't be null");
         }
-        if ( config.getArtifact() == null )
-        {
-            throw new NullPointerException( "config.artifact can't be null" );
+        if (config.getArtifact() == null) {
+            throw new NullPointerException("config.artifact can't be null");
         }
-        if ( config.getArtifact().getFile() == null )
-        {
-            throw new NullPointerException( "config.artifact.file can't be null" );
+        if (config.getArtifact().getFile() == null) {
+            throw new NullPointerException("config.artifact.file can't be null");
         }
-        if ( !config.isSign() )
-        {
-            throw new IllegalStateException( "Can't sign if config.isSign is false" );
+        if (!config.isSign()) {
+            throw new IllegalStateException("Can't sign if config.isSign is false");
         }
 
         File file = config.getArtifact().getFile();
 
         boolean jarSigned;
-        try
-        {
-            jarSigned = signTool.isJarSigned( file );
-        }
-        catch ( MojoExecutionException e )
-        {
-            throw new RuntimeException( e.getMessage(), e.getCause() );
+        try {
+            jarSigned = signTool.isJarSigned(file);
+        } catch (MojoExecutionException e) {
+            throw new RuntimeException(e.getMessage(), e.getCause());
         }
 
-        if ( jarSigned && !config.isCanUnsign() )
-        {
-            throw new IllegalStateException( "Can't unsign the config.artifact.file if config.isCanUsign is false" );
+        if (jarSigned && !config.isCanUnsign()) {
+            throw new IllegalStateException("Can't unsign the config.artifact.file if config.isCanUsign is false");
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public File execute( JnlpDependencyConfig config, File jarFile )
-            throws JnlpDependencyTaskException
-    {
+    public File execute(JnlpDependencyConfig config, File jarFile) throws JnlpDependencyTaskException {
 
         boolean jarSigned;
-        try
-        {
-            jarSigned = JarSignerUtil.isArchiveSigned( jarFile );
-        }
-        catch ( IOException e )
-        {
-            throw new JnlpDependencyTaskException( "Could not detect if jar signed: " + jarFile, e );
+        try {
+            jarSigned = JarSignerUtil.isArchiveSigned(jarFile);
+        } catch (IOException e) {
+            throw new JnlpDependencyTaskException("Could not detect if jar signed: " + jarFile, e);
         }
 
-        if ( jarSigned )
-        {
+        if (jarSigned) {
 
             // unsign jar
 
-            verboseLog( config, "Unsign jar " + jarFile );
-            try
-            {
-                JarSignerUtil.unsignArchive( jarFile );
-            }
-            catch ( IOException e )
-            {
+            verboseLog(config, "Unsign jar " + jarFile);
+            try {
+                JarSignerUtil.unsignArchive(jarFile);
+            } catch (IOException e) {
 
-                throw new JnlpDependencyTaskException( "Could not find unsign jar " + jarFile, e );
+                throw new JnlpDependencyTaskException("Could not find unsign jar " + jarFile, e);
             }
-        }
-        else
-        {
+        } else {
 
             // not signed jar do nothing
-            verboseLog( config, "Jar " + jarFile + " is not signed." );
+            verboseLog(config, "Jar " + jarFile + " is not signed.");
         }
         return jarFile;
     }
