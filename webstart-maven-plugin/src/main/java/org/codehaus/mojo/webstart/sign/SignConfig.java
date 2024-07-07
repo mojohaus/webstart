@@ -65,6 +65,8 @@ public class SignConfig
      */
     private File workingKeystore;
 
+    private File certchain;
+
     /**
      */
     private String keyalg;
@@ -331,6 +333,7 @@ public class SignConfig
         request.setTsaLocation( getTsaLocation() );
         request.setProviderArg( getProviderArg() );
         request.setProviderClass( getProviderClass() );
+        request.setCertchain( getCertchain() );
 
         // Special handling for passwords through the Maven Security Dispatcher
         request.setKeypass( decrypt( keypass ) );
@@ -707,6 +710,14 @@ public class SignConfig
         this.providerClass = providerClass;
     }
 
+    public File getCertchain() {
+        return certchain;
+    }
+
+    public void setCertchain(File certchain) {
+        this.certchain = certchain;
+    }
+    
     private void appendToDnameBuffer( final String property, StringBuffer buffer, final String prefix )
     {
         if ( property != null )
