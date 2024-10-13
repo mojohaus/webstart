@@ -103,7 +103,7 @@
   </distributionManagement>
 
   <properties>
-    <mavenVersion>3.5.4</mavenVersion>
+    <mavenVersion>3.8.1</mavenVersion>
     <mavenPluginPluginVersion>3.13.1</mavenPluginPluginVersion>
     <keytoolVersion>1.7</keytoolVersion>
 	<plexusComponentVersion>2.2.0</plexusComponentVersion>
