@@ -22,8 +22,6 @@ package org.codehaus.mojo.webstart.util;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.logging.console.ConsoleLogger;
 
 /**
  * A jar archiver with no info logs.
@@ -32,19 +30,12 @@ import org.codehaus.plexus.logging.console.ConsoleLogger;
  *
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.0-beta-4
+ * @deprecated use {@link JarArchiver} instead
  */
+@Deprecated
 @Component( role = Archiver.class, hint = "jarWithNoLog" )
 public class JarArchiverWithNoLog
         extends JarArchiver
         implements Archiver
 {
-
-    Logger log = new ConsoleLogger( Logger.LEVEL_WARN, "console" );
-
-    @Override
-    protected Logger getLogger()
-    {
-        return log;
-    }
-
 }
