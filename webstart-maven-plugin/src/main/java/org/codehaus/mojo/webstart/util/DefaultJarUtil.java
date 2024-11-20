@@ -49,7 +49,9 @@ public class DefaultJarUtil
         implements JarUtil
 {
 
-    /**
+    private static final String INDEX_LIST = "META-INF/INDEX.LIST";
+
+	/**
      * io helper.
      */
     @Requirement
@@ -80,6 +82,11 @@ public class DefaultJarUtil
 
                 // skip the original manifest
                 if ( JarFile.MANIFEST_NAME.equals( entry.getName() ) )
+                {
+                    continue;
+                }
+                //skip the INDEX.LIST file
+                if (INDEX_LIST.equals(entry.getName()))
                 {
                     continue;
                 }

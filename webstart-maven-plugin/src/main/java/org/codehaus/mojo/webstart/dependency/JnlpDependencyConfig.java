@@ -114,6 +114,17 @@ public class JnlpDependencyConfig
     }
 
     /**
+     * Returns the flag that indicates whether or not jar resources
+     * will be compressed using pack200.
+     *
+     * @return Returns the value of the pack200.enabled field.
+     */
+    public boolean isCommonsCompressEnabled()
+    {
+        return globalConfig.isCommonsCompressEnabled();
+    }
+
+    /**
      * Returns the files to be passed without pack200 compression.
      *
      * @return Returns the list value of the pack200.passFiles.
