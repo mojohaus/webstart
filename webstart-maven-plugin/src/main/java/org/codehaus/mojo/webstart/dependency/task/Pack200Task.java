@@ -78,7 +78,7 @@ public class Pack200Task
         verboseLog( config, "Pack200 file: " + file );
         try
         {
-            File result = pack200Tool.packJar( file, config.isGzip(), config.getPack200PassFiles() );
+            File result = pack200Tool.packJar( file, config.isGzip(), config.getPack200PassFiles(), config.isCommonsCompressEnabled() );
             getLogger().debug( "packed200 file: " + result );
             return result;
         }

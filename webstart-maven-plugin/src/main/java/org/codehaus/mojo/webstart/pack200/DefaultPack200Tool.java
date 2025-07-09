@@ -60,7 +60,7 @@ public class DefaultPack200Tool
     public static final String PACK_EXTENSION = ".pack";
 
     @Override
-    public void pack( File source, File destination, Map<String, String> props, boolean gzip )
+    public void pack( File source, File destination, Map<String, String> props, boolean gzip, boolean commonsCompress )
             throws IOException
     {
         JarFile jar = null;
@@ -81,9 +81,15 @@ public class DefaultPack200Tool
 
             jar = new JarFile( source, false );
 
-            Pack200.Packer packer = Pack200.newPacker();
-            packer.properties().putAll( props );
-            packer.pack( jar, out );
+            if (commonsCompress) {
+                org.apache.commons.compress.java.util.jar.Pack200.Packer packer = org.apache.commons.compress.java.util.jar.Pack200.newPacker();
+                packer.properties().putAll( props );
+                packer.pack( jar, out );
+            } else {
+                Pack200.Packer packer = Pack200.newPacker();
+                packer.properties().putAll( props );
+                packer.pack( jar, out );
+            }
         }
         finally
         {
@@ -96,15 +102,15 @@ public class DefaultPack200Tool
     }
 
     @Override
-    public void repack( File source, File destination, Map<String, String> props )
-            throws IOException
+    public void repack( File source, File destination, Map<String, String> props, boolean commonsCompress )
+        throws IOException
     {
         File tempFile = new File( source.toString() + ".tmp" );
 
         try
         {
-            pack( source, tempFile, props, false );
-            unpack( tempFile, destination, props );
+            pack( source, tempFile, props, false, commonsCompress );
+            unpack( tempFile, destination, props, commonsCompress );
         }
         finally
         {
@@ -113,7 +119,7 @@ public class DefaultPack200Tool
     }
 
     @Override
-    public void unpack( File source, File destination, Map<String, String> props )
+    public void unpack( File source, File destination, Map<String, String> props, boolean commonsCompress )
             throws IOException
     {
         InputStream in = null;
@@ -129,9 +135,15 @@ public class DefaultPack200Tool
 
             out = new JarOutputStream( new BufferedOutputStream( new FileOutputStream( destination ) ) );
 
-            Pack200.Unpacker unpacker = Pack200.newUnpacker();
-            unpacker.properties().putAll( props );
-            unpacker.unpack( in, out );
+            if (commonsCompress) {
+                org.apache.commons.compress.java.util.jar.Pack200.Unpacker unpacker = org.apache.commons.compress.java.util.jar.Pack200.newUnpacker();
+                unpacker.properties().putAll( props );
+                unpacker.unpack( in, out );
+            } else {
+                Pack200.Unpacker unpacker = Pack200.newUnpacker();
+                unpacker.properties().putAll( props );
+                unpacker.unpack( in, out );
+            }
         }
         finally
         {
@@ -141,7 +153,7 @@ public class DefaultPack200Tool
     }
 
     @Override
-    public void packJars( File directory, FileFilter jarFileFilter, boolean gzip, List<String> passFiles )
+    public void packJars( File directory, FileFilter jarFileFilter, boolean gzip, List<String> passFiles, boolean commonsCompress )
             throws IOException
     {
         // getLog().debug( "packJars for " + directory );
@@ -171,13 +183,13 @@ public class DefaultPack200Tool
                 }
             }
 
-            pack( jarFile, pack200Jar, propMap, gzip );
+            pack( jarFile, pack200Jar, propMap, gzip, commonsCompress );
             setLastModified( pack200Jar, jarFile.lastModified() );
         }
     }
 
     @Override
-    public File packJar( File jarFile, boolean gzip, List<String> passFiles )
+    public File packJar( File jarFile, boolean gzip, List<String> passFiles, boolean commonsCompress)
             throws IOException
     {
         final String extension = gzip ? PACK_GZ_EXTENSION : PACK_EXTENSION;
@@ -199,14 +211,14 @@ public class DefaultPack200Tool
             }
         }
 
-        pack( jarFile, pack200Jar, propMap, gzip );
+        pack( jarFile, pack200Jar, propMap, gzip, commonsCompress );
         setLastModified( pack200Jar, jarFile.lastModified() );
         return pack200Jar;
     }
 
 
     @Override
-    public void unpackJars( File directory, FileFilter pack200FileFilter )
+    public void unpackJars( File directory, FileFilter pack200FileFilter, boolean commonsCompress )
             throws IOException
     {
         // getLog().debug( "unpackJars for " + directory );
@@ -220,13 +232,13 @@ public class DefaultPack200Tool
 
             deleteFile( jarFile );
 
-            unpack( packFile, jarFile, Collections.<String, String>emptyMap() );
+            unpack( packFile, jarFile, Collections.<String, String>emptyMap(), commonsCompress );
             setLastModified( jarFile, packFile.lastModified() );
         }
     }
 
     @Override
-    public File unpackJar( File packFile )
+    public File unpackJar( File packFile, boolean commonsCompress )
             throws IOException
     {
         final String packedJarPath = packFile.getAbsolutePath();
@@ -236,7 +248,7 @@ public class DefaultPack200Tool
 
         deleteFile( jarFile );
 
-        unpack( packFile, jarFile, Collections.<String, String>emptyMap() );
+        unpack( packFile, jarFile, Collections.<String, String>emptyMap(), commonsCompress );
         setLastModified( jarFile, packFile.lastModified() );
         return jarFile;
     }

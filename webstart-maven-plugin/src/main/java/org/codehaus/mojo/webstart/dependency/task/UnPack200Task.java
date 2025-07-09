@@ -87,7 +87,7 @@ public class UnPack200Task
         verboseLog( config, "Unpack 200 file: " + file );
         try
         {
-            File result = pack200Tool.unpackJar( file );
+            File result = pack200Tool.unpackJar( file, config.isCommonsCompressEnabled() );
             getLogger().debug( "Unpacked 200 file: " + result );
             return result;
         }
