@@ -43,14 +43,14 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * Default implementation of the {@link Pack200Tool}.
- * Uses Apache Commons Compress Pack200 implementation for compatibility with JDK 14+.
+ * Implementation of {@link Pack200Tool} that uses Apache Commons Compress Pack200 library.
+ * This implementation is compatible with JDK 14+ where the native Pack200 API was removed.
  *
  * @author Tony Chemit - dev@tchemit.fr
- * @since 1.0-beta-2
+ * @since 1.0.0
  */
-@Component( role = Pack200Tool.class, hint = "default" )
-public class DefaultPack200Tool
+@Component( role = Pack200Tool.class, hint = "commons-compress" )
+public class CommonsCompressPack200Tool
         implements Pack200Tool
 {
 
