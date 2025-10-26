@@ -107,6 +107,7 @@
     <mavenPluginPluginVersion>3.13.1</mavenPluginPluginVersion>
     <keytoolVersion>1.7</keytoolVersion>
 	<plexusComponentVersion>2.2.0</plexusComponentVersion>
+	<commonsCompressVersion>1.28.0</commonsCompressVersion>
 
 	<velocity-version>2.3</velocity-version>
     <autoVersionSubmodules>true</autoVersionSubmodules>
@@ -265,11 +266,16 @@
         <version>2.1.1</version>
       </dependency>
 
-      <!-- for JarUnsign... -->
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-embedder</artifactId>
         <version>${mavenVersion}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>${commonsCompressVersion}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
