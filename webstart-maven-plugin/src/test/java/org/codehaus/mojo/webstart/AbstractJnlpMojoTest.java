@@ -24,6 +24,12 @@ import java.util.List;
  */
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import org.apache.maven.artifact.repository.ArtifactRepositoryFactory;
 import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
 import org.apache.maven.artifact.repository.layout.DefaultRepositoryLayout;
@@ -36,6 +42,7 @@ import org.apache.maven.project.DefaultProjectBuilder;
 import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
@@ -45,7 +52,8 @@ public abstract class AbstractJnlpMojoTest
     extends AbstractMojoTestCase
 {
 
-    public void testFailWhenSomeDependenciesDoNotExist()
+    @Test
+    public void failWhenSomeDependenciesDoNotExist()
         throws Exception
     {
         JnlpInlineMojo mojo = new JnlpInlineMojo();
@@ -67,9 +75,9 @@ public abstract class AbstractJnlpMojoTest
         setVariableValueToObject( mojo, "dependencies", deps );
         // -- 
 
-        assertTrue( "dependencies not null", mojo.getDependencies() != null );
-        assertEquals( "2 includes", 2, mojo.getDependencies().getIncludes().size() );
-        assertEquals( "2 excludes", 2, mojo.getDependencies().getExcludes().size() );
+        assertNotSame(mojo.getDependencies(), null, "dependencies not null" );
+        assertEquals( 2, mojo.getDependencies().getIncludes().size(), "2 includes" );
+        assertEquals( 2, mojo.getDependencies().getExcludes().size(), "2 excludes" );
 
         try
         {
@@ -81,7 +89,8 @@ public abstract class AbstractJnlpMojoTest
         }
     }
 
-    public void testAllDependenciesExist()
+    @Test
+    public void allDependenciesExist()
         throws Exception
     {
         JnlpInlineMojo mojo = new JnlpInlineMojo();
@@ -98,9 +107,9 @@ public abstract class AbstractJnlpMojoTest
         setVariableValueToObject( mojo, "dependencies", deps );
         // -- 
 
-        assertTrue( "dependencies not null", mojo.getDependencies() != null );
-        assertNull( "no include", mojo.getDependencies().getIncludes() );
-        assertEquals( "1 exclude", 1, mojo.getDependencies().getExcludes().size() );
+        assertNotSame(mojo.getDependencies(), null, "dependencies not null" );
+        assertNull( mojo.getDependencies().getIncludes(), "no include" );
+        assertEquals( 1, mojo.getDependencies().getExcludes().size(), "1 exclude" );
 
         mojo.checkDependencies();
     }

@@ -1,35 +1,17 @@
 package org.codehaus.mojo.webstart.generator;
 
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.apache.maven.plugin.testing.stubs.ArtifactStub;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.webstart.ResolvedJarResource;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests the {@link JarResourcesGenerator} class.
@@ -38,11 +20,11 @@ import java.util.List;
  * @version $Revision$
  */
 public class JarResourcesGeneratorTest
-    extends TestCase
 {
     public static final String EOL = System.getProperty( "line.separator" );
 
-    public void testGetDependenciesText()
+    @Test
+    void getDependenciesText()
         throws Exception
     {
 
@@ -90,7 +72,7 @@ public class JarResourcesGeneratorTest
 
         String actualText = generator.getDependenciesText();
 
-        Assert.assertEquals( expectedText, actualText );
+        Assertions.assertEquals( expectedText, actualText );
 
         JarResourceGeneratorConfig jarResourceGeneratorConfig2 = new JarResourceGeneratorConfig( jarResources, "myLib", null, null, null );
         JarResourcesGenerator generator2  =
@@ -107,7 +89,7 @@ public class JarResourcesGeneratorTest
 
         String actualText2 = generator2.getDependenciesText();
 
-        Assert.assertEquals( expectedText2, actualText2 );
+        Assertions.assertEquals( expectedText2, actualText2 );
 
     }
 

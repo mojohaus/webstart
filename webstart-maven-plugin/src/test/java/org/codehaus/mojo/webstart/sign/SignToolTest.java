@@ -21,9 +21,16 @@ package org.codehaus.mojo.webstart.sign;
 import org.apache.commons.lang.SystemUtils;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.util.FileUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests the {@link SignToolTest}.
@@ -31,20 +38,22 @@ import java.io.IOException;
  * @author Tony Chemit - dev@tchemit.fr
  * @since 1.1
  */
-public class SignToolTest
+class SignToolTest
     extends PlexusTestCase
 {
 
     protected SignTool signTool;
 
-    public void setUp()
+    @BeforeEach
+    void setUp()
         throws Exception
     {
         super.setUp();
         signTool = (SignTool) lookup( SignTool.class.getName() );
     }
 
-    public void testIsJarSigned()
+    @Test
+    void isJarSigned()
         throws Exception
     {
 
@@ -66,7 +75,8 @@ public class SignToolTest
         assertTrue( signTool.isJarSigned( signedTarget ) );
     }
 
-    public void testUnsignArchiveWithLowerExtensionNames()
+    @Test
+    void unsignArchiveWithLowerExtensionNames()
         throws Exception
     {
 
@@ -85,7 +95,8 @@ public class SignToolTest
         assertFalse( signTool.isJarSigned( signedTarget ) );
     }
 
-    public void testGetKeyStoreFile()
+    @Test
+    void getKeyStoreFile()
         throws Exception
     {
 

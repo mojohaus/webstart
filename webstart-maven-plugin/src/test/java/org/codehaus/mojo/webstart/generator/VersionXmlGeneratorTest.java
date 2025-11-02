@@ -1,36 +1,16 @@
 package org.codehaus.mojo.webstart.generator;
 
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.versioning.VersionRange;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.mojo.webstart.ResolvedJarResource;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.custommonkey.xmlunit.Diff;
-import org.xml.sax.SAXException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +26,6 @@ import java.util.List;
  * @since 7 Jun 2007
  */
 public class VersionXmlGeneratorTest
-    extends TestCase
 {
 
     private final File outputDir;
@@ -58,7 +37,6 @@ public class VersionXmlGeneratorTest
      */
     public VersionXmlGeneratorTest()
     {
-        super();
 
         this.outputDir = new File( System.getProperty( "java.io.tmpdir" ), "versionXmlDir" );
         this.outputDir.deleteOnExit();
@@ -69,7 +47,8 @@ public class VersionXmlGeneratorTest
     /**
      * {@inheritDoc}
      */
-    public void setUp()
+    @BeforeEach
+    void setUp()
     {
         this.expectedFile = new File( this.outputDir, "version.xml" );
         this.expectedFile.deleteOnExit();
@@ -88,19 +67,21 @@ public class VersionXmlGeneratorTest
     /**
      * {@inheritDoc}
      */
-    public void tearDown()
+    @AfterEach
+    void tearDown()
     {
         this.expectedFile.delete();
     }
 
-    public void testWithNullOutputDir()
-        throws MojoExecutionException
+    @Test
+    void withNullOutputDir()
+        throws Exception
     {
 
         try
         {
             new VersionXmlGenerator( "utf-8" ).generate( null, new ArrayList() );
-            Assert.fail( "Should have thrown an IllegalArgumentException" );
+            Assertions.fail( "Should have thrown an IllegalArgumentException" );
         }
         catch ( IllegalArgumentException e )
         {
@@ -109,25 +90,27 @@ public class VersionXmlGeneratorTest
 
     }
 
-    public void testWithEmptyJarResourcesList()
-        throws MojoExecutionException, IOException, SAXException, ParserConfigurationException
+    @Test
+    void withEmptyJarResourcesList()
+        throws Exception
     {
 
         List<ResolvedJarResource> jarResources = new ArrayList<>();
         new VersionXmlGenerator( "utf-8" ).generate( this.outputDir, jarResources );
 
-        Assert.assertTrue( "Assert expectedFile exists", this.expectedFile.exists() );
+        Assertions.assertTrue( this.expectedFile.exists(), "Assert expectedFile exists" );
 
         String expectedXml = "<jnlp-versions></jnlp-versions>";
         String actualXml = readFileContents( this.expectedFile );
 
         Diff diff = new Diff( expectedXml, actualXml );
-        Assert.assertTrue( diff.toString(), diff.similar() );
+        Assertions.assertTrue( diff.similar(), diff.toString() );
 
     }
 
-    public void testWithMultiJarResources()
-        throws IOException, SAXException, ParserConfigurationException, MojoExecutionException
+    @Test
+    void withMultiJarResources()
+        throws Exception
     {
 
         Artifact artifact1 =
@@ -160,9 +143,9 @@ public class VersionXmlGeneratorTest
                 "      <name>bogus2.txt</name>" + "      <version-id>1.0</version-id>" +
                 "    </pattern>" + "    <file>artifactId2-1.0-classifier.jar</file>" + "  </resource>" +
                 "</jnlp-versions>";
-        Assert.assertEquals( actualXml, expected );
+        Assertions.assertEquals( actualXml, expected );
         Diff diff = new Diff( expected, actualXml );
-        Assert.assertTrue( diff.toString(), diff.similar() );
+        Assertions.assertTrue( diff.similar(), diff.toString() );
 
     }
 

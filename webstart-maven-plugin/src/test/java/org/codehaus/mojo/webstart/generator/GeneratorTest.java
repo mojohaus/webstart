@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.apache.maven.artifact.Artifact;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.artifact.versioning.VersionRange;
@@ -34,13 +34,14 @@ import org.codehaus.mojo.webstart.JnlpConfig;
 import org.codehaus.mojo.webstart.dependency.filenaming.DependencyFilenameStrategy;
 import org.codehaus.mojo.webstart.dependency.filenaming.FullDependencyFilenameStrategy;
 import org.codehaus.mojo.webstart.dependency.filenaming.SimpleDependencyFilenameStrategy;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="jerome@coffeebreaks.org">Jerome Lacoste</a>
  * @version $Id$
  */
 public class GeneratorTest
-    extends TestCase
 {
     protected Artifact artifact1;
 
@@ -53,12 +54,11 @@ public class GeneratorTest
     private List<Artifact> artifacts;
 
     public static final String EOL = System.getProperty( "line.separator" );
-    
-    @Override
-    public void setUp()
+
+    @BeforeEach
+    void setUp()
         throws Exception
     {
-        super.setUp();
         DefaultArtifactHandler artifactHandler = new DefaultArtifactHandler( "jar" );
         artifact1 =
             new DefaultArtifact( "groupId", "artifact1", VersionRange.createFromVersion( "1.0" ), "scope", "jar",
@@ -90,7 +90,8 @@ public class GeneratorTest
         artifacts.add( artifact4 );
     }
 
-    public void testGetDependenciesText()
+    @Test
+    void getDependenciesText()
         throws Exception
     {
 
@@ -127,7 +128,8 @@ public class GeneratorTest
                       Generator.getDependenciesText( generatorConfig2 ) );
     }
 
-    public void testGetDependenciesTextWithFullNaming()
+    @Test
+    void getDependenciesTextWithFullNaming()
         throws Exception
     {
 
@@ -164,7 +166,8 @@ public class GeneratorTest
                       Generator.getDependenciesText( generatorConfig2 ) );
     }
 
-    public void testGetDependenciesTextWithPack200()
+    @Test
+    void getDependenciesTextWithPack200()
         throws Exception
     {
 
@@ -202,7 +205,8 @@ public class GeneratorTest
                       Generator.getDependenciesText( generatorConfig2 ) );
     }
 
-    public void testGetDependenciesTextWithLibPath()
+    @Test
+    void getDependenciesTextWithLibPath()
         throws Exception
     {
 
@@ -239,9 +243,10 @@ public class GeneratorTest
         				EOL +"<jar href=\"lib/artifact4.jar\" version=\"1.5-SNAPSHOT\"/>" + EOL,
                       Generator.getDependenciesText( generatorConfig2 ) );
     }
-    
-    public void testGetDependenciesTextWithUniqueVersions()
-            throws Exception
+
+    @Test
+    void getDependenciesTextWithUniqueVersions()
+        throws Exception
     {
 
         DependencyFilenameStrategy dependencyFilenameStrategy = new SimpleDependencyFilenameStrategy();
