@@ -239,6 +239,15 @@ public abstract class AbstractBaseJnlpMojo
     @Parameter( property = "jnlp.useUniqueVersions", defaultValue = "false" )
     private boolean useUniqueVersions;
 
+    /**
+     * Set this to <code>true</code> to disable signing.
+     * Useful to speed up build process in development environment.
+     *
+     * @since 1.0.0-SNAPSHOT
+     */
+    @Parameter( property = "jnlp.skip", defaultValue = "false" )
+    private boolean skip;
+
     // ----------------------------------------------------------------------
     // Components
     // ----------------------------------------------------------------------
@@ -667,6 +676,11 @@ public abstract class AbstractBaseJnlpMojo
             throws MojoExecutionException
     {
 
+        if ( skip ) {
+            getLog().info( "Skipping JAR signing" );
+            return;
+        }
+
         if ( sign != null )
         {
             try
@@ -880,37 +894,37 @@ public abstract class AbstractBaseJnlpMojo
             throws MojoExecutionException
     {
 
-        File[] jarFiles = directory.listFiles( unprocessedJarFileFilter );
+        File[] jarFiles = directory.listFiles(unprocessedJarFileFilter);
 
-        getLog().info( "-- Sign jars" );
-        getLog().debug( "signJars in " + directory + " found " + jarFiles.length + " jar(s) to sign" );
+        getLog().info("-- Sign jars");
+        getLog().debug("signJars in " + directory + " found " + jarFiles.length + " jar(s) to sign");
 
         if ( jarFiles.length == 0 )
         {
-        	getLog().info( "No jar files to sign available." );
+            getLog().info("No jar files to sign available.");
             return 0;
         }
 
-        final boolean signVerify = sign.isVerify();
+            final boolean signVerify = sign.isVerify();
 
-        ExecutorService ex = Executors.newFixedThreadPool( sign.getParallel() );
+            ExecutorService ex = Executors.newFixedThreadPool(sign.getParallel());
 
-        HashMap<File, Future<?>> signRequests = new HashMap<>();
+            HashMap<File, Future<?>> signRequests = new HashMap<>();
         for ( final File unprocessedJarFile : jarFiles )
         {
             signRequests.put( unprocessedJarFile, ex.submit( new Callable<Object>()
             {
-                public Object call()
+                    public Object call()
                         throws Exception
                 {
-                    File signedJar = toProcessFile( unprocessedJarFile );
-                    ioUtil.deleteFile( signedJar );
+                        File signedJar = toProcessFile(unprocessedJarFile);
+                        ioUtil.deleteFile(signedJar);
 
-                    signJar( unprocessedJarFile, signedJar, signVerify );
-                    return null;
-                }
-            } ) );
-        }
+                        signJar(unprocessedJarFile, signedJar, signVerify);
+                        return null;
+                    }
+                }));
+            }
 
         while ( !signRequests.isEmpty() )
         {
@@ -920,25 +934,25 @@ public abstract class AbstractBaseJnlpMojo
                 {
                     try
                     {
-                        signRequests.get( file ).get();
+                            signRequests.get(file).get();
                     }
                     catch ( ExecutionException ee )
                     {
-                        throw new MojoExecutionException(
-                                "Error while signing resource " + file.toString(), ee.getCause() );
+                            throw new MojoExecutionException(
+                                    "Error while signing resource " + file.toString(), ee.getCause());
                     }
                     catch ( InterruptedException e )
                     {
-                        e.printStackTrace();
+                            e.printStackTrace();
+                        }
+                        signRequests.remove(file);
                     }
-                    signRequests.remove( file );
                 }
             }
-        }
 
-        ex.shutdown();
+            ex.shutdown();
 
-        return jarFiles.length;
+            return jarFiles.length;
     }
 
     protected void signJar( File fileToSign, File signedJar, boolean signVerify ) throws MojoExecutionException
