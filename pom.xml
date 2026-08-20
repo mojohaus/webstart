@@ -109,7 +109,6 @@
 	<plexusComponentVersion>2.2.0</plexusComponentVersion>
 	<commonsCompressVersion>1.28.0</commonsCompressVersion>
 
-	<velocity-version>2.3</velocity-version>
     <autoVersionSubmodules>true</autoVersionSubmodules>
   </properties>
 
@@ -247,11 +246,6 @@
         <version>1.6</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.apache.velocity</groupId>
-        <artifactId>velocity-engine-core</artifactId>
-        <version>${velocity-version}</version>
-      </dependency>
 
       <dependency>
         <groupId>org.apache.maven.plugin-testing</groupId>
