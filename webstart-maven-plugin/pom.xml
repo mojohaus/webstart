@@ -127,6 +127,12 @@
       <artifactId>commons-compress</artifactId>
     </dependency>
 
+    <!-- commons-compress declares asm optional, but its Pack200 implementation needs it -->
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
