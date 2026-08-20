@@ -108,6 +108,8 @@
     <keytoolVersion>1.7</keytoolVersion>
 	<plexusComponentVersion>2.2.0</plexusComponentVersion>
 	<commonsCompressVersion>1.28.0</commonsCompressVersion>
+	<!-- the version commons-compress 1.28.0 itself declares, as an optional dependency -->
+	<asmVersion>9.8</asmVersion>
 
     <autoVersionSubmodules>true</autoVersionSubmodules>
   </properties>
@@ -270,6 +272,12 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
         <version>${commonsCompressVersion}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>${asmVersion}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
