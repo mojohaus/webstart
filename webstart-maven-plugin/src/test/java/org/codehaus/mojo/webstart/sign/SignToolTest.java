@@ -19,6 +19,8 @@ package org.codehaus.mojo.webstart.sign;
  */
 
 import org.apache.commons.lang.SystemUtils;
+import org.codehaus.plexus.ContainerConfiguration;
+import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -36,6 +38,12 @@ public class SignToolTest
 {
 
     protected SignTool signTool;
+
+    @Override
+    protected void customizeContainerConfiguration( ContainerConfiguration configuration )
+    {
+        configuration.setClassPathScanning( PlexusConstants.SCANNING_INDEX );
+    }
 
     public void setUp()
         throws Exception
