@@ -24,7 +24,8 @@ import org.apache.maven.shared.jarsigner.JarSignerRequest;
 import org.apache.maven.shared.jarsigner.JarSignerSignRequest;
 import org.apache.maven.shared.jarsigner.JarSignerVerifyRequest;
 import org.apache.maven.shared.utils.StringUtils;
-import org.codehaus.mojo.keytool.requests.KeyToolGenerateKeyPairRequest;
+import org.apache.maven.shared.utils.Os;
+import org.apache.maven.shared.utils.cli.Commandline;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 
@@ -363,27 +364,61 @@ public class SignConfig
     }
 
     /**
-     * Creates a keytool request to do a key store generation operation.
+     * Creates the command line that generates the key store.
      *
      * @param keystoreFile the location of the key store file to generate
-     * @return the keytool request
+     * @return the <code>keytool -genkeypair</code> command line
      */
-    public KeyToolGenerateKeyPairRequest createKeyGenRequest( File keystoreFile )
+    public Commandline createKeyGenCommandLine( File keystoreFile )
     {
-        KeyToolGenerateKeyPairRequest request = new KeyToolGenerateKeyPairRequest();
-        request.setAlias( getAlias() );
-        request.setDname( getDname() );
-        request.setKeyalg( getKeyalg() );
-        request.setKeypass( getKeypass() );
-        request.setKeysize( getKeysize() );
-        request.setKeystore( getKeystore() );
-        request.setSigalg( getSigalg() );
-        request.setStorepass( getStorepass() );
-        request.setStoretype( getStoretype() );
-        request.setValidity( getValidity() );
-        request.setVerbose( isVerbose() );
-        request.setWorkingDirectory( workDirectory );
-        return request;
+        Commandline cli = new Commandline();
+        cli.setExecutable( keytoolExecutable() );
+        cli.setWorkingDirectory( workDirectory );
+
+        cli.createArg().setValue( "-genkeypair" );
+        addOption( cli, "-alias", getAlias() );
+        addOption( cli, "-dname", getDname() );
+        addOption( cli, "-keyalg", getKeyalg() );
+        addOption( cli, "-keypass", getKeypass() );
+        addOption( cli, "-keysize", getKeysize() );
+        addOption( cli, "-keystore", getKeystore() );
+        addOption( cli, "-sigalg", getSigalg() );
+        addOption( cli, "-storepass", getStorepass() );
+        addOption( cli, "-storetype", getStoretype() );
+        addOption( cli, "-validity", getValidity() );
+        if ( isVerbose() )
+        {
+            cli.createArg().setValue( "-v" );
+        }
+        return cli;
+    }
+
+    private static void addOption( Commandline cli, String option, String value )
+    {
+        if ( StringUtils.isNotBlank( value ) )
+        {
+            cli.createArg().setValue( option );
+            cli.createArg().setValue( value );
+        }
+    }
+
+    /**
+     * Locates the <code>keytool</code> of the running JDK, falling back to whatever is on the path.
+     *
+     * @return the executable to invoke
+     */
+    private static String keytoolExecutable()
+    {
+        String name = Os.isFamily( Os.FAMILY_WINDOWS ) ? "keytool.exe" : "keytool";
+
+        File javaHome = new File( System.getProperty( "java.home" ) );
+        File candidate = new File( new File( javaHome, "bin" ), name );
+        if ( !candidate.isFile() )
+        {
+            // a JRE inside a JDK, as laid out before Java 9
+            candidate = new File( new File( new File( javaHome.getParentFile(), "bin" ), name ).getPath() );
+        }
+        return candidate.isFile() ? candidate.getAbsolutePath() : name;
     }
 
 

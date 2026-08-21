@@ -105,7 +105,6 @@
   <properties>
     <mavenVersion>3.8.1</mavenVersion>
     <mavenPluginPluginVersion>3.15.2</mavenPluginPluginVersion>
-    <keytoolVersion>1.7</keytoolVersion>
 	<plexusComponentVersion>2.2.0</plexusComponentVersion>
 
     <autoVersionSubmodules>true</autoVersionSubmodules>
@@ -190,9 +189,7 @@
       <dependency>
         <groupId>org.apache.maven.shared</groupId>
         <artifactId>maven-shared-utils</artifactId>
-        <!-- 3.4.x changes AbstractJavaTool.getLogger() to return an slf4j Logger, which
-             keytool-api-1.7 does not understand; see the jarsigner pin below -->
-        <version>3.3.4</version>
+        <version>3.4.2</version>
       </dependency>
 
       <dependency>
@@ -205,10 +202,7 @@
       <dependency>
         <groupId>org.apache.maven.shared</groupId>
         <artifactId>maven-jarsigner</artifactId>
-        <!-- 3.1.0 requires maven-shared-utils 3.4.x, which breaks keytool-api-1.7.
-             keytool-api stopped at 1.7, so this cannot move until the keytool
-             dependency is replaced. -->
-        <version>3.0.0</version>
+        <version>3.1.0</version>
         <exclusions>
           <exclusion>
             <groupId>org.codehaus.plexus</groupId>
@@ -237,11 +231,6 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>3.18.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>keytool-api-1.7</artifactId>
-        <version>${keytoolVersion}</version>
       </dependency>
 
       <dependency>
