@@ -13,8 +13,8 @@ Webstart Maven Plugin
   The plugin can be used to prepare standalone Web Start applications or Web Start applications bundled in WAR
   files (with or without Sun's Download Servlet).
   It handles the generation of JNLP files and optional <<<version.xml>>> files, using Velocity templates.
-  It also handles the selection and preparation of the dependencies, performing signing, unsigning and Pack200
-  compression when required.
+  It also handles the selection and preparation of the dependencies, performing signing and unsigning
+  when required.
 
   Although not yet at version 1.0, the plugin is approaching maturity and can be used in a production environment.
 
@@ -51,9 +51,6 @@ Webstart Maven Plugin
    * JAR signing and signing verification
 
    * Unsign already signed JARs
-
-   * Pack200 support for compressed versions of the JAR files resulting in
-     faster network downloads of your Webstart application
 
    * Pluggable API for JAR signer
 

@@ -46,9 +46,6 @@
         </executions>
         <configuration>
           <makeArchive>false</makeArchive>
-          <pack200>
-            <enabled>true</enabled>
-          </pack200>
           <excludeTransitive>true</excludeTransitive>
 
           <jnlp>

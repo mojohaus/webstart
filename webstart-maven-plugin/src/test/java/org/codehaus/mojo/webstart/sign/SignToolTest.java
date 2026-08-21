@@ -18,7 +18,7 @@ package org.codehaus.mojo.webstart.sign;
  * under the License.
  */
 
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.codehaus.plexus.ContainerConfiguration;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusTestCase;

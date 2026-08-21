@@ -14,6 +14,19 @@ Upgrade from a previous version
 
   <<Note:>> we may further change the POM configuration, especially if we fix {{{http://jira.codehaus.org/browse/MWEBSTART-58} MWEBSTART-58}}.
 
+* Important changes since 1.0-beta-7
+
+  Changes that affect the use and configuration of the plugin.
+
+** Pack200 support removed
+
+  The <<<pack200>>> and <<<gzip>>> parameters are gone, and the plugin no longer produces
+  <<<.pack>>> or <<<.pack.gz>>> files.
+
+  Pack200 was removed from the JDK in Java 14, after being deprecated in Java 11 alongside
+  Java Web Start itself. Remove the <<<pack200>>> and <<<gzip>>> elements from your
+  configuration; nothing replaces them.
+
 * Important changes since 1.0-beta-5
 
   Changes that affect the use and configuration of the plugin.
@@ -43,36 +56,6 @@ Upgrade from a previous version
 * Important changes since 1.0-beta-3
 
   Changes that affect the use and configuration of the plugin.
-
-** 2013-10-26
-
-  The pack200 has changed (see {{{http://jira.codehaus.org/browse/MWEBSTART-212} MWEBSTART-212}}).
-
-  Must change from
-
--------------
-<pack200>true</pack200>
--------------
-
-  to
-
--------------
-<pack200>
-  <enabled>true</enabled>
-</pack200>
--------------
-
-  You can now also add to the pack200 some passFiles not to be pack like this:
-
--------------
-<pack200>
-  <enabled>true</enabled>
-  <passFiles>
-    <passFile>com/sun/codemodel/</passFile>
-    <passFile>com/sun/tools/xjc/reader/xmlschema/ct/</passFile>
-  </passFiles>
-</pack200>
--------------
 
 * Important changes since 1.0-beta-3
 

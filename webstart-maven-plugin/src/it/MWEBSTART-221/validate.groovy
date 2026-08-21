@@ -58,10 +58,9 @@ File jnlpLib = jnlpDirectory;
 
 expectedJnlpLibFiles.each {
   assert assertExistsFile( new File( jnlpLib, it ) )
-  assert assertExistsFile( new File( jnlpLib, it + ".pack" ) )
 }
 
-assert jnlpLib.list().length == ( expectedJnlpLibFiles.length * 2 ) + 2 // jar + pack files + jnlp files
+assert jnlpLib.list().length == expectedJnlpLibFiles.length + 2 // jar files + jnlp files
 
 File jnlpFile  = new File( jnlpDirectory, "test.jnlp" )
 String jnlpContent1 = jnlpFile.text

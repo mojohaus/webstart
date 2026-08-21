@@ -36,7 +36,7 @@ images/icon.gif
      web application anywhere without modification. The relevant paths will be worked
      out at runtime.
 
-   * If you have chosen to provide Pack200 format compressed files, JnlpDownloadServlet
+   * If you have provided alternative resource variants, JnlpDownloadServlet
      will decide if the webstart client that the user has chosen can handle the compressed
      format. If the client is compatible, the JnlpDownloadServlet will route requests for
      JAR files to the appropriate compressed file. This may improve the download time of
@@ -132,25 +132,3 @@ mvn install:install-file -Dfile=%JAVA_HOME%\sample\jnlp\servlet\jnlp-servlet.jar
 -------------------------------
 
 
-* Pack200 signing explained
-
- If you choose to produce Pack200 files as part of your build, there is an additional
- processing overhead. This section explains what's going on.
-
- Pack200 doesn't just compress your JAR files, it actually modifies the class files,
- stripping out everything but the bare essentials. Because of these modifications,
- any digital signature that is applied before the packing takes place will be invalidated.
-
- Before a digital signature is applied Pack200 must be allowed to carry out its aggressive class
- file modifications. This is achieved by packing and unpacking the JAR file with the Pack200 utility.
- The result is a JAR with modified class files ready to be signed.
-
- The goal then signs this pre-prepared JAR and verifies the signature.
-
- The Pack200 packing process is applied again to produce the final downloadable Pack200 file.
-
- As an optional step, to make sure that everything has gone well, it is recommended that the final Pack200 file
- is unpacked one final time and the signature verified on the resulting JAR file. This just makes sure that
- the final packing process hasn't made any further modifications to the file that have invalidated the digital
- signature. This is an unlikely event and this extra optional check is not yet implemented as part of the
- plugin.

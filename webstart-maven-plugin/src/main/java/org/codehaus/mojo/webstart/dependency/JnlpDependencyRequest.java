@@ -102,16 +102,6 @@ public class JnlpDependencyRequest
         String filename = config.getDependencyFilenameStrategy().getDependencyFilename( config.getArtifact(),
                                                                                         config.isOutputJarVersion(),
                                                                                         config.isUseUniqueVersions() );
-        if ( config.isPack200() )
-        {
-            filename += ".pack";
-        }
-
-        if ( config.isGzip() )
-        {
-            filename += ".gz";
-        }
-
         return new File( finalDirectory, filename );
     }
 }

@@ -19,7 +19,7 @@ package org.codehaus.mojo.webstart;
  * under the License.
  */
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This class represents a &lt;jarResource&gt; configuration element from the
