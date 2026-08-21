@@ -4,6 +4,12 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    ignore:
+      # 3.1.0 requires maven-shared-utils 3.4.x, whose AbstractJavaTool.getLogger()
+      # returns an slf4j Logger; keytool-api-1.7 needs the plexus one and has no
+      # newer release. Signing then breaks at runtime, not at compile time.
+      - dependency-name: "org.apache.maven.shared:maven-jarsigner"
+        versions: [ ">=3.1.0" ]
 
   - package-ecosystem: "github-actions"
     directory: "/"
