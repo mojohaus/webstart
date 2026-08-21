@@ -232,6 +232,9 @@
               <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
               <postBuildHookScript>validate.groovy</postBuildHookScript>
               <addTestClassPath>true</addTestClassPath>
+              <!-- pass -e to the invoked builds; without it a failing IT prints
+                   only the message chain, never the frame that threw -->
+              <showErrors>true</showErrors>
             </configuration>
             <executions>
               <execution>
