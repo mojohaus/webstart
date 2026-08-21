@@ -24,10 +24,10 @@ import org.apache.maven.shared.jarsigner.JarSigner;
 import org.apache.maven.shared.jarsigner.JarSignerRequest;
 import org.apache.maven.shared.jarsigner.JarSignerUtil;
 import org.apache.maven.shared.utils.cli.CommandLineException;
+import org.apache.maven.shared.utils.cli.CommandLineUtils;
+import org.apache.maven.shared.utils.cli.Commandline;
 import org.apache.maven.shared.utils.cli.javatool.JavaToolException;
 import org.apache.maven.shared.utils.cli.javatool.JavaToolResult;
-import org.codehaus.mojo.keytool.KeyTool;
-import org.codehaus.mojo.keytool.requests.KeyToolGenerateKeyPairRequest;
 import org.codehaus.mojo.webstart.util.IOUtil;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
@@ -56,12 +56,6 @@ public class DefaultSignTool
     private JarSigner jarSigner;
 
     /**
-     * The component to invoke keyTool command.
-     */
-    @Requirement
-    private KeyTool keyTool;
-
-    /**
      * io helper.
      */
     @Requirement
@@ -73,27 +67,25 @@ public class DefaultSignTool
     public void generateKey( SignConfig config, File keystoreFile )
             throws MojoExecutionException
     {
-        KeyToolGenerateKeyPairRequest request = config.createKeyGenRequest( keystoreFile );
+        Commandline cli = config.createKeyGenCommandLine( keystoreFile );
+
+        CommandLineUtils.StringStreamConsumer out = new CommandLineUtils.StringStreamConsumer();
 
         try
         {
-            JavaToolResult result = keyTool.execute( request );
+            // the command line carries the store and key passwords, so it must never be logged
+            int exitCode = CommandLineUtils.executeCommandLine( cli, out, out );
 
-            CommandLineException exception = result.getExecutionException();
-            if ( exception != null )
-            {
-                throw new MojoExecutionException( "Could not generate key store " + keystoreFile, exception );
-            }
-            int exitCode = result.getExitCode();
             if ( exitCode != 0 )
             {
+                getLogger().error( out.getOutput() );
                 throw new MojoExecutionException(
-                        "Could not generate key store " + keystoreFile + ", use -X to have detail of error" );
+                        "Could not generate key store " + keystoreFile + ", keytool exited with " + exitCode );
             }
         }
-        catch ( JavaToolException e )
+        catch ( CommandLineException e )
         {
-            throw new MojoExecutionException( "Could not find keytool", e );
+            throw new MojoExecutionException( "Could not run keytool to generate key store " + keystoreFile, e );
         }
     }
 
