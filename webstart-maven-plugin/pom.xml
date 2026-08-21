@@ -235,6 +235,11 @@
               <!-- pass -e to the invoked builds; without it a failing IT prints
                    only the message chain, never the frame that threw -->
               <showErrors>true</showErrors>
+              <!-- it002 and it003 depend on the sibling module, which the invoker
+                   does not install into its own local repository on its own -->
+              <extraArtifacts>
+                <extraArtifact>org.codehaus.mojo:webstart-jnlp-servlet:${project.version}</extraArtifact>
+              </extraArtifacts>
             </configuration>
             <executions>
               <execution>
