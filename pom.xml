@@ -107,9 +107,6 @@
     <mavenPluginPluginVersion>3.15.2</mavenPluginPluginVersion>
     <keytoolVersion>1.7</keytoolVersion>
 	<plexusComponentVersion>2.2.0</plexusComponentVersion>
-	<commonsCompressVersion>1.28.0</commonsCompressVersion>
-	<!-- the version commons-compress 1.28.0 itself declares, as an optional dependency -->
-	<asmVersion>9.8</asmVersion>
 
     <autoVersionSubmodules>true</autoVersionSubmodules>
   </properties>
@@ -170,7 +167,7 @@
       <dependency>
         <groupId>org.apache.maven.reporting</groupId>
         <artifactId>maven-reporting-api</artifactId>
-        <version>3.1.1</version>
+        <version>4.0.0</version>
         <exclusions>
           <exclusion>
             <groupId>plexus</groupId>
@@ -225,6 +222,17 @@
         <artifactId>plexus-utils</artifactId>
         <version>3.6.1</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.apache.velocity</groupId>
+        <artifactId>velocity-engine-core</artifactId>
+        <version>2.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.18.0</version>
+      </dependency>
       <dependency>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>keytool-api-1.7</artifactId>
@@ -268,30 +276,6 @@
         <version>${mavenVersion}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-compress</artifactId>
-        <version>${commonsCompressVersion}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.ow2.asm</groupId>
-        <artifactId>asm</artifactId>
-        <version>${asmVersion}</version>
-      </dependency>
-
-      <!-- commons-compress 1.28.0 is compiled against these; older copies arrive
-           transitively through doxia and win by nearest-wins, so pin them here -->
-      <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>2.20.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>3.18.0</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 

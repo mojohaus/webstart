@@ -34,8 +34,6 @@ public abstract class AbstractGeneratorExtraConfigWithDeps
 
     private final String libPath;
 
-    private final boolean pack200;
-
     private final boolean outputJarVersions;
 
     private final boolean useUniqueVersions;
@@ -44,25 +42,16 @@ public abstract class AbstractGeneratorExtraConfigWithDeps
 
     private final DependencyFilenameStrategy dependencyFilenameStrategy;
 
-    public AbstractGeneratorExtraConfigWithDeps( String libPath, boolean pack200, boolean outputJarVersions,
+    public AbstractGeneratorExtraConfigWithDeps( String libPath, boolean outputJarVersions,
                                                  boolean useUniqueVersions, Artifact artifactWithMainClass,
                                                  DependencyFilenameStrategy dependencyFilenameStrategy )
     {
 
         this.libPath = libPath;
-        this.pack200 = pack200;
         this.outputJarVersions = outputJarVersions;
         this.useUniqueVersions = useUniqueVersions;
         this.artifactWithMainClass = artifactWithMainClass;
         this.dependencyFilenameStrategy = dependencyFilenameStrategy;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isPack200()
-    {
-        return pack200;
     }
 
     /**

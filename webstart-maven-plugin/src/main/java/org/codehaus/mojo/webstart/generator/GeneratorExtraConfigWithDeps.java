@@ -31,8 +31,6 @@ public interface GeneratorExtraConfigWithDeps
         extends GeneratorExtraConfig
 {
 
-    public boolean isPack200();
-
     public boolean isOutputJarVersions();
 
     public boolean isUseUniqueVersions();

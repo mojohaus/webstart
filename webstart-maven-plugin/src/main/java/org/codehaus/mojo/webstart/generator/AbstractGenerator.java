@@ -19,14 +19,14 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
-import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.utils.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.log.NullLogSystem;
+import org.apache.velocity.runtime.RuntimeConstants;
 import org.codehaus.plexus.util.WriterFactory;
 
 import java.io.Writer;
@@ -73,13 +73,13 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
 
         if ( inputFileTemplatePath != null )
         {
-            props.setProperty( VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS,
-                               "org.apache.velocity.runtime.log.NullLogSystem" );
-            props.setProperty( "file.resource.loader.path", config.getResourceLoaderPath().getAbsolutePath() );
+            props.setProperty( RuntimeConstants.RESOURCE_LOADERS, "file" );
+            props.setProperty( RuntimeConstants.FILE_RESOURCE_LOADER_PATH,
+                               config.getResourceLoaderPath().getAbsolutePath() );
 
             initVelocity( props );
 
-            if ( !engine.templateExists( inputFileTemplatePath ) )
+            if ( !engine.resourceExists( inputFileTemplatePath ) )
             {
                 log.warn( "Warning, template not found. Will probably fail." );
             }
@@ -94,16 +94,16 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
             log.debug( "***** Webstart JAR URL: " + webstartJarURL );
 
             props = new Properties();
-            props.setProperty( "resource.loader", "jar" );
-            props.setProperty( "jar.resource.loader.description",
+            props.setProperty( RuntimeConstants.RESOURCE_LOADERS, "jar" );
+            props.setProperty( "resource.loader.jar.description",
                                "Jar resource loader for default webstart templates" );
-            props.setProperty( "jar.resource.loader.class",
+            props.setProperty( "resource.loader.jar.class",
                                "org.apache.velocity.runtime.resource.loader.JarResourceLoader" );
-            props.setProperty( "jar.resource.loader.path", webstartJarURL );
+            props.setProperty( "resource.loader.jar.path", webstartJarURL );
 
             initVelocity( props );
             
-            if ( !engine.templateExists( inputFileTemplatePath ) )
+            if ( !engine.resourceExists( inputFileTemplatePath ) )
             {
                 log.error( "Inbuilt template not found!! " + config.getDefaultTemplateResourceName() +
                                    " Will probably fail." );
@@ -128,7 +128,6 @@ public abstract class AbstractGenerator<C extends GeneratorExtraConfig>
         try
         {
             engine = new VelocityEngine();
-            engine.setProperty( "runtime.log.logsystem", new NullLogSystem() );
             engine.init( props );
         }
         catch ( Exception e )

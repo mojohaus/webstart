@@ -20,7 +20,7 @@ package org.codehaus.mojo.webstart;
  */
 
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -28,8 +28,6 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.webstart.dependency.filenaming.DependencyFilenameStrategy;
-import org.codehaus.mojo.webstart.pack200.Pack200Config;
-import org.codehaus.mojo.webstart.pack200.Pack200Tool;
 import org.codehaus.mojo.webstart.sign.SignConfig;
 import org.codehaus.mojo.webstart.sign.SignTool;
 import org.codehaus.mojo.webstart.util.ArtifactUtil;
@@ -122,25 +120,10 @@ public abstract class AbstractBaseJnlpMojo
     private File templateDirectory;
 
     /**
-     * The Pack200 Config.
-     *
-     * @since 1.0-beta-4
-     */
-    @Parameter
-    private Pack200Config pack200;
-
-    /**
      * The Sign Config.
      */
     @Parameter
     private SignConfig sign;
-
-    /**
-     * Indicates whether or not gzip archives will be created for each of the jar
-     * files included in the webstart bundle.
-     */
-    @Parameter( property = "jnlp.gzip", defaultValue = "false" )
-    private boolean gzip;
 
     /**
      * Enable verbose output.
@@ -259,19 +242,6 @@ public abstract class AbstractBaseJnlpMojo
     private SignTool signTool;
 
     /**
-     * All available pack200 tools.
-     * <p>
-     * We use a plexus list injection instead of a direct component injection since for a jre 1.4, we will at the
-     * moment have no implementation of this tool.
-     * <p>
-     * Later in the execute of mojo, we will check if at least one implementation is available if required.
-     *
-     * @since 1.0-beta-2
-     */
-    @Component( role = Pack200Tool.class )
-    private Pack200Tool pack200Tool;
-
-    /**
      * Artifact helper.
      *
      * @since 1.0-beta-4
@@ -331,11 +301,6 @@ public abstract class AbstractBaseJnlpMojo
     private final FileFilter processedJarFileFilter;
 
     /**
-     * Filter of jar files that need to be pack200.
-     */
-    private final FileFilter unprocessedPack200FileFilter;
-
-    /**
      * The dependency filename strategy.
      */
     private DependencyFilenameStrategy dependencyFilenameStrategy;
@@ -369,19 +334,6 @@ public abstract class AbstractBaseJnlpMojo
                         pathname.getName().endsWith( JAR_SUFFIX );
             }
         };
-
-        unprocessedPack200FileFilter = new FileFilter()
-        {
-            /**
-             * {@inheritDoc}
-             */
-            public boolean accept( File pathname )
-            {
-                return pathname.isFile() && pathname.getName().startsWith( UNPROCESSED_PREFIX ) &&
-                        ( pathname.getName().endsWith( JAR_SUFFIX + Pack200Tool.PACK_GZ_EXTENSION ) ||
-                                pathname.getName().endsWith( JAR_SUFFIX + Pack200Tool.PACK_EXTENSION ) );
-            }
-        };
     }
 
     // ----------------------------------------------------------------------
@@ -403,27 +355,6 @@ public abstract class AbstractBaseJnlpMojo
             return null;
         }
         return libPath;
-    }
-
-    /**
-     * Returns the flag that indicates whether or not jar resources
-     * will be compressed using pack200.
-     *
-     * @return Returns the value of the pack200.enabled field.
-     */
-    public boolean isPack200()
-    {
-        return pack200 != null && pack200.isEnabled();
-    }
-
-    /**
-     * Returns the files to be passed without pack200 compression.
-     *
-     * @return Returns the list value of the pack200.passFiles.
-     */
-    public List<String> getPack200PassFiles()
-    {
-        return pack200 == null ? null : pack200.getPassFiles();
     }
 
     // ----------------------------------------------------------------------
@@ -523,17 +454,6 @@ public abstract class AbstractBaseJnlpMojo
     protected String getCodebase()
     {
         return codebase;
-    }
-
-    /**
-     * Returns the flag that indicates whether or not a gzip should be
-     * created for each jar resource.
-     *
-     * @return Returns the value of the gzip field.
-     */
-    protected boolean isGzip()
-    {
-        return gzip;
     }
 
     /**
@@ -698,22 +618,6 @@ public abstract class AbstractBaseJnlpMojo
                 removeExistingSignatures( getLibDirectory() );
             }
 
-            if ( isPack200() )
-            {
-
-                //TODO tchemit  use a temporary directory to pack-unpack
-
-                // http://java.sun.com/j2se/1.5.0/docs/guide/deployment/deployment-guide/pack200.html
-                // we need to pack then unpack the files before signing them
-                unpackJars( getLibDirectory() );
-
-                // As out current Pack200 ant tasks don't give us the ability to use a temporary area for
-                // creating those temporary packing, we have to delete the temporary files.
-                ioUtil.deleteFiles( getLibDirectory(), unprocessedPack200FileFilter );
-                // specs says that one should do it twice when there are unsigned jars??
-                // Pack200.unpackJars( applicationDirectory, updatedPack200FileFilter );
-            }
-
             if ( MapUtils.isNotEmpty( updateManifestEntries ) )
             {
                 updateManifestEntries( getLibDirectory() );
@@ -733,27 +637,8 @@ public abstract class AbstractBaseJnlpMojo
         {
             makeUnprocessedFilesFinal( getLibDirectory() );
         }
-
-        if ( isPack200() )
-        {
-            verboseLog( "-- Pack jars" );
-            pack200Jars( getLibDirectory(), processedJarFileFilter );
-        }
     }
 
-
-    protected void pack200Jars( File directory, FileFilter filter )
-            throws MojoExecutionException
-    {
-        try
-        {
-            getPack200Tool().packJars( directory, filter, isGzip(), getPack200PassFiles() );
-        }
-        catch ( IOException e )
-        {
-            throw new MojoExecutionException( "Could not pack200 jars: ", e );
-        }
-    }
 
     protected URL findDefaultTemplateURL( JnlpFileType fileType )
     {
@@ -786,11 +671,6 @@ public abstract class AbstractBaseJnlpMojo
         return ioUtil;
     }
 
-    protected Pack200Tool getPack200Tool()
-    {
-        return pack200Tool;
-    }
-
     /**
      * Log as info when verbose or info is enabled, as debug otherwise.
      *
@@ -811,28 +691,6 @@ public abstract class AbstractBaseJnlpMojo
     // ----------------------------------------------------------------------
     // Private Methods
     // ----------------------------------------------------------------------
-
-    private void unpackJars( File directory )
-            throws MojoExecutionException
-    {
-        getLog().info( "-- Unpack jars before sign operation " );
-
-        verboseLog(
-                "see http://docs.oracle.com/javase/7/docs/technotes/guides/deployment/deployment-guide/pack200.html" );
-
-        // pack
-        pack200Jars( directory, unprocessedJarFileFilter );
-
-        // then unpack
-        try
-        {
-            getPack200Tool().unpackJars( directory, unprocessedPack200FileFilter );
-        }
-        catch ( IOException e )
-        {
-            throw new MojoExecutionException( "Could not unpack200 jars: ", e );
-        }
-    }
 
     private int makeUnprocessedFilesFinal( File directory )
             throws MojoExecutionException

@@ -20,7 +20,7 @@ package org.codehaus.mojo.webstart;
  */
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
@@ -296,7 +296,7 @@ public abstract class AbstractJnlpMojo
 
             processNativeLibs();
 
-            if ( ( isPack200() || getSign() != null ) && getLog().isDebugEnabled() )
+            if ( getSign() != null && getLog().isDebugEnabled() )
             {
                 logCollection(
                         "Some dependencies may be skipped. Here's the list of the artifacts that should be signed/packed: ",
@@ -682,7 +682,7 @@ public abstract class AbstractJnlpMojo
                                               getWebstartJarURLForVelocity(), getEncoding() );
 
         GeneratorConfig generatorConfig =
-                new GeneratorConfig( getLibPath(), isPack200(), outputJarVersions, isUseUniqueVersions(), artifactWithMainClass,
+                new GeneratorConfig( getLibPath(), outputJarVersions, isUseUniqueVersions(), artifactWithMainClass,
                                      getDependencyFilenameStrategy(), packagedJnlpArtifacts, jnlpExtensions, getCodebase(),
                                      jnlp );
 
@@ -825,8 +825,6 @@ public abstract class AbstractJnlpMojo
     {
 
         getLog().debug( "basedir " + this.basedir );
-        getLog().debug( "gzip " + isGzip() );
-        getLog().debug( "pack200 " + isPack200() );
         getLog().debug( "project " + this.getProject() );
         getLog().debug( "verbose " + isVerbose() );
 
@@ -1108,7 +1106,7 @@ public abstract class AbstractJnlpMojo
                                               getWebstartJarURLForVelocity(), getEncoding() );
 
         ExtensionGeneratorConfig extensionGeneratorConfig =
-                new ExtensionGeneratorConfig( getLibPath(), isPack200(), outputJarVersions, isUseUniqueVersions(),
+                new ExtensionGeneratorConfig( getLibPath(), outputJarVersions, isUseUniqueVersions(),
                                               artifactWithMainClass, getDependencyFilenameStrategy(),
                                               extensionsJnlpArtifacts, getCodebase(), extension );
         ExtensionGenerator jnlpGenerator =

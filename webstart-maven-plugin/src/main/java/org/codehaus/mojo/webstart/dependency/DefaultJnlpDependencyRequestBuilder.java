@@ -22,9 +22,7 @@ package org.codehaus.mojo.webstart.dependency;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.shared.jarsigner.JarSignerUtil;
 import org.codehaus.mojo.webstart.dependency.task.JnlpDependencyTask;
-import org.codehaus.mojo.webstart.dependency.task.Pack200Task;
 import org.codehaus.mojo.webstart.dependency.task.SignTask;
-import org.codehaus.mojo.webstart.dependency.task.UnPack200Task;
 import org.codehaus.mojo.webstart.dependency.task.UnsignTask;
 import org.codehaus.mojo.webstart.dependency.task.UpdateManifestTask;
 import org.codehaus.plexus.PlexusConstants;
@@ -108,8 +106,6 @@ public class DefaultJnlpDependencyRequestBuilder
     {
         List<JnlpDependencyTask> tasks = new ArrayList<>();
 
-        boolean doPack200 = config.isPack200();
-
         if ( config.isSign() )
         {
 
@@ -134,19 +130,6 @@ public class DefaultJnlpDependencyRequestBuilder
                 }
             }
 
-            if ( doPack200 )
-            {
-
-                // http://java.sun.com/j2se/1.5.0/docs/guide/deployment/deployment-guide/pack200.html
-                // we need to pack then unpack the files before signing them
-
-                // pack200
-                registerTask( tasks, Pack200Task.ROLE_HINT, config );
-
-                // unpack200
-                registerTask( tasks, UnPack200Task.ROLE_HINT, config );
-            }
-
             if ( config.isUpdateManifest() )
             {
                 // update manifest
@@ -155,13 +138,6 @@ public class DefaultJnlpDependencyRequestBuilder
 
             // sign jar
             registerTask( tasks, SignTask.ROLE_HINT, config );
-        }
-
-        if ( doPack200 )
-        {
-
-            // pack signed jar
-            registerTask( tasks, Pack200Task.ROLE_HINT, config );
         }
 
         return tasks.toArray( new JnlpDependencyTask[tasks.size()] );

@@ -26,12 +26,10 @@ target/it/MWEBSTART-159/target/
 │   └── jnlp
 │       ├── myPath
 │       │   ├── commons-cli-1.1.jar
-│       │   └── commons-cli-1.1.jar.pack
 │       └── test.jnlp
 └── withoutLibPath
     └── jnlp
         ├── commons-cli-1.1.jar
-        ├── commons-cli-1.1.jar.pack
         └── test.jnlp
  */
 def assertExistsDirectory( file )
@@ -74,10 +72,9 @@ File jnlpLib = jnlp;
 
 expectedJnlpLibFiles.each{
  assert assertExistsFile( new File ( jnlpLib, it ) )
- assert assertExistsFile( new File ( jnlpLib, it + ".pack" ) )
 }
 
-assert jnlpLib.list().length == ( expectedJnlpLibFiles.length * 2 ) +1 // jar + pack files + jnlp file
+assert jnlpLib.list().length == expectedJnlpLibFiles.length + 1 // jar files + jnlp file
 
 workdir = new File( target, "withLibPath")
 
@@ -93,9 +90,8 @@ expectedJnlpFiles.each{
 
 expectedJnlpLibFiles.each{
  assert assertExistsFile( new File ( jnlpLib, it ) )
- assert assertExistsFile( new File ( jnlpLib, it + ".pack" ) )
 }
 
-assert jnlpLib.list().length == ( expectedJnlpLibFiles.length * 2 ) // jar + pack files
+assert jnlpLib.list().length == expectedJnlpLibFiles.length // jar files
 
 return true

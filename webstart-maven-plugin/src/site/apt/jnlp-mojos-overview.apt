@@ -44,8 +44,6 @@ target/${artifactId}-${version}.zip (Zipped version of the work directory that w
 
   * Sign the JARs using an existing (or on-the-fly created) keystore file
 
-  * If required, use pack200 algorithm to create packed and packed gzipped versions of the JARs
-
   * Generate a JNLP file
 
   * Generate a <<<version.xml>>> (when using the <<<jnlp-download-servlet>>> goal)
@@ -188,9 +186,6 @@ Extra config properties (All properties taken from config.properties section) (N
           </sign>
 
           <!-- BUILDING PROCESS -->
-
-          <pack200>true</pack200>
-          <gzip>true</gzip> <!-- default force when pack200 false, true when pack200 selected ?? -->
 
           <!-- causes a version attribute to be output in each jar resource element, optional, default is false -->
           <outputJarVersions>true</outputJarVersions>

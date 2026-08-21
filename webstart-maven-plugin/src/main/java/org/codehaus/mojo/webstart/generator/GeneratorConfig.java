@@ -49,13 +49,13 @@ public class GeneratorConfig
 
     private final JnlpConfig jnlp;
 
-    public GeneratorConfig( String libPath, boolean pack200, boolean outputJarVersions,
+    public GeneratorConfig( String libPath, boolean outputJarVersions,
                             boolean useUniqueVersions, Artifact artifactWithMainClass,
                             DependencyFilenameStrategy dependencyFilenameStrategy,
                             Collection<Artifact> packagedJnlpArtifacts, List<JnlpExtension> jnlpExtensions,
                             String codebase, JnlpConfig jnlp )
     {
-        super( libPath, pack200, outputJarVersions, useUniqueVersions, artifactWithMainClass, dependencyFilenameStrategy );
+        super( libPath, outputJarVersions, useUniqueVersions, artifactWithMainClass, dependencyFilenameStrategy );
 
         this.packagedJnlpArtifacts = packagedJnlpArtifacts;
         this.jnlpExtensions = jnlpExtensions;

@@ -82,16 +82,6 @@ public class Generator
         {
             StringBuilder buffer = new StringBuilder( 100 * artifacts.size() );
             buffer.append( EOL );
-            if ( config.isPack200() )
-            {
-                /*
-                 * http://jira.codehaus.org/browse/MWEBSTART-174
-                 *
-                 * If we're going to use Pack200, we should specify jnlp.packEnabled
-                 *
-                 */
-                buffer.append( "<property name=\"jnlp.packEnabled\" value=\"true\" />" ).append( EOL );
-            }
             if ( config.isOutputJarVersions() )
             {
                 /*
