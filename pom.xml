@@ -190,7 +190,8 @@
       <dependency>
         <groupId>org.apache.maven.shared</groupId>
         <artifactId>maven-shared-utils</artifactId>
-        <version>3.3.4</version>
+        <!-- maven-jarsigner 3.1.0 needs AbstractJavaTool.getLogger() to return an slf4j Logger -->
+        <version>3.4.2</version>
       </dependency>
 
       <dependency>
